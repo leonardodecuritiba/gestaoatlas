@@ -1,0 +1,1 @@
+{!! Html::style('vendors/select2/dist/css/select2.min.css') !!}
