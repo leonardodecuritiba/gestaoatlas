@@ -1,6 +1,6 @@
 @extends('layouts.template')
 @section('page_content')
-	@include('pages.ordem_servicos.popup.cliente')
+	@include('pages.ordem_servicos.popup.cliente_os')
 	<!-- Seach form -->
 	<div id="search" class="x_panel animated flipInX">
 		<div class="x_content">
@@ -47,15 +47,17 @@
 									<td>{{$cliente->getType()->nome_principal}}</td>
 									<td>
 										<a class="btn btn-primary btn-xs"
-										   	data-href="{{route($Page->link.'.abrir',$cliente->idcliente)}}"
-										   	data-cliente="{{$cliente}}"
-										   	data-endereco="{{$cliente->getEndereco()}}"
-										   	data-fones="{{$cliente->getFones()}}"
-										   	data-email="{{$cliente->email_orcamento}}"
-										   	data-urlfoto="{{$cliente->getURLFoto()}}"
-										   	data-pessoa="{{$cliente->idpjuridica!=NULL?$cliente->pessoa_juridica:$cliente->pessoa_fisica}}"
-											data-toggle="modal"
-											data-target="#modalPopup">
+										   data-href="{{route($Page->link.'.abrir',$cliente->idcliente)}}"
+										   data-os="{{route($Page->link.'.cliente',$cliente->idcliente)}}"
+										   data-cli="{{route('clientes.show',$cliente->idcliente)}}"
+										   data-cliente="{{$cliente}}"
+										   data-endereco="{{$cliente->getEndereco()}}"
+										   data-fones="{{$cliente->getFones()}}"
+										   data-email="{{$cliente->email_orcamento}}"
+										   data-urlfoto="{{$cliente->getURLFoto()}}"
+										   data-pessoa="{{$cliente->idpjuridica!=NULL?$cliente->pessoa_juridica:$cliente->pessoa_fisica}}"
+										   data-toggle="modal"
+										   data-target="#modalPopup">
 											<i class="fa fa-eye"></i> Visualizar </a>
 									</td>
 								</tr>
@@ -82,6 +84,8 @@
 				endereco_ 	= $($origem).data('endereco');
 				pessoa_ 	= $($origem).data('pessoa');
 				href_ 		= $($origem).data('href');
+				os_ = $($origem).data('os');
+				cli_ = $($origem).data('cli');
 				urlfoto_ 	= $($origem).data('urlfoto');
 
 				endereco 	= $($origem).data('endereco');
@@ -116,6 +120,12 @@
 
 				$(this).find('.btn-ok').html('Abrir O.S.');
 				$(this).find('.btn-ok').attr("href", href_);
+
+				$(this).find('.btn-os').html('Consulta O.S.');
+				$(this).find('.btn-os').attr("href", os_);
+
+				$(this).find('.btn-cli').html('Consulta Cliente');
+				$(this).find('.btn-cli').attr("href", cli_);
 			});
 		});
 	</script>

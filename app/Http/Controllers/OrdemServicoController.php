@@ -358,6 +358,19 @@ class OrdemServicoController extends Controller
         return redirect()->route('ordem_servicos.show', $idordem_servico);
     }
 
+    public function get_ordem_servicos_cliente(Request $request, $idcliente)
+    {
+        $Cliente = Cliente::find($idcliente);
+        if ($Cliente->has_ordem_servicos()) {
+            $Buscas = $Cliente->ordem_servicos()->paginate(10);
+        } else {
+            $Buscas = NULL;
+        }
+        return view('pages.' . $this->Page->link . '.index')
+            ->with('Page', $this->Page)
+            ->with('Buscas', $Buscas);
+    }
+
 
     /*
     public function store(Request $request)
