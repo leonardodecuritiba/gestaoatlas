@@ -60,17 +60,6 @@ class PHPUnit_Framework_Constraint_Attribute extends PHPUnit_Framework_Constrain
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'attribute "' . $this->attributeName . '" ' .
-               $this->innerConstraint->toString();
-    }
-
-    /**
      * Returns the description of the failure
      *
      * The beginning of failure messages is "Failed asserting that" in most
@@ -83,5 +72,16 @@ class PHPUnit_Framework_Constraint_Attribute extends PHPUnit_Framework_Constrain
     protected function failureDescription($other)
     {
         return $this->toString();
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'attribute "' . $this->attributeName . '" ' .
+        $this->innerConstraint->toString();
     }
 }

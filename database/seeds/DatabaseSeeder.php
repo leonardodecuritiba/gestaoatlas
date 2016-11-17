@@ -31,10 +31,11 @@ class DatabaseSeeder extends Seeder
         $dump = ['ncm_dump','users_clientes_fornecedores_dump'];
         foreach($dump as $d){
             DB::unprepared(file_get_contents(storage_path('uploads').'\import\\'.$d.'.sql'));
+            echo "\n Importacao (" . ('\import\\' . $d . '.sql') . ")***************************************************";
         }
 
         DB::table('ajustes')->insert(['meta_key'=>'custo_km','meta_value'=>'3.50']);
-        echo "\n*****************************************************"; exit;
+        echo "\n*****************************************************";
         echo "\n*** Importacao realizada com sucesso em ".round((microtime(true) - $start), 3)."s ***"; exit;
     }
 }

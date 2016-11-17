@@ -50,14 +50,6 @@ class PHPUnit_Framework_Warning extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws PHPUnit_Framework_Exception
-     */
-    protected function runTest()
-    {
-        $this->fail($this->message);
-    }
-
-    /**
      * @return string
      *
      * @since  Method available since Release 3.0.0
@@ -77,5 +69,13 @@ class PHPUnit_Framework_Warning extends PHPUnit_Framework_TestCase
     public function toString()
     {
         return 'Warning';
+    }
+
+    /**
+     * @throws PHPUnit_Framework_Exception
+     */
+    protected function runTest()
+    {
+        $this->fail($this->message);
     }
 }

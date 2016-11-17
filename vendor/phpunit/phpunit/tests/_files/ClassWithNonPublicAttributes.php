@@ -20,10 +20,9 @@ class ClassWithNonPublicAttributes extends ParentClassWithProtectedAttributes
     public $publicAttribute       = 'foo';
     public $foo                   = 1;
     public $bar                   = 2;
+    public $publicArray = array('foo');
     protected $protectedAttribute = 'bar';
     protected $privateAttribute   = 'baz';
-
-    public $publicArray       = array('foo');
     protected $protectedArray = array('bar');
     protected $privateArray   = array('baz');
 }

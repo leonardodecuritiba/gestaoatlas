@@ -25,22 +25,6 @@ class PHP_Token_ClassTest extends PHPUnit_Framework_TestCase
     protected $class;
     protected $function;
 
-    protected function setUp()
-    {
-        $ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source2.php');
-
-        foreach ($ts as $token) {
-            if ($token instanceof PHP_Token_CLASS) {
-                $this->class = $token;
-            }
-
-            if ($token instanceof PHP_Token_FUNCTION) {
-                $this->function = $token;
-                break;
-            }
-        }
-    }
-
     /**
      * @covers PHP_Token_CLASS::getKeywords
      */
@@ -108,5 +92,31 @@ class PHP_Token_ClassTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(array('methodOne', 'methodTwo'), array_keys($classes['Test']['methods']));
 
         $this->assertEmpty($ts->getFunctions());
+    }
+
+    /**
+     * @requires PHP 5.6
+     */
+    public function testImportedFunctionsAreHandledCorrectly()
+    {
+        $ts = new PHP_Token_Stream(TEST_FILES_PATH . 'classUsesNamespacedFunction.php');
+
+        $this->assertEmpty($ts->getFunctions());
+    }
+
+    protected function setUp()
+    {
+        $ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source2.php');
+
+        foreach ($ts as $token) {
+            if ($token instanceof PHP_Token_CLASS) {
+                $this->class = $token;
+            }
+
+            if ($token instanceof PHP_Token_FUNCTION) {
+                $this->function = $token;
+                break;
+            }
+        }
     }
 }

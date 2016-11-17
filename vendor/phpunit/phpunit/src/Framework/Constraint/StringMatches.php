@@ -36,34 +36,6 @@ class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Const
         $this->string = $string;
     }
 
-    protected function failureDescription($other)
-    {
-        return 'format description matches text';
-    }
-
-    protected function additionalFailureDescription($other)
-    {
-        $from = preg_split('(\r\n|\r|\n)', $this->string);
-        $to   = preg_split('(\r\n|\r|\n)', $other);
-
-        foreach ($from as $index => $line) {
-            if (isset($to[$index]) && $line !== $to[$index]) {
-                $line = $this->createPatternFromFormat($line);
-
-                if (preg_match($line, $to[$index]) > 0) {
-                    $from[$index] = $to[$index];
-                }
-            }
-        }
-
-        $this->string = implode("\n", $from);
-        $other        = implode("\n", $to);
-
-        $differ = new Differ("--- Expected\n+++ Actual\n");
-
-        return $differ->diff($this->string, $other);
-    }
-
     protected function createPatternFromFormat($string)
     {
         $string = str_replace(
@@ -97,5 +69,33 @@ class PHPUnit_Framework_Constraint_StringMatches extends PHPUnit_Framework_Const
         );
 
         return '/^' . $string . '$/s';
+    }
+
+    protected function failureDescription($other)
+    {
+        return 'format description matches text';
+    }
+
+    protected function additionalFailureDescription($other)
+    {
+        $from = preg_split('(\r\n|\r|\n)', $this->string);
+        $to = preg_split('(\r\n|\r|\n)', $other);
+
+        foreach ($from as $index => $line) {
+            if (isset($to[$index]) && $line !== $to[$index]) {
+                $line = $this->createPatternFromFormat($line);
+
+                if (preg_match($line, $to[$index]) > 0) {
+                    $from[$index] = $to[$index];
+                }
+            }
+        }
+
+        $this->string = implode("\n", $from);
+        $other = implode("\n", $to);
+
+        $differ = new Differ("--- Expected\n+++ Actual\n");
+
+        return $differ->diff($this->string, $other);
     }
 }

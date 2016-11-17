@@ -18,8 +18,15 @@ class ExtrasTableSeeder extends Seeder
         $start = microtime(true);
         echo "*** Iniciando os Seeders Extras ***";
         $this->call(TecnicosTableSeeder::class);
+
+        $user = User::find(1);
+        $user->email = 'admin@email.com'; //admin
+        $user->save();
         $user  = User::find(2);
+        $user->email = 'tecnico@email.com'; //técnico
+        $user->save();
         $user->attachRole(2); //técnico
+//        $this->call(ClienteTableSeeder::class);
         $this->call(InstrumentosTableSeeder::class);
         $this->call(FornecedorTableSeeder::class);
         $this->call(PecasTableSeeder::class);

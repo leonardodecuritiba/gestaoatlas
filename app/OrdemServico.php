@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class OrdemServico extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'ordem_servicos';
     protected $primaryKey = 'idordem_servico';
-    public $timestamps = true;
     protected $fillable = [
         'idcliente',
         'idcolaborador',
@@ -32,7 +32,7 @@ class OrdemServico extends Model
     // ******************** FUNCTIONS ******************************
     public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
     {
-        return ($this->fechamento!=NULL)?1:0;
+        return (($this->fechamento != NULL) && ($this->idsituacao_ordem_servico == 3)) ? 1 : 0;
     }
     public function setCustosDeslocamentoAttribute($value)
     {
@@ -76,22 +76,27 @@ class OrdemServico extends Model
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+
+    public function aparelho_manutencaos()
+    {
+        return $this->hasMany('App\AparelhoManutencao', 'idordem_servico');
+    }
+
     public function cliente()
     {
         return $this->belongsTo('App\Cliente', 'idcliente');
     }
+
     public function colaborador()
     {
         return $this->belongsTo('App\Colaborador', 'idcolaborador');
     }
+
+    // ************************** HASMANY **********************************
+
     public function situacao()
     {
         return $this->belongsTo('App\SituacaoOrdemServico', 'idsituacao_ordem_servico');
-    }
-    // ************************** HASMANY **********************************
-    public function aparelho_manutencaos()
-    {
-        return $this->hasMany('App\AparelhoManutencao', 'idordem_servico');
     }
 
 

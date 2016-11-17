@@ -33,16 +33,6 @@ class PHPUnit_Framework_Constraint_IsEmpty extends PHPUnit_Framework_Constraint
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'is empty';
-    }
-
-    /**
      * Returns the description of the failure
      *
      * The beginning of failure messages is "Failed asserting that" in most
@@ -62,5 +52,15 @@ class PHPUnit_Framework_Constraint_IsEmpty extends PHPUnit_Framework_Constraint
             $type,
             $this->toString()
         );
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'is empty';
     }
 }

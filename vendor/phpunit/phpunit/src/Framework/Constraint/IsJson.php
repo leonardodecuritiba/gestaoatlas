@@ -16,6 +16,16 @@
 class PHPUnit_Framework_Constraint_IsJson extends PHPUnit_Framework_Constraint
 {
     /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'is valid JSON';
+    }
+
+    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -55,15 +65,5 @@ class PHPUnit_Framework_Constraint_IsJson extends PHPUnit_Framework_Constraint
             $this->exporter->shortenedExport($other),
             $error
         );
-    }
-
-    /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'is valid JSON';
     }
 }

@@ -19,6 +19,21 @@
 class PHPUnit_Framework_Constraint_ClassHasStaticAttribute extends PHPUnit_Framework_Constraint_ClassHasAttribute
 {
     /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     *
+     * @since  Method available since Release 3.3.0
+     */
+    public function toString()
+    {
+        return sprintf(
+            'has static attribute "%s"',
+            $this->attributeName
+        );
+    }
+
+    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -37,20 +52,5 @@ class PHPUnit_Framework_Constraint_ClassHasStaticAttribute extends PHPUnit_Frame
         } else {
             return false;
         }
-    }
-
-    /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     *
-     * @since  Method available since Release 3.3.0
-     */
-    public function toString()
-    {
-        return sprintf(
-            'has static attribute "%s"',
-            $this->attributeName
-        );
     }
 }

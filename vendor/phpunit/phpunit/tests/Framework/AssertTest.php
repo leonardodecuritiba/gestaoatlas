@@ -18,9 +18,15 @@ class Framework_AssertTest extends PHPUnit_Framework_TestCase
      */
     private $filesDirectory;
 
-    protected function setUp()
+    /**
+     * @return array
+     */
+    public static function validInvalidJsonDataprovider()
     {
-        $this->filesDirectory = dirname(__DIR__) . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR;
+        return array(
+            'error syntax in expected JSON' => array('{"Mascott"::}', '{"Mascott" : "Tux"}'),
+            'error UTF-8 in actual JSON' => array('{"Mascott" : "Tux"}', '{"Mascott" : :}'),
+        );
     }
 
     /**
@@ -660,6 +666,124 @@ class Framework_AssertTest extends PHPUnit_Framework_TestCase
         $this->fail();
     }
 
+    public function equalProvider()
+    {
+        // same |= equal
+        return array_merge($this->equalValues(), $this->sameValues());
+    }
+
+    protected function equalValues()
+    {
+        // cyclic dependencies
+        $book1 = new Book;
+        $book1->author = new Author('Terry Pratchett');
+        $book1->author->books[] = $book1;
+        $book2 = new Book;
+        $book2->author = new Author('Terry Pratchett');
+        $book2->author->books[] = $book2;
+
+        $object1 = new SampleClass(4, 8, 15);
+        $object2 = new SampleClass(4, 8, 15);
+        $storage1 = new SplObjectStorage;
+        $storage1->attach($object1);
+        $storage2 = new SplObjectStorage;
+        $storage2->attach($object1);
+
+        return array(
+            // strings
+            array('a', 'A', 0, false, true), // ignore case
+            // arrays
+            array(array('a' => 1, 'b' => 2), array('b' => 2, 'a' => 1)),
+            array(array(1), array('1')),
+            array(array(3, 2, 1), array(2, 3, 1), 0, true), // canonicalized comparison
+            // floats
+            array(2.3, 2.5, 0.5),
+            array(array(2.3), array(2.5), 0.5),
+            array(array(array(2.3)), array(array(2.5)), 0.5),
+            array(new Struct(2.3), new Struct(2.5), 0.5),
+            array(array(new Struct(2.3)), array(new Struct(2.5)), 0.5),
+            // numeric with delta
+            array(1, 2, 1),
+            // objects
+            array($object1, $object2),
+            array($book1, $book2),
+            // SplObjectStorage
+            array($storage1, $storage2),
+            // DOMDocument
+            array(
+                PHPUnit_Util_XML::load('<root></root>'),
+                PHPUnit_Util_XML::load('<root/>'),
+            ),
+            array(
+                PHPUnit_Util_XML::load('<root attr="bar"></root>'),
+                PHPUnit_Util_XML::load('<root attr="bar"/>'),
+            ),
+            array(
+                PHPUnit_Util_XML::load('<root><foo attr="bar"></foo></root>'),
+                PHPUnit_Util_XML::load('<root><foo attr="bar"/></root>'),
+            ),
+            array(
+                PHPUnit_Util_XML::load("<root>\n  <child/>\n</root>"),
+                PHPUnit_Util_XML::load('<root><child/></root>'),
+            ),
+            array(
+                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
+            ),
+            array(
+                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29 04:13:25', new DateTimeZone('America/New_York')),
+                10
+            ),
+            array(
+                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29 04:14:40', new DateTimeZone('America/New_York')),
+                65
+            ),
+            array(
+                new DateTime('2013-03-29', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29', new DateTimeZone('America/New_York')),
+            ),
+            array(
+                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29 03:13:35', new DateTimeZone('America/Chicago')),
+            ),
+            array(
+                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29 03:13:49', new DateTimeZone('America/Chicago')),
+                15
+            ),
+            array(
+                new DateTime('2013-03-30', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29 23:00:00', new DateTimeZone('America/Chicago')),
+            ),
+            array(
+                new DateTime('2013-03-30', new DateTimeZone('America/New_York')),
+                new DateTime('2013-03-29 23:01:30', new DateTimeZone('America/Chicago')),
+                100
+            ),
+            array(
+                new DateTime('@1364616000'),
+                new DateTime('2013-03-29 23:00:00', new DateTimeZone('America/Chicago')),
+            ),
+            array(
+                new DateTime('2013-03-29T05:13:35-0500'),
+                new DateTime('2013-03-29T04:13:35-0600'),
+            ),
+            // Exception
+            //array(new Exception('Exception 1'), new Exception('Exception 1')),
+            // mixed types
+            array(0, '0'),
+            array('0', 0),
+            array(2.3, '2.3'),
+            array('2.3', 2.3),
+            array((string)(1 / 3), 1 - 2 / 3),
+            array(1 / 3, (string)(1 - 2 / 3)),
+            array('string representation', new ClassWithToString),
+            array(new ClassWithToString, 'string representation'),
+        );
+    }
+
     protected function sameValues()
     {
         $object = new SampleClass(4, 8, 15);
@@ -689,6 +813,11 @@ class Framework_AssertTest extends PHPUnit_Framework_TestCase
             // resources
             array($resource, $resource),
         );
+    }
+
+    public function notEqualProvider()
+    {
+        return $this->notEqualValues();
     }
 
     protected function notEqualValues()
@@ -832,129 +961,6 @@ class Framework_AssertTest extends PHPUnit_Framework_TestCase
             array(3, acos(8)),
             array(acos(8), 3)
         );
-    }
-
-    protected function equalValues()
-    {
-        // cyclic dependencies
-        $book1                  = new Book;
-        $book1->author          = new Author('Terry Pratchett');
-        $book1->author->books[] = $book1;
-        $book2                  = new Book;
-        $book2->author          = new Author('Terry Pratchett');
-        $book2->author->books[] = $book2;
-
-        $object1  = new SampleClass(4, 8, 15);
-        $object2  = new SampleClass(4, 8, 15);
-        $storage1 = new SplObjectStorage;
-        $storage1->attach($object1);
-        $storage2 = new SplObjectStorage;
-        $storage2->attach($object1);
-
-        return array(
-            // strings
-            array('a', 'A', 0, false, true), // ignore case
-            // arrays
-            array(array('a' => 1, 'b' => 2), array('b' => 2, 'a' => 1)),
-            array(array(1), array('1')),
-            array(array(3, 2, 1), array(2, 3, 1), 0, true), // canonicalized comparison
-            // floats
-            array(2.3, 2.5, 0.5),
-            array(array(2.3), array(2.5), 0.5),
-            array(array(array(2.3)), array(array(2.5)), 0.5),
-            array(new Struct(2.3), new Struct(2.5), 0.5),
-            array(array(new Struct(2.3)), array(new Struct(2.5)), 0.5),
-            // numeric with delta
-            array(1, 2, 1),
-            // objects
-            array($object1, $object2),
-            array($book1, $book2),
-            // SplObjectStorage
-            array($storage1, $storage2),
-            // DOMDocument
-            array(
-                PHPUnit_Util_XML::load('<root></root>'),
-                PHPUnit_Util_XML::load('<root/>'),
-            ),
-            array(
-                PHPUnit_Util_XML::load('<root attr="bar"></root>'),
-                PHPUnit_Util_XML::load('<root attr="bar"/>'),
-            ),
-            array(
-                PHPUnit_Util_XML::load('<root><foo attr="bar"></foo></root>'),
-                PHPUnit_Util_XML::load('<root><foo attr="bar"/></root>'),
-            ),
-            array(
-                PHPUnit_Util_XML::load("<root>\n  <child/>\n</root>"),
-                PHPUnit_Util_XML::load('<root><child/></root>'),
-            ),
-            array(
-                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
-            ),
-            array(
-                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29 04:13:25', new DateTimeZone('America/New_York')),
-                10
-            ),
-            array(
-                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29 04:14:40', new DateTimeZone('America/New_York')),
-                65
-            ),
-            array(
-                new DateTime('2013-03-29', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29', new DateTimeZone('America/New_York')),
-            ),
-            array(
-                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29 03:13:35', new DateTimeZone('America/Chicago')),
-            ),
-            array(
-                new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29 03:13:49', new DateTimeZone('America/Chicago')),
-                15
-            ),
-            array(
-                new DateTime('2013-03-30', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29 23:00:00', new DateTimeZone('America/Chicago')),
-            ),
-            array(
-                new DateTime('2013-03-30', new DateTimeZone('America/New_York')),
-                new DateTime('2013-03-29 23:01:30', new DateTimeZone('America/Chicago')),
-                100
-            ),
-            array(
-                new DateTime('@1364616000'),
-                new DateTime('2013-03-29 23:00:00', new DateTimeZone('America/Chicago')),
-            ),
-            array(
-                new DateTime('2013-03-29T05:13:35-0500'),
-                new DateTime('2013-03-29T04:13:35-0600'),
-            ),
-            // Exception
-            //array(new Exception('Exception 1'), new Exception('Exception 1')),
-            // mixed types
-            array(0, '0'),
-            array('0', 0),
-            array(2.3, '2.3'),
-            array('2.3', 2.3),
-            array((string) (1/3), 1 - 2/3),
-            array(1/3, (string) (1 - 2/3)),
-            array('string representation', new ClassWithToString),
-            array(new ClassWithToString, 'string representation'),
-        );
-    }
-
-    public function equalProvider()
-    {
-        // same |= equal
-        return array_merge($this->equalValues(), $this->sameValues());
-    }
-
-    public function notEqualProvider()
-    {
-        return $this->notEqualValues();
     }
 
     public function sameProvider()
@@ -4117,14 +4123,8 @@ XML;
         $this->fail();
     }
 
-    /**
-     * @return array
-     */
-    public static function validInvalidJsonDataprovider()
+    protected function setUp()
     {
-        return array(
-            'error syntax in expected JSON' => array('{"Mascott"::}', '{"Mascott" : "Tux"}'),
-            'error UTF-8 in actual JSON'    => array('{"Mascott" : "Tux"}', '{"Mascott" : :}'),
-        );
+        $this->filesDirectory = dirname(__DIR__) . DIRECTORY_SEPARATOR . '_files' . DIRECTORY_SEPARATOR;
     }
 }

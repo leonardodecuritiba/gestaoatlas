@@ -21,6 +21,7 @@ class CreateSelosTable extends Migration
             $table->string('numeracao',20)->unique()->nullable();
             $table->string('numeracao_externa',20)->nullable();
             $table->boolean('externo')->default(0);
+            $table->boolean('used')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

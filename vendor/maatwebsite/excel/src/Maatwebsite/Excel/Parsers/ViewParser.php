@@ -57,41 +57,12 @@ class ViewParser {
     }
 
     /**
-     * Load the HTML
-     * @param  \Maatwebsite\Excel\Classes\LaravelExcelWorksheet $sheet
-     * @param  string                                           $html
-     * @return \Maatwebsite\Excel\Classes\LaravelExcelWorksheet
-     */
-    protected function _loadHTML($sheet, $html)
-    {
-        return $this->reader->load($html, true, $sheet);
-    }
-
-    /**
      * Get the view
      * @return string
      */
     public function getView()
     {
         return $this->view;
-    }
-
-    /**
-     * Get data
-     * @return array
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * Get merge data
-     * @return array
-     */
-    public function getMergeData()
-    {
-        return $this->mergeData;
     }
 
     /**
@@ -105,6 +76,15 @@ class ViewParser {
     }
 
     /**
+     * Get data
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
      * Set the data
      * @param array $data
      */
@@ -115,6 +95,15 @@ class ViewParser {
     }
 
     /**
+     * Get merge data
+     * @return array
+     */
+    public function getMergeData()
+    {
+        return $this->mergeData;
+    }
+
+    /**
      * Set the merge data
      * @param array $mergeData
      */
@@ -122,5 +111,16 @@ class ViewParser {
     {
         if (!empty($mergeData))
             $this->mergeData = array_merge($this->mergeData, $mergeData);
+    }
+
+    /**
+     * Load the HTML
+     * @param  \Maatwebsite\Excel\Classes\LaravelExcelWorksheet $sheet
+     * @param  string $html
+     * @return \Maatwebsite\Excel\Classes\LaravelExcelWorksheet
+     */
+    protected function _loadHTML($sheet, $html)
+    {
+        return $this->reader->load($html, true, $sheet);
     }
 }

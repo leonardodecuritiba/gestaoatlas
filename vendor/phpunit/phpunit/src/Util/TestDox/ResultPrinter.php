@@ -84,6 +84,13 @@ abstract class PHPUnit_Util_TestDox_ResultPrinter extends PHPUnit_Util_Printer i
     }
 
     /**
+     * Handler for 'start run' event.
+     */
+    protected function startRun()
+    {
+    }
+
+    /**
      * Flush buffer and close output.
      */
     public function flush()
@@ -92,6 +99,44 @@ abstract class PHPUnit_Util_TestDox_ResultPrinter extends PHPUnit_Util_Printer i
         $this->endRun();
 
         parent::flush();
+    }
+
+    /**
+     * @since  Method available since Release 2.3.0
+     */
+    protected function doEndClass()
+    {
+        foreach ($this->tests as $name => $data) {
+            $this->onTest($name, $data['failure'] == 0);
+        }
+
+        $this->endClass($this->testClass);
+    }
+
+    /**
+     * Handler for 'on test' event.
+     *
+     * @param string $name
+     * @param bool $success
+     */
+    protected function onTest($name, $success = true)
+    {
+    }
+
+    /**
+     * Handler for 'end class' event.
+     *
+     * @param string $name
+     */
+    protected function endClass($name)
+    {
+    }
+
+    /**
+     * Handler for 'end run' event.
+     */
+    protected function endRun()
+    {
     }
 
     /**
@@ -109,6 +154,11 @@ abstract class PHPUnit_Util_TestDox_ResultPrinter extends PHPUnit_Util_Printer i
 
         $this->testStatus = PHPUnit_Runner_BaseTestRunner::STATUS_ERROR;
         $this->failed++;
+    }
+
+    private function isOfInterest(PHPUnit_Framework_Test $test)
+    {
+        return $test instanceof PHPUnit_Framework_TestCase && get_class($test) != 'PHPUnit_Framework_Warning';
     }
 
     /**
@@ -247,6 +297,15 @@ abstract class PHPUnit_Util_TestDox_ResultPrinter extends PHPUnit_Util_Printer i
     }
 
     /**
+     * Handler for 'start class' event.
+     *
+     * @param string $name
+     */
+    protected function startClass($name)
+    {
+    }
+
+    /**
      * A test ended.
      *
      * @param PHPUnit_Framework_Test $test
@@ -276,64 +335,5 @@ abstract class PHPUnit_Util_TestDox_ResultPrinter extends PHPUnit_Util_Printer i
 
         $this->currentTestClassPrettified  = null;
         $this->currentTestMethodPrettified = null;
-    }
-
-    /**
-     * @since  Method available since Release 2.3.0
-     */
-    protected function doEndClass()
-    {
-        foreach ($this->tests as $name => $data) {
-            $this->onTest($name, $data['failure'] == 0);
-        }
-
-        $this->endClass($this->testClass);
-    }
-
-    /**
-     * Handler for 'start run' event.
-     */
-    protected function startRun()
-    {
-    }
-
-    /**
-     * Handler for 'start class' event.
-     *
-     * @param string $name
-     */
-    protected function startClass($name)
-    {
-    }
-
-    /**
-     * Handler for 'on test' event.
-     *
-     * @param string $name
-     * @param bool   $success
-     */
-    protected function onTest($name, $success = true)
-    {
-    }
-
-    /**
-     * Handler for 'end class' event.
-     *
-     * @param string $name
-     */
-    protected function endClass($name)
-    {
-    }
-
-    /**
-     * Handler for 'end run' event.
-     */
-    protected function endRun()
-    {
-    }
-
-    private function isOfInterest(PHPUnit_Framework_Test $test)
-    {
-        return $test instanceof PHPUnit_Framework_TestCase && get_class($test) != 'PHPUnit_Framework_Warning';
     }
 }

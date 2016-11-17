@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Tecnico;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 
 //use JansenFelipe\CnpjGratis\CnpjGratis as CnpjGratis;
@@ -13,6 +15,30 @@ use SintegraPHP\SP\SintegraSP;
 
 class AjaxController extends Controller
 {
+    public function getSelosDisponiveis()
+    {
+        $value = Input::has('value') ? Input::get('value') : '';
+        $data = Auth::user()->colaborador->tecnico->selos_disponiveis()->where('numeracao', 'like', $value . "%")->get();
+        return $this->selectReturn('idselo', $data);
+    }
+
+    public function selectReturn($id, $data)
+    {
+        $retorno = NULL;
+        if (count($data) > 0) {
+            foreach ($data as $i => $dt) {
+                $retorno[] = array('id' => $dt->$id, 'text' => $dt->numeracao, 'data' => $dt);
+            }
+        }
+        echo json_encode($retorno);
+    }
+
+    public function getLacresDisponiveis()
+    {
+        $value = Input::has('value') ? Input::get('value') : '';
+        $data = Auth::user()->colaborador->tecnico->lacres_disponiveis()->where('numeracao', 'like', $value . "%")->get();
+        return $this->selectReturn('idlacre', $data);
+    }
     public function getAjaxDataByID()
     {
         $id      = Input::get('id');

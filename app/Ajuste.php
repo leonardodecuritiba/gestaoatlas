@@ -8,21 +8,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Ajuste extends Model
 {
-    use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'ajustes';
     protected $primaryKey = 'id';
-    public $timestamps = true;
     protected $fillable = [
         'meta_key',
         'meta_value'
     ];
 
-    public function getCreatedAtAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
-    }
     static public function getByMetaKey($value)
     {
         return self::where('meta_key',$value)->first();
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return DataHelper::getPrettyDateTime($value);
     }
 }

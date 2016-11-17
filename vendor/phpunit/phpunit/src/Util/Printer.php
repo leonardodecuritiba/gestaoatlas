@@ -98,24 +98,6 @@ class PHPUnit_Util_Printer
     }
 
     /**
-     * Performs a safe, incremental flush.
-     *
-     * Do not confuse this function with the flush() function of this class,
-     * since the flush() function may close the file being written to, rendering
-     * the current object no longer usable.
-     *
-     * @since  Method available since Release 3.3.0
-     */
-    public function incrementalFlush()
-    {
-        if ($this->out) {
-            fflush($this->out);
-        } else {
-            flush();
-        }
-    }
-
-    /**
      * @param string $buffer
      */
     public function write($buffer)
@@ -136,6 +118,24 @@ class PHPUnit_Util_Printer
             if ($this->autoFlush) {
                 $this->incrementalFlush();
             }
+        }
+    }
+
+    /**
+     * Performs a safe, incremental flush.
+     *
+     * Do not confuse this function with the flush() function of this class,
+     * since the flush() function may close the file being written to, rendering
+     * the current object no longer usable.
+     *
+     * @since  Method available since Release 3.3.0
+     */
+    public function incrementalFlush()
+    {
+        if ($this->out) {
+            fflush($this->out);
+        } else {
+            flush();
         }
     }
 

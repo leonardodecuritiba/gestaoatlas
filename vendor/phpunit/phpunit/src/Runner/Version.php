@@ -19,6 +19,23 @@ class PHPUnit_Runner_Version
     private static $version;
 
     /**
+     * @return string
+     *
+     * @since Method available since Release 4.8.13
+     */
+    public static function series()
+    {
+        if (strpos(self::id(), '-')) {
+            $tmp = explode('-', self::id());
+            $version = $tmp[0];
+        } else {
+            $version = self::id();
+        }
+
+        return implode('.', array_slice(explode('.', $version), 0, 2));
+    }
+
+    /**
      * Returns the current version of PHPUnit.
      *
      * @return string
@@ -30,28 +47,11 @@ class PHPUnit_Runner_Version
         }
 
         if (self::$version === null) {
-            $version       = new SebastianBergmann\Version('4.8.27', dirname(dirname(__DIR__)));
+            $version = new SebastianBergmann\Version('4.8.28', dirname(dirname(__DIR__)));
             self::$version = $version->getVersion();
         }
 
         return self::$version;
-    }
-
-    /**
-     * @return string
-     *
-     * @since Method available since Release 4.8.13
-     */
-    public static function series()
-    {
-        if (strpos(self::id(), '-')) {
-            $tmp     = explode('-', self::id());
-            $version = $tmp[0];
-        } else {
-            $version = self::id();
-        }
-
-        return implode('.', array_slice(explode('.', $version), 0, 2));
     }
 
     /**

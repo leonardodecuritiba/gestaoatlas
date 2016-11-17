@@ -13,6 +13,11 @@
  */
 class Framework_ConstraintTest extends PHPUnit_Framework_TestCase
 {
+    public static function staticCallbackReturningTrue()
+    {
+        return true;
+    }
+
     /**
      * @covers PHPUnit_Framework_Constraint_ArrayHasKey
      * @covers PHPUnit_Framework_Assert::arrayHasKey
@@ -893,6 +898,18 @@ EOF
         }
 
         $this->fail();
+    }
+
+    /**
+     * Removes spaces in front of newlines
+     *
+     * @param string $string
+     *
+     * @return string
+     */
+    private function trimnl($string)
+    {
+        return preg_replace('/[ ]*\n/', "\n", $string);
     }
 
     /**
@@ -1779,11 +1796,6 @@ EOF
     }
 
     public function callbackReturningTrue()
-    {
-        return true;
-    }
-
-    public static function staticCallbackReturningTrue()
     {
         return true;
     }
@@ -3473,17 +3485,5 @@ EOF
         }
 
         $this->fail();
-    }
-
-    /**
-     * Removes spaces in front of newlines
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    private function trimnl($string)
-    {
-        return preg_replace('/[ ]*\n/', "\n", $string);
     }
 }

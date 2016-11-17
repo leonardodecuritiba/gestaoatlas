@@ -33,6 +33,20 @@ class PHPUnit_Framework_Constraint_IsInstanceOf extends PHPUnit_Framework_Constr
     }
 
     /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return sprintf(
+            'is instance of %s "%s"',
+            $this->getType(),
+            $this->className
+        );
+    }
+
+    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -60,20 +74,6 @@ class PHPUnit_Framework_Constraint_IsInstanceOf extends PHPUnit_Framework_Constr
         return sprintf(
             '%s is an instance of %s "%s"',
             $this->exporter->shortenedExport($other),
-            $this->getType(),
-            $this->className
-        );
-    }
-
-    /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return sprintf(
-            'is instance of %s "%s"',
             $this->getType(),
             $this->className
         );

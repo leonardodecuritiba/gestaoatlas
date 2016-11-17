@@ -35,6 +35,16 @@ class PHPUnit_Framework_Constraint_Callback extends PHPUnit_Framework_Constraint
     }
 
     /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'is accepted by specified callback';
+    }
+
+    /**
      * Evaluates the constraint for parameter $value. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -45,15 +55,5 @@ class PHPUnit_Framework_Constraint_Callback extends PHPUnit_Framework_Constraint
     protected function matches($other)
     {
         return call_user_func($this->callback, $other);
-    }
-
-    /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'is accepted by specified callback';
     }
 }

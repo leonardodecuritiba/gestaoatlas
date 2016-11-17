@@ -47,17 +47,6 @@ class PHPUnit_Extensions_TestDecorator extends PHPUnit_Framework_Assert implemen
     }
 
     /**
-     * Runs the test and collects the
-     * result in a TestResult.
-     *
-     * @param PHPUnit_Framework_TestResult $result
-     */
-    public function basicRun(PHPUnit_Framework_TestResult $result)
-    {
-        $this->test->run($result);
-    }
-
-    /**
      * Counts the number of test cases that
      * will be run by this test.
      *
@@ -66,16 +55,6 @@ class PHPUnit_Extensions_TestDecorator extends PHPUnit_Framework_Assert implemen
     public function count()
     {
         return count($this->test);
-    }
-
-    /**
-     * Creates a default TestResult object.
-     *
-     * @return PHPUnit_Framework_TestResult
-     */
-    protected function createResult()
-    {
-        return new PHPUnit_Framework_TestResult;
     }
 
     /**
@@ -105,5 +84,26 @@ class PHPUnit_Extensions_TestDecorator extends PHPUnit_Framework_Assert implemen
         $this->basicRun($result);
 
         return $result;
+    }
+
+    /**
+     * Creates a default TestResult object.
+     *
+     * @return PHPUnit_Framework_TestResult
+     */
+    protected function createResult()
+    {
+        return new PHPUnit_Framework_TestResult;
+    }
+
+    /**
+     * Runs the test and collects the
+     * result in a TestResult.
+     *
+     * @param PHPUnit_Framework_TestResult $result
+     */
+    public function basicRun(PHPUnit_Framework_TestResult $result)
+    {
+        $this->test->run($result);
     }
 }

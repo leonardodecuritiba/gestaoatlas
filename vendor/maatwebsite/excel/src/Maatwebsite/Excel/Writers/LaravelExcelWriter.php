@@ -41,43 +41,36 @@ class LaravelExcelWriter {
      * @var \PHPExcel
      */
     public $excel;
-
-    /**
-     * Laravel response
-     * @var Response
-     */
-    protected $response;
-
     /**
      * Spreadsheet writer
      * @var object
      */
     public $writer;
-
-    /**
-     * Excel sheet
-     * @var LaravelExcelWorksheet
-     */
-    protected $sheet;
-
     /**
      * Parser
      * @var ViewParser
      */
     public $parser;
-
     /**
      * Default extension
      * @var string
      */
     public $ext = 'xls';
-
     /**
      * Path the file will be stored to
      * @var string
      */
     public $storagePath = 'exports';
-
+    /**
+     * Laravel response
+     * @var Response
+     */
+    protected $response;
+    /**
+     * Excel sheet
+     * @var LaravelExcelWorksheet
+     */
+    protected $sheet;
     /**
      * Header Content-type
      * @var string
@@ -118,6 +111,24 @@ class LaravelExcelWriter {
     }
 
     /**
+     * Reset the writer
+     * @return void
+     */
+    protected function _reset()
+    {
+        $this->excel->disconnectWorksheets();
+    }
+
+    /**
+     * Get the title
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
      * Set the spreadsheet title
      * @param string $title
      * @return  LaravelExcelWriter
@@ -131,6 +142,15 @@ class LaravelExcelWriter {
     }
 
     /**
+     * Get the title
+     * @return string
+     */
+    public function getFileName()
+    {
+        return $this->filename;
+    }
+
+    /**
      * Set the filename
      * @param  $name
      * @return $this
@@ -140,24 +160,6 @@ class LaravelExcelWriter {
         $this->filename = $name;
 
         return $this;
-    }
-
-    /**
-     * Get the title
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * Get the title
-     * @return string
-     */
-    public function getFileName()
-    {
-        return $this->filename;
     }
 
     /**
@@ -178,6 +180,19 @@ class LaravelExcelWriter {
         $this->parser->setMergeData($mergeData);
 
         return $this;
+    }
+
+    /**
+     * Get the view parser
+     * @return ViewParser
+     */
+    public function getParser()
+    {
+        // Init the parser
+        if (!$this->parser)
+            $this->parser = app('excel.parsers.view');
+
+        return $this->parser;
     }
 
     /**
@@ -247,35 +262,6 @@ class LaravelExcelWriter {
     }
 
     /**
-     * Export the spreadsheet
-     * @param string $ext
-     * @param array  $headers
-     * @throws LaravelExcelException
-     */
-    public function export($ext = 'xls', Array $headers = array())
-    {
-        // Set the extension
-        $this->ext = $ext;
-
-        //Fix borders for merged cells
-        foreach($this->getAllSheets() as $sheet){
-
-            foreach($sheet->getMergeCells() as $cells){
-
-                $style = $sheet->getStyle(explode(':', $cells)[0]);
-
-                $sheet->duplicateStyle($style, $cells);
-            }
-        }
-
-        // Render the file
-        $this->_render();
-
-        // Download the file
-        $this->_download($headers);
-    }
-
-    /**
      * Convert and existing file to newly requested extension
      * @param       $ext
      * @param array $headers
@@ -286,22 +272,12 @@ class LaravelExcelWriter {
     }
 
     /**
-     * Export and download the spreadsheet
-     * @param  string $ext
-     * @param array   $headers
-     */
-    public function download($ext = 'xls', Array $headers = array())
-    {
-        $this->export($ext, $headers);
-    }
-
-    /**
-     * Return the spreadsheet file as a string
-     * @param  string $ext
-     * @return string
+     * Export the spreadsheet
+     * @param string $ext
+     * @param array $headers
      * @throws LaravelExcelException
      */
-    public function string($ext = 'xls')
+    public function export($ext = 'xls', Array $headers = array())
     {
         // Set the extension
         $this->ext = $ext;
@@ -309,111 +285,8 @@ class LaravelExcelWriter {
         // Render the file
         $this->_render();
 
-        // Check if writer isset
-        if (!$this->writer)
-            throw new LaravelExcelException('[ERROR] No writer was set.');
-
-        //Capture the content as a string and return it
-        ob_start();
-
-        $this->writer->save('php://output');
-
-        return ob_get_clean();
-    }
-
-    /**
-     * Download a file
-     * @param array $headers
-     * @throws LaravelExcelException
-     */
-    protected function _download(Array $headers = array())
-    {
-        // Set the headers
-        $this->_setHeaders(
-            $headers,
-            array(
-                'Content-Type'        => $this->contentType,
-                'Content-Disposition' => 'attachment; filename="' . $this->filename . '.' . $this->ext . '"',
-                'Expires'             => 'Mon, 26 Jul 1997 05:00:00 GMT', // Date in the past
-                'Last-Modified'       => Carbon::now()->format('D, d M Y H:i:s'),
-                'Cache-Control'       => 'cache, must-revalidate',
-                'Pragma'              => 'public'
-            )
-        );
-
-        // Check if writer isset
-        if (!$this->writer)
-            throw new LaravelExcelException('[ERROR] No writer was set.');
-
-
-        // Download
-        $this->writer->save('php://output');
-
-        // End the script to prevent corrupted xlsx files
-        exit;
-    }
-
-    /**
-     * Store the excel file to the server
-     * @param  string  $ext
-     * @param  boolean $path
-     * @param  boolean $returnInfo
-     * @return LaravelExcelWriter
-     */
-    public function store($ext = 'xls', $path = false, $returnInfo = false)
-    {
-        // Set the storage path
-        $this->_setStoragePath($path);
-
-        // Set the extension
-        $this->ext = $ext;
-
-        // Render the XLS
-        $this->_render();
-
-        // Set the storage path and file
-        $toStore = $this->storagePath . '/' . $this->filename . '.' . $this->ext;
-
-        // Save the file to specified location
-        $this->writer->save($toStore);
-
-        // Return file info
-        if ($this->returnInfo($returnInfo))
-        {
-            // Send back information about the stored file
-            return array(
-                'full'  => $toStore,
-                'path'  => $this->storagePath,
-                'file'  => $this->filename . '.' . $this->ext,
-                'title' => $this->filename,
-                'ext'   => $this->ext
-            );
-        }
-
-        // Return itself
-        return $this;
-    }
-
-    /**
-     * Check if we want to return info or itself
-     * @param  boolean $returnInfo
-     * @return boolean
-     */
-    public function returnInfo($returnInfo = false)
-    {
-        return $returnInfo ? $returnInfo : Config::get('excel.export.store.returnInfo', false);
-    }
-
-    /**
-     *  Store the excel file to the server
-     * @param str|string $ext  The file extension
-     * @param bool|str   $path The save path
-     * @param bool       $returnInfo
-     * @return LaravelExcelWriter
-     */
-    public function save($ext = 'xls', $path = false, $returnInfo = false)
-    {
-        return $this->store($ext, $path, $returnInfo);
+        // Download the file
+        $this->_download($headers);
     }
 
     /**
@@ -423,6 +296,17 @@ class LaravelExcelWriter {
      */
     protected function _render()
     {
+        //Fix borders for merged cells
+        foreach ($this->getAllSheets() as $sheet) {
+
+            foreach ($sheet->getMergeCells() as $cells) {
+
+                $style = $sheet->getStyle(explode(':', $cells)[0]);
+
+                $sheet->duplicateStyle($style, $cells);
+            }
+        }
+
         // There should be enough sheets to continue rendering
         if ($this->excel->getSheetCount() < 0)
             throw new LaravelExcelException('[ERROR] Aborting spreadsheet render: no sheets were created.');
@@ -435,55 +319,6 @@ class LaravelExcelWriter {
 
         // File has been rendered
         $this->rendered = true;
-    }
-
-    /**
-     * Get the view parser
-     * @return PHPExcel
-     */
-    public function getExcel()
-    {
-        return $this->excel;
-    }
-
-    /**
-     * Get the view parser
-     * @return ViewParser
-     */
-    public function getParser()
-    {
-        // Init the parser
-        if (!$this->parser)
-            $this->parser = app('excel.parsers.view');
-
-        return $this->parser;
-    }
-
-    /**
-     * Get the sheet
-     * @return LaravelExcelWorksheet
-     */
-    public function getSheet()
-    {
-        return $this->sheet;
-    }
-
-    /**
-     * Set attributes
-     * @param string $setter
-     * @param array  $params
-     */
-    protected function _setAttribute($setter, $params)
-    {
-        // Get the key
-        $key = lcfirst(str_replace('set', '', $setter));
-
-        // If is an allowed property
-        if ($this->excel->isChangeableProperty($setter))
-        {
-            // Set the properties
-            call_user_func_array(array($this->excel->getProperties(), $setter), $params);
-        }
     }
 
     /**
@@ -562,6 +397,38 @@ class LaravelExcelWriter {
     }
 
     /**
+     * Download a file
+     * @param array $headers
+     * @throws LaravelExcelException
+     */
+    protected function _download(Array $headers = array())
+    {
+        // Set the headers
+        $this->_setHeaders(
+            $headers,
+            array(
+                'Content-Type' => $this->contentType,
+                'Content-Disposition' => 'attachment; filename="' . $this->filename . '.' . $this->ext . '"',
+                'Expires' => 'Mon, 26 Jul 1997 05:00:00 GMT', // Date in the past
+                'Last-Modified' => Carbon::now()->format('D, d M Y H:i:s'),
+                'Cache-Control' => 'cache, must-revalidate',
+                'Pragma' => 'public'
+            )
+        );
+
+        // Check if writer isset
+        if (!$this->writer)
+            throw new LaravelExcelException('[ERROR] No writer was set.');
+
+
+        // Download
+        $this->writer->save('php://output');
+
+        // End the script to prevent corrupted xlsx files
+        exit;
+    }
+
+    /**
      * Set the headers
      * @param $headers
      * @throws LaravelExcelException
@@ -577,6 +444,94 @@ class LaravelExcelWriter {
         {
             header($header . ': ' . $value);
         }
+    }
+
+    /**
+     * Export and download the spreadsheet
+     * @param  string $ext
+     * @param array $headers
+     */
+    public function download($ext = 'xls', Array $headers = array())
+    {
+        $this->export($ext, $headers);
+    }
+
+    /**
+     * Return the spreadsheet file as a string
+     * @param  string $ext
+     * @return string
+     * @throws LaravelExcelException
+     */
+    public function string($ext = 'xls')
+    {
+        // Set the extension
+        $this->ext = $ext;
+
+        // Render the file
+        $this->_render();
+
+        // Check if writer isset
+        if (!$this->writer)
+            throw new LaravelExcelException('[ERROR] No writer was set.');
+
+        //Capture the content as a string and return it
+        ob_start();
+
+        $this->writer->save('php://output');
+
+        return ob_get_clean();
+    }
+
+    /**
+     *  Store the excel file to the server
+     * @param str|string $ext The file extension
+     * @param bool|str $path The save path
+     * @param bool $returnInfo
+     * @return LaravelExcelWriter
+     */
+    public function save($ext = 'xls', $path = false, $returnInfo = false)
+    {
+        return $this->store($ext, $path, $returnInfo);
+    }
+
+    /**
+     * Store the excel file to the server
+     * @param  string $ext
+     * @param  boolean $path
+     * @param  boolean $returnInfo
+     * @return LaravelExcelWriter
+     */
+    public function store($ext = 'xls', $path = false, $returnInfo = false)
+    {
+        // Set the storage path
+        $this->_setStoragePath($path);
+
+        // Set the extension
+        $this->ext = $ext;
+
+        // Render the XLS
+        $this->_render();
+
+        // Set the storage path and file
+        $toStore = $this->storagePath . '/' . $this->filename . '.' . $this->ext;
+
+        // Save the file to specified location
+        $this->writer->save($toStore);
+
+        // Return file info
+        if ($this->returnInfo($returnInfo)) {
+            // Send back information about the stored file
+            return array(
+                'full' => $toStore,
+                'path' => $this->storagePath,
+                'file' => $this->filename . '.' . $this->ext,
+                'title' => $this->filename,
+                'ext' => $this->ext
+            );
+        }
+
+        // Return itself
+        return $this;
     }
 
     /**
@@ -603,12 +558,31 @@ class LaravelExcelWriter {
     }
 
     /**
-     * Reset the writer
-     * @return void
+     * Check if we want to return info or itself
+     * @param  boolean $returnInfo
+     * @return boolean
      */
-    protected function _reset()
+    public function returnInfo($returnInfo = false)
     {
-        $this->excel->disconnectWorksheets();
+        return $returnInfo ? $returnInfo : Config::get('excel.export.store.returnInfo', false);
+    }
+
+    /**
+     * Get the view parser
+     * @return PHPExcel
+     */
+    public function getExcel()
+    {
+        return $this->excel;
+    }
+
+    /**
+     * Get the sheet
+     * @return LaravelExcelWorksheet
+     */
+    public function getSheet()
+    {
+        return $this->sheet;
     }
 
     /**
@@ -638,5 +612,22 @@ class LaravelExcelWriter {
         }
 
         throw new LaravelExcelException('[ERROR] Writer method [' . $method . '] does not exist.');
+    }
+
+    /**
+     * Set attributes
+     * @param string $setter
+     * @param array $params
+     */
+    protected function _setAttribute($setter, $params)
+    {
+        // Get the key
+        $key = lcfirst(str_replace('set', '', $setter));
+
+        // If is an allowed property
+        if ($this->excel->isChangeableProperty($setter)) {
+            // Set the properties
+            call_user_func_array(array($this->excel->getProperties(), $setter), $params);
+        }
     }
 }

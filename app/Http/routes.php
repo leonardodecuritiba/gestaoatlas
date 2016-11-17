@@ -71,7 +71,10 @@ Route::group(['middleware' => ['auth']], function() {
             Route::post('pecakit_remover/kits/{id}', 'KitsController@pecaKitDestroy')->name('kits.pecakit.destroy');
 
 
+    Route::get('getSelosDisponiveis', 'AjaxController@getSelosDisponiveis')->name('getSelosDisponiveis');
+    Route::get('getLacresDisponiveis', 'AjaxController@getLacresDisponiveis')->name('getLacresDisponiveis');
     Route::get('get_ajaxSelect2', 'AjaxController@ajaxSelect2')->name('get_ajaxSelect2');
+
     Route::get('busca/ordem_servicos', 'OrdemServicoController@buscaClientes')->name('ordem_servicos.busca');
     Route::resource('ordem_servicos', 'OrdemServicoController');
         Route::get('ordem_servicos/abrir/{clienteid}', 'OrdemServicoController@abrir')->name('ordem_servicos.abrir'); //Abrir O.S
@@ -85,9 +88,14 @@ Route::group(['middleware' => ['auth']], function() {
 
         Route::post('aparelho_manutencao/{idaparelho_manutencao}/update', 'OrdemServicoController@updateAparelhoManutencao')->name('aparelho_manutencao.update');
 
+
+    // REMOVER AQUI
     Route::resource('servico_prestados', 'ServicosPrestadosController');
     Route::resource('pecas_utilizadas', 'PecasUtilizadasController');
     Route::resource('kits_utilizados', 'KitsUtilizadosController');
+    //ATÉ AQUI
+    Route::post('ordem_servicos/add_insumos/{idordem_servico}', 'OrdemServicoController@add_insumos')->name('ordem_servicos.add_insumos');
+
 
     Route::get('teste', 'OrdemServicoController@teste')->name('teste');
 

@@ -1,14 +1,6 @@
 <?php
 class DataProviderDebugTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @dataProvider provider
-     */
-    public function testProvider()
-    {
-        $this->assertTrue(true);
-    }
-
     public static function provider()
     {
         $obj2      = new \stdClass();
@@ -44,5 +36,13 @@ class DataProviderDebugTest extends PHPUnit_Framework_TestCase
             array(chr(0) . chr(1) . chr(2) . chr(3) . chr(4) . chr(5), implode('', array_map('chr', range(0x0e, 0x1f)))),
             array(chr(0x00) . chr(0x09))
         );
+    }
+
+    /**
+     * @dataProvider provider
+     */
+    public function testProvider()
+    {
+        $this->assertTrue(true);
     }
 }

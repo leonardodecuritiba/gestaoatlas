@@ -25,11 +25,6 @@ class PHP_Token_IncludeTest extends PHPUnit_Framework_TestCase
 {
     protected $ts;
 
-    protected function setUp()
-    {
-        $this->ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source3.php');
-    }
-
     /**
      * @covers PHP_Token_Includes::getName
      * @covers PHP_Token_Includes::getType
@@ -69,5 +64,10 @@ class PHP_Token_IncludeTest extends PHPUnit_Framework_TestCase
           array('test4.php'),
           $this->ts->getIncludes(TRUE, 'require_once')
         );
+    }
+
+    protected function setUp()
+    {
+        $this->ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source3.php');
     }
 }

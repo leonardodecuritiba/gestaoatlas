@@ -28,6 +28,17 @@ class PHPUnit_Framework_Constraint_Count extends PHPUnit_Framework_Constraint
     }
 
     /**
+     * @return string
+     */
+    public function toString()
+    {
+        return sprintf(
+            'count matches %d',
+            $this->expectedCount
+        );
+    }
+
+    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -87,17 +98,6 @@ class PHPUnit_Framework_Constraint_Count extends PHPUnit_Framework_Constraint
         return sprintf(
             'actual size %d matches expected size %d',
             $this->getCountOf($other),
-            $this->expectedCount
-        );
-    }
-
-    /**
-     * @return string
-     */
-    public function toString()
-    {
-        return sprintf(
-            'count matches %d',
             $this->expectedCount
         );
     }

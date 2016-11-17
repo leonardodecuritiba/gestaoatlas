@@ -34,37 +34,31 @@ class Client extends BaseClient
     private $headers = array();
     private $auth = null;
 
-    public function setClient(GuzzleClientInterface $client)
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
-    public function getClient()
-    {
-        if (!$this->client) {
-            $this->client = new GuzzleClient(array('defaults' => array('allow_redirects' => false, 'cookies' => true)));
-        }
-
-        return $this->client;
-    }
-
     public function setHeader($name, $value)
     {
-        $this->headers[$name] = $value;
+        $this->headers[strtolower($name)] = $value;
 
         return $this;
     }
 
     public function removeHeader($name)
     {
-        unset($this->headers[$name]);
+        unset($this->headers[strtolower($name)]);
     }
 
-    public function setAuth($user, $password = '', $type = 'basic')
+    /**
+     * {@inheritdoc}
+     */
+    public function restart()
     {
-        $this->auth = array($user, $password, $type);
+        parent::restart();
+        $this->resetAuth()
+            ->resetHeaders();
+    }
+
+    public function resetHeaders()
+    {
+        $this->headers = array();
 
         return $this;
     }
@@ -72,6 +66,13 @@ class Client extends BaseClient
     public function resetAuth()
     {
         $this->auth = null;
+
+        return $this;
+    }
+
+    public function setAuth($user, $password = '', $type = 'basic')
+    {
+        $this->auth = array($user, $password, $type);
 
         return $this;
     }
@@ -146,6 +147,24 @@ class Client extends BaseClient
         return $this->createResponse($response);
     }
 
+    public function addPostFields(array $formParams, array &$multipart, $arrayName = '')
+    {
+        foreach ($formParams as $name => $value) {
+            if (!empty($arrayName)) {
+                $name = $arrayName . '[' . $name . ']';
+            }
+
+            if (is_array($value)) {
+                $this->addPostFields($value, $multipart, $name);
+            } else {
+                $multipart[] = [
+                    'name' => $name,
+                    'contents' => $value,
+                ];
+            }
+        }
+    }
+
     protected function addPostFiles(array $files, array &$multipart, $arrayName = '')
     {
         if (empty($files)) {
@@ -183,22 +202,20 @@ class Client extends BaseClient
         }
     }
 
-    public function addPostFields(array $formParams, array &$multipart, $arrayName = '')
+    public function getClient()
     {
-        foreach ($formParams as $name => $value) {
-            if (!empty($arrayName)) {
-                $name = $arrayName.'['.$name.']';
-            }
-
-            if (is_array($value)) {
-                $this->addPostFields($value, $multipart, $name);
-            } else {
-                $multipart[] = [
-                    'name' => $name,
-                    'contents' => $value,
-                ];
-            }
+        if (!$this->client) {
+            $this->client = new GuzzleClient(array('defaults' => array('allow_redirects' => false, 'cookies' => true)));
         }
+
+        return $this->client;
+    }
+
+    public function setClient(GuzzleClientInterface $client)
+    {
+        $this->client = $client;
+
+        return $this;
     }
 
     protected function createResponse(ResponseInterface $response)

@@ -53,8 +53,8 @@ class ClassLoader
 
     private $useIncludePath = false;
     private $classMap = array();
-
     private $classMapAuthoritative = false;
+    private $missingClasses = array();
 
     public function getPrefixes()
     {
@@ -230,16 +230,6 @@ class ClassLoader
     }
 
     /**
-     * Turns on searching the include path for class files.
-     *
-     * @param bool $useIncludePath
-     */
-    public function setUseIncludePath($useIncludePath)
-    {
-        $this->useIncludePath = $useIncludePath;
-    }
-
-    /**
      * Can be used to check if the autoloader uses the include path to check
      * for classes.
      *
@@ -251,14 +241,13 @@ class ClassLoader
     }
 
     /**
-     * Turns off searching the prefix and fallback directories for classes
-     * that have not been registered with the class map.
+     * Turns on searching the include path for class files.
      *
-     * @param bool $classMapAuthoritative
+     * @param bool $useIncludePath
      */
-    public function setClassMapAuthoritative($classMapAuthoritative)
+    public function setUseIncludePath($useIncludePath)
     {
-        $this->classMapAuthoritative = $classMapAuthoritative;
+        $this->useIncludePath = $useIncludePath;
     }
 
     /**
@@ -269,6 +258,17 @@ class ClassLoader
     public function isClassMapAuthoritative()
     {
         return $this->classMapAuthoritative;
+    }
+
+    /**
+     * Turns off searching the prefix and fallback directories for classes
+     * that have not been registered with the class map.
+     *
+     * @param bool $classMapAuthoritative
+     */
+    public function setClassMapAuthoritative($classMapAuthoritative)
+    {
+        $this->classMapAuthoritative = $classMapAuthoritative;
     }
 
     /**
@@ -322,20 +322,20 @@ class ClassLoader
         if (isset($this->classMap[$class])) {
             return $this->classMap[$class];
         }
-        if ($this->classMapAuthoritative) {
+        if ($this->classMapAuthoritative || isset($this->missingClasses[$class])) {
             return false;
         }
 
         $file = $this->findFileWithExtension($class, '.php');
 
         // Search for Hack files if we are running on HHVM
-        if ($file === null && defined('HHVM_VERSION')) {
+        if (false === $file && defined('HHVM_VERSION')) {
             $file = $this->findFileWithExtension($class, '.hh');
         }
 
-        if ($file === null) {
+        if (false === $file) {
             // Remember that this class does not exist.
-            return $this->classMap[$class] = false;
+            $this->missingClasses[$class] = true;
         }
 
         return $file;
@@ -399,6 +399,8 @@ class ClassLoader
         if ($this->useIncludePath && $file = stream_resolve_include_path($logicalPathPsr0)) {
             return $file;
         }
+
+        return false;
     }
 }
 

@@ -69,44 +69,6 @@ class PHPUnit_Util_Getopt
         return array($opts, $non_opts);
     }
 
-    protected static function parseShortOption($arg, $short_options, &$opts, &$args)
-    {
-        $argLen = strlen($arg);
-
-        for ($i = 0; $i < $argLen; $i++) {
-            $opt     = $arg[$i];
-            $opt_arg = null;
-
-            if (($spec = strstr($short_options, $opt)) === false ||
-                $arg[$i] == ':') {
-                throw new PHPUnit_Framework_Exception(
-                    "unrecognized option -- $opt"
-                );
-            }
-
-            if (strlen($spec) > 1 && $spec[1] == ':') {
-                if (strlen($spec) > 2 && $spec[2] == ':') {
-                    if ($i + 1 < $argLen) {
-                        $opts[] = array($opt, substr($arg, $i + 1));
-                        break;
-                    }
-                } else {
-                    if ($i + 1 < $argLen) {
-                        $opts[] = array($opt, substr($arg, $i + 1));
-                        break;
-                    } elseif (list(, $opt_arg) = each($args)) {
-                    } else {
-                        throw new PHPUnit_Framework_Exception(
-                            "option requires an argument -- $opt"
-                        );
-                    }
-                }
-            }
-
-            $opts[] = array($opt, $opt_arg);
-        }
-    }
-
     protected static function parseLongOption($arg, $long_options, &$opts, &$args)
     {
         $count   = count($long_options);
@@ -159,5 +121,44 @@ class PHPUnit_Util_Getopt
         }
 
         throw new PHPUnit_Framework_Exception("unrecognized option --$opt");
+    }
+
+    protected static function parseShortOption($arg, $short_options, &$opts, &$args)
+    {
+        $argLen = strlen($arg);
+
+        for ($i = 0; $i < $argLen; $i++) {
+            $opt = $arg[$i];
+            $opt_arg = null;
+
+            if (($spec = strstr($short_options, $opt)) === false ||
+                $arg[$i] == ':'
+            ) {
+                throw new PHPUnit_Framework_Exception(
+                    "unrecognized option -- $opt"
+                );
+            }
+
+            if (strlen($spec) > 1 && $spec[1] == ':') {
+                if (strlen($spec) > 2 && $spec[2] == ':') {
+                    if ($i + 1 < $argLen) {
+                        $opts[] = array($opt, substr($arg, $i + 1));
+                        break;
+                    }
+                } else {
+                    if ($i + 1 < $argLen) {
+                        $opts[] = array($opt, substr($arg, $i + 1));
+                        break;
+                    } elseif (list(, $opt_arg) = each($args)) {
+                    } else {
+                        throw new PHPUnit_Framework_Exception(
+                            "option requires an argument -- $opt"
+                        );
+                    }
+                }
+            }
+
+            $opts[] = array($opt, $opt_arg);
+        }
     }
 }

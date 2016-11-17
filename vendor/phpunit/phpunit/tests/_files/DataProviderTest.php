@@ -1,14 +1,6 @@
 <?php
 class DataProviderTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @dataProvider providerMethod
-     */
-    public function testAdd($a, $b, $c)
-    {
-        $this->assertEquals($c, $a + $b);
-    }
-
     public static function providerMethod()
     {
         return array(
@@ -17,5 +9,13 @@ class DataProviderTest extends PHPUnit_Framework_TestCase
           array(1, 1, 3),
           array(1, 0, 1)
         );
+    }
+
+    /**
+     * @dataProvider providerMethod
+     */
+    public function testAdd($a, $b, $c)
+    {
+        $this->assertEquals($c, $a + $b);
     }
 }

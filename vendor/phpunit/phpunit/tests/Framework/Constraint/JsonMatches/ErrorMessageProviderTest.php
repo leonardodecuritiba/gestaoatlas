@@ -13,33 +13,6 @@
  */
 class Framework_Constraint_JsonMatches_ErrorMessageProviderTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @dataProvider translateTypeToPrefixDataprovider
-     * @covers PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::translateTypeToPrefix
-     */
-    public function testTranslateTypeToPrefix($expected, $type)
-    {
-        $this->assertEquals(
-            $expected,
-            PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::translateTypeToPrefix($type)
-        );
-    }
-
-    /**
-     * @dataProvider determineJsonErrorDataprovider
-     * @covers PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::determineJsonError
-     */
-    public function testDetermineJsonError($expected, $error, $prefix)
-    {
-        $this->assertEquals(
-            $expected,
-            PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::determineJsonError(
-                $error,
-                $prefix
-            )
-        );
-    }
-
     public static function determineJsonErrorDataprovider()
     {
         return array(
@@ -78,6 +51,33 @@ class Framework_Constraint_JsonMatches_ErrorMessageProviderTest extends PHPUnit_
             'expected' => array('Expected value JSON decode error - ', 'expected'),
             'actual'   => array('Actual value JSON decode error - ', 'actual'),
             'default'  => array('', ''),
+        );
+    }
+
+    /**
+     * @dataProvider translateTypeToPrefixDataprovider
+     * @covers       PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::translateTypeToPrefix
+     */
+    public function testTranslateTypeToPrefix($expected, $type)
+    {
+        $this->assertEquals(
+            $expected,
+            PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::translateTypeToPrefix($type)
+        );
+    }
+
+    /**
+     * @dataProvider determineJsonErrorDataprovider
+     * @covers       PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::determineJsonError
+     */
+    public function testDetermineJsonError($expected, $error, $prefix)
+    {
+        $this->assertEquals(
+            $expected,
+            PHPUnit_Framework_Constraint_JsonMatches_ErrorMessageProvider::determineJsonError(
+                $error,
+                $prefix
+            )
         );
     }
 }

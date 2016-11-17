@@ -4,6 +4,7 @@
     <section class="x_panel">
         <div class="x_title">
             <h2>{{ucfirst($l)}}s encontrados</h2>
+            @role('admin')
             <ul class="nav navbar-right panel_toolbox">
                 <li>
                     <button class="btn btn-primary add"
@@ -13,6 +14,7 @@
                         <i class="fa fa-plus-circle fa-2"></i> Lançar {{ucfirst($l).'s'}}</button>
                 </li>
             </ul>
+            @endrole
             <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -26,7 +28,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Numeracao</th>
-                                <th>Ações</th>
+                                <th>Uso</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -34,9 +36,7 @@
                                 <tr>
                                     <td>{{$sel->{'id'.$l} }}</td>
                                     <td>{{$sel->numeracao}}</td>
-                                    <td>
-                                        #
-                                    </td>
+                                    <td>{{($sel->used)?'Usado':'Disponível'}}</td>
                                 </tr>
                             @endforeach
                             </tbody>

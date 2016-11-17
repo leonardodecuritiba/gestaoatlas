@@ -51,6 +51,15 @@ class Cache {
     }
 
     /**
+     * Check if caching is enabled
+     * @return boolean
+     */
+    public function isEnabled()
+    {
+        return Config::get($this->configName . '.enable', true) ? true : false;
+    }
+
+    /**
      * Init the cache
      * @return void
      */
@@ -113,14 +122,5 @@ class Cache {
 
                 break;
         }
-    }
-
-    /**
-     * Check if caching is enabled
-     * @return boolean
-     */
-    public function isEnabled()
-    {
-        return Config::get($this->configName . '.enable', true) ? true : false;
     }
 }

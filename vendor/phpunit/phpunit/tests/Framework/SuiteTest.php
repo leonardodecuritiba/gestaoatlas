@@ -29,11 +29,6 @@ class Framework_SuiteTest extends PHPUnit_Framework_TestCase
 {
     protected $result;
 
-    protected function setUp()
-    {
-        $this->result = new PHPUnit_Framework_TestResult;
-    }
-
     public static function suite()
     {
         $suite = new PHPUnit_Framework_TestSuite;
@@ -238,5 +233,10 @@ class Framework_SuiteTest extends PHPUnit_Framework_TestCase
         $suite->addTestFile($dir . 'InheritanceB.php');
         $result = $suite->run();
         $this->assertEquals(2, count($result));
+    }
+
+    protected function setUp()
+    {
+        $this->result = new PHPUnit_Framework_TestResult;
     }
 }

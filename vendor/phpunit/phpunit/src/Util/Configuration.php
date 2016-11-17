@@ -160,13 +160,6 @@ class PHPUnit_Util_Configuration
     }
 
     /**
-     * @since  Method available since Release 3.4.0
-     */
-    final private function __clone()
-    {
-    }
-
-    /**
      * Returns a PHPUnit configuration object.
      *
      * @param string $filename
@@ -281,6 +274,143 @@ class PHPUnit_Util_Configuration
             )
           )
         );
+    }
+
+    /**
+     * @param string $value
+     * @param bool $default
+     *
+     * @return bool
+     *
+     * @since  Method available since Release 3.2.3
+     */
+    protected function getBoolean($value, $default)
+    {
+        if (strtolower($value) == 'false') {
+            return false;
+        } elseif (strtolower($value) == 'true') {
+            return true;
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return array
+     *
+     * @since  Method available since Release 3.2.3
+     */
+    protected function readFilterDirectories($query)
+    {
+        $directories = array();
+
+        foreach ($this->xpath->query($query) as $directory) {
+            $directoryPath = (string)$directory->textContent;
+
+            if (!$directoryPath) {
+                continue;
+            }
+
+            if ($directory->hasAttribute('prefix')) {
+                $prefix = (string)$directory->getAttribute('prefix');
+            } else {
+                $prefix = '';
+            }
+
+            if ($directory->hasAttribute('suffix')) {
+                $suffix = (string)$directory->getAttribute('suffix');
+            } else {
+                $suffix = '.php';
+            }
+
+            if ($directory->hasAttribute('group')) {
+                $group = (string)$directory->getAttribute('group');
+            } else {
+                $group = 'DEFAULT';
+            }
+
+            $directories[] = array(
+                'path' => $this->toAbsolutePath($directoryPath),
+                'prefix' => $prefix,
+                'suffix' => $suffix,
+                'group' => $group
+            );
+        }
+
+        return $directories;
+    }
+
+    /**
+     * @param string $path
+     * @param bool $useIncludePath
+     *
+     * @return string
+     *
+     * @since  Method available since Release 3.5.0
+     */
+    protected function toAbsolutePath($path, $useIncludePath = false)
+    {
+        $path = trim($path);
+
+        if ($path[0] === '/') {
+            return $path;
+        }
+
+        // Matches the following on Windows:
+        //  - \\NetworkComputer\Path
+        //  - \\.\D:
+        //  - \\.\c:
+        //  - C:\Windows
+        //  - C:\windows
+        //  - C:/windows
+        //  - c:/windows
+        if (defined('PHP_WINDOWS_VERSION_BUILD') &&
+            ($path[0] === '\\' ||
+                (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))))
+        ) {
+            return $path;
+        }
+
+        // Stream
+        if (strpos($path, '://') !== false) {
+            return $path;
+        }
+
+        $file = dirname($this->filename) . DIRECTORY_SEPARATOR . $path;
+
+        if ($useIncludePath && !file_exists($file)) {
+            $includePathFile = stream_resolve_include_path($path);
+
+            if ($includePathFile) {
+                $file = $includePathFile;
+            }
+        }
+
+        return $file;
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return array
+     *
+     * @since  Method available since Release 3.2.3
+     */
+    protected function readFilterFiles($query)
+    {
+        $files = array();
+
+        foreach ($this->xpath->query($query) as $file) {
+            $filePath = (string)$file->textContent;
+
+            if ($filePath) {
+                $files[] = $this->toAbsolutePath($filePath);
+            }
+        }
+
+        return $files;
     }
 
     /**
@@ -425,59 +555,20 @@ class PHPUnit_Util_Configuration
     }
 
     /**
-     * Returns the PHP configuration.
+     * @param string $value
+     * @param bool $default
      *
-     * @return array
+     * @return bool
      *
-     * @since  Method available since Release 3.2.1
+     * @since  Method available since Release 3.6.0
      */
-    public function getPHPConfiguration()
+    protected function getInteger($value, $default)
     {
-        $result = array(
-          'include_path' => array(),
-          'ini'          => array(),
-          'const'        => array(),
-          'var'          => array(),
-          'env'          => array(),
-          'post'         => array(),
-          'get'          => array(),
-          'cookie'       => array(),
-          'server'       => array(),
-          'files'        => array(),
-          'request'      => array()
-        );
-
-        foreach ($this->xpath->query('php/includePath') as $includePath) {
-            $path = (string) $includePath->textContent;
-            if ($path) {
-                $result['include_path'][] = $this->toAbsolutePath($path);
-            }
+        if (is_numeric($value)) {
+            return (int)$value;
         }
 
-        foreach ($this->xpath->query('php/ini') as $ini) {
-            $name  = (string) $ini->getAttribute('name');
-            $value = (string) $ini->getAttribute('value');
-
-            $result['ini'][$name] = $value;
-        }
-
-        foreach ($this->xpath->query('php/const') as $const) {
-            $name  = (string) $const->getAttribute('name');
-            $value = (string) $const->getAttribute('value');
-
-            $result['const'][$name] = $this->getBoolean($value, $value);
-        }
-
-        foreach (array('var', 'env', 'post', 'get', 'cookie', 'server', 'files', 'request') as $array) {
-            foreach ($this->xpath->query('php/' . $array) as $var) {
-                $name  = (string) $var->getAttribute('name');
-                $value = (string) $var->getAttribute('value');
-
-                $result[$array][$name] = $this->getBoolean($value, $value);
-            }
-        }
-
-        return $result;
+        return $default;
     }
 
     /**
@@ -541,6 +632,62 @@ class PHPUnit_Util_Configuration
                 $_ENV[$name] = $value;
             }
         }
+    }
+
+    /**
+     * Returns the PHP configuration.
+     *
+     * @return array
+     *
+     * @since  Method available since Release 3.2.1
+     */
+    public function getPHPConfiguration()
+    {
+        $result = array(
+            'include_path' => array(),
+            'ini' => array(),
+            'const' => array(),
+            'var' => array(),
+            'env' => array(),
+            'post' => array(),
+            'get' => array(),
+            'cookie' => array(),
+            'server' => array(),
+            'files' => array(),
+            'request' => array()
+        );
+
+        foreach ($this->xpath->query('php/includePath') as $includePath) {
+            $path = (string)$includePath->textContent;
+            if ($path) {
+                $result['include_path'][] = $this->toAbsolutePath($path);
+            }
+        }
+
+        foreach ($this->xpath->query('php/ini') as $ini) {
+            $name = (string)$ini->getAttribute('name');
+            $value = (string)$ini->getAttribute('value');
+
+            $result['ini'][$name] = $value;
+        }
+
+        foreach ($this->xpath->query('php/const') as $const) {
+            $name = (string)$const->getAttribute('name');
+            $value = (string)$const->getAttribute('value');
+
+            $result['const'][$name] = $this->getBoolean($value, $value);
+        }
+
+        foreach (array('var', 'env', 'post', 'get', 'cookie', 'server', 'files', 'request') as $array) {
+            foreach ($this->xpath->query('php/' . $array) as $var) {
+                $name = (string)$var->getAttribute('name');
+                $value = (string)$var->getAttribute('value');
+
+                $result[$array][$name] = $this->getBoolean($value, $value);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -1004,155 +1151,9 @@ class PHPUnit_Util_Configuration
     }
 
     /**
-     * @param string $value
-     * @param bool   $default
-     *
-     * @return bool
-     *
-     * @since  Method available since Release 3.2.3
+     * @since  Method available since Release 3.4.0
      */
-    protected function getBoolean($value, $default)
+    final private function __clone()
     {
-        if (strtolower($value) == 'false') {
-            return false;
-        } elseif (strtolower($value) == 'true') {
-            return true;
-        }
-
-        return $default;
-    }
-
-    /**
-     * @param string $value
-     * @param bool   $default
-     *
-     * @return bool
-     *
-     * @since  Method available since Release 3.6.0
-     */
-    protected function getInteger($value, $default)
-    {
-        if (is_numeric($value)) {
-            return (int) $value;
-        }
-
-        return $default;
-    }
-
-    /**
-     * @param string $query
-     *
-     * @return array
-     *
-     * @since  Method available since Release 3.2.3
-     */
-    protected function readFilterDirectories($query)
-    {
-        $directories = array();
-
-        foreach ($this->xpath->query($query) as $directory) {
-            $directoryPath = (string) $directory->textContent;
-
-            if (!$directoryPath) {
-                continue;
-            }
-
-            if ($directory->hasAttribute('prefix')) {
-                $prefix = (string) $directory->getAttribute('prefix');
-            } else {
-                $prefix = '';
-            }
-
-            if ($directory->hasAttribute('suffix')) {
-                $suffix = (string) $directory->getAttribute('suffix');
-            } else {
-                $suffix = '.php';
-            }
-
-            if ($directory->hasAttribute('group')) {
-                $group = (string) $directory->getAttribute('group');
-            } else {
-                $group = 'DEFAULT';
-            }
-
-            $directories[] = array(
-              'path'   => $this->toAbsolutePath($directoryPath),
-              'prefix' => $prefix,
-              'suffix' => $suffix,
-              'group'  => $group
-            );
-        }
-
-        return $directories;
-    }
-
-    /**
-     * @param string $query
-     *
-     * @return array
-     *
-     * @since  Method available since Release 3.2.3
-     */
-    protected function readFilterFiles($query)
-    {
-        $files = array();
-
-        foreach ($this->xpath->query($query) as $file) {
-            $filePath = (string) $file->textContent;
-
-            if ($filePath) {
-                $files[] = $this->toAbsolutePath($filePath);
-            }
-        }
-
-        return $files;
-    }
-
-    /**
-     * @param string $path
-     * @param bool   $useIncludePath
-     *
-     * @return string
-     *
-     * @since  Method available since Release 3.5.0
-     */
-    protected function toAbsolutePath($path, $useIncludePath = false)
-    {
-        $path = trim($path);
-
-        if ($path[0] === '/') {
-            return $path;
-        }
-
-        // Matches the following on Windows:
-        //  - \\NetworkComputer\Path
-        //  - \\.\D:
-        //  - \\.\c:
-        //  - C:\Windows
-        //  - C:\windows
-        //  - C:/windows
-        //  - c:/windows
-        if (defined('PHP_WINDOWS_VERSION_BUILD') &&
-            ($path[0] === '\\' ||
-            (strlen($path) >= 3 && preg_match('#^[A-Z]\:[/\\\]#i', substr($path, 0, 3))))) {
-            return $path;
-        }
-
-        // Stream
-        if (strpos($path, '://') !== false) {
-            return $path;
-        }
-
-        $file = dirname($this->filename) . DIRECTORY_SEPARATOR . $path;
-
-        if ($useIncludePath && !file_exists($file)) {
-            $includePathFile = stream_resolve_include_path($path);
-
-            if ($includePathFile) {
-                $file = $includePathFile;
-            }
-        }
-
-        return $file;
     }
 }

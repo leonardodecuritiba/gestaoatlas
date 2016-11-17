@@ -24,17 +24,6 @@ class PHP_Token_FunctionTest extends PHPUnit_Framework_TestCase
 {
     protected $functions;
 
-    protected function setUp()
-    {
-        $ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source.php');
-
-        foreach ($ts as $token) {
-            if ($token instanceof PHP_Token_FUNCTION) {
-                $this->functions[] = $token;
-            }
-        }
-    }
-
     /**
      * @covers PHP_Token_FUNCTION::getArguments
      */
@@ -142,5 +131,16 @@ class PHP_Token_FunctionTest extends PHPUnit_Framework_TestCase
           'm($a, array $b, array $c = array())',
           $i['i']['methods']['m']['signature']
         );
+    }
+
+    protected function setUp()
+    {
+        $ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source.php');
+
+        foreach ($ts as $token) {
+            if ($token instanceof PHP_Token_FUNCTION) {
+                $this->functions[] = $token;
+            }
+        }
     }
 }

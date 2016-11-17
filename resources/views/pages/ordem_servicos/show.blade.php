@@ -156,29 +156,21 @@
             });
         });
 
-        //seleção do lacre_afixado
+        //seleção do selos
         $(document).ready(function(){
             var remoteDataConfigSelo = {
                 width: 'resolve',
                 ajax: {
-                    url: "{{url('get_ajaxSelect2')}}",
+                    url: "{{url('getSelosDisponiveis')}}",
                     dataType: 'json',
                     delay: 250,
+
                     data: function (params) {
                         return {
                             value   : params.term, // search term
-                            field   : 'numeracao',
-                            table   : 'selos',
-                            pk      : 'idselo',
-                            fk      : 'idtecnico',
-                            id      : '{{$Colaborador->tecnico->idtecnico}}',
-                            action  : 'busca_por_fk_campo'
                         };
                     },
                     processResults: function (data) {
-                        // parse the results into the format expected by Select2.
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data
                         return {
                             results: data
                         };
@@ -192,24 +184,15 @@
             var remoteDataConfigLacres = {
                 width: 'resolve',
                 ajax: {
-                    url: "{{url('get_ajaxSelect2')}}",
+                    url: "{{url('getLacresDisponiveis')}}",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
                         return {
                             value   : params.term, // search term
-                            field   : 'numeracao',
-                            table   : 'lacres',
-                            pk      : 'idlacre',
-                            fk      : 'idtecnico',
-                            id      : '{{$Colaborador->tecnico->idtecnico}}',
-                            action  : 'busca_por_fk_campo'
                         };
                     },
                     processResults: function (data) {
-                        // parse the results into the format expected by Select2.
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data
                         return {
                             results: data
                         };

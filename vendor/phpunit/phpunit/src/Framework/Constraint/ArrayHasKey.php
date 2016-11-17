@@ -56,16 +56,6 @@ class PHPUnit_Framework_Constraint_ArrayHasKey extends PHPUnit_Framework_Constra
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'has the key ' . $this->exporter->export($this->key);
-    }
-
-    /**
      * Returns the description of the failure
      *
      * The beginning of failure messages is "Failed asserting that" in most
@@ -78,5 +68,15 @@ class PHPUnit_Framework_Constraint_ArrayHasKey extends PHPUnit_Framework_Constra
     protected function failureDescription($other)
     {
         return 'an array ' . $this->toString();
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'has the key ' . $this->exporter->export($this->key);
     }
 }

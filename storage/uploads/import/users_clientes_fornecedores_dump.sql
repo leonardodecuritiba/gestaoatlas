@@ -18,7 +18,7 @@ INSERT INTO `users` (`iduser`, `email`, `password`, `remember_token`, `created_a
 INSERT INTO `colaboradores` (`idcolaborador`, `idcontato`, `iduser`, `nome`, `cpf`, `rg`, `data_nascimento`, `cnh`, `carteira_trabalho`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (1, 1, 1, 'WILLIAN', '06920572699', '14079508', '1984-05-26', '2d31398c058b8cb47d653b83dcb94022.jpg', '8c243cd2e49b42b074559badba26d5af.jpg', '2016-09-04 11:49:34', '2016-09-04 11:49:34', NULL);
 
-INSERT INTO `role_user` (`iduser`, `role_id`) VALUES
+INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
 (1, 1);
 
 INSERT INTO `clientes` (`idcliente`, `idcontato`, `idcliente_centro_custo`, `idpjuridica`, `idpfisica`, `idsegmento`, `idtabela_preco`, `idregiao`, `idforma_pagamento`, `idcolaborador_criador`, `idcolaborador_validador`, `validated_at`, `centro_custo`, `email_orcamento`, `email_nota`, `foto`, `limite_credito`, `nome_responsavel`,`distancia`,`pedagios`,`outros_custos`, `created_at`, `updated_at`, `deleted_at`) VALUES

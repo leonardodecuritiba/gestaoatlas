@@ -17,11 +17,6 @@ class BankAccountWithCustomExtensionTest extends PHPUnit_Framework_TestCase
 {
     protected $ba;
 
-    protected function setUp()
-    {
-        $this->ba = new BankAccount;
-    }
-
     /**
      * @covers BankAccount::getBalance
      * @group balanceIsInitiallyZero
@@ -66,6 +61,11 @@ class BankAccountWithCustomExtensionTest extends PHPUnit_Framework_TestCase
         }
 
         $this->fail();
+    }
+
+    protected function setUp()
+    {
+        $this->ba = new BankAccount;
     }
 
     /*

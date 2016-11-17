@@ -64,6 +64,15 @@ class PHPExcel extends PHPOffice_PHPExcel {
     }
 
     /**
+     * Return all allowed properties
+     * @return array
+     */
+    public function getAllowedProperties()
+    {
+        return $this->allowedProperties;
+    }
+
+    /**
      * Set default properties
      * @param array $custom
      * @return  void
@@ -111,14 +120,5 @@ class PHPExcel extends PHPOffice_PHPExcel {
         }
 
         return $this;
-    }
-
-    /**
-     * Return all allowed properties
-     * @return array
-     */
-    public function getAllowedProperties()
-    {
-        return $this->allowedProperties;
     }
 }

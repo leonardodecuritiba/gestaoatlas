@@ -62,35 +62,6 @@ class Excel {
     }
 
     /**
-     * Create a new file
-     * @param                $filename
-     * @param  callable|null $callback
-     * @return LaravelExcelWriter
-     */
-    public function create($filename, $callback = null)
-    {
-        // Writer instance
-        $writer = clone $this->writer;
-
-        // Disconnect worksheets to prevent unnecessary ones
-        $this->excel->disconnectWorksheets();
-
-        // Inject our excel object
-        $writer->injectExcel($this->excel);
-
-        // Set the filename and title
-        $writer->setFileName($filename);
-        $writer->setTitle($filename);
-
-        // Do the callback
-        if ($callback instanceof Closure)
-            call_user_func($callback, $writer);
-
-        // Return the writer object
-        return $writer;
-    }
-
-    /**
      *
      *  Load an existing file
      *
@@ -165,6 +136,18 @@ class Excel {
     }
 
     /**
+     * Create a new file and load a view
+     * @param  string $view
+     * @param  array  $data
+     * @param  array  $mergeData
+     * @return LaravelExcelWriter
+     */
+    public function loadView($view, $data = array(), $mergeData = array())
+    {
+        return $this->shareView($view, $data, $mergeData);
+    }
+
+    /**
      * Create a new file and share a view
      * @param  string $view
      * @param  array  $data
@@ -177,15 +160,32 @@ class Excel {
     }
 
     /**
-     * Create a new file and load a view
-     * @param  string $view
-     * @param  array  $data
-     * @param  array  $mergeData
+     * Create a new file
+     * @param                $filename
+     * @param  callable|null $callback
      * @return LaravelExcelWriter
      */
-    public function loadView($view, $data = array(), $mergeData = array())
+    public function create($filename, $callback = null)
     {
-        return $this->shareView($view, $data, $mergeData);
+        // Writer instance
+        $writer = clone $this->writer;
+
+        // Disconnect worksheets to prevent unnecessary ones
+        $this->excel->disconnectWorksheets();
+
+        // Inject our excel object
+        $writer->injectExcel($this->excel);
+
+        // Set the filename and title
+        $writer->setFileName($filename);
+        $writer->setTitle($filename);
+
+        // Do the callback
+        if ($callback instanceof Closure)
+            call_user_func($callback, $writer);
+
+        // Return the writer object
+        return $writer;
     }
 
     /**

@@ -18,17 +18,15 @@ use Maatwebsite\Excel\Exceptions\LaravelExcelException;
 class Batch {
 
     /**
-     * Excel object
-     * @var Excel
-     */
-    protected $excel;
-
-    /**
      * Batch files
      * @var array
      */
     public $files = array();
-
+    /**
+     * Excel object
+     * @var Excel
+     */
+    protected $excel;
     /**
      * Set allowed file extensions
      * @var array

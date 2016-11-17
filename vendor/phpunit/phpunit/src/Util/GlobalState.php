@@ -89,6 +89,38 @@ class PHPUnit_Util_GlobalState
         return $result;
     }
 
+    protected static function exportVariable($variable)
+    {
+        if (is_scalar($variable) || is_null($variable) ||
+            (is_array($variable) && self::arrayOnlyContainsScalars($variable))
+        ) {
+            return var_export($variable, true);
+        }
+
+        return 'unserialize(' .
+        var_export(serialize($variable), true) .
+        ')';
+    }
+
+    protected static function arrayOnlyContainsScalars(array $array)
+    {
+        $result = true;
+
+        foreach ($array as $element) {
+            if (is_array($element)) {
+                $result = self::arrayOnlyContainsScalars($element);
+            } elseif (!is_scalar($element) && !is_null($element)) {
+                $result = false;
+            }
+
+            if ($result === false) {
+                break;
+            }
+        }
+
+        return $result;
+    }
+
     public static function getConstantsAsString()
     {
         $constants = get_defined_constants(true);
@@ -157,36 +189,5 @@ class PHPUnit_Util_GlobalState
         } else {
             return self::$superGlobalArrays;
         }
-    }
-
-    protected static function exportVariable($variable)
-    {
-        if (is_scalar($variable) || is_null($variable) ||
-           (is_array($variable) && self::arrayOnlyContainsScalars($variable))) {
-            return var_export($variable, true);
-        }
-
-        return 'unserialize(' .
-                var_export(serialize($variable), true) .
-                ')';
-    }
-
-    protected static function arrayOnlyContainsScalars(array $array)
-    {
-        $result = true;
-
-        foreach ($array as $element) {
-            if (is_array($element)) {
-                $result = self::arrayOnlyContainsScalars($element);
-            } elseif (!is_scalar($element) && !is_null($element)) {
-                $result = false;
-            }
-
-            if ($result === false) {
-                break;
-            }
-        }
-
-        return $result;
     }
 }

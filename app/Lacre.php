@@ -8,20 +8,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Lacre extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'lacres';
     protected $primaryKey = 'idlacre';
-    public $timestamps = true;
     protected $fillable = [
         'idtecnico',
         'numeracao',
         'numeracao_externa',
         'externo',
+        'used',
     ];
 
     // ******************** FUNCTIONS ******************************
+    static public function set_used($idlacre)
+    {
+        $Lacre = self::find($idlacre);
+        $Lacre->used = 1;
+        return $Lacre->save();
+    }
     static public function lacre_exists($numeracao)
     {
-        return (Lacre::where('numeracao',$numeracao)->count() > 0);
+        return (self::where('numeracao', $numeracao)->count() > 0);
     }
     public function has_lacre_instrumento()
     {
@@ -29,14 +36,16 @@ class Lacre extends Model
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
-    public function tecnico()
-    {
-        return $this->belongsTo('App\Tecnico', 'idtecnico');
-    }
-    // ********************** HASONE ********************************
+
     public function lacre_instrumento()
     {
         return $this->hasOne('App\LacreInstrumento', 'idlacre');
+    }
+    // ********************** HASONE ********************************
+
+    public function tecnico()
+    {
+        return $this->belongsTo('App\Tecnico', 'idtecnico');
     }
     // ************************** HASMANY **********************************
 }

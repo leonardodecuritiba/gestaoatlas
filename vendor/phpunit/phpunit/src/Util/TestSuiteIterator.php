@@ -42,16 +42,6 @@ class PHPUnit_Util_TestSuiteIterator implements RecursiveIterator
     }
 
     /**
-     * Checks if there is a current element after calls to rewind() or next().
-     *
-     * @return bool
-     */
-    public function valid()
-    {
-        return $this->position < count($this->tests);
-    }
-
-    /**
      * Returns the key of the current element.
      *
      * @return int
@@ -69,6 +59,16 @@ class PHPUnit_Util_TestSuiteIterator implements RecursiveIterator
     public function current()
     {
         return $this->valid() ? $this->tests[$this->position] : null;
+    }
+
+    /**
+     * Checks if there is a current element after calls to rewind() or next().
+     *
+     * @return bool
+     */
+    public function valid()
+    {
+        return $this->position < count($this->tests);
     }
 
     /**

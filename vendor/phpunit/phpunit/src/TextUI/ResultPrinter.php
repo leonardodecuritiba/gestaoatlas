@@ -207,6 +207,19 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
         $this->printFooter($result);
     }
 
+    protected function printHeader()
+    {
+        $this->write("\n\n" . PHP_Timer::resourceUsage() . "\n\n");
+    }
+
+    /**
+     * @param PHPUnit_Framework_TestResult $result
+     */
+    protected function printErrors(PHPUnit_Framework_TestResult $result)
+    {
+        $this->printDefects($result->errors(), 'error');
+    }
+
     /**
      * @param array  $defects
      * @param string $type
@@ -277,25 +290,9 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     /**
      * @param PHPUnit_Framework_TestResult $result
      */
-    protected function printErrors(PHPUnit_Framework_TestResult $result)
-    {
-        $this->printDefects($result->errors(), 'error');
-    }
-
-    /**
-     * @param PHPUnit_Framework_TestResult $result
-     */
     protected function printFailures(PHPUnit_Framework_TestResult $result)
     {
         $this->printDefects($result->failures(), 'failure');
-    }
-
-    /**
-     * @param PHPUnit_Framework_TestResult $result
-     */
-    protected function printIncompletes(PHPUnit_Framework_TestResult $result)
-    {
-        $this->printDefects($result->notImplemented(), 'incomplete test');
     }
 
     /**
@@ -310,17 +307,20 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
 
     /**
      * @param PHPUnit_Framework_TestResult $result
+     */
+    protected function printIncompletes(PHPUnit_Framework_TestResult $result)
+    {
+        $this->printDefects($result->notImplemented(), 'incomplete test');
+    }
+
+    /**
+     * @param PHPUnit_Framework_TestResult $result
      *
      * @since  Method available since Release 3.0.0
      */
     protected function printSkipped(PHPUnit_Framework_TestResult $result)
     {
         $this->printDefects($result->skipped(), 'skipped test');
-    }
-
-    protected function printHeader()
-    {
-        $this->write("\n\n" . PHP_Timer::resourceUsage() . "\n\n");
     }
 
     /**
@@ -378,6 +378,89 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     }
 
     /**
+     * Writes a buffer out with a color sequence if colors are enabled.
+     *
+     * @param string $color
+     * @param string $buffer
+     * @param bool $lf
+     *
+     * @since  Method available since Release 4.0.0
+     */
+    protected function writeWithColor($color, $buffer, $lf = true)
+    {
+        $this->write($this->formatWithColor($color, $buffer));
+
+        if ($lf) {
+            $this->write("\n");
+        }
+    }
+
+    /**
+     * Formats a buffer with a specified ANSI color sequence if colors are
+     * enabled.
+     *
+     * @param string $color
+     * @param string $buffer
+     *
+     * @return string
+     *
+     * @since  Method available since Release 4.0.0
+     */
+    protected function formatWithColor($color, $buffer)
+    {
+        if (!$this->colors) {
+            return $buffer;
+        }
+
+        $codes = array_map('trim', explode(',', $color));
+        $lines = explode("\n", $buffer);
+        $padding = max(array_map('strlen', $lines));
+        $styles = array();
+
+        foreach ($codes as $code) {
+            $styles[] = self::$ansiCodes[$code];
+        }
+
+        $style = sprintf("\x1b[%sm", implode(';', $styles));
+
+        $styledLines = array();
+
+        foreach ($lines as $line) {
+            $styledLines[] = $style . str_pad($line, $padding) . "\x1b[0m";
+        }
+
+        return implode("\n", $styledLines);
+    }
+
+    /**
+     * @param int $count
+     * @param string $name
+     * @param string $color
+     * @param bool $always
+     *
+     * @since  Method available since Release 4.6.5
+     */
+    private function writeCountString($count, $name, $color, $always = false)
+    {
+        static $first = true;
+
+        if ($always || $count > 0) {
+            $this->writeWithColor(
+                $color,
+                sprintf(
+                    '%s%s: %d',
+                    !$first ? ', ' : '',
+                    $name,
+                    $count
+                ),
+                false
+            );
+
+            $first = false;
+        }
+    }
+
+    /**
      */
     public function printWaitPrompt()
     {
@@ -395,6 +478,50 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
     {
         $this->writeProgressWithColor('fg-red, bold', 'E');
         $this->lastTestFailed = true;
+    }
+
+    /**
+     * Writes progress with a color sequence if colors are enabled.
+     *
+     * @param string $color
+     * @param string $buffer
+     *
+     * @since  Method available since Release 4.0.0
+     */
+    protected function writeProgressWithColor($color, $buffer)
+    {
+        $buffer = $this->formatWithColor($color, $buffer);
+        $this->writeProgress($buffer);
+    }
+
+    /**
+     * @param string $progress
+     */
+    protected function writeProgress($progress)
+    {
+        $this->write($progress);
+        $this->column++;
+        $this->numTestsRun++;
+
+        if ($this->column == $this->maxColumn) {
+            $this->write(
+                sprintf(
+                    ' %' . $this->numTestsWidth . 'd / %' .
+                    $this->numTestsWidth . 'd (%3s%%)',
+                    $this->numTestsRun,
+                    $this->numTests,
+                    floor(($this->numTestsRun / $this->numTests) * 100)
+                )
+            );
+
+            $this->writeNewLine();
+        }
+    }
+
+    protected function writeNewLine()
+    {
+        $this->column = 0;
+        $this->write("\n");
     }
 
     /**
@@ -521,133 +648,6 @@ class PHPUnit_TextUI_ResultPrinter extends PHPUnit_Util_Printer implements PHPUn
             if (!$test->hasExpectationOnOutput()) {
                 $this->write($test->getActualOutput());
             }
-        }
-    }
-
-    /**
-     * @param string $progress
-     */
-    protected function writeProgress($progress)
-    {
-        $this->write($progress);
-        $this->column++;
-        $this->numTestsRun++;
-
-        if ($this->column == $this->maxColumn) {
-            $this->write(
-                sprintf(
-                    ' %' . $this->numTestsWidth . 'd / %' .
-                    $this->numTestsWidth . 'd (%3s%%)',
-                    $this->numTestsRun,
-                    $this->numTests,
-                    floor(($this->numTestsRun / $this->numTests) * 100)
-                )
-            );
-
-            $this->writeNewLine();
-        }
-    }
-
-    protected function writeNewLine()
-    {
-        $this->column = 0;
-        $this->write("\n");
-    }
-
-    /**
-     * Formats a buffer with a specified ANSI color sequence if colors are
-     * enabled.
-     *
-     * @param string $color
-     * @param string $buffer
-     *
-     * @return string
-     *
-     * @since  Method available since Release 4.0.0
-     */
-    protected function formatWithColor($color, $buffer)
-    {
-        if (!$this->colors) {
-            return $buffer;
-        }
-
-        $codes   = array_map('trim', explode(',', $color));
-        $lines   = explode("\n", $buffer);
-        $padding = max(array_map('strlen', $lines));
-        $styles  = array();
-
-        foreach ($codes as $code) {
-            $styles[] = self::$ansiCodes[$code];
-        }
-
-        $style = sprintf("\x1b[%sm", implode(';', $styles));
-
-        $styledLines = array();
-
-        foreach ($lines as $line) {
-            $styledLines[] = $style . str_pad($line, $padding) . "\x1b[0m";
-        }
-
-        return implode("\n", $styledLines);
-    }
-
-    /**
-     * Writes a buffer out with a color sequence if colors are enabled.
-     *
-     * @param string $color
-     * @param string $buffer
-     * @param bool   $lf
-     *
-     * @since  Method available since Release 4.0.0
-     */
-    protected function writeWithColor($color, $buffer, $lf = true)
-    {
-        $this->write($this->formatWithColor($color, $buffer));
-
-        if ($lf) {
-            $this->write("\n");
-        }
-    }
-
-    /**
-     * Writes progress with a color sequence if colors are enabled.
-     *
-     * @param string $color
-     * @param string $buffer
-     *
-     * @since  Method available since Release 4.0.0
-     */
-    protected function writeProgressWithColor($color, $buffer)
-    {
-        $buffer = $this->formatWithColor($color, $buffer);
-        $this->writeProgress($buffer);
-    }
-
-    /**
-     * @param int    $count
-     * @param string $name
-     * @param string $color
-     * @param bool   $always
-     *
-     * @since  Method available since Release 4.6.5
-     */
-    private function writeCountString($count, $name, $color, $always = false)
-    {
-        static $first = true;
-
-        if ($always || $count > 0) {
-            $this->writeWithColor(
-                $color,
-                sprintf(
-                    '%s%s: %d',
-                    !$first ? ', ' : '',
-                    $name,
-                    $count
-                ),
-                false
-            );
-
-            $first = false;
         }
     }
 }

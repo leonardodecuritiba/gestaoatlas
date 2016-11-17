@@ -9,21 +9,28 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Selo extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'selos';
     protected $primaryKey = 'idselo';
-    public $timestamps = true;
     protected $fillable = [
         'idtecnico',
         'numeracao',
         'numeracao_externa',
         'externo',
+        'used',
     ];
 
 
     // ******************** FUNCTIONS ******************************
+    static public function set_used($idselo)
+    {
+        $Selo = self::find($idselo);
+        $Selo->used = 1;
+        return $Selo->save();
+    }
     static public function selo_exists($numeracao)
     {
-        return (Selo::where('numeracao',$numeracao)->count() > 0);
+        return (self::where('numeracao', $numeracao)->count() > 0);
     }
     public function has_selo_instrumento()
     {
@@ -31,14 +38,16 @@ class Selo extends Model
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
-    public function tecnico()
-    {
-        return $this->belongsTo('App\Tecnico', 'idtecnico');
-    }
-    // ********************** HASONE ********************************
+
     public function selo_instrumento()
     {
         return $this->hasOne('App\SeloInstrumento', 'idselo');
+    }
+    // ********************** HASONE ********************************
+
+    public function tecnico()
+    {
+        return $this->belongsTo('App\Tecnico', 'idtecnico');
     }
     // ************************** HASMANY **********************************
 }

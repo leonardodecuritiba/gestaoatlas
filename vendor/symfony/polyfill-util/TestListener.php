@@ -104,14 +104,9 @@ EOPHP
         }
     }
 
-    protected function setUp()
+    public function addFailure(\PHPUnit_Framework_Test $test, \PHPUnit_Framework_AssertionFailedError $e, $time)
     {
-        self::$enabledPolyfills = $this->suite->getName();
-    }
-
-    protected function tearDown()
-    {
-        self::$enabledPolyfills = false;
+        $this->addError($test, $e, $time);
     }
 
     public function addError(\PHPUnit_Framework_Test $test, \Exception $e, $time)
@@ -121,11 +116,6 @@ EOPHP
             $r->setAccessible(true);
             $r->setValue($e, 'Polyfills enabled, '.$r->getValue($e));
         }
-    }
-
-    public function addFailure(\PHPUnit_Framework_Test $test, \PHPUnit_Framework_AssertionFailedError $e, $time)
-    {
-        $this->addError($test, $e, $time);
     }
 
     public function addIncompleteTest(\PHPUnit_Framework_Test $test, \Exception $e, $time)
@@ -150,5 +140,15 @@ EOPHP
 
     public function endTest(\PHPUnit_Framework_Test $test, $time)
     {
+    }
+
+    protected function setUp()
+    {
+        self::$enabledPolyfills = $this->suite->getName();
+    }
+
+    protected function tearDown()
+    {
+        self::$enabledPolyfills = false;
     }
 }

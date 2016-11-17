@@ -16,6 +16,16 @@
 class PHPUnit_Framework_Constraint_IsFalse extends PHPUnit_Framework_Constraint
 {
     /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'is false';
+    }
+
+    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -26,15 +36,5 @@ class PHPUnit_Framework_Constraint_IsFalse extends PHPUnit_Framework_Constraint
     protected function matches($other)
     {
         return $other === false;
-    }
-
-    /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'is false';
     }
 }
