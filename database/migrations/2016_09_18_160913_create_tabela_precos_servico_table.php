@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProdutoTabelaServicoPrecosTable extends Migration
+class CreateTabelaPrecosServicoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class CreateProdutoTabelaServicoPrecosTable extends Migration
      */
     public function up()
     {
-        Schema::create('produto_tabela_servico_precos', function (Blueprint $table) {
-            $table->increments('idproduto_tabela_servico_precos');
+        Schema::create('tabela_precos_servico', function (Blueprint $table) {
+            $table->increments('id');
 
             $table->integer('idtabela_preco')->unsigned();
             $table->foreign('idtabela_preco')->references('idtabela_preco')->on('tabela_precos')->onDelete('cascade');
@@ -37,6 +37,6 @@ class CreateProdutoTabelaServicoPrecosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('produto_tabela_servico_precos');
+        Schema::drop('tabela_precos_servico');
     }
 }

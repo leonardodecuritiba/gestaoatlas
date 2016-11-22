@@ -53,21 +53,23 @@
 					@endif
                         <div class="ln_solid"></div>
                         <div class="form-group">
-                            <?php $tam = ($OrdemServico->status())?6:3;?>
-                            <div class="col-md-{{$tam}} col-sm-{{$tam}} col-xs-12">
-                                <a href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
-                                   class="btn btn-default btn-lg btn-block"><i class="fa fa-print fa-2"></i> Imprimir</a>
-                            </div>
-                            <div class="col-md-{{$tam}} col-sm-{{$tam}} col-xs-12">
-                                <a href="{{route('ordem_servicos.encaminhar',$OrdemServico->idordem_servico)}}"
-                                   class="btn btn-default btn-lg btn-block"><i class="fa fa-envelope fa-2"></i> Encaminhar</a>
-                            </div>
-                            @if(!$OrdemServico->status())
-                                <div class="col-md-3 col-sm-3 col-xs-12">
+							@if($OrdemServico->status())
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<a href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
+									   class="btn btn-default btn-lg btn-block"><i class="fa fa-print fa-2"></i>
+										Imprimir</a>
+								</div>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<a href="{{route('ordem_servicos.encaminhar',$OrdemServico->idordem_servico)}}"
+									   class="btn btn-primary btn-lg btn-block"><i class="fa fa-envelope fa-2"></i>
+										Encaminhar</a>
+								</div>
+							@else
+								<div class="col-md-6 col-sm-6 col-xs-12">
                                     <a href="{{route('ordem_servicos.show',$OrdemServico->idordem_servico)}}"
                                        class="btn btn-primary btn-lg btn-block"><i class="fa fa-arrow-circle-left fa-2"></i> Editar</a>
                                 </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12 ">
+								<div class="col-md-6 col-sm-6 col-xs-12 ">
                                     <button class="btn btn-success btn-lg btn-block"><i class="fa fa-sign-out fa-2"></i> Fechar</button>
                                 </div>
                             @endif
@@ -130,138 +132,21 @@
 							</div>
 						</div>
 					</div>
+
+
 					{{--SERVIÇOS--}}
 					<div class="row">
-						<div class="x_panel">
-							<div class="x_title">
-								<h2>Serviços</h2>
-								<div class="clearfix"></div>
-							</div>
-							<div class="x_content">
-								<div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-									@if($AparelhoManutencao->has_servico_prestados())
-										<table border="0" class="table table-hover">
-											<thead>
-												<tr>
-													<th width="60%">Nome</th>
-													<th width="20%">Valor Original</th>
-													<th width="20%">Valor Cobrado</th>
-												</tr>
-											</thead>
-											<tbody>
-											@foreach($AparelhoManutencao->servico_prestados as $servico_prestado)
-												<tr>
-													<td>
-														{{$servico_prestado->servico->nome}}
-													</td>
-													<td>
-														<input name="valor" type="hidden" class="form-control" placeholder="Valor" value="{{$servico_prestado->servico->valor}}" required>
-														R$ {{$servico_prestado->servico->valor}}
-													</td>
-													<td>
-														R$ {{$servico_prestado->valor}}
-													</td>
-												</tr>
-											@endforeach
-											</tbody>
-										</table>
-									@else
-										<div class="jumbotron">
-											<h2>Nenhum serviço utilizado</h2>
-										</div>
-									@endif
-								</div>
-
-							</div>
-						</div>
+						@include('pages.ordem_servicos.insumos.servicos')
 					</div>
 
 					{{--PEÇAS/PRODUTOS--}}
 					<div class="row">
-						<div class="x_panel">
-							<div class="x_title">
-								<h2>Peças/Produtos</h2>
-								<div class="clearfix"></div>
-							</div>
-							<div class="x_content">
-								<div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-									@if($AparelhoManutencao->has_pecas_utilizadas())
-										<table border="0" class="table table-hover">
-											<thead>
-												<tr>
-													<th width="60%">Nome</th>
-													<th width="20%">Valor Original</th>
-													<th width="20%">Valor Cobrado</th>
-												</tr>
-											</thead>
-											<tbody>
-											@foreach($AparelhoManutencao->pecas_utilizadas as $peca_utilizada)
-												<tr>
-													<td>
-														{{$peca_utilizada->peca->descricao}}
-													</td>
-													<td>
-														R$ {{$peca_utilizada->valor_original()}}
-													</td>
-													<td>
-														R$ {{$peca_utilizada->valor}}
-													</td>
-												</tr>
-											@endforeach
-											</tbody>
-										</table>
-									@else
-										<div class="jumbotron">
-											<h2>Nenhuma peça/produto utilizado</h2>
-										</div>
-									@endif
-								</div>
-							</div>
-						</div>
+						@include('pages.ordem_servicos.insumos.pecas')
 					</div>
 
 					{{--KITS--}}
 					<div class="row">
-						<div class="x_panel">
-							<div class="x_title">
-								<h2>Kits</h2>
-								<div class="clearfix"></div>
-							</div>
-							<div class="x_content">
-								<div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-									@if($AparelhoManutencao->has_kits_utilizados())
-										<table border="0" class="table table-hover">
-											<thead>
-												<tr>
-													<th width="60%">Nome</th>
-													<th width="20%">Valor Original</th>
-													<th width="20%">Valor Cobrado</th>
-												</tr>
-											</thead>
-											<tbody>
-											@foreach($AparelhoManutencao->kits_utilizados as $kit_utilizado)
-												<tr>
-													<td>
-														{{$kit_utilizado->nome()}}
-													</td>
-													<td>
-														R$ {{$kit_utilizado->valor_original()}}
-													</td>
-													<td>
-														R$ {{$kit_utilizado->valor}}
-													</td>
-												</tr>
-											@endforeach
-											</tbody>
-										</table>
-									@else
-										<div class="jumbotron">
-											<h2>Nenhum kit utilizado</h2>
-										</div>
-									@endif
-								</div>
-							</div>
-						</div>
+						@include('pages.ordem_servicos.insumos.kits')
 					</div>
 				</div>
 			</div>

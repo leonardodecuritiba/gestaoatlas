@@ -144,15 +144,20 @@
             $(".select2_single").on("select2:select", function() {
                 //achar parent, pegar próximo td e escrever o valor
                 var $sel = $(this).find(":selected");
-                var $td_valor = $(this).parents('td').next();
-                var $field_valor = $(this).parents('td').next().next().find('input[name=valor]');
-                var valor = '#';
+                var $td_preco = $(this).parents('td').next();
+                var $td_preco_minimo = $($td_preco).next();
+                var $field_preco = $($td_preco_minimo).next().find('input[name=valor]');
+                var preco = '#';
+                var preco_minimo = '#';
                 if($($sel).val()!=''){
-                    valor = $sel.data('valor');
-                    $($field_valor).val(valor);
-                    valor = 'R$ ' + valor;
+                    preco = $sel.data('preco');
+                    preco_minimo = $sel.data('preco_minimo');
+                    $($field_preco).val(preco);
+                    preco = 'R$ ' + preco;
+                    preco_minimo = 'R$ ' + preco_minimo;
                 }
-                $($td_valor).html(valor);
+                $($td_preco).html(preco);
+                $($td_preco_minimo).html(preco_minimo);
             });
         });
 

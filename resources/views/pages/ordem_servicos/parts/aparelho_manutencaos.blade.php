@@ -196,23 +196,27 @@ if($Instrumento->has_lacres_instrumentos()){
                                 <table border="0" class="table table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Nome</th>
-                                        <th>Valor Original</th>
+                                        <th width="40%">Nome</th>
+                                        <th>Preço</th>
+                                        <th>Preço Mínimo</th>
                                         <th>Valor Cobrado</th>
                                         <th>Ações</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($AparelhoManutencao->servico_prestados as $servico_prestado)
+                                        <?php
+                                        $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        ?>
                                         <tr>
                                             <td>
                                                 {{$servico_prestado->servico->nome}}
                                             </td>
                                             <td>
-                                                <input name="valor" type="hidden" class="form-control"
-                                                       placeholder="Valor"
-                                                       value="{{$servico_prestado->valor_original()}}" required>
-                                                R$ {{$servico_prestado->valor_original()}}
+                                                R$ {{$tabela_preco->preco}}
+                                            </td>
+                                            <td>
+                                                R$ {{$tabela_preco->preco_minimo}}
                                             </td>
                                             <td>
                                                 R$ {{$servico_prestado->valor}}
@@ -227,17 +231,24 @@ if($Instrumento->has_lacres_instrumentos()){
                                                     <i class="fa fa-trash fa-lg"></i></a>
                                             </td>
                                         </tr>
-                                        @endforeach
+                                    @endforeach
                                     <tr>
                                         <td>
                                             <select class="select2_single form-control" name="idservico" id="idservico"
                                                     tabindex="-1">
                                                 <option value="">Selecione</option>
                                                 @foreach($Servicos as $servico)
+                                                    <?php
+                                                    $tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                                    ?>
                                                     <option value="{{$servico->idservico}}"
-                                                            data-valor="{{$servico->valor}}">{{$servico->nome}}</option>
+                                                            data-preco="{{$tabela_preco->preco}}"
+                                                            data-preco_minimo="{{$tabela_preco->preco_minimo}}">{{$servico->nome}}</option>
                                                 @endforeach
                                             </select>
+                                        </td>
+                                        <td>
+                                            #
                                         </td>
                                         <td>
                                             #
@@ -277,25 +288,32 @@ if($Instrumento->has_lacres_instrumentos()){
                                 <table border="0" class="table table-hover">
                                     <thead>
                                     <tr>
-                                        <th>Nome</th>
-                                        <th>Valor Original</th>
+                                        <th width="40%">Nome</th>
+                                        <th>Preço</th>
+                                        <th>Preço Mínimo</th>
                                         <th>Valor Cobrado</th>
                                         <th>Ações</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($AparelhoManutencao->pecas_utilizadas as $peca_utilizada)
+                                        <?php
+                                        $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        ?>
                                         <tr>
                                             <td>
                                                 {{$peca_utilizada->peca->descricao}}
                                             </td>
                                             <td>
-                                                <input name="valor" type="hidden" class="form-control"
-                                                       placeholder="Valor"
-                                                       value="{{$peca_utilizada->valor_original()}}" required>
-                                                R$ {{$peca_utilizada->valor_original()}}
+                                                R$ {{$tabela_preco->preco}}
                                             </td>
                                             <td>
+                                                R$ {{$tabela_preco->preco_minimo}}
+                                            </td>
+                                            <td>
+                                                {{--<input name="valor" type="hidden" class="form-control"--}}
+                                                {{--placeholder="Valor"--}}
+                                                {{--value="{{$tabela_preco->preco_minimo}}" required>--}}
                                                 R$ {{$peca_utilizada->valor}}
                                             </td>
                                             <td>
@@ -308,17 +326,25 @@ if($Instrumento->has_lacres_instrumentos()){
                                                     <i class="fa fa-trash fa-lg"></i></a>
                                             </td>
                                         </tr>
-                                            @endforeach
+                                    @endforeach
                                     <tr>
                                         <td>
                                             <select class="select2_single form-control" id="idpeca" name="idpeca"
                                                     tabindex="-1">
                                                 <option value="">Selecione</option>
                                                 @foreach($Pecas as $peca)
+                                                    <?php
+                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                                    ?>
                                                     <option value="{{$peca->idpeca}}"
-                                                            data-valor="{{$peca->custo_final}}">{{$peca->descricao}}</option>
+                                                            data-preco="{{$tabela_preco->preco}}"
+                                                            data-preco_minimo="{{$tabela_preco->preco_minimo}}">
+                                                        {{$peca->descricao}}</option>
                                                 @endforeach
                                             </select>
+                                        </td>
+                                        <td>
+                                            #
                                         </td>
                                         <td>
                                             #
@@ -356,27 +382,32 @@ if($Instrumento->has_lacres_instrumentos()){
                         <div class="x_content">
                             <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
                                 <table border="0" class="table table-hover">
+                                    <thead>
                                     <tr>
-                                        <th>Nome</th>
-                                        <th>Valor Original</th>
+                                        <th width="40%">Nome</th>
+                                        <th>Preço</th>
+                                        <th>Preço Mínimo</th>
                                         <th>Valor Cobrado</th>
                                         <th>Ações</th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach($AparelhoManutencao->kits_utilizados as $kit_utilizado)
+                                        <?php
+                                        $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        ?>
                                         <tr>
                                             <td>
                                                 {{$kit_utilizado->nome()}}
                                             </td>
                                             <td>
-                                                <input name="valor" type="hidden" class="form-control"
-                                                       placeholder="Valor"
-                                                       value="{{$kit_utilizado->valor_original()}}" required>
-                                                R$ {{$kit_utilizado->valor_original()}}
+                                                R$ {{$tabela_preco->preco}}
                                             </td>
                                             <td>
-                                                R$ {{$kit_utilizado->valor}}
+                                                R$ {{$tabela_preco->preco_minimo}}
+                                            </td>
+                                            <td>
+                                                R$ {{$kit_utilizado->valor_original()}}
                                             </td>
                                             <td>
                                                 {{--<a class="btn btn-default"--}}
@@ -401,10 +432,17 @@ if($Instrumento->has_lacres_instrumentos()){
                                                     tabindex="-1">
                                                 <option value="">Selecione</option>
                                                 @foreach($Kits as $kit)
+                                                    <?php
+                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                                    ?>
                                                     <option value="{{$kit->idkit}}"
-                                                            data-valor="{{$kit->valor_total()}}">{{$kit->descricao}}</option>
+                                                            data-preco="{{$tabela_preco->preco}}"
+                                                            data-preco_minimo="{{$tabela_preco->preco_minimo}}">{{$kit->descricao}}</option>
                                                 @endforeach
                                             </select>
+                                        </td>
+                                        <td>
+                                            #
                                         </td>
                                         <td>
                                             #
@@ -417,9 +455,9 @@ if($Instrumento->has_lacres_instrumentos()){
                                             {{--<a class="btn btn-default"--}}
                                             {{--data-toggle-tooltip="tooltip" data-placement="top" title="Ver detalhes"--}}
                                             {{--><i class="fa fa-eye fa-lg"></i></a>--}}
-                                            <button class="btn btn-success"
-                                                    data-toggle-tooltip="tooltip" data-placement="top" title="Salvar">
-                                                <i class="fa fa-check fa-lg"></i></button>
+                                            <a class="btn btn-success add"
+                                               data-toggle-tooltip="tooltip" data-placement="top" title="Salvar">
+                                                <i class="fa fa-check fa-lg"></i></a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -460,7 +498,9 @@ if($Instrumento->has_lacres_instrumentos()){
                     var $parent = $(this).parents('tr');
                     var id_select = $($parent).find('select').attr('id');
                     data.text = $($parent).find('select#' + id_select).find(":selected").html();
-                    data.valor_original = $($parent).find('select#' + id_select).find(":selected").data('valor');
+//                    data.valor_original = $($parent).find('select#' + id_select).find(":selected").data('valor');
+                    data.preco = $($parent).find('select#' + id_select).find(":selected").data('preco');
+                    data.preco_minimo = $($parent).find('select#' + id_select).find(":selected").data('preco_minimo');
                     data.id = $($parent).find('select#' + id_select).find(":selected").val();
                     data.valor = $($parent).find('input#valor').val();
                     x++;
@@ -468,7 +508,8 @@ if($Instrumento->has_lacres_instrumentos()){
                             '<input name="' + id_select + '_valor[' + (x) + ']" type="hidden" value="' + data.valor + '" required>' +
                             '<input name="' + id_select + '_id[' + (x) + ']" type="hidden" value="' + data.id + '" required>' +
                             '<td>' + data.text + '</td>' +
-                            '<td>R$ ' + data.valor_original + '</td>' +
+                            '<td>R$ ' + data.preco + '</td>' +
+                            '<td>R$ ' + data.preco_minimo + ' </td>' +
                             '<td>R$ ' + data.valor + ' </td>' +
                             '<td>' +
                             '<a class="btn btn-danger" onclick="removeEl(this)" title="Excluir">' +

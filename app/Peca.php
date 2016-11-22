@@ -2,13 +2,14 @@
 
 namespace App;
 
+use App\Helpers\DataHelper;
 use Illuminate\Database\Eloquent\Model;
 
 class Peca extends Model
 {
+    public $timestamps = true;
     protected $table = 'pecas';
     protected $primaryKey = 'idpeca';
-    public $timestamps = true;
     /*static public $required = [
         'codigo',
         'descricao',
@@ -65,10 +66,16 @@ class Peca extends Model
         return ($this->insumos()->count() > 0);
     }
 
+    public function insumos()
+    {
+        return $this->hasMany('App\Insumo', 'idinsumo');
+    }
+
     public function getFoto()
     {
         return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/'.$this->foto):asset('imgs/cogs.png');
     }
+
     public function getFotoThumb()
     {
         return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/thumb_'.$this->foto):asset('imgs/cogs.png');
@@ -78,6 +85,7 @@ class Peca extends Model
     {
         $this->attributes['tipo'] = ($value == 'Peça')?'peca':'produto';
     }
+
     public function getTipoAttribute($value)
     {
         return ($value == 'peca')?'Peça':'Produto';
@@ -85,25 +93,32 @@ class Peca extends Model
 
     public function setComissaoTecnicoAttribute($value)
     {
-        $this->attributes['comissao_tecnico'] = floatval(str_replace(',','.',$value));
+        $this->attributes['comissao_tecnico'] = DataHelper::getPercent2Float($value);
     }
+
     public function getComissaoTecnicoAttribute($value)
     {
-        return number_format($value,2,',','.');
+        return DataHelper::getFloat2Real($value);
     }
 
     public function setComissaoVendedorAttribute($value)
     {
-        $this->attributes['comissao_vendedor'] = floatval(str_replace(',','.',$value));
+        $this->attributes['comissao_vendedor'] = DataHelper::getPercent2Float($value);
     }
+
     public function getComissaoVendedorAttribute($value)
     {
-        return number_format($value,2,',','.');
+        return DataHelper::getFloat2Real($value);
     }
 
     public function getCustoFinalAttribute($value)
     {
-        return number_format($value,2,',','.');
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setCustoFinalAttribute($value)
+    {
+        $this->attributes['custo_final'] = DataHelper::getReal2Float($value);
     }
     /*
     public function getCustoCompraAttribute($value)
@@ -158,9 +173,9 @@ class Peca extends Model
 
     */
 
-    public function has_fornecedor()
+    public function custo_final_float()
     {
-        return $this->fornecedor()->count();
+        return $this->attributes['custo_final'];
     }
 
     // ******************** RELASHIONSHIP ******************************
@@ -171,28 +186,49 @@ class Peca extends Model
         return $this->hasOne('App\Tributacao', 'idtributacao', 'idtributacao');
     }
     */
-    public function marca()
+
+    public function has_fornecedor()
     {
-        return $this->hasOne('App\Marca', 'idmarca', 'idmarca');
-    }
-    public function unidade()
-    {
-        return $this->hasOne('App\Unidade', 'idunidade', 'idunidade');
-    }
-    public function grupo()
-    {
-        return $this->hasOne('App\Grupo', 'idgrupo', 'idgrupo');
+        return $this->fornecedor()->count();
     }
 
-    // ********************** BELONGS ********************************
     public function fornecedor()
     {
         return $this->belongsTo('App\Fornecedor', 'idfornecedor');
     }
 
-    // ************************** HASMANY **********************************
-    public function insumos()
+    public function marca()
     {
-        return $this->hasMany('App\Insumo', 'idinsumo');
+        return $this->hasOne('App\Marca', 'idmarca', 'idmarca');
+    }
+
+    // ********************** BELONGS ********************************
+
+    public function unidade()
+    {
+        return $this->hasOne('App\Unidade', 'idunidade', 'idunidade');
+    }
+
+    // ************************** HASMANY **********************************
+
+    public function grupo()
+    {
+        return $this->hasOne('App\Grupo', 'idgrupo', 'idgrupo');
+    }
+
+    public function tabela_preco()
+    {
+        return $this->hasMany('App\TabelaPrecoPeca', 'idpeca');
+    }
+
+    public function tabela_cliente($idtabela_preco)
+    {
+        $tabela_preco = $this->tabela_preco_cliente($idtabela_preco)->first();
+        return (count($tabela_preco) > 0) ? $tabela_preco : 0;
+    }
+
+    public function tabela_preco_cliente($idtabela_preco)
+    {
+        return $this->hasMany('App\TabelaPrecoPeca', 'idpeca')->where('idtabela_preco', $idtabela_preco);
     }
 }

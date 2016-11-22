@@ -32,7 +32,7 @@ class OrdemServico extends Model
     // ******************** FUNCTIONS ******************************
     public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
     {
-        return (($this->fechamento != NULL) && ($this->idsituacao_ordem_servico == 3)) ? 1 : 0;
+        return (($this->attributes['fechamento'] != NULL) && ($this->attributes['idsituacao_ordem_servico'] == 3)) ? 1 : 0;
     }
     public function setCustosDeslocamentoAttribute($value)
     {

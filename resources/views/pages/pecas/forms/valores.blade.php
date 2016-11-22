@@ -24,7 +24,8 @@
     <div id="custo_reais">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Custo Final:</label>
         <div class="col-md-10 col-sm-10 col-xs-12">
-            <input name="custo_final" type="text" class="form-control show-valor" placeholder="Custo Final"
+            <input name="custo_final" id="valor-ref" type="text" class="form-control show-valor"
+                   placeholder="Custo Final"
                    value="{{(isset($Peca->custo_final))?$Peca->custo_final:old('custo_final')}}"
             >
         </div>

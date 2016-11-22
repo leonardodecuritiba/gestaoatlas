@@ -32,6 +32,7 @@ class ExtrasTableSeeder extends Seeder
         $this->call(PecasTableSeeder::class);
         $this->call(SelosLacresTableSeeder::class);
 
+
         /*
         $this->call(KitsTableSeeder::class);
         $this->call(PecaKitsTableSeeder::class);

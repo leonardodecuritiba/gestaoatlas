@@ -8,10 +8,12 @@ namespace App\Http\Controllers;
 //use App\OrigemTributacao;
 //use App\Tributacao;
 use App\Grupo;
+use App\Helpers\DataHelper;
 use App\Marca;
 use App\Peca;
 use App\TabelaPreco;
 use App\Unidade;
+use Illuminate\Support\Facades\Redirect;
 use Validator;
 use App\Fornecedor;
 use Illuminate\Http\Request;
@@ -20,8 +22,8 @@ use App\Http\Requests;
 
 class PecasController extends Controller
 {
-    private $Page;
     public $required;
+    private $Page;
 
     public function __construct()
     {
@@ -80,26 +82,6 @@ class PecasController extends Controller
             'tabela_preco'          => TabelaPreco::all(),
         ];
         return view('pages.'.$this->Page->link.'.master')
-            ->with('Page', $this->Page);
-    }
-
-    public function show($id)
-    {
-        $this->Page->titulo_primario = "Visualização de ";
-        $Peca = Peca::find($id);
-        $this->Page->extras = [
-            'fornecedores'          => Fornecedor::all(),
-            'marcas'                => Marca::all(),
-            'unidades'              => Unidade::all(),
-            'grupos'                => Grupo::all(),
-//            'ncm'                   => Ncm::get()->take(100),
-//            'categoria_tributacao'  => CategoriaTributacao::all(),
-//            'origem_tributacao'     => OrigemTributacao::all(),
-//            'cst_ipi'               => CstIpi::all(),
-            'tabela_preco'          => TabelaPreco::all(),
-        ];
-        return view('pages.'.$this->Page->link.'.show')
-            ->with('Peca', $Peca)
             ->with('Page', $this->Page);
     }
 
@@ -212,10 +194,30 @@ class PecasController extends Controller
         }
     }
 
+    public function show($id)
+    {
+        $this->Page->titulo_primario = "Visualização de ";
+        $Peca = Peca::find($id);
+        $this->Page->extras = [
+            'fornecedores' => Fornecedor::all(),
+            'marcas' => Marca::all(),
+            'unidades' => Unidade::all(),
+            'grupos' => Grupo::all(),
+//            'ncm'                   => Ncm::get()->take(100),
+//            'categoria_tributacao'  => CategoriaTributacao::all(),
+//            'origem_tributacao'     => OrigemTributacao::all(),
+//            'cst_ipi'               => CstIpi::all(),
+//            'tabela_preco'          => TabelaPreco::all(),
+        ];
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Peca', $Peca)
+            ->with('Page', $this->Page);
+    }
+
     public function update(Request $request, $id)
     {
+//        return $request->all();
         $Peca = Peca::find($id);
-
         $validator = Validator::make($request->all(), [
             'codigo'            => 'required',
             'tipo'              => 'required',
@@ -256,11 +258,38 @@ class PecasController extends Controller
             foreach($campos as $val){
                 if($dataUpdate[$val] == ''){
                     $dataUpdate[$val] = NULL;
-                } else {
-                    $dataUpdate[$val] = str_replace(',','.',str_replace('.','',$dataUpdate[$val]));
                 }
             }
 
+            //store da nova foto da peca
+            if ($request->hasfile('foto')) {
+                $img = new ImageController();
+                $dataUpdate['foto'] = $img->update($request->file('foto'), $this->Page->table, $Peca->foto);
+            }
+//            return $dataUpdate;
+
+            $Peca->update($dataUpdate);
+
+            //ATUALIZANDO OS PREÇOS E MARGENS
+            $margens = $request->get('margem');
+            $margem_minimos = $request->get('margem_minimo');
+            $custo_final = $Peca->custo_final_float();
+            foreach ($Peca->tabela_preco_peca as $tabela_preco_peca) {
+                $margem = DataHelper::getPercent2Float($margens[$tabela_preco_peca->idtabela_preco]);
+                $margem_minimo = DataHelper::getPercent2Float($margem_minimos[$tabela_preco_peca->idtabela_preco]);
+
+                $dataUpd = [
+                    'preco' => $custo_final + ($custo_final * $margem) / 100,
+                    'margem' => $margem,
+                    'preco_minimo' => $custo_final + ($custo_final * $margem_minimo) / 100,
+                    'margem_minimo' => $margem_minimo,
+                ];
+//                return $dataUpd;
+                $tabela_preco_peca->update($dataUpd);
+            }
+            session()->forget('mensagem');
+            session(['mensagem' => $this->Page->msg_upd]);
+            return Redirect::route('pecas.show', $Peca->idpeca);
             /*
             //Calcular custo_final
             $dataUpdate['custo_final'] = $dataUpdate['custo_compra'] + $dataUpdate['custo_frete'] + $dataUpdate['custo_imposto'];
@@ -309,16 +338,6 @@ class PecasController extends Controller
 
             */
 
-            //store da nova foto da peca
-            if($request->hasfile('foto')){
-                $img = new ImageController();
-                $dataUpdate['foto'] = $img->update($request->file('foto'),$this->Page->table,$Peca->foto);
-            }
-
-            $Peca->update($dataUpdate);
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->msg_upd]);
-            return $this->show($Peca->idpeca);
         }
     }
 

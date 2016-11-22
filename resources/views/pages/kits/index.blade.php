@@ -59,7 +59,7 @@
 									<td>{{$selecao->created_at}}</td>
 									<td>{{$selecao->nome}}</td>
 									<td>{{$selecao->descricao}}</td>
-									<td>{{$selecao->valor_total()}}</td>
+                                    <td>R$ {{$selecao->valor_total()}}</td>
 									<td>
 										<a class="btn btn-default btn-xs"
 										   href="{{route($Page->link.'.show',$selecao->idkit)}}">

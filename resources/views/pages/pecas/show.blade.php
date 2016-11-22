@@ -24,7 +24,7 @@
                                 <h2>Dados do {{$Page->Target}}</h2>
                                 <div class="clearfix"></div>
                             </div>
-                            <div class="x_content">
+                            <div class="x_content div_pai">
                                 <div class="form-horizontal form-label-left">
                                     @include('pages.'.$Page->link.'.forms.form')
                                 </div>
@@ -128,7 +128,6 @@
             @endif
         });
         $(document).ready(function(){
-
             $NCM_OPTION = [];
             var remoteDataConfig = {
                 width: 'resolve',

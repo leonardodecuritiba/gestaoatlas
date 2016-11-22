@@ -14,6 +14,16 @@ class DataHelper
     {
         return number_format($value,2,',','.');
     }
+
+    static public function getPercent2Float($value)
+    {
+        return floatval(str_replace(',', '.', $value));
+    }
+
+    static public function getFloat2Percent($value)
+    {
+        return number_format($value, 2, ',', '.');
+    }
     static public function getPrettyDateTime($value)
     {
         return ($value!=NULL)?Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('H:i - d/m/Y'):$value;

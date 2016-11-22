@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\DataHelper;
 use App\Kit;
 use App\Peca;
 use App\PecaKit;
+use App\TabelaPreco;
+use App\TabelaPrecoKit;
 use App\Unidade;
+use Illuminate\Support\Facades\Redirect;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -90,23 +94,45 @@ class KitsController extends Controller
         } else {
             //fazer varredura nas peças
             $data = $request->all();
+//            return $data;
             $Kit = Kit::create($data);
 
             foreach($data["idpeca"] as $i => $idpeca){
                 $qtd = $data["quantidade"][$i];
-                $val = floatval(str_replace(',','.',$data["valor_unidade"][$i]));
-                PecaKit::create([
+                $valor_unidade = DataHelper::getReal2Float($data["valor_unidade"][$i]);
+                $valor_total = $qtd * $valor_unidade;
+                $dados = [
                     'idkit'                 => $Kit->idkit,
                     'idpeca'                => $data["idpeca"][$i],
                     'quantidade'            => $qtd,
-                    'valor_unidade'         => $val,
-                    'valor_total'           => $qtd*$val,
+                    'valor_unidade' => $valor_unidade,
+                    'valor_total' => $valor_total,
                     'descricao_adicional'   => $data["descricao_adicional"][$i],
-                ]);
+                ];
+                PecaKit::create($dados);
             }
+
+            $margem_minimo = 10;
+            $margem = $margem_minimo + 5;
+            $Tabelas_preco = TabelaPreco::all();
+            foreach ($Tabelas_preco as $tabela_preco) {
+                $valor = $Kit->valor_total_float();
+                $preco = $valor + ($margem * $valor) / 100;
+                $preco_minimo = $valor + ($margem_minimo * $valor) / 100;
+                $dados = [
+                    'idtabela_preco' => $tabela_preco->idtabela_preco,
+                    'idkit' => $Kit->idkit,
+                    'margem' => $margem,
+                    'preco' => $preco,
+                    'margem_minimo' => $margem_minimo,
+                    'preco_minimo' => $preco_minimo,
+                ];
+                TabelaPrecoKit::create($dados);
+            }
+
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->msg_add]);
-            return $this->show($Kit->idkit);
+            return Redirect::route('kits.show', $Kit->idkit);
         }
     }
 
@@ -131,30 +157,54 @@ class KitsController extends Controller
             $Kit->update($dataUpdate);
 
             foreach($dataUpdate["idpeca"] as $i => $idpeca){
+                $qtd = $dataUpdate["quantidade"][$i];
+                $valor_unidade = DataHelper::getReal2Float($dataUpdate["valor_unidade"][$i]);
+                $valor_total = $qtd * $valor_unidade;
                 if(!isset($dataUpdate["idpecas_kit"][$i])){
                     $dados = [
-                        'idkit'         => $Kit->idkit,
-                        'idpeca'        => $dataUpdate["idpeca"][$i],
-                        'quantidade'    => $dataUpdate["quantidade"][$i],
-                        'valor_unidade' => floatval(str_replace(',','.',$dataUpdate["valor_unidade"][$i])),
+                        'idkit' => $Kit->idkit,
+                        'idpeca' => $dataUpdate["idpeca"][$i],
+                        'quantidade' => $qtd,
+                        'valor_unidade' => $valor_unidade,
+                        'valor_total' => $valor_total,
                         'descricao_adicional' => $dataUpdate["descricao_adicional"][$i],
                     ];
                     PecaKit::create($dados);
                 } else {
                     $peca_kit = PecaKit::find($dataUpdate["idpecas_kit"][$i]);
                     $dados = [
-                        'idpeca'        => $dataUpdate["idpeca"][$i],
-                        'quantidade'    => $dataUpdate["quantidade"][$i],
-                        'valor_unidade' => floatval(str_replace(',','.',$dataUpdate["valor_unidade"][$i])),
+                        'idpeca' => $dataUpdate["idpeca"][$i],
+                        'quantidade' => $qtd,
+                        'valor_unidade' => $valor_unidade,
+                        'valor_total' => $valor_total,
                         'descricao_adicional' => $dataUpdate["descricao_adicional"][$i],
                     ];
+//                    print_r($dados);
                     $peca_kit->update($dados);
                 }
             }
 
+            //ATUALIZANDO OS PREÇOS E MARGENS
+            $margens = $request->get('margem');
+            $margem_minimos = $request->get('margem_minimo');
+            $custo_final = $Kit->valor_total_float();
+            foreach ($Kit->tabela_preco as $tabela_preco) {
+                $margem = DataHelper::getPercent2Float($margens[$tabela_preco->idtabela_preco]);
+                $margem_minimo = DataHelper::getPercent2Float($margem_minimos[$tabela_preco->idtabela_preco]);
+
+                $dataUpd = [
+                    'preco' => $custo_final + ($custo_final * $margem) / 100,
+                    'margem' => $margem,
+                    'preco_minimo' => $custo_final + ($custo_final * $margem_minimo) / 100,
+                    'margem_minimo' => $margem_minimo,
+                ];
+                $tabela_preco->update($dataUpd);
+            }
+
+
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->msg_upd]);
-            return $this->show($Kit->idkit);
+            return Redirect::route('kits.show', $Kit->idkit);
         }
 
     }

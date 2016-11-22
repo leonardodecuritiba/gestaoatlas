@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\DataHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,9 +10,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Servico extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'servicos';
     protected $primaryKey = 'idservico';
-    public $timestamps = true;
     protected $fillable = [
         'nome',
         'descricao',
@@ -24,7 +25,17 @@ class Servico extends Model
     }
     public function getValorAttribute($value)
     {
-        return number_format($value,2,',','.');
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setValorAttribute($value)
+    {
+        $this->attributes['valor'] = DataHelper::getReal2Float($value);
+    }
+
+    public function valor_float()
+    {
+        return $this->attributes['valor'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
@@ -32,5 +43,21 @@ class Servico extends Model
     public function servico_prestados()
     {
         return $this->hasMany('App\ServicoPrestado', 'idservico');
+    }
+
+    public function tabela_preco()
+    {
+        return $this->hasMany('App\TabelaPrecoServico', 'idservico');
+    }
+
+    public function tabela_cliente($idtabela_preco)
+    {
+        $tabela_preco = $this->tabela_preco_cliente($idtabela_preco)->first();
+        return (count($tabela_preco) > 0) ? $tabela_preco : 0;
+    }
+
+    public function tabela_preco_cliente($idtabela_preco)
+    {
+        return $this->hasMany('App\TabelaPrecoServico', 'idservico')->where('idtabela_preco', $idtabela_preco);
     }
 }

@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Kit extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'kits';
     protected $primaryKey = 'idkit';
-    public $timestamps = true;
     protected $fillable = [
         'nome',
         'descricao',
@@ -20,14 +20,16 @@ class Kit extends Model
 
     public function valor_total()
     {
-        $val = $this->hasMany('App\PecaKit', 'idkit')->sum('valor_total');
+        $val = $this->valor_total_float();
         return number_format($val,2,',','.');
     }
-    // ******************** FUNCTIONS ******************************
-    public function has_insumos()
+
+    public function valor_total_float()
     {
-        return ($this->insumos()->count() > 0);
+        return $this->hasMany('App\PecaKit', 'idkit')->sum('valor_total');
     }
+
+    // ******************** FUNCTIONS ******************************
     public function getCreatedAtAttribute($value)
     {
         if($value != NULL) return Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('d/m/Y H:i');
@@ -40,8 +42,20 @@ class Kit extends Model
     {
         return $this->hasMany('App\PecaKit', 'idkit');
     }
-    public function insumos()
+
+    public function tabela_preco()
     {
-        return $this->hasMany('App\Insumo', 'idinsumo');
+        return $this->hasMany('App\TabelaPrecoKit', 'idkit');
+    }
+
+    public function tabela_cliente($idtabela_preco)
+    {
+        $tabela_preco = $this->tabela_preco_cliente($idtabela_preco)->first();
+        return (count($tabela_preco) > 0) ? $tabela_preco : 0;
+    }
+
+    public function tabela_preco_cliente($idtabela_preco)
+    {
+        return $this->hasMany('App\TabelaPrecoKit', 'idkit')->where('idtabela_preco', $idtabela_preco);
     }
 }
