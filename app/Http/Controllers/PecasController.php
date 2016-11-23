@@ -274,9 +274,9 @@ class PecasController extends Controller
             $margens = $request->get('margem');
             $margem_minimos = $request->get('margem_minimo');
             $custo_final = $Peca->custo_final_float();
-            foreach ($Peca->tabela_preco_peca as $tabela_preco_peca) {
-                $margem = DataHelper::getPercent2Float($margens[$tabela_preco_peca->idtabela_preco]);
-                $margem_minimo = DataHelper::getPercent2Float($margem_minimos[$tabela_preco_peca->idtabela_preco]);
+            foreach ($Peca->tabela_preco as $tabela_preco) {
+                $margem = DataHelper::getPercent2Float($margens[$tabela_preco->idtabela_preco]);
+                $margem_minimo = DataHelper::getPercent2Float($margem_minimos[$tabela_preco->idtabela_preco]);
 
                 $dataUpd = [
                     'preco' => $custo_final + ($custo_final * $margem) / 100,
@@ -285,7 +285,7 @@ class PecasController extends Controller
                     'margem_minimo' => $margem_minimo,
                 ];
 //                return $dataUpd;
-                $tabela_preco_peca->update($dataUpd);
+                $tabela_preco->update($dataUpd);
             }
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->msg_upd]);

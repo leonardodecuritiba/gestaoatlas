@@ -231,8 +231,30 @@ class Container
         return $mock;
     }
 
-    public function instanceMock()
+    protected function checkForNamedMockClashes($config)
     {
+        $name = $config->getName();
+
+        if (!$name) {
+            return;
+        }
+
+        $hash = $config->getHash();
+
+        if (isset($this->_namedMocks[$name])) {
+            if ($hash !== $this->_namedMocks[$name]) {
+                throw new \Mockery\Exception(
+                    "The mock named '$name' has been already defined with a different mock configuration"
+                );
+            }
+        }
+
+        $this->_namedMocks[$name] = $hash;
+    }
+
+    public function getGenerator()
+    {
+        return $this->_generator;
     }
 
     public function getLoader()
@@ -240,9 +262,53 @@ class Container
         return $this->_loader;
     }
 
-    public function getGenerator()
+    protected function _getInstance($mockName, $constructorArgs = null)
     {
-        return $this->_generator;
+        if ($constructorArgs !== null) {
+            $r = new \ReflectionClass($mockName);
+            return $r->newInstanceArgs($constructorArgs);
+        }
+
+        try {
+            $instantiator = new Instantiator;
+            $instance = $instantiator->instantiate($mockName);
+        } catch (\Exception $ex) {
+            $internalMockName = $mockName . '_Internal';
+
+            if (!class_exists($internalMockName)) {
+                eval("class $internalMockName extends $mockName {" .
+                    'public function __construct() {}' .
+                    '}');
+            }
+
+            $instance = new $internalMockName();
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Store a mock and set its container reference
+     *
+     * @param \Mockery\Mock
+     * @return \Mockery\Mock
+     */
+    public function rememberMock(\Mockery\MockInterface $mock)
+    {
+        if (!isset($this->_mocks[get_class($mock)])) {
+            $this->_mocks[get_class($mock)] = $mock;
+        } else {
+            /**
+             * This condition triggers for an instance mock where origin mock
+             * is already remembered
+             */
+            $this->_mocks[] = $mock;
+        }
+        return $mock;
+    }
+
+    public function instanceMock()
+    {
     }
 
     /**
@@ -344,18 +410,6 @@ class Container
     }
 
     /**
-     * Set current ordered number
-     *
-     * @param int $order
-     * @return int The current order number that was set
-     */
-    public function mockery_setCurrentOrder($order)
-    {
-        $this->_currentOrder = $order;
-        return $this->_currentOrder;
-    }
-
-    /**
      * Get current ordered number
      *
      * @return int
@@ -390,6 +444,18 @@ class Container
     }
 
     /**
+     * Set current ordered number
+     *
+     * @param int $order
+     * @return int The current order number that was set
+     */
+    public function mockery_setCurrentOrder($order)
+    {
+        $this->_currentOrder = $order;
+        return $this->_currentOrder;
+    }
+
+    /**
      * Gets the count of expectations on the mocks
      *
      * @return int
@@ -401,26 +467,6 @@ class Container
             $count += $mock->mockery_getExpectationCount();
         }
         return $count;
-    }
-
-    /**
-     * Store a mock and set its container reference
-     *
-     * @param \Mockery\Mock
-     * @return \Mockery\Mock
-     */
-    public function rememberMock(\Mockery\MockInterface $mock)
-    {
-        if (!isset($this->_mocks[get_class($mock)])) {
-            $this->_mocks[get_class($mock)] = $mock;
-        } else {
-            /**
-             * This condition triggers for an instance mock where origin mock
-             * is already remembered
-             */
-            $this->_mocks[] = $mock;
-        }
-        return $mock;
     }
 
     /**
@@ -451,31 +497,6 @@ class Container
         }
     }
 
-    protected function _getInstance($mockName, $constructorArgs = null)
-    {
-        if ($constructorArgs !== null) {
-            $r = new \ReflectionClass($mockName);
-            return $r->newInstanceArgs($constructorArgs);
-        }
-
-        try {
-            $instantiator = new Instantiator;
-            $instance = $instantiator->instantiate($mockName);
-        } catch (\Exception $ex) {
-            $internalMockName = $mockName . '_Internal';
-
-            if (!class_exists($internalMockName)) {
-                eval("class $internalMockName extends $mockName {" .
-                        'public function __construct() {}' .
-                    '}');
-            }
-
-            $instance = new $internalMockName();
-        }
-
-        return $instance;
-    }
-
     /**
      * Takes a class name and declares it
      *
@@ -499,26 +520,5 @@ class Container
         } else {
             eval(" class $fqcn {} ");
         }
-    }
-
-    protected function checkForNamedMockClashes($config)
-    {
-        $name = $config->getName();
-
-        if (!$name) {
-            return;
-        }
-
-        $hash = $config->getHash();
-
-        if (isset($this->_namedMocks[$name])) {
-            if ($hash !== $this->_namedMocks[$name]) {
-                throw new \Mockery\Exception(
-                    "The mock named '$name' has been already defined with a different mock configuration"
-                );
-            }
-        }
-
-        $this->_namedMocks[$name] = $hash;
     }
 }

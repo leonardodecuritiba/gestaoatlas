@@ -35,16 +35,16 @@ class AggregateException extends \RuntimeException implements PredictionExceptio
         return $this->exceptions;
     }
 
-    public function setObjectProphecy(ObjectProphecy $objectProphecy)
-    {
-        $this->objectProphecy = $objectProphecy;
-    }
-
     /**
      * @return ObjectProphecy
      */
     public function getObjectProphecy()
     {
         return $this->objectProphecy;
+    }
+
+    public function setObjectProphecy(ObjectProphecy $objectProphecy)
+    {
+        $this->objectProphecy = $objectProphecy;
     }
 }

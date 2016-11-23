@@ -108,6 +108,14 @@ class ComparisonFailure extends \RuntimeException
     /**
      * @return string
      */
+    public function toString()
+    {
+        return $this->message . $this->getDiff();
+    }
+
+    /**
+     * @return string
+     */
     public function getDiff()
     {
         if (!$this->actualAsString && !$this->expectedAsString) {
@@ -117,13 +125,5 @@ class ComparisonFailure extends \RuntimeException
         $differ = new Differ("\n--- Expected\n+++ Actual\n");
 
         return $differ->diff($this->expectedAsString, $this->actualAsString);
-    }
-
-    /**
-     * @return string
-     */
-    public function toString()
-    {
-        return $this->message . $this->getDiff();
     }
 }

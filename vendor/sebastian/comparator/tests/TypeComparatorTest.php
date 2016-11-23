@@ -20,11 +20,6 @@ class TypeComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
-    protected function setUp()
-    {
-        $this->comparator = new TypeComparator;
-    }
-
     public function acceptsSucceedsProvider()
     {
         return array(
@@ -100,5 +95,10 @@ class TypeComparatorTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('SebastianBergmann\\Comparator\\ComparisonFailure', 'does not match expected type');
         $this->comparator->assertEquals($expected, $actual);
+    }
+
+    protected function setUp()
+    {
+        $this->comparator = new TypeComparator;
     }
 }

@@ -51,6 +51,15 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['a', 'b'], $called);
     }
 
+    private function createSelfResolvingPromise($value)
+    {
+        $p = new Promise(function () use (&$p, $value) {
+            $p->resolve($value);
+        });
+
+        return $p;
+    }
+
     public function testCanResolveBeforeConsumingAll()
     {
         $called = 0;
@@ -290,15 +299,6 @@ class EachPromiseTest extends \PHPUnit_Framework_TestCase
             P\queue()->run();
         }
         $this->assertEquals(range(0, 9), $results);
-    }
-
-    private function createSelfResolvingPromise($value)
-    {
-        $p = new Promise(function () use (&$p, $value) {
-            $p->resolve($value);
-        });
-
-        return $p;
     }
 
     public function testMutexPreventsGeneratorRecursion()

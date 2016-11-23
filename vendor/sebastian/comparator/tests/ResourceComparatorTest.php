@@ -18,11 +18,6 @@ class ResourceComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
-    protected function setUp()
-    {
-        $this->comparator = new ResourceComparator;
-    }
-
     public function acceptsSucceedsProvider()
     {
         $tmpfile1 = tmpfile();
@@ -116,5 +111,10 @@ class ResourceComparatorTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('SebastianBergmann\\Comparator\\ComparisonFailure');
         $this->comparator->assertEquals($expected, $actual);
+    }
+
+    protected function setUp()
+    {
+        $this->comparator = new ResourceComparator;
     }
 }

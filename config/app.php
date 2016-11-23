@@ -13,7 +13,7 @@ return [
     */
 
     'version'   => 'v1.0.0',
-    'update' => '22:30 - 16/11',
+    'update' => '10:00 - 22/11',
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => 'pt-BR',
+    'locale' => 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------
@@ -175,9 +175,8 @@ return [
         Collective\Bus\BusServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
-//        Jlapp\Swaggervel\SwaggervelServiceProvider::class
-        \L5Swagger\L5SwaggerServiceProvider::class,
-        Zizaco\Entrust\EntrustServiceProvider::class
+        Zizaco\Entrust\EntrustServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -230,8 +229,8 @@ return [
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'SintegraSP' => SintegraPHP\SP\SintegraSP::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
-        'Entrust'   => Zizaco\Entrust\EntrustFacade::class
     ],
 
 ];

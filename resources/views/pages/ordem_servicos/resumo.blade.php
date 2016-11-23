@@ -55,7 +55,8 @@
                         <div class="form-group">
 							@if($OrdemServico->status())
 								<div class="col-md-6 col-sm-6 col-xs-12">
-									<a href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
+									<a target="_blank"
+									   href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
 									   class="btn btn-default btn-lg btn-block"><i class="fa fa-print fa-2"></i>
 										Imprimir</a>
 								</div>

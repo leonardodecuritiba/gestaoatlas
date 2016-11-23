@@ -18,12 +18,6 @@ class ArrayComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
-    protected function setUp()
-    {
-        $this->comparator = new ArrayComparator;
-        $this->comparator->setFactory(new Factory);
-    }
-
     public function acceptsFailsProvider()
     {
         return array(
@@ -159,5 +153,11 @@ class ArrayComparatorTest extends \PHPUnit_Framework_TestCase
           'Failed asserting that two arrays are equal'
         );
         $this->comparator->assertEquals($expected, $actual, $delta, $canonicalize);
+    }
+
+    protected function setUp()
+    {
+        $this->comparator = new ArrayComparator;
+        $this->comparator->setFactory(new Factory);
     }
 }

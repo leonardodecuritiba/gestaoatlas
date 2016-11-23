@@ -41,7 +41,7 @@ class CreateClientesTable extends Migration
             $table->integer('idcolaborador_criador')->unsigned();
             $table->foreign('idcolaborador_criador')->references('idcolaborador')->on('colaboradores')->onDelete('cascade');
 
-            $table->integer('idcolaborador_validador')->unsigned();
+            $table->integer('idcolaborador_validador')->unsigned()->nullable();
             $table->foreign('idcolaborador_validador')->references('idcolaborador')->on('colaboradores')->onDelete('cascade');
 
             $table->timestamp('validated_at')->nullable();

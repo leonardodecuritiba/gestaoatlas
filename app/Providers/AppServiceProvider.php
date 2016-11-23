@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -14,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+        Carbon::setLocale($this->app->getLocale());
     }
 
     /**
@@ -24,6 +26,5 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $this->app->register(\L5Swagger\L5SwaggerServiceProvider::class);
     }
 }

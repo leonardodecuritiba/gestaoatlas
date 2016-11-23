@@ -27,6 +27,11 @@ class Promise implements PromiseInterface
         $this->cancelFn = $cancelFn;
     }
 
+    public function otherwise(callable $onRejected)
+    {
+        return $this->then(null, $onRejected);
+    }
+
     public function then(
         callable $onFulfilled = null,
         callable $onRejected = null
@@ -52,11 +57,6 @@ class Promise implements PromiseInterface
         return $onRejected ? $rejection->then(null, $onRejected) : $rejection;
     }
 
-    public function otherwise(callable $onRejected)
-    {
-        return $this->then(null, $onRejected);
-    }
-
     public function wait($unwrap = true)
     {
         $this->waitIfPending();
@@ -77,40 +77,46 @@ class Promise implements PromiseInterface
         }
     }
 
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    public function cancel()
+    private function waitIfPending()
     {
         if ($this->state !== self::PENDING) {
             return;
+        } elseif ($this->waitFn) {
+            $this->invokeWaitFn();
+        } elseif ($this->waitList) {
+            $this->invokeWaitList();
+        } else {
+            // If there's not wait function, then reject the promise.
+            $this->reject('Cannot wait on a promise that has '
+                . 'no internal wait function. You must provide a wait '
+                . 'function when constructing the promise to be able to '
+                . 'wait on a promise.');
         }
 
-        $this->waitFn = $this->waitList = null;
+        queue()->run();
 
-        if ($this->cancelFn) {
-            $fn = $this->cancelFn;
-            $this->cancelFn = null;
-            try {
-                $fn();
-            } catch (\Throwable $e) {
-                $this->reject($e);
-            } catch (\Exception $e) {
-                $this->reject($e);
-            }
-        }
-
-        // Reject the promise only if it wasn't rejected in a then callback.
         if ($this->state === self::PENDING) {
-            $this->reject(new CancellationException('Promise has been cancelled'));
+            $this->reject('Invoking the wait callback did not resolve the promise');
         }
     }
 
-    public function resolve($value)
+    private function invokeWaitFn()
     {
-        $this->settle(self::FULFILLED, $value);
+        try {
+            $wfn = $this->waitFn;
+            $this->waitFn = null;
+            $wfn(true);
+        } catch (\Exception $reason) {
+            if ($this->state === self::PENDING) {
+                // The promise has not been resolved yet, so reject the promise
+                // with the exception.
+                $this->reject($reason);
+            } else {
+                // The promise was already resolved, so there's a problem in
+                // the application.
+                throw $reason;
+            }
+        }
     }
 
     public function reject($reason)
@@ -215,46 +221,9 @@ class Promise implements PromiseInterface
         }
     }
 
-    private function waitIfPending()
+    public function getState()
     {
-        if ($this->state !== self::PENDING) {
-            return;
-        } elseif ($this->waitFn) {
-            $this->invokeWaitFn();
-        } elseif ($this->waitList) {
-            $this->invokeWaitList();
-        } else {
-            // If there's not wait function, then reject the promise.
-            $this->reject('Cannot wait on a promise that has '
-                . 'no internal wait function. You must provide a wait '
-                . 'function when constructing the promise to be able to '
-                . 'wait on a promise.');
-        }
-
-        queue()->run();
-
-        if ($this->state === self::PENDING) {
-            $this->reject('Invoking the wait callback did not resolve the promise');
-        }
-    }
-
-    private function invokeWaitFn()
-    {
-        try {
-            $wfn = $this->waitFn;
-            $this->waitFn = null;
-            $wfn(true);
-        } catch (\Exception $reason) {
-            if ($this->state === self::PENDING) {
-                // The promise has not been resolved yet, so reject the promise
-                // with the exception.
-                $this->reject($reason);
-            } else {
-                // The promise was already resolved, so there's a problem in
-                // the application.
-                throw $reason;
-            }
-        }
+        return $this->state;
     }
 
     private function invokeWaitList()
@@ -269,5 +238,36 @@ class Promise implements PromiseInterface
                 $result->waitIfPending();
             }
         }
+    }
+
+    public function cancel()
+    {
+        if ($this->state !== self::PENDING) {
+            return;
+        }
+
+        $this->waitFn = $this->waitList = null;
+
+        if ($this->cancelFn) {
+            $fn = $this->cancelFn;
+            $this->cancelFn = null;
+            try {
+                $fn();
+            } catch (\Throwable $e) {
+                $this->reject($e);
+            } catch (\Exception $e) {
+                $this->reject($e);
+            }
+        }
+
+        // Reject the promise only if it wasn't rejected in a then callback.
+        if ($this->state === self::PENDING) {
+            $this->reject(new CancellationException('Promise has been cancelled'));
+        }
+    }
+
+    public function resolve($value)
+    {
+        $this->settle(self::FULFILLED, $value);
     }
 }

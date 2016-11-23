@@ -53,6 +53,7 @@
 						<table border="0" class="table table-hover">
 							<thead>
 								<tr>
+									<th>Status</th>
 									<th>Fantasia</th>
 									<th>Documento</th>
 									<th>Responsável</th>
@@ -64,8 +65,13 @@
 								@foreach($Buscas as $cliente)
 									<?php $tipo_cliente = $cliente->getType(); ?>
 									<tr>
-										<td>{{$cliente->getType()->nome_principal}}</td>
-										<td>{{$cliente->getType()->entidade}}</td>
+										@if($cliente->validado())
+											<td><span class="btn btn-success btn-xs"> Validado</span></td>
+										@else
+											<td><span class="btn btn-danger btn-xs"> Não Validado</span></td>
+										@endif
+										<td>{{$tipo_cliente->nome_principal}}</td>
+										<td>{{$tipo_cliente->entidade}}</td>
 										<td>{{$cliente->nome_responsavel}}</td>
 										<td>{{$cliente->contato->telefone}}</td>
 										<td>

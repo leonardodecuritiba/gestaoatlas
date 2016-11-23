@@ -18,6 +18,7 @@ use App\Servico;
 use App\ServicoPrestado;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -73,7 +74,7 @@ class OrdemServicoController extends Controller
         if (isset($request['busca'])) {
             $busca = $request['busca'];
             $documento = preg_replace('#[^0-9]#', '', $busca);
-            $Buscas = Cliente::whereIn('idcliente', function ($query) use ($busca, $documento) {
+            $Buscas = Cliente::getValidosOrdemServico()->whereIn('idcliente', function ($query) use ($busca, $documento) {
                 $query->select('clientes.idcliente')
                     ->from('clientes')
                     ->join('pjuridicas', 'pjuridicas.idpjuridica', '=', 'clientes.idpjuridica')
@@ -89,7 +90,7 @@ class OrdemServicoController extends Controller
                     ->where('pfisicas.cpf', 'like', '%' . $documento . '%');
             })->get();
         } else {
-            $Buscas = Cliente::all();
+            $Buscas = Cliente::getValidosOrdemServico()->get();
         }
         return view('pages.' . $this->Page->link . '.busca_cliente')
             ->with('Page', $this->Page)
@@ -284,7 +285,273 @@ class OrdemServicoController extends Controller
 
     public function imprimir(Request $request, $idordem_servico)
     {
+        $atlas = array(
+            'endereco' => 'Rua Triunfo, 400',
+            'bairro' => 'Santa Cruz',
+            'cidade' => 'Ribeirão Preto',
+            'cep' => '14020-670',
+            'cnpj' => '10.555.180/0001-21',
+            'ie' => '797.146.934.117',
+            'n_autorizacao' => '10002180',
+            'fone' => '(16)3011-8448',
+            'email' => 'comercial@hotmail.com.br');
+
+        $empresa = array(
+            'nome' => 'Grupo Atlas Tecnologia',
+            'descricao' => 'Manutenção e venda de equipamentos de automação comercial',
+            'dados_texto' =>
+                $atlas['endereco'] . ' - ' . $atlas['bairro'] . '\n' .
+                $atlas['cidade'] . ' - CEP ' . $atlas['cep'] . '\n' .
+                'CNPJ: ' . $atlas['cnpj'] . '\n' .
+                'I.E: ' . $atlas['ie'] . '\n' .
+                'N° de Autorização: ' . $atlas['n_autorizacao'] . '\n' .
+                'Fone: ' . $atlas['fone'] . '\n' .
+                'E-mail: ' . $atlas['email'] . '\n',
+            'dados' => $atlas,
+            'logo' => storage_path('uploads\institucional\logo_atlas.png'),
+        );
+
+        $dados_cliente = [
+            array('Cliente / Razão Social:', 'Macedo automação Comercial -ME',
+                'Fantasia:', 'Grupo Atlas Tecnologia',
+                'DATA / HR I', '31/10/2016 - 10:00'
+            ),
+            array('CNPJ:', '10.555.180/0001-21',
+                'I.E:', '222.222.222.222',
+                'DATA / HR F', '31/10/2016 - 13:00'
+            ),
+            array('Endereço:', 'Rua Platina, 121',
+                'CEP: 14020-670', 'UF: SP',
+                'Cidade: Ribeirão Preto'
+            ),
+            array('Telefone:', '(16)3329-4365'
+            ),
+            array('Contato:', 'Willian/ Daniela'
+            ),
+            array('Email:', 'financeiro@atlastecnologia.com.br',
+                'Nº Chamado Sist. Cliente:', '12 -13 -14 -15'
+            ),
+        ];
+
+        $font = [
+            'nome' => array(
+                'family' => 'Bookman Old Style',
+                'size' => '24',
+            ),
+            'descricao' => array(
+                'size' => '12',
+                'bold' => true
+            ),
+            'endereco' => array(
+                'size' => '9'
+            ),
+            'quebra' => array(
+                'size' => '12',
+                'bold' => true
+            )
+        ];
+
+        $data = [
+            'empresa' => $empresa,
+            'dados_cliente' => $dados_cliente,
+            'fonts' => $font
+        ];
+
+        Excel::create('Filename', function ($excel) use ($data) {
+
+//            dd($data['empresa']['cabecalho']);
+            $excel->sheet('Sheetname', function ($sheet) use ($data) {
+                $sheet->setPageMargin(0.25);
+
+                $cabecalho = $data['empresa']['dados'];
+
+                $sheet->mergeCells('A1:B1');
+                $sheet->mergeCells('A2:B2');
+
+                $sheet->cell('A1', function ($cell) use ($data) {
+                    // manipulate the cell
+                    $cell->setValue(strtoupper($data['empresa']['nome']));
+                    $cell->setFont($data['fonts']['nome']);
+                    $cell->setFontFamily('Bookman Old Style');
+                });
+                $sheet->cell('A2', function ($cell) use ($data) {
+                    // manipulate the cell
+                    $cell->setValue($data['empresa']['descricao']);
+                    $cell->setFont($data['fonts']['descricao']);
+                });
+
+                $sheet->rows(array(
+                    array($cabecalho['endereco'] . ' - ' . $cabecalho['bairro']),
+                    array('CNPJ: ' . $cabecalho['cnpj']),
+                    array('I.E: ' . $cabecalho['ie']),
+                    array('N° de Autorização: ' . $cabecalho['n_autorizacao']),
+                    array('Fone: ' . $cabecalho['fone']),
+                    array('E-mail: ' . $cabecalho['email']),
+                ));
+                $sheet->mergeCells('A3:B3');
+                $sheet->mergeCells('A4:B4');
+                $sheet->mergeCells('A5:B5');
+                $sheet->mergeCells('A6:B6');
+                $sheet->mergeCells('A7:B7');
+                $sheet->mergeCells('A8:B8');
+                $sheet->cells('A3:B8', function ($cells) use ($data) {
+                    // manipulate the range of cells
+                    $cells->setFont($data['fonts']['endereco']);
+                });
+
+                $sheet->mergeCells('C1:G8');
+                $objDrawing = new \PHPExcel_Worksheet_Drawing();
+                $objDrawing->setPath($data['empresa']['logo']); //your image path
+                $objDrawing->setCoordinates('C1');
+                $objDrawing->setWorksheet($sheet);
+
+
+                //QUEBRA ------------------------------------------
+                $linha = 9;
+                $info = ['Ordem Serviço n° 631288'];
+                $sheet->mergeCells('A' . $linha . ':G' . $linha);
+                $sheet->row($linha, function ($row) use ($data) {
+                    // call cell manipulation methods
+                    $row->setBackground('#d9d9d9');
+                    $row->setAlignment('center');
+                    $row->setFont($data['fonts']['quebra']);
+                });
+                $sheet->row($linha, $info);
+                //\QUEBRA ------------------------------------------
+
+                //CABEÇALHO DADOS CLIENTE
+                $sheet->rows($data['dados_cliente']);
+
+                //********************************************************************************************//
+                //QUEBRA ------------------------------------------
+                //\QUEBRA ------------------------------------------
+
+                //INSTRUMENTOS ------------------------------------------
+                $dados_instrumento = [
+                    array('Marca: Toledo', 'Modelo: Prix 5 Plus', 'N° de Série: 123456', 'Patrimônio: 123154', 'Ano: 2008', 'Inventário: 123131'),
+                    array('Portaria: 12220', 'Capacidade: 10KG', 'Divisão: 101/12', 'Setor: 12', 'IP: 100.100.100.1', 'Endereço: 100')
+                ];
+                $selo_lacre = [
+                    array('Selo retirado: 12345',
+                        'Selo Afixado: 122211',
+                        'Lacres Retirados: 123;111;102',
+                        'Lacres Afixados: 10222;222;233')
+                ];
+                $defeitos_solucao = [
+                    array('Defeito:', 'TECLADO, CABEÇA IMPRESSÃO, CABO FORÇA',
+                        '', 'Solução:', 'TROCA DOS MESMOS.')
+                ];
+                $instrumento = [
+                    'line' => 16,
+                    'info' => ['Instrumento'],
+                    'dados_instrumentos' => $dados_instrumento,
+                    'selo_lacre' => $selo_lacre,
+                    'defeito_solucao' => $defeitos_solucao,
+                ];
+                $sheet = self::setInstrumento($sheet, $data, $instrumento);
+                ///INSTRUMENTOS ------------------------------------------
+
+                //********************************************************************************************//
+                $data['pecas'] = [
+                    array('1', 'TECLADO PRIX 5 PLUS PT', '1', '-', '-', 'SIM', '-'),
+                    array('33', 'CABEÇA TERMICA TOLEDO', '1', 'R$ 390,00', 'R$ 390,00', 'NÃO', '-'),
+                    array('50', 'CABO FORÇA TOLEDO', '1', 'R$ 45,00', 'R$ 45,00', 'SIM', 'CABO DE FORÇA FOI CORTADO, MAU USO.')
+                ];
+                $kits = [
+                    'line' => 21,
+                    'info' => ['Peças'],
+                    'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                    'values' => $data['pecas'],
+                ];
+                $sheet = self::setData($sheet, $data, $kits);
+
+                //********************************************************************************************//
+
+                $data['kits'] = [
+                    array('33', 'KIT X', '1', 'R$ 300,00', 'R$ 200,00', 'NÃO', '-')
+                ];
+                $kits = [
+                    'line' => 26,
+                    'info' => ['Kits'],
+                    'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                    'values' => $data['kits'],
+                ];
+                $sheet = self::setData($sheet, $data, $kits);
+
+                //********************************************************************************************//
+                $data['servicos'] = [
+                    array('1', 'SERVIÇO 1º BALANÇA SAVEGNAGO ATÉ 30 KG', 'R$ 120,00')
+                ];
+                $servicos = [
+                    'line' => 29,
+                    'info' => ['Serviços'],
+                    'cabecalho' => ['Codigo', 'Kit', 'V. Total'],
+                    'values' => $data['servicos'],
+                ];
+                $sheet = self::setData($sheet, $data, $servicos);
+
+            });
+
+        })->export('xls');
         return 'imprimir';
+
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $OrdemServico->update([
+            'fechamento' => Carbon::now()->toDateTimeString()
+        ]);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_fec]);
+        return redirect()->route('ordem_servicos.resumo', $idordem_servico);
+    }
+
+    static public function setInstrumento($sheet, $data, $dados)
+    {
+
+        $linha = $dados['line'];
+        $sheet->mergeCells('A' . $linha . ':G' . $linha);
+        $sheet->row($linha, function ($row) use ($data) {
+            // call cell manipulation methods
+            $row->setBackground('#d9d9d9');
+            $row->setAlignment('center');
+            $row->setFont($data['fonts']['quebra']);
+        });
+        $sheet->row($linha, $dados['info']);
+
+        $sheet->rows($dados['dados_instrumentos']);
+        $sheet->rows($dados['selo_lacre']);
+        $sheet->rows($dados['defeito_solucao']);
+        $sheet->mergeCells('B20:C20');
+        $sheet->mergeCells('E20:G20');
+        return $sheet;
+    }
+
+    static public function setData($sheet, $data, $dados)
+    {
+        $linha = $dados['line'];
+        //LINHA ------------------------------------------
+        $sheet->mergeCells('A' . $linha . ':G' . $linha);
+        $sheet->row($linha, function ($row) use ($data) {
+            $row->setBackground('#d9d9d9');
+            $row->setAlignment('center');
+            $row->setFont($data['fonts']['quebra']);
+        });
+        $sheet->row($linha, $dados['info']);
+
+        //CABEÇALHO ------------------------------------------
+        $linha++;
+        $sheet->row($linha, function ($row) {
+            $row->setFontWeight(true);
+        });
+        $sheet->row($linha, $dados['cabecalho']);
+
+        // DADOS ------------------------------------------
+        $sheet->rows($dados['values']);
+        return $sheet;
+    }
+
+    public function encaminhar(Request $request, $idordem_servico)
+    {
+        return 'encaminhar por email';
         $OrdemServico = OrdemServico::find($idordem_servico);
         $OrdemServico->update([
             'fechamento' => Carbon::now()->toDateTimeString()
@@ -299,18 +566,6 @@ class OrdemServicoController extends Controller
         return view('pages.' . $this->Page->link . '.resumo')
             ->with('Page', $this->Page)
             ->with('OrdemServico', OrdemServico::find($idordem_servico));
-    }
-
-    public function encaminhar(Request $request, $idordem_servico)
-    {
-        return 'encaminhar por email';
-        $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->update([
-            'fechamento' => Carbon::now()->toDateTimeString()
-        ]);
-        session()->forget('mensagem');
-        session(['mensagem' => $this->Page->msg_fec]);
-        return $this->resumo($request, $idordem_servico);
     }
 
     public function add_insumos(Request $request, $idordem_servico)
@@ -371,49 +626,48 @@ class OrdemServicoController extends Controller
             ->with('Buscas', $Buscas);
     }
 
-
     /*
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'descricao'         => 'required|unique:'.$this->Page->table,
-        ]);
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $data = $request->all();
-            $OrdemServico = OrdemServico::create($data);
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->msg_abr]);
-            return view('pages.'.$this->Page->link.'.master')
-                ->with('OrdemServico', $OrdemServico)
-                ->with('Page', $this->Page);
-        }
-    }
+   public function store(Request $request)
+   {
+       $validator = Validator::make($request->all(), [
+           'descricao'         => 'required|unique:'.$this->Page->table,
+       ]);
+       if ($validator->fails()) {
+           return redirect()->to($this->getRedirectUrl())
+               ->withErrors($validator)
+               ->withInput($request->all());
+       } else {
+           $data = $request->all();
+           $OrdemServico = OrdemServico::create($data);
+           session()->forget('mensagem');
+           session(['mensagem' => $this->Page->msg_abr]);
+           return view('pages.'.$this->Page->link.'.master')
+               ->with('OrdemServico', $OrdemServico)
+               ->with('Page', $this->Page);
+       }
+   }
 
-    public function update(Request $request, $id)
-    {
-        $OrdemServico = OrdemServico::find($id);
-        $validator = Validator::make($request->all(), [
-            'descricao' => 'unique:'.$this->Page->table.',descricao,'.$id.','.$this->Page->primaryKey,
-        ]);
+   public function update(Request $request, $id)
+   {
+       $OrdemServico = OrdemServico::find($id);
+       $validator = Validator::make($request->all(), [
+           'descricao' => 'unique:'.$this->Page->table.',descricao,'.$id.','.$this->Page->primaryKey,
+       ]);
 
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $dataUpdate = $request->all();
-            $OrdemServico->update($dataUpdate);
+       if ($validator->fails()) {
+           return redirect()->to($this->getRedirectUrl())
+               ->withErrors($validator)
+               ->withInput($request->all());
+       } else {
+           $dataUpdate = $request->all();
+           $OrdemServico->update($dataUpdate);
 
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->msg_upd]);
-            return $this->show($OrdemServico->idordem_servico);
-        }
-    }
-    */
+           session()->forget('mensagem');
+           session(['mensagem' => $this->Page->msg_upd]);
+           return $this->show($OrdemServico->idordem_servico);
+       }
+   }
+   */
 
     public function destroy($id)
     {

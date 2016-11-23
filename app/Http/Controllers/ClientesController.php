@@ -8,6 +8,7 @@ use App\Regiao;
 use App\Segmento;
 use App\TabelaPreco;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Cliente;
 use App\PessoaJuridica;
@@ -20,7 +21,7 @@ use App\Http\Requests;
 class ClientesController extends Controller
 {
     private $Page;
-    private $idcolaborador;
+    private $colaborador;
     /*
     private $Validation = [
         'pessoa_juridica' => array(
@@ -61,7 +62,7 @@ class ClientesController extends Controller
             $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
         }
         */
-        $this->idcolaborador = 1;
+        $this->colaborador = Auth::user()->colaborador;
         $this->Page = (object)[
             'link'              => "clientes",
             'Target'            => "Cliente",
@@ -184,8 +185,11 @@ class ClientesController extends Controller
 //                ->withInput();
         } else {
 
-
-//            return $data;
+            $data['idcolaborador_criador'] = $this->colaborador->idcolaborador;
+            if (!$this->colaborador->hasRole('tecnico')) {
+                $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
+                $data['validated_at'] = Carbon::now()->toDateTimeString();
+            }
             //store CONTATO
             $Contato = Contato::create($data);
             $data['idcontato'] = $Contato->idcontato;
@@ -215,14 +219,12 @@ class ClientesController extends Controller
                 $data['idcliente_centro_custo']=NULL;
             }
 
-            $data['idcolaborador_criador']=$this->idcolaborador;
-            $data['idcolaborador_validador']=$this->idcolaborador;
-            $data['validated_at']=Carbon::now()->toDateTimeString();
+
             $Cliente = Cliente::create($data);
 
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
-            return $this->show($Cliente->idcliente);
+            return redirect()->route('clientes.show', $Cliente->idcliente);
         }
     }
 
@@ -309,7 +311,7 @@ class ClientesController extends Controller
 
             session()->forget('mensagem');
             session(['mensagem' => ($this->Page->Target.' atualizado com sucesso!')]);
-            return $this->show($Cliente->idcliente);
+            return redirect()->route('clientes.show', $Cliente->idcliente);
         }
     }
 
@@ -319,5 +321,18 @@ class ClientesController extends Controller
         $data->delete();
         return response()->json(['status' => '1',
             'response' => $this->Page->msg_rem]);
+    }
+
+    public function validar($id)
+    {
+        $Cliente = Cliente::find($id);
+        if ($this->colaborador->hasRole('admin')) {
+            $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
+            $data['validated_at'] = Carbon::now()->toDateTimeString();
+            $Cliente->update($data);
+            session()->forget('mensagem');
+            session(['mensagem' => ($this->Page->Target . ' atualizado com sucesso!')]);
+        }
+        return redirect()->route('clientes.show', $id);
     }
 }

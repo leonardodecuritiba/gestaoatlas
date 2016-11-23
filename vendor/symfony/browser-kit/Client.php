@@ -59,6 +59,18 @@ abstract class Client
     }
 
     /**
+     * Sets server parameters.
+     *
+     * @param array $server An array of server parameters
+     */
+    public function setServerParameters(array $server)
+    {
+        $this->server = array_merge(array(
+            'HTTP_USER_AGENT' => 'Symfony2 BrowserKit',
+        ), $server);
+    }
+
+    /**
      * Sets whether to automatically follow redirects or not.
      *
      * @param bool $followRedirect Whether to follow redirects
@@ -79,6 +91,16 @@ abstract class Client
     }
 
     /**
+     * Returns the maximum number of requests that crawler can follow.
+     *
+     * @return int
+     */
+    public function getMaxRedirects()
+    {
+        return $this->maxRedirects;
+    }
+
+    /**
      * Sets the maximum number of requests that crawler can follow.
      *
      * @param int $maxRedirects
@@ -87,16 +109,6 @@ abstract class Client
     {
         $this->maxRedirects = $maxRedirects < 0 ? -1 : $maxRedirects;
         $this->followRedirects = -1 != $this->maxRedirects;
-    }
-
-    /**
-     * Returns the maximum number of requests that crawler can follow.
-     *
-     * @return int
-     */
-    public function getMaxRedirects()
-    {
-        return $this->maxRedirects;
     }
 
     /**
@@ -113,18 +125,6 @@ abstract class Client
         }
 
         $this->insulated = (bool) $insulated;
-    }
-
-    /**
-     * Sets server parameters.
-     *
-     * @param array $server An array of server parameters
-     */
-    public function setServerParameters(array $server)
-    {
-        $this->server = array_merge(array(
-            'HTTP_USER_AGENT' => 'Symfony2 BrowserKit',
-        ), $server);
     }
 
     /**
@@ -335,6 +335,75 @@ abstract class Client
     }
 
     /**
+     * Takes a URI and converts it to absolute if it is not already absolute.
+     *
+     * @param string $uri A URI
+     *
+     * @return string An absolute URI
+     */
+    protected function getAbsoluteUri($uri)
+    {
+        // already absolute?
+        if (0 === strpos($uri, 'http://') || 0 === strpos($uri, 'https://')) {
+            return $uri;
+        }
+
+        if (!$this->history->isEmpty()) {
+            $currentUri = $this->history->current()->getUri();
+        } else {
+            $currentUri = sprintf('http%s://%s/',
+                isset($this->server['HTTPS']) ? 's' : '',
+                isset($this->server['HTTP_HOST']) ? $this->server['HTTP_HOST'] : 'localhost'
+            );
+        }
+
+        // protocol relative URL
+        if (0 === strpos($uri, '//')) {
+            return parse_url($currentUri, PHP_URL_SCHEME) . ':' . $uri;
+        }
+
+        // anchor or query string parameters?
+        if (!$uri || '#' == $uri[0] || '?' == $uri[0]) {
+            return preg_replace('/[#?].*?$/', '', $currentUri) . $uri;
+        }
+
+        if ('/' !== $uri[0]) {
+            $path = parse_url($currentUri, PHP_URL_PATH);
+
+            if ('/' !== substr($path, -1)) {
+                $path = substr($path, 0, strrpos($path, '/') + 1);
+            }
+
+            $uri = $path . $uri;
+        }
+
+        return preg_replace('#^(.*?//[^/]+)\/.*$#', '$1', $currentUri) . $uri;
+    }
+
+    private function extractHost($uri)
+    {
+        $host = parse_url($uri, PHP_URL_HOST);
+
+        if ($port = parse_url($uri, PHP_URL_PORT)) {
+            return $host . ':' . $port;
+        }
+
+        return $host;
+    }
+
+    /**
+     * Filters the BrowserKit request to the origin one.
+     *
+     * @param Request $request The BrowserKit Request to filter
+     *
+     * @return object An origin request instance
+     */
+    protected function filterRequest(Request $request)
+    {
+        return $request;
+    }
+
+    /**
      * Makes a request in another process.
      *
      * @param object $request An origin request instance
@@ -356,15 +425,6 @@ abstract class Client
     }
 
     /**
-     * Makes a request.
-     *
-     * @param object $request An origin request instance
-     *
-     * @return object An origin response instance
-     */
-    abstract protected function doRequest($request);
-
-    /**
      * Returns the script to execute when the request must be insulated.
      *
      * @param object $request An origin request instance
@@ -377,16 +437,13 @@ abstract class Client
     }
 
     /**
-     * Filters the BrowserKit request to the origin one.
+     * Makes a request.
      *
-     * @param Request $request The BrowserKit Request to filter
+     * @param object $request An origin request instance
      *
-     * @return object An origin request instance
+     * @return object An origin response instance
      */
-    protected function filterRequest(Request $request)
-    {
-        return $request;
-    }
+    abstract protected function doRequest($request);
 
     /**
      * Filters the origin response to the BrowserKit one.
@@ -398,59 +455,6 @@ abstract class Client
     protected function filterResponse($response)
     {
         return $response;
-    }
-
-    /**
-     * Creates a crawler.
-     *
-     * This method returns null if the DomCrawler component is not available.
-     *
-     * @param string $uri     A URI
-     * @param string $content Content for the crawler to use
-     * @param string $type    Content type
-     *
-     * @return Crawler|null
-     */
-    protected function createCrawlerFromContent($uri, $content, $type)
-    {
-        if (!class_exists('Symfony\Component\DomCrawler\Crawler')) {
-            return;
-        }
-
-        $crawler = new Crawler(null, $uri);
-        $crawler->addContent($content, $type);
-
-        return $crawler;
-    }
-
-    /**
-     * Goes back in the browser history.
-     *
-     * @return Crawler
-     */
-    public function back()
-    {
-        return $this->requestFromRequest($this->history->back(), false);
-    }
-
-    /**
-     * Goes forward in the browser history.
-     *
-     * @return Crawler
-     */
-    public function forward()
-    {
-        return $this->requestFromRequest($this->history->forward(), false);
-    }
-
-    /**
-     * Reloads the current browser.
-     *
-     * @return Crawler
-     */
-    public function reload()
-    {
-        return $this->requestFromRequest($this->history->current(), false);
     }
 
     /**
@@ -503,61 +507,47 @@ abstract class Client
         return $response;
     }
 
-    /**
-     * Restarts the client.
-     *
-     * It flushes history and all cookies.
-     */
-    public function restart()
+    private function updateServerFromUri($server, $uri)
     {
-        $this->cookieJar->clear();
-        $this->history->clear();
+        $server['HTTP_HOST'] = $this->extractHost($uri);
+        $scheme = parse_url($uri, PHP_URL_SCHEME);
+        $server['HTTPS'] = null === $scheme ? $server['HTTPS'] : 'https' == $scheme;
+        unset($server['HTTP_IF_NONE_MATCH'], $server['HTTP_IF_MODIFIED_SINCE']);
+
+        return $server;
     }
 
     /**
-     * Takes a URI and converts it to absolute if it is not already absolute.
+     * Creates a crawler.
+     *
+     * This method returns null if the DomCrawler component is not available.
      *
      * @param string $uri A URI
+     * @param string $content Content for the crawler to use
+     * @param string $type Content type
      *
-     * @return string An absolute URI
+     * @return Crawler|null
      */
-    protected function getAbsoluteUri($uri)
+    protected function createCrawlerFromContent($uri, $content, $type)
     {
-        // already absolute?
-        if (0 === strpos($uri, 'http://') || 0 === strpos($uri, 'https://')) {
-            return $uri;
+        if (!class_exists('Symfony\Component\DomCrawler\Crawler')) {
+            return;
         }
 
-        if (!$this->history->isEmpty()) {
-            $currentUri = $this->history->current()->getUri();
-        } else {
-            $currentUri = sprintf('http%s://%s/',
-                isset($this->server['HTTPS']) ? 's' : '',
-                isset($this->server['HTTP_HOST']) ? $this->server['HTTP_HOST'] : 'localhost'
-            );
-        }
+        $crawler = new Crawler(null, $uri);
+        $crawler->addContent($content, $type);
 
-        // protocol relative URL
-        if (0 === strpos($uri, '//')) {
-            return parse_url($currentUri, PHP_URL_SCHEME).':'.$uri;
-        }
+        return $crawler;
+    }
 
-        // anchor or query string parameters?
-        if (!$uri || '#' == $uri[0] || '?' == $uri[0]) {
-            return preg_replace('/[#?].*?$/', '', $currentUri).$uri;
-        }
-
-        if ('/' !== $uri[0]) {
-            $path = parse_url($currentUri, PHP_URL_PATH);
-
-            if ('/' !== substr($path, -1)) {
-                $path = substr($path, 0, strrpos($path, '/') + 1);
-            }
-
-            $uri = $path.$uri;
-        }
-
-        return preg_replace('#^(.*?//[^/]+)\/.*$#', '$1', $currentUri).$uri;
+    /**
+     * Goes back in the browser history.
+     *
+     * @return Crawler
+     */
+    public function back()
+    {
+        return $this->requestFromRequest($this->history->back(), false);
     }
 
     /**
@@ -573,24 +563,34 @@ abstract class Client
         return $this->request($request->getMethod(), $request->getUri(), $request->getParameters(), $request->getFiles(), $request->getServer(), $request->getContent(), $changeHistory);
     }
 
-    private function updateServerFromUri($server, $uri)
+    /**
+     * Goes forward in the browser history.
+     *
+     * @return Crawler
+     */
+    public function forward()
     {
-        $server['HTTP_HOST'] = $this->extractHost($uri);
-        $scheme = parse_url($uri, PHP_URL_SCHEME);
-        $server['HTTPS'] = null === $scheme ? $server['HTTPS'] : 'https' == $scheme;
-        unset($server['HTTP_IF_NONE_MATCH'], $server['HTTP_IF_MODIFIED_SINCE']);
-
-        return $server;
+        return $this->requestFromRequest($this->history->forward(), false);
     }
 
-    private function extractHost($uri)
+    /**
+     * Reloads the current browser.
+     *
+     * @return Crawler
+     */
+    public function reload()
     {
-        $host = parse_url($uri, PHP_URL_HOST);
+        return $this->requestFromRequest($this->history->current(), false);
+    }
 
-        if ($port = parse_url($uri, PHP_URL_PORT)) {
-            return $host.':'.$port;
-        }
-
-        return $host;
+    /**
+     * Restarts the client.
+     *
+     * It flushes history and all cookies.
+     */
+    public function restart()
+    {
+        $this->cookieJar->clear();
+        $this->history->clear();
     }
 }

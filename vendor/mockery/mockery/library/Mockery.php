@@ -63,6 +63,11 @@ class Mockery
     protected static $_loader;
 
     /**
+     * @var array
+     */
+    private static $_filesToCleanUp = array();
+
+    /**
      * Static shortcut to \Mockery\Container::mock().
      *
      * @return \Mockery\MockInterface
@@ -72,6 +77,91 @@ class Mockery
         $args = func_get_args();
 
         return call_user_func_array(array(self::getContainer(), 'mock'), $args);
+    }
+
+    /**
+     * Get the container.
+     */
+    public static function getContainer()
+    {
+        if (is_null(self::$_container)) {
+            self::$_container = new Mockery\Container(self::getGenerator(), self::getLoader());
+        }
+
+        return self::$_container;
+    }
+
+    /**
+     * Set the container.
+     *
+     * @param \Mockery\Container $container
+     *
+     * @return \Mockery\Container
+     */
+    public static function setContainer(Mockery\Container $container)
+    {
+        return self::$_container = $container;
+    }
+
+    public static function getGenerator()
+    {
+        if (is_null(self::$_generator)) {
+            self::$_generator = self::getDefaultGenerator();
+        }
+
+        return self::$_generator;
+    }
+
+    /**
+     * @param \Mockery\Generator\Generator $generator
+     */
+    public static function setGenerator(Generator $generator)
+    {
+        self::$_generator = $generator;
+    }
+
+    public static function getDefaultGenerator()
+    {
+        $generator = new StringManipulationGenerator(array(
+            new CallTypeHintPass(),
+            new ClassPass(),
+            new ClassNamePass(),
+            new InstanceMockPass(),
+            new InterfacePass(),
+            new MethodDefinitionPass(),
+            new RemoveUnserializeForInternalSerializableClassesPass(),
+            new RemoveBuiltinMethodsThatAreFinalPass(),
+        ));
+
+        return new CachingGenerator($generator);
+    }
+
+    /**
+     * @return Loader
+     */
+    public static function getLoader()
+    {
+        if (is_null(self::$_loader)) {
+            self::$_loader = self::getDefaultLoader();
+        }
+
+        return self::$_loader;
+    }
+
+    /**
+     * @param Loader $loader
+     */
+    public static function setLoader(Loader $loader)
+    {
+        self::$_loader = $loader;
+    }
+
+    /**
+     * @return EvalLoader
+     */
+    public static function getDefaultLoader()
+    {
+        return new EvalLoader();
     }
 
     /**
@@ -135,6 +225,10 @@ class Mockery
      */
     public static function close()
     {
+        foreach (self::$_filesToCleanUp as $fileName) {
+            @unlink($fileName);
+        }
+
         if (is_null(self::$_container)) {
             return;
         }
@@ -154,91 +248,6 @@ class Mockery
     public static function fetchMock($name)
     {
         return self::$_container->fetchMock($name);
-    }
-
-    /**
-     * Get the container.
-     */
-    public static function getContainer()
-    {
-        if (is_null(self::$_container)) {
-            self::$_container = new Mockery\Container(self::getGenerator(), self::getLoader());
-        }
-
-        return self::$_container;
-    }
-
-    /**
-     * @param \Mockery\Generator\Generator $generator
-     */
-    public static function setGenerator(Generator $generator)
-    {
-        self::$_generator = $generator;
-    }
-
-    public static function getGenerator()
-    {
-        if (is_null(self::$_generator)) {
-            self::$_generator = self::getDefaultGenerator();
-        }
-
-        return self::$_generator;
-    }
-
-    public static function getDefaultGenerator()
-    {
-        $generator = new StringManipulationGenerator(array(
-            new CallTypeHintPass(),
-            new ClassPass(),
-            new ClassNamePass(),
-            new InstanceMockPass(),
-            new InterfacePass(),
-            new MethodDefinitionPass(),
-            new RemoveUnserializeForInternalSerializableClassesPass(),
-            new RemoveBuiltinMethodsThatAreFinalPass(),
-        ));
-
-        return new CachingGenerator($generator);
-    }
-
-    /**
-     * @param Loader $loader
-     */
-    public static function setLoader(Loader $loader)
-    {
-        self::$_loader = $loader;
-    }
-
-    /**
-     * @return Loader
-     */
-    public static function getLoader()
-    {
-        if (is_null(self::$_loader)) {
-            self::$_loader = self::getDefaultLoader();
-        }
-
-        return self::$_loader;
-    }
-
-    /**
-     * @return EvalLoader
-     */
-    public static function getDefaultLoader()
-    {
-        return new EvalLoader();
-    }
-
-    /**
-     * Set the container.
-     *
-     * @param \Mockery\Container $container
-     *
-     * @return \Mockery\Container
-     */
-    public static function setContainer(Mockery\Container $container)
-    {
-        return self::$_container = $container;
     }
 
     /**
@@ -381,18 +390,6 @@ class Mockery
     public static function notAnyOf()
     {
         return new \Mockery\Matcher\NotAnyOf(func_get_args());
-    }
-
-    /**
-     * Get the global configuration container.
-     */
-    public static function getConfiguration()
-    {
-        if (is_null(self::$_config)) {
-            self::$_config = new \Mockery\Configuration();
-        }
-
-        return self::$_config;
     }
 
     /**
@@ -539,6 +536,39 @@ class Mockery
         return $cleanedProperties;
     }
 
+    private static function cleanupNesting($argument, $nesting)
+    {
+        if (is_object($argument)) {
+            $object = self::objectToArray($argument, $nesting - 1);
+            $object['class'] = get_class($argument);
+
+            return $object;
+        }
+
+        if (is_array($argument)) {
+            return self::cleanupArray($argument, $nesting - 1);
+        }
+
+        return $argument;
+    }
+
+    private static function cleanupArray($argument, $nesting = 3)
+    {
+        if ($nesting == 0) {
+            return '...';
+        }
+
+        foreach ($argument as $key => $value) {
+            if (is_array($value)) {
+                $argument[$key] = self::cleanupArray($value, $nesting - 1);
+            } elseif (is_object($value)) {
+                $argument[$key] = self::objectToArray($value, $nesting - 1);
+            }
+        }
+
+        return $argument;
+    }
+
     /**
      * Returns all object getters.
      *
@@ -571,39 +601,6 @@ class Mockery
         }
 
         return $getters;
-    }
-
-    private static function cleanupNesting($argument, $nesting)
-    {
-        if (is_object($argument)) {
-            $object = self::objectToArray($argument, $nesting - 1);
-            $object['class'] = get_class($argument);
-
-            return $object;
-        }
-
-        if (is_array($argument)) {
-            return self::cleanupArray($argument, $nesting - 1);
-        }
-
-        return $argument;
-    }
-
-    private static function cleanupArray($argument, $nesting = 3)
-    {
-        if ($nesting == 0) {
-            return '...';
-        }
-
-        foreach ($argument as $key => $value) {
-            if (is_array($value)) {
-                $argument[$key] = self::cleanupArray($value, $nesting - 1);
-            } elseif (is_object($value)) {
-                $argument[$key] = self::objectToArray($value, $nesting - 1);
-            }
-        }
-
-        return $argument;
     }
 
     /**
@@ -697,6 +694,28 @@ class Mockery
     }
 
     /**
+     * Get the global configuration container.
+     */
+    public static function getConfiguration()
+    {
+        if (is_null(self::$_config)) {
+            self::$_config = new \Mockery\Configuration();
+        }
+
+        return self::$_config;
+    }
+
+    /**
+     * @param array $methodNames
+     *
+     * @return bool
+     */
+    private static function noMoreElementsInChain(array $methodNames)
+    {
+        return empty($methodNames);
+    }
+
+    /**
      * @param \Mockery\Container $container
      * @param string $method
      * @param Mockery\ExpectationInterface $exp
@@ -728,12 +747,12 @@ class Mockery
     }
 
     /**
-     * @param array $methodNames
+     * Register a file to be deleted on tearDown.
      *
-     * @return bool
+     * @param string $fileName
      */
-    private static function noMoreElementsInChain(array $methodNames)
+    public static function registerFileForCleanUp($fileName)
     {
-        return empty($methodNames);
+        self::$_filesToCleanUp[] = $fileName;
     }
 }

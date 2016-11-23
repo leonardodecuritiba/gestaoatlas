@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cliente extends Model
 {
+    public $timestamps = true;
     protected $table = 'clientes';
     protected $primaryKey = 'idcliente';
-    public $timestamps = true;
     protected $fillable = [
         'idcontato',
         'idcliente_centro_custo',
@@ -35,35 +35,56 @@ class Cliente extends Model
     ];
 
     // ************************ FUNCTIONS ******************************
+
+    static public function getInvalidos()
+    {
+        return self::whereNull('idcolaborador_validador')->whereNull('validated_at')->get();
+    }
+
+    static public function getValidosOrdemServico()
+    {
+        return self::whereNotNull('idcolaborador_validador')->whereNotNull('validated_at');
+    }
+
     public function custo_deslocamento()
     {
         return DataHelper::getFloat2Real($this->attributes['distancia'] * DataHelper::getReal2Float(Ajuste::getByMetaKey('custo_km')->meta_value));
     }
+
     public function getCreatedAtAttribute($value)
     {
         return DataHelper::getPrettyDateTime($value);
     }
+
     public function getEnderecoResumido() {
         $contato = $this->contato()->first();
         $retorno[0] = $contato->cidade;
         $retorno[1] = $contato->estado;
         return $retorno;
     }
+
+    public function contato()
+    {
+        return $this->hasOne('App\Contato', 'idcontato', 'idcontato');
+    }
+
     public function getEndereco() {
         $contato = $this->contato()->first();
         $retorno[0] = $contato->cidade;
         $retorno[1] = $contato->estado;
         return implode(" / ",$retorno);
     }
+
     public function getFones() {
         $contato = $this->contato()->first();
         $retorno[0] = $contato->telefone;
         $retorno[1] = $contato->celular;
         return implode(" / ",$retorno);
     }
+
     public function getType()
     {
-        if($this->idpjuridica != NULL){
+        if ($this->attributes['idpjuridica'] != NULL) {
             $retorno = (object)[
                 'tipo_cliente'   => 1,
                 'tipo'           => 'CNPJ',
@@ -80,84 +101,122 @@ class Cliente extends Model
         }
         return $retorno;
     }
-    public function getURLFoto()
-    {
-        return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/thumb_'.$this->foto):asset('imgs/user.png');
-    }
 
-    //Mutattors
-    public function setLimiteCreditoAttribute($value)
-    {
-        $this->attributes['limite_credito'] = DataHelper::getReal2Float($value);
-    }
-    public function getLimiteCreditoAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-    public function setDistanciaAttribute($value)
-    {
-        $this->attributes['distancia'] = DataHelper::getReal2Float($value);
-    }
-    public function getDistanciaAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-    public function setPedagiosAttribute($value)
-    {
-        $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
-    }
-    public function getPedagiosAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-    public function setOutrosCustosAttribute($value)
-    {
-        $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
-    }
-    public function getOutrosCustosAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-    // ******************** RELASHIONSHIP ******************************
-    // ************************** HAS **********************************
-    public function contato()
-    {
-        return $this->hasOne('App\Contato', 'idcontato', 'idcontato');
-    }
-    public function centro_custo_para()
-    {
-        return $this->hasOne('App\Cliente', 'idcliente', 'idcliente');
-    }
     public function pessoa_juridica()
     {
         return $this->hasOne('App\PessoaJuridica', 'idpjuridica', 'idpjuridica');
     }
+
     public function pessoa_fisica()
     {
         return $this->hasOne('App\PessoaFisica', 'idpfisica', 'idpfisica');
     }
+
+    public function getURLFoto()
+    {
+        return ($this->attributes['foto'] != '') ? asset('../storage/uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/user.png');
+    }
+
+    //Mutattors
+
+    public function validado()
+    {
+        //testa se o cadastro foi validado
+        return (($this->attributes['idcolaborador_validador'] != NULL) && ($this->attributes['validated_at'] != NULL));
+    }
+
+    public function cadastro_invalido()
+    {
+        //testa se o cadastro é inválido a mais de 24h
+        if ($this->attributes['validated_at'] == NULL) {
+            return true;
+        }
+        $now = Carbon::now();
+        $created_at = Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at']);
+        return ($created_at->diffInHours($now) > 24);
+    }
+
+    public function criado_em()
+    {
+        $criacao = Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at']);
+        return $criacao->diffForHumans(Carbon::now());
+//        return Carbon::now()->diffForHumans(Carbon::createFromFormat('Y-m-d H:i:s',$this->attributes['created_at']));
+    }
+
+    public function setLimiteCreditoAttribute($value)
+    {
+        $this->attributes['limite_credito'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getLimiteCreditoAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setDistanciaAttribute($value)
+    {
+        $this->attributes['distancia'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getDistanciaAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setPedagiosAttribute($value)
+    {
+        $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
+    }
+    // ******************** RELASHIONSHIP ******************************
+    // ************************** HAS **********************************
+
+    public function getPedagiosAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setOutrosCustosAttribute($value)
+    {
+        $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getOutrosCustosAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function centro_custo_para()
+    {
+        return $this->hasOne('App\Cliente', 'idcliente', 'idcliente');
+    }
+
     public function segmento()
     {
         return $this->hasOne('App\Segmento', 'idsegmento', 'idsegmento');
     }
-    public function instrumentos()
-    {
-        return $this->hasMany('App\Instrumento', 'idcliente');
-    }
+
     public function has_instrumento()
     {
         return ($this->instrumentos()->count() > 0);
     }
-    public function equipamentos()
+
+    public function instrumentos()
     {
-        return $this->hasMany('App\Equipamento', 'idcliente');
+        return $this->hasMany('App\Instrumento', 'idcliente');
     }
+
     public function has_equipamento()
     {
         return ($this->equipamentos()->count() > 0);
     }
 
+    public function equipamentos()
+    {
+        return $this->hasMany('App\Equipamento', 'idcliente');
+    }
+
     // ********************** BELONGS ********************************
+
     public function centro_custo_de()
     {
         return $this->belongsTo('App\Cliente', 'idcliente');

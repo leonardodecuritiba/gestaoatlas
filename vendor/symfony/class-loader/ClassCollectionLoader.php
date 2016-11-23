@@ -59,7 +59,7 @@ class ClassCollectionLoader
         if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0777, true) && !is_dir($cacheDir)) {
             throw new \RuntimeException(sprintf('Class Collection Loader was not able to create directory "%s"', $cacheDir));
         }
-        $cacheDir = rtrim(realpath($cacheDir), '/'.DIRECTORY_SEPARATOR);
+        $cacheDir = rtrim(realpath($cacheDir) ?: $cacheDir, '/' . DIRECTORY_SEPARATOR);
         $cache = $cacheDir.DIRECTORY_SEPARATOR.$name.$extension;
 
         // auto-reload
@@ -98,8 +98,15 @@ class ClassCollectionLoader
             $declared = array_merge(get_declared_classes(), get_declared_interfaces(), get_declared_traits());
         }
 
-        $c = '(?:\s*+(?:(?:#|//)[^\n]*+\n|/\*(?:(?<!\*/).)++)?+)*+';
-        $strictTypesRegex = str_replace('.', $c, "'^<\?php\s.declare.\(.strict_types.=.1.\).;'is");
+        $spacesRegex = '(?:\s*+(?:(?:\#|//)[^\n]*+\n|/\*(?:(?<!\*/).)++)?+)*+';
+        $dontInlineRegex = <<<REGEX
+            '(?:
+               ^<\?php\s.declare.\(.strict_types.=.1.\).;
+               | \b__halt_compiler.\(.\)
+               | \b__(?:DIR|FILE)__\b
+            )'isx
+REGEX;
+        $dontInlineRegex = str_replace('.', $spacesRegex, $dontInlineRegex);
 
         $cacheDir = explode(DIRECTORY_SEPARATOR, $cacheDir);
         $files = array();
@@ -112,7 +119,7 @@ class ClassCollectionLoader
             $files[] = $file = $class->getFileName();
             $c = file_get_contents($file);
 
-            if (preg_match($strictTypesRegex, $c)) {
+            if (preg_match($dontInlineRegex, $c)) {
                 $file = explode(DIRECTORY_SEPARATOR, $file);
 
                 for ($i = 0; isset($file[$i], $cacheDir[$i]); ++$i) {
@@ -149,6 +156,133 @@ class ClassCollectionLoader
             // save the resources
             self::writeCacheFile($metadata, serialize(array($files, $classes)));
         }
+    }
+
+    /**
+     * Gets an ordered array of passed classes including all their dependencies.
+     *
+     * @param array $classes
+     *
+     * @return \ReflectionClass[] An array of sorted \ReflectionClass instances (dependencies added if needed)
+     *
+     * @throws \InvalidArgumentException When a class can't be loaded
+     */
+    private static function getOrderedClasses(array $classes)
+    {
+        $map = array();
+        self::$seen = array();
+        foreach ($classes as $class) {
+            try {
+                $reflectionClass = new \ReflectionClass($class);
+            } catch (\ReflectionException $e) {
+                throw new \InvalidArgumentException(sprintf('Unable to load class "%s"', $class));
+            }
+
+            $map = array_merge($map, self::getClassHierarchy($reflectionClass));
+        }
+
+        return $map;
+    }
+
+    private static function getClassHierarchy(\ReflectionClass $class)
+    {
+        if (isset(self::$seen[$class->getName()])) {
+            return array();
+        }
+
+        self::$seen[$class->getName()] = true;
+
+        $classes = array($class);
+        $parent = $class;
+        while (($parent = $parent->getParentClass()) && $parent->isUserDefined() && !isset(self::$seen[$parent->getName()])) {
+            self::$seen[$parent->getName()] = true;
+
+            array_unshift($classes, $parent);
+        }
+
+        $traits = array();
+
+        foreach ($classes as $c) {
+            foreach (self::resolveDependencies(self::computeTraitDeps($c), $c) as $trait) {
+                if ($trait !== $c) {
+                    $traits[] = $trait;
+                }
+            }
+        }
+
+        return array_merge(self::getInterfaces($class), $traits, $classes);
+    }
+
+    /**
+     * Dependencies resolution.
+     *
+     * This function does not check for circular dependencies as it should never
+     * occur with PHP traits.
+     *
+     * @param array $tree The dependency tree
+     * @param \ReflectionClass $node The node
+     * @param \ArrayObject $resolved An array of already resolved dependencies
+     * @param \ArrayObject $unresolved An array of dependencies to be resolved
+     *
+     * @return \ArrayObject The dependencies for the given node
+     *
+     * @throws \RuntimeException if a circular dependency is detected
+     */
+    private static function resolveDependencies(array $tree, $node, \ArrayObject $resolved = null, \ArrayObject $unresolved = null)
+    {
+        if (null === $resolved) {
+            $resolved = new \ArrayObject();
+        }
+        if (null === $unresolved) {
+            $unresolved = new \ArrayObject();
+        }
+        $nodeName = $node->getName();
+
+        if (isset($tree[$nodeName])) {
+            $unresolved[$nodeName] = $node;
+            foreach ($tree[$nodeName] as $dependency) {
+                if (!$resolved->offsetExists($dependency->getName())) {
+                    self::resolveDependencies($tree, $dependency, $resolved, $unresolved);
+                }
+            }
+            $resolved[$nodeName] = $node;
+            unset($unresolved[$nodeName]);
+        }
+
+        return $resolved;
+    }
+
+    private static function computeTraitDeps(\ReflectionClass $class)
+    {
+        $traits = $class->getTraits();
+        $deps = array($class->getName() => $traits);
+        while ($trait = array_pop($traits)) {
+            if ($trait->isUserDefined() && !isset(self::$seen[$trait->getName()])) {
+                self::$seen[$trait->getName()] = true;
+                $traitDeps = $trait->getTraits();
+                $deps[$trait->getName()] = $traitDeps;
+                $traits = array_merge($traits, $traitDeps);
+            }
+        }
+
+        return $deps;
+    }
+
+    private static function getInterfaces(\ReflectionClass $class)
+    {
+        $classes = array();
+
+        foreach ($class->getInterfaces() as $interface) {
+            $classes = array_merge($classes, self::getInterfaces($interface));
+        }
+
+        if ($class->isUserDefined() && $class->isInterface() && !isset(self::$seen[$class->getName()])) {
+            self::$seen[$class->getName()] = true;
+
+            $classes[] = $class;
+        }
+
+        return $classes;
     }
 
     /**
@@ -229,14 +363,6 @@ class ClassCollectionLoader
     }
 
     /**
-     * This method is only useful for testing.
-     */
-    public static function enableTokenizer($bool)
-    {
-        self::$useTokenizer = (bool) $bool;
-    }
-
-    /**
      * Strips leading & trailing ws, multiple EOL, multiple ws.
      *
      * @param string $code Original PHP code
@@ -273,129 +399,10 @@ class ClassCollectionLoader
     }
 
     /**
-     * Gets an ordered array of passed classes including all their dependencies.
-     *
-     * @param array $classes
-     *
-     * @return \ReflectionClass[] An array of sorted \ReflectionClass instances (dependencies added if needed)
-     *
-     * @throws \InvalidArgumentException When a class can't be loaded
+     * This method is only useful for testing.
      */
-    private static function getOrderedClasses(array $classes)
+    public static function enableTokenizer($bool)
     {
-        $map = array();
-        self::$seen = array();
-        foreach ($classes as $class) {
-            try {
-                $reflectionClass = new \ReflectionClass($class);
-            } catch (\ReflectionException $e) {
-                throw new \InvalidArgumentException(sprintf('Unable to load class "%s"', $class));
-            }
-
-            $map = array_merge($map, self::getClassHierarchy($reflectionClass));
-        }
-
-        return $map;
-    }
-
-    private static function getClassHierarchy(\ReflectionClass $class)
-    {
-        if (isset(self::$seen[$class->getName()])) {
-            return array();
-        }
-
-        self::$seen[$class->getName()] = true;
-
-        $classes = array($class);
-        $parent = $class;
-        while (($parent = $parent->getParentClass()) && $parent->isUserDefined() && !isset(self::$seen[$parent->getName()])) {
-            self::$seen[$parent->getName()] = true;
-
-            array_unshift($classes, $parent);
-        }
-
-        $traits = array();
-
-        foreach ($classes as $c) {
-            foreach (self::resolveDependencies(self::computeTraitDeps($c), $c) as $trait) {
-                if ($trait !== $c) {
-                    $traits[] = $trait;
-                }
-            }
-        }
-
-        return array_merge(self::getInterfaces($class), $traits, $classes);
-    }
-
-    private static function getInterfaces(\ReflectionClass $class)
-    {
-        $classes = array();
-
-        foreach ($class->getInterfaces() as $interface) {
-            $classes = array_merge($classes, self::getInterfaces($interface));
-        }
-
-        if ($class->isUserDefined() && $class->isInterface() && !isset(self::$seen[$class->getName()])) {
-            self::$seen[$class->getName()] = true;
-
-            $classes[] = $class;
-        }
-
-        return $classes;
-    }
-
-    private static function computeTraitDeps(\ReflectionClass $class)
-    {
-        $traits = $class->getTraits();
-        $deps = array($class->getName() => $traits);
-        while ($trait = array_pop($traits)) {
-            if ($trait->isUserDefined() && !isset(self::$seen[$trait->getName()])) {
-                self::$seen[$trait->getName()] = true;
-                $traitDeps = $trait->getTraits();
-                $deps[$trait->getName()] = $traitDeps;
-                $traits = array_merge($traits, $traitDeps);
-            }
-        }
-
-        return $deps;
-    }
-
-    /**
-     * Dependencies resolution.
-     *
-     * This function does not check for circular dependencies as it should never
-     * occur with PHP traits.
-     *
-     * @param array            $tree       The dependency tree
-     * @param \ReflectionClass $node       The node
-     * @param \ArrayObject     $resolved   An array of already resolved dependencies
-     * @param \ArrayObject     $unresolved An array of dependencies to be resolved
-     *
-     * @return \ArrayObject The dependencies for the given node
-     *
-     * @throws \RuntimeException if a circular dependency is detected
-     */
-    private static function resolveDependencies(array $tree, $node, \ArrayObject $resolved = null, \ArrayObject $unresolved = null)
-    {
-        if (null === $resolved) {
-            $resolved = new \ArrayObject();
-        }
-        if (null === $unresolved) {
-            $unresolved = new \ArrayObject();
-        }
-        $nodeName = $node->getName();
-
-        if (isset($tree[$nodeName])) {
-            $unresolved[$nodeName] = $node;
-            foreach ($tree[$nodeName] as $dependency) {
-                if (!$resolved->offsetExists($dependency->getName())) {
-                    self::resolveDependencies($tree, $dependency, $resolved, $unresolved);
-                }
-            }
-            $resolved[$nodeName] = $node;
-            unset($unresolved[$nodeName]);
-        }
-
-        return $resolved;
+        self::$useTokenizer = (bool)$bool;
     }
 }

@@ -117,25 +117,6 @@ class CallCenter
         return $returnValue;
     }
 
-    /**
-     * Searches for calls by method name & arguments wildcard.
-     *
-     * @param string            $methodName
-     * @param ArgumentsWildcard $wildcard
-     *
-     * @return Call[]
-     */
-    public function findCalls($methodName, ArgumentsWildcard $wildcard)
-    {
-        return array_values(
-            array_filter($this->recordedCalls, function (Call $call) use ($methodName, $wildcard) {
-                return $methodName === $call->getMethodName()
-                    && 0 < $wildcard->scoreArguments($call->getArguments())
-                ;
-            })
-        );
-    }
-
     private function createUnexpectedCallException(ObjectProphecy $prophecy, $methodName,
                                                    array $arguments)
     {
@@ -157,6 +138,24 @@ class CallCenter
                 $methodName, $argstring, $classname, $expected
             ),
             $prophecy, $methodName, $arguments
+        );
+    }
+
+    /**
+     * Searches for calls by method name & arguments wildcard.
+     *
+     * @param string $methodName
+     * @param ArgumentsWildcard $wildcard
+     *
+     * @return Call[]
+     */
+    public function findCalls($methodName, ArgumentsWildcard $wildcard)
+    {
+        return array_values(
+            array_filter($this->recordedCalls, function (Call $call) use ($methodName, $wildcard) {
+                return $methodName === $call->getMethodName()
+                && 0 < $wildcard->scoreArguments($call->getArguments());
+            })
         );
     }
 }

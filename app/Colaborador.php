@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Colaborador extends Model
 {
+    public $timestamps = true;
     protected $table = 'colaboradores';
     protected $primaryKey = 'idcolaborador';
-    public $timestamps = true;
     protected $fillable = [
         'idcontato',
         'iduser',
@@ -38,14 +38,21 @@ class Colaborador extends Model
         return $retorno;
     }
 
+    public function contato()
+    {
+        return $this->hasOne('App\Contato', 'idcontato', 'idcontato');
+    }
+
     public function getCpfAttribute($value)
     {
         return Controller::mask($value, '###.###.###-##');
     }
+
     public function getRgAttribute($value)
     {
         return Controller::mask($value, '##.###.###-#');
     }
+
     public function getDocumentos()
     {
         return json_encode([
@@ -73,17 +80,25 @@ class Colaborador extends Model
     {
         return $this->user->is();
     }
+
     public function hasRole($tipo)
+    {
+        return $this->user->hasRole($tipo);
+    }
+
+    public function hasAvisosClientes()
     {
         return $this->user->hasRole($tipo);
     }
 
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
-    public function contato()
+
+    public function clientes_invalidos()
     {
-        return $this->hasOne('App\Contato', 'idcontato', 'idcontato');
+        return Cliente::getInvalidos();
     }
+
     public function user()
     {
         return $this->hasOne('App\User', 'iduser', 'iduser');

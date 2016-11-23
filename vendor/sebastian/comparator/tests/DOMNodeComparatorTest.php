@@ -21,11 +21,6 @@ class DOMNodeComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
-    protected function setUp()
-    {
-        $this->comparator = new DOMNodeComparator;
-    }
-
     public function acceptsSucceedsProvider()
     {
         $document = new DOMDocument;
@@ -72,6 +67,15 @@ class DOMNodeComparatorTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    private function createDOMDocument($content)
+    {
+        $document = new DOMDocument;
+        $document->preserveWhiteSpace = false;
+        $document->loadXML($content);
+
+        return $document;
+    }
+
     public function assertEqualsFailsProvider()
     {
         return array(
@@ -96,15 +100,6 @@ class DOMNodeComparatorTest extends \PHPUnit_Framework_TestCase
             $this->createDOMDocument('<foo> bir </foo>')
           )
         );
-    }
-
-    private function createDOMDocument($content)
-    {
-        $document = new DOMDocument;
-        $document->preserveWhiteSpace = false;
-        $document->loadXML($content);
-
-        return $document;
     }
 
     /**
@@ -158,5 +153,10 @@ class DOMNodeComparatorTest extends \PHPUnit_Framework_TestCase
           'Failed asserting that two DOM'
         );
         $this->comparator->assertEquals($expected, $actual);
+    }
+
+    protected function setUp()
+    {
+        $this->comparator = new DOMNodeComparator;
     }
 }

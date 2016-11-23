@@ -18,12 +18,6 @@ class MockObjectComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
-    protected function setUp()
-    {
-        $this->comparator = new MockObjectComparator;
-        $this->comparator->setFactory(new Factory);
-    }
-
     public function acceptsSucceedsProvider()
     {
         $testmock = $this->getMock('SebastianBergmann\\Comparator\\TestClass');
@@ -162,5 +156,11 @@ class MockObjectComparatorTest extends \PHPUnit_Framework_TestCase
           'SebastianBergmann\\Comparator\\ComparisonFailure', $message
         );
         $this->comparator->assertEquals($expected, $actual, $delta);
+    }
+
+    protected function setUp()
+    {
+        $this->comparator = new MockObjectComparator;
+        $this->comparator->setFactory(new Factory);
     }
 }

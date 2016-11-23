@@ -20,7 +20,6 @@
 namespace Mockery;
 
 use Closure;
-use Exception;
 use ReflectionClass;
 use UnexpectedValueException;
 use InvalidArgumentException;
@@ -114,42 +113,6 @@ final class Instantiator
 
     /**
      * @param ReflectionClass $reflectionClass
-     * @param string          $serializedString
-     *
-     * @throws UnexpectedValueException
-     *
-     * @return void
-     */
-    private function attemptInstantiationViaUnSerialization(ReflectionClass $reflectionClass, $serializedString)
-    {
-        set_error_handler(function ($code, $message, $file, $line) use ($reflectionClass, & $error) {
-            $msg = sprintf(
-                'Could not produce an instance of "%s" via un-serialization, since an error was triggered in file "%s" at line "%d"',
-                $reflectionClass->getName(),
-                $file,
-                $line
-            );
-
-            $error = new UnexpectedValueException($msg, 0, new \Exception($message, $code));
-        });
-
-        try {
-            unserialize($serializedString);
-        } catch (Exception $exception) {
-            restore_error_handler();
-
-            throw new UnexpectedValueException("An exception was raised while trying to instantiate an instance of \"{$reflectionClass->getName()}\" via un-serialization", 0, $exception);
-        }
-
-        restore_error_handler();
-
-        if ($error) {
-            throw $error;
-        }
-    }
-
-    /**
-     * @param ReflectionClass $reflectionClass
      *
      * @return bool
      */
@@ -211,5 +174,41 @@ final class Instantiator
     private function isPhpVersionWithBrokenSerializationFormat()
     {
         return PHP_VERSION_ID === 50429 || PHP_VERSION_ID === 50513;
+    }
+
+    /**
+     * @param ReflectionClass $reflectionClass
+     * @param string $serializedString
+     *
+     * @throws UnexpectedValueException
+     *
+     * @return void
+     */
+    private function attemptInstantiationViaUnSerialization(ReflectionClass $reflectionClass, $serializedString)
+    {
+        set_error_handler(function ($code, $message, $file, $line) use ($reflectionClass, & $error) {
+            $msg = sprintf(
+                'Could not produce an instance of "%s" via un-serialization, since an error was triggered in file "%s" at line "%d"',
+                $reflectionClass->getName(),
+                $file,
+                $line
+            );
+
+            $error = new UnexpectedValueException($msg, 0, new \Exception($message, $code));
+        });
+
+        try {
+            unserialize($serializedString);
+        } catch (\Exception $exception) {
+            restore_error_handler();
+
+            throw new UnexpectedValueException("An exception was raised while trying to instantiate an instance of \"{$reflectionClass->getName()}\" via un-serialization", 0, $exception);
+        }
+
+        restore_error_handler();
+
+        if ($error) {
+            throw $error;
+        }
     }
 }

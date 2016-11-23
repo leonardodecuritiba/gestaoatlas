@@ -83,11 +83,6 @@ class MethodNode
         $this->returnsReference = true;
     }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
     public function addArgument(ArgumentNode $argument)
     {
         $this->arguments[] = $argument;
@@ -104,6 +99,11 @@ class MethodNode
     public function hasReturnType()
     {
         return null !== $this->returnType;
+    }
+
+    public function getReturnType()
+    {
+        return $this->returnType;
     }
 
     /**
@@ -143,9 +143,13 @@ class MethodNode
         }
     }
 
-    public function getReturnType()
+    public function getCode()
     {
-        return $this->returnType;
+        if ($this->returnsReference) {
+            return "throw new \Prophecy\Exception\Doubler\ReturnByReferenceException('Returning by reference not supported', get_class(\$this), '{$this->name}');";
+        }
+
+        return (string)$this->code;
     }
 
     /**
@@ -156,16 +160,6 @@ class MethodNode
         $this->code = $code;
     }
 
-    public function getCode()
-    {
-        if ($this->returnsReference)
-        {
-            return "throw new \Prophecy\Exception\Doubler\ReturnByReferenceException('Returning by reference not supported', get_class(\$this), '{$this->name}');";
-        }
-
-        return (string) $this->code;
-    }
-
     public function useParentCode()
     {
         $this->code = sprintf(
@@ -173,6 +167,11 @@ class MethodNode
                 array_map(array($this, 'generateArgument'), $this->arguments)
             )
         );
+    }
+
+    public function getName()
+    {
+        return $this->name;
     }
 
     private function generateArgument(ArgumentNode $arg)

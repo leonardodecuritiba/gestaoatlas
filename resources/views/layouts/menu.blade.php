@@ -130,48 +130,55 @@
                 <li class="">
                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false">
-                        {{--<img src="{{ asset("images/user.png") }}" alt="">{{Auth::user()->name}}--}}
                         <img src="{{ asset("images/user.png") }}" alt="">{{Auth::user()->colaborador->nome}}
                         <span class=" fa fa-angle-down"></span>
                     </a>
-
                     <ul class="dropdown-menu dropdown-usermenu animated fadeInDown pull-right">
                         <li><a href="{{route('colaboradores.show',Auth::user()->colaborador->idcolaborador)}}"> Perfil</a></li>
                         <li><a href="{{ url('logout') }}"> <span class="badge bg-red pull-right"><i
                                             class="fa fa-sign-out pull-right"></i></span>Sair</a></li>
                     </ul>
                 </li>
+
+                @role('admin')
+                <?php $clientes_validar = Auth::user()->colaborador->clientes_invalidos(); ?>
                 <li role="presentation" class="dropdown">
                     <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown"
-                       aria-expanded="false" style="background:rgba(128, 128, 128, 0.24);">
-                        <strong>ALERTAS </strong><i class="fa fa-exclamation-circle" style="color:red"></i>
-                        <span class="badge bg-green">6</span>
+                       aria-expanded="false">
+                        <i class="fa fa-exclamation-circle"></i>
+                        @if($clientes_validar->count() > 0)
+                            <span class="badge bg-green">{{$clientes_validar->count()}}</span>
+                        @endif
                     </a>
-                    <ul id="menu1" class="dropdown-menu list-unstyled msg_list animated fadeInDown" role="menu">
-                        <li>
-                            <a>
-                                <span class="image">
-                                <img src="{{asset('images/img.jpg')}}" alt="Profile Image"/>
-                                </span>
-                                <span>
-                                <span>John Smith</span>
-                                <span class="time">21/09/2016</span>
-                                </span>
-                                <span class="message">
-                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                </span>
-                            </a>
-                        </li>
-                        <li>
-                            <div class="text-center">
-                                <a>
-                                    <strong><a href="inbox.html">Ver todos os alertas</a></strong>
-                                    <i class="fa fa-angle-right"></i>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
+                    @if($clientes_validar->count() > 0)
+                        <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
+                            @foreach($clientes_validar as $cliente)
+                                <?php $tipo_cliente = $cliente->getType(); ?>
+                                <li>
+                                    <a href="{{route('clientes.show',$cliente->idcliente)}}">
+                                        <span class="image"><img src="{{$cliente->getURLFoto()}}" alt="Profile Image"/></span>
+                                        <span>
+                                                <span>Cliente</span>
+                                                <span class="time">criado há {{$cliente->criado_em()}}</span>
+                                            </span>
+                                        <span class="message">
+                                                {{$tipo_cliente->nome_principal}}
+                                            </span>
+                                    </a>
+                                </li>
+                            @endforeach
+                            {{--<li>--}}
+                            {{--<div class="text-center">--}}
+                            {{--<a>--}}
+                            {{--<strong>Ver mais</strong>--}}
+                            {{--<i class="fa fa-angle-right"></i>--}}
+                            {{--</a>--}}
+                            {{--</div>--}}
+                            {{--</li>--}}
+                        </ul>
+                    @endif
                 </li>
+                @endrole
             </ul>
         </nav>
     </div>

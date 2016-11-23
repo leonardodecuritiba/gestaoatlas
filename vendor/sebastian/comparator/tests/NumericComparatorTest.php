@@ -18,11 +18,6 @@ class NumericComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
-    protected function setUp()
-    {
-        $this->comparator = new NumericComparator;
-    }
-
     public function acceptsSucceedsProvider()
     {
         return array(
@@ -118,5 +113,10 @@ class NumericComparatorTest extends \PHPUnit_Framework_TestCase
           'SebastianBergmann\\Comparator\\ComparisonFailure', 'matches expected'
         );
         $this->comparator->assertEquals($expected, $actual, $delta);
+    }
+
+    protected function setUp()
+    {
+        $this->comparator = new NumericComparator;
     }
 }

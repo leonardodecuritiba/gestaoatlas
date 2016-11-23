@@ -28,6 +28,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/home', 'HomeController@index');
 
     Route::resource('clientes', 'ClientesController');
+    Route::get('cliente/validar/{id}', 'ClientesController@validar')->name('cliente.validar');
+
     Route::resource('instrumentos', 'InstrumentosController');
     Route::resource('fornecedores', 'FornecedoresController');
     Route::resource('pecas', 'PecasController');

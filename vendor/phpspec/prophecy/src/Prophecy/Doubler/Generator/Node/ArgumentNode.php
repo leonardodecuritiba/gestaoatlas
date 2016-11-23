@@ -53,6 +53,16 @@ class ArgumentNode
         return $this->isOptional() && !$this->isVariadic();
     }
 
+    public function isOptional()
+    {
+        return $this->optional;
+    }
+
+    public function isVariadic()
+    {
+        return $this->isVariadic;
+    }
+
     public function getDefault()
     {
         return $this->default;
@@ -62,11 +72,6 @@ class ArgumentNode
     {
         $this->optional = true;
         $this->default  = $default;
-    }
-
-    public function isOptional()
-    {
-        return $this->optional;
     }
 
     public function setAsPassedByReference($byReference = true)
@@ -82,10 +87,5 @@ class ArgumentNode
     public function setAsVariadic($isVariadic = true)
     {
         $this->isVariadic = $isVariadic;
-    }
-
-    public function isVariadic()
-    {
-        return $this->isVariadic;
     }
 }

@@ -16,14 +16,13 @@ namespace SebastianBergmann\Comparator;
 class Factory
 {
     /**
-     * @var Comparator[]
-     */
-    private $comparators = array();
-
-    /**
      * @var Factory
      */
     private static $instance;
+    /**
+     * @var Comparator[]
+     */
+    private $comparators = array();
 
     /**
      * Constructs a new factory.
@@ -42,6 +41,23 @@ class Factory
         $this->register(new DOMNodeComparator);
         $this->register(new MockObjectComparator);
         $this->register(new DateTimeComparator);
+    }
+
+    /**
+     * Registers a new comparator.
+     *
+     * This comparator will be returned by getInstance() if its accept() method
+     * returns TRUE for the compared values. It has higher priority than the
+     * existing comparators, meaning that its accept() method will be tested
+     * before those of the other comparators.
+     *
+     * @param Comparator $comparator The registered comparator
+     */
+    public function register(Comparator $comparator)
+    {
+        array_unshift($this->comparators, $comparator);
+
+        $comparator->setFactory($this);
     }
 
     /**
@@ -70,23 +86,6 @@ class Factory
                 return $comparator;
             }
         }
-    }
-
-    /**
-     * Registers a new comparator.
-     *
-     * This comparator will be returned by getInstance() if its accept() method
-     * returns TRUE for the compared values. It has higher priority than the
-     * existing comparators, meaning that its accept() method will be tested
-     * before those of the other comparators.
-     *
-     * @param Comparator $comparator The registered comparator
-     */
-    public function register(Comparator $comparator)
-    {
-        array_unshift($this->comparators, $comparator);
-
-        $comparator->setFactory($this);
     }
 
     /**

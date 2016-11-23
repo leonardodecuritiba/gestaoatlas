@@ -16,11 +16,27 @@
 @section('page_content')
     @include('layouts.modals.sintegra')
     <div class="x_panel">
-        <div class="x_title">
-            <h3>Cliente - {{($Cliente->getType()->tipo_cliente)?'Pessoa Jurídica':'Pessoa Física'}} {{$Cliente->custo_deslocamento()}}</h3>
-
-            <div class="clearfix"></div>
-        </div>
+        @if(!$Cliente->validado())
+            <div class="x_title">
+                <h2>Cliente - {{($Cliente->getType()->tipo_cliente)?'Pessoa Jurídica':'Pessoa Física'}} </h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <button onclick="window.location.href='{{route('cliente.validar',$Cliente->idcliente)}}'"
+                                class="btn btn-success"><i class="fa fa-check fa-2"></i> Validar
+                        </button>
+                    </li>
+                </ul>
+                <div class="clearfix"></div>
+            </div>
+            <div class="alert alert-danger fade in" role="alert">
+                Este cliente ainda não foi validado!
+            </div>
+        @else
+            <div class="x_title">
+                <h3>Cliente - {{($Cliente->getType()->tipo_cliente)?'Pessoa Jurídica':'Pessoa Física'}} </h3>
+                <div class="clearfix"></div>
+            </div>
+        @endif
         <div class="x_content">
             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 profile_left">
                 @include('pages.'.$Page->link.'.paineis.perfil')

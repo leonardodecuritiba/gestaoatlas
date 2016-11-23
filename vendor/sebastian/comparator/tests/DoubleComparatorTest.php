@@ -18,11 +18,6 @@ class DoubleComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
-    protected function setUp()
-    {
-        $this->comparator = new DoubleComparator;
-    }
-
     public function acceptsSucceedsProvider()
     {
         return array(
@@ -130,5 +125,10 @@ class DoubleComparatorTest extends \PHPUnit_Framework_TestCase
           'SebastianBergmann\\Comparator\\ComparisonFailure', 'matches expected'
         );
         $this->comparator->assertEquals($expected, $actual, $delta);
+    }
+
+    protected function setUp()
+    {
+        $this->comparator = new DoubleComparator;
     }
 }

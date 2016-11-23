@@ -21,6 +21,11 @@ class RejectedPromise implements PromiseInterface
         $this->reason = $reason;
     }
 
+    public function otherwise(callable $onRejected)
+    {
+        return $this->then(null, $onRejected);
+    }
+
     public function then(
         callable $onFulfilled = null,
         callable $onRejected = null
@@ -49,11 +54,6 @@ class RejectedPromise implements PromiseInterface
         });
 
         return $p;
-    }
-
-    public function otherwise(callable $onRejected)
-    {
-        return $this->then(null, $onRejected);
     }
 
     public function wait($unwrap = true, $defaultDelivery = null)

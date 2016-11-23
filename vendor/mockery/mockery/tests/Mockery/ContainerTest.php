@@ -22,6 +22,48 @@
 use Mockery\Generator\MockConfigurationBuilder;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
+interface MockeryTest_InterfaceWithTraversable extends ArrayAccess, Traversable, Countable
+{
+    public function self();
+}
+
+interface MockeryTest_Interface
+{
+}
+
+interface MockeryTest_Interface1
+{
+}
+
+interface MockeryTest_Interface2
+{
+}
+
+interface MockeryTest_InterfaceWithAbstractMethod
+{
+    public function set();
+}
+
+interface MockeryTest_InterfaceWithPublicStaticMethod
+{
+    public static function self();
+}
+
+interface MockeryTest_InterfaceWithMethodParamSelf
+{
+    public function foo(self $bar);
+}
+
+interface MockeryTest_InterfaceThatExtendsIterator extends Iterator
+{
+    public function foo();
+}
+
+interface MockeryTest_InterfaceThatExtendsIteratorAggregate extends IteratorAggregate
+{
+    public function foo();
+}
+
 class ContainerTest extends MockeryTestCase
 {
 
@@ -1293,11 +1335,6 @@ class MockeryTest_ClassMultipleConstructorParams
     }
 }
 
-interface MockeryTest_InterfaceWithTraversable extends ArrayAccess, Traversable, Countable
-{
-    public function self();
-}
-
 class MockeryTestIsset_Bar
 {
     public function doSomething()
@@ -1314,14 +1351,14 @@ class MockeryTestIsset_Foo
         $this->var = $var;
     }
 
+    public function __isset($name)
+    {
+        return (bool)strlen($this->__get($name));
+    }
+
     public function __get($name)
     {
         $this->var->doSomething();
-    }
-
-    public function __isset($name)
-    {
-        return (bool) strlen($this->__get($name));
     }
 }
 
@@ -1395,26 +1432,6 @@ class MockeryFoo4
     }
 }
 
-interface MockeryTest_Interface
-{
-}
-interface MockeryTest_Interface1
-{
-}
-interface MockeryTest_Interface2
-{
-}
-
-interface MockeryTest_InterfaceWithAbstractMethod
-{
-    public function set();
-}
-
-interface MockeryTest_InterfaceWithPublicStaticMethod
-{
-    public static function self();
-}
-
 abstract class MockeryTest_AbstractWithAbstractMethod
 {
     abstract protected function set();
@@ -1452,14 +1469,14 @@ class MockeryTest_ClassConstructor2
         return $this->param1;
     }
 
-    public function foo()
-    {
-        return 'foo';
-    }
-
     public function bar()
     {
         return $this->foo();
+    }
+
+    public function foo()
+    {
+        return 'foo';
     }
 }
 
@@ -1476,6 +1493,8 @@ class MockeryTest_Call2
     {
     }
 }
+
+// issue/18
 
 class MockeryTest_Wakeup1
 {
@@ -1498,7 +1517,6 @@ abstract class MockeryTest_AbstractWithAbstractPublicMethod
     abstract public function foo($a, $b);
 }
 
-// issue/18
 class SoCool
 {
     public function iDoSomethingReallyCoolHere()
@@ -1541,6 +1559,7 @@ class MockeryTest_MethodParamRef
         return true;
     }
 }
+
 class MockeryTest_MethodParamRef2
 {
     public function method1(&$foo)
@@ -1548,6 +1567,7 @@ class MockeryTest_MethodParamRef2
         return true;
     }
 }
+
 class MockeryTestRef1
 {
     public function foo(&$a, $b)
@@ -1575,6 +1595,21 @@ abstract class MockeryTest_PartialAbstractClass
     public function bar()
     {
         return 'abc';
+    }
+}
+
+if (PHP_VERSION_ID >= 50400) {
+    class MockeryTest_MockCallableTypeHint
+    {
+        public function foo(callable $baz)
+        {
+            $baz();
+        }
+
+        public function bar(callable $callback = null)
+        {
+            $callback();
+        }
     }
 }
 
@@ -1610,21 +1645,6 @@ abstract class MockeryTest_PartialAbstractClass2
 
 class MockeryTest_TestInheritedType
 {
-}
-
-if (PHP_VERSION_ID >= 50400) {
-    class MockeryTest_MockCallableTypeHint
-    {
-        public function foo(callable $baz)
-        {
-            $baz();
-        }
-
-        public function bar(callable $callback = null)
-        {
-            $callback();
-        }
-    }
 }
 
 class MockeryTest_WithToString
@@ -1686,11 +1706,6 @@ class EmptyConstructorTest
     }
 }
 
-interface MockeryTest_InterfaceWithMethodParamSelf
-{
-    public function foo(self $bar);
-}
-
 class MockeryTest_Lowercase_ToString
 {
     public function __tostring()
@@ -1716,16 +1731,6 @@ class MockeryTest_MethodWithRequiredParamWithDefaultValue
     public function foo(DateTime $bar = null, $baz)
     {
     }
-}
-
-interface MockeryTest_InterfaceThatExtendsIterator extends Iterator
-{
-    public function foo();
-}
-
-interface MockeryTest_InterfaceThatExtendsIteratorAggregate extends IteratorAggregate
-{
-    public function foo();
 }
 
 class MockeryTest_ClassThatDescendsFromInternalClass extends DateTime

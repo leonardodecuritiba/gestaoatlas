@@ -437,6 +437,16 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('foo', $result->getMessage());
     }
 
+    public function testLotsOfSynchronousDoesNotBlowStack()
+    {
+        $promise = $this->createLotsOfSynchronousPromise();
+        $promise->then(function ($v) use (&$r) {
+            $r = $v;
+        });
+        P\queue()->run();
+        $this->assertEquals(999, $r);
+    }
+
     public function createLotsOfSynchronousPromise()
     {
         return P\coroutine(function () {
@@ -448,19 +458,19 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function testLotsOfSynchronousDoesNotBlowStack()
-    {
-        $promise = $this->createLotsOfSynchronousPromise();
-        $promise->then(function ($v) use (&$r) { $r = $v; });
-        P\queue()->run();
-        $this->assertEquals(999, $r);
-    }
-
     public function testLotsOfSynchronousWaitDoesNotBlowStack()
     {
         $promise = $this->createLotsOfSynchronousPromise();
         $promise->then(function ($v) use (&$r) { $r = $v; });
         $this->assertEquals(999, $promise->wait());
+        $this->assertEquals(999, $r);
+    }
+
+    public function testLotsOfTryCatchingDoesNotBlowStack()
+    {
+        $promise = $this->createLotsOfFlappingPromise();
+        $promise->then(function ($v) use (&$r) { $r = $v; });
+        P\queue()->run();
         $this->assertEquals(999, $r);
     }
 
@@ -481,14 +491,6 @@ class FunctionsTest extends \PHPUnit_Framework_TestCase
             }
             yield $value;
         });
-    }
-
-    public function testLotsOfTryCatchingDoesNotBlowStack()
-    {
-        $promise = $this->createLotsOfFlappingPromise();
-        $promise->then(function ($v) use (&$r) { $r = $v; });
-        P\queue()->run();
-        $this->assertEquals(999, $r);
     }
 
     public function testLotsOfTryCatchingWaitingDoesNotBlowStack()

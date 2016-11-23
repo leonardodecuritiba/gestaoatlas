@@ -16,11 +16,11 @@ namespace Foo {
     {
     }
 
-    interface IBar
+    trait TFooBar
     {
     }
 
-    trait TFooBar
+    interface IBar
     {
     }
 
