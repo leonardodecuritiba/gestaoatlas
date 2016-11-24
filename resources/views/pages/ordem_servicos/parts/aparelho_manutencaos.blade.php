@@ -278,6 +278,7 @@ if($Instrumento->has_lacres_instrumentos()){
             @endif
             {{--{{dd(1)}}--}}
             {{--PEÇAS/PRODUTOS--}}
+            {{--@include('pages.ordem_servicos.insumos.pecas')--}}
             @if(count($Pecas)>0)
                 <section class="row">
                     <div class="x_panel">

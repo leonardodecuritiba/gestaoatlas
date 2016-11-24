@@ -13,6 +13,7 @@
                                 <li><i class="fa fa-calendar"></i> Data de Abertura: <b id="data_abertura"></b></li>
                                 <li><i class="fa fa-warning"></i> Situação: <b id="situacao"></b></li>
                                 <li><i class="fa fa-user"></i> Colaborador: <b id="colaborador"></b></li>
+                                <li><i class="fa fa-money"></i> Valor Total: <b id="valor_total"></b></li>
                             </ul>
                         </div>
                     </div>

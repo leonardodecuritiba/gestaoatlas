@@ -30,6 +30,14 @@ class OrdemServico extends Model
 
 
     // ******************** FUNCTIONS ******************************
+
+    public function update_valores($valor_total)
+    {
+        $this->attributes['valor_total'] = $valor_total;
+        $this->attributes['valor_final'] = $this->attributes['valor_total'] + $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
+        $this->save();
+        return 1;
+    }
     public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
     {
         return (($this->attributes['fechamento'] != NULL) && ($this->attributes['idsituacao_ordem_servico'] == 3)) ? 1 : 0;
@@ -47,17 +55,25 @@ class OrdemServico extends Model
         $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
     }
 
-
     public function getCustosDeslocamentoAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }
-
     public function getPedagiosAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }
     public function getOutrosCustosAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function getValorTotalAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function getValorFinalAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }

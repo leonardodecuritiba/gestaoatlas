@@ -43,6 +43,7 @@
                                 data-situacao="{{$OrdemServico->situacao}}"
                                 data-cliente="{{$OrdemServico->cliente->getType()->nome_principal}}"
                                 data-colaborador="{{$OrdemServico->colaborador}}"
+                                data-valor_total="{{$OrdemServico->valor_total}}"
                                 data-toggle="modal"
                                 data-target="#modalPopup">
                             <i class="fa fa-eye fa-2"></i> Visualizar O.S.
@@ -221,6 +222,7 @@
                 cliente_ = $($origem).data('cliente');
                 situacao_ = $($origem).data('situacao');
                 colaborador_ = $($origem).data('colaborador');
+                valor_total_ = $($origem).data('valor_total');
 
                 idordem_servico = ordem_servico_.idordem_servico;
                 data_abertura = ordem_servico_.created_at;
@@ -235,6 +237,7 @@
                 $(this).find('div.perfil ul b#data_abertura').html(data_abertura);
                 $(this).find('div.perfil ul b#situacao').html(situacao);
                 $(this).find('div.perfil ul b#colaborador').html(colaborador);
+                $(this).find('div.perfil ul b#valor_total').html('R$ ' + valor_total_);
             });
         });
         //ABRE MODAL INSTRUMENTO.

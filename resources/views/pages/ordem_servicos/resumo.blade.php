@@ -20,21 +20,32 @@
                     <div class="well">
                         <div class="perfil">
                             <h4>Cliente: <i>{{$OrdemServico->cliente->getType()->nome_principal}}</i></h4>
-                            <ul class="list-unstyled">
-                                <li><i class="fa fa-info"></i> Nº da O.S.: <b>{{$OrdemServico->idordem_servico}}</b></li>
-                                <li><i class="fa fa-calendar"></i> Data de Abertura: <b>{{$OrdemServico->created_at}}</b></li>
+							<ul class="list-unstyled">
+								<li><i class="fa fa-info"></i> Nº da O.S.: <b>{{$OrdemServico->idordem_servico}}</b>
+								</li>
+								<li><i class="fa fa-calendar"></i> Data de Abertura:
+									<b>{{$OrdemServico->created_at}}</b></li>
 								@if($OrdemServico->status())
 									<li><i class="fa fa-calendar-o"></i> Data de Fechamento: <b>{{$OrdemServico->fechamento}}</b></li>
 								@endif
-                                <li><i class="fa fa-warning"></i> Situação: <b>{{$OrdemServico->situacao->descricao}}</b></li>
-                                <li><i class="fa fa-user"></i> Colaborador: <b>{{$OrdemServico->colaborador->nome}}</b></li>
-                                <li><i class="fa fa-money"></i> Custos Deslocamento: <b>R$ {{$OrdemServico->custos_deslocamento}}</b></li>
-                                <li><i class="fa fa-money"></i> Pedágios: <b>R$ {{$OrdemServico->pedagios}}</b></li>
-                                <li><i class="fa fa-money"></i> Outros Custos: <b>R$ {{$OrdemServico->outros_custos}}</b></li>
+								<li><i class="fa fa-warning"></i> Situação:
+									<b>{{$OrdemServico->situacao->descricao}}</b></li>
+								<li><i class="fa fa-user"></i> Colaborador: <b>{{$OrdemServico->colaborador->nome}}</b>
+								</li>
 								@if($OrdemServico->status())
 									<li><i class="fa fa-info"></i> Nº do chamado: <b>{{$OrdemServico->numero_chamado}}</b></li>
 								@endif
-                            </ul>
+							</ul>
+							<ul class="list-unstyled">
+								<li><i class="fa fa-money"></i> Custos Deslocamento:
+									<b>R$ {{$OrdemServico->custos_deslocamento}}</b></li>
+								<li><i class="fa fa-money"></i> Pedágios: <b>R$ {{$OrdemServico->pedagios}}</b></li>
+								<li><i class="fa fa-money"></i> Outros Custos:
+									<b>R$ {{$OrdemServico->outros_custos}}</b></li>
+								<li><i class="fa fa-money"></i> Valor O.S: <b>R$ {{$OrdemServico->valor_total}}</b></li>
+								<li><i class="fa fa-money"></i> Valor Total: <b>R$ {{$OrdemServico->valor_final}}</b>
+								</li>
+							</ul>
                         </div>
                     </div>
                 </div>

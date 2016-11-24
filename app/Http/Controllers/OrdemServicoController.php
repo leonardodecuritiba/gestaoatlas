@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\AparelhoManutencao;
 use App\Cliente;
 use App\Colaborador;
+use App\Helpers\DataHelper;
 use App\Kit;
 use App\KitsUtilizados;
 use App\Lacre;
@@ -581,6 +582,7 @@ class OrdemServicoController extends Controller
     public function add_insumos(Request $request, $idordem_servico)
     {
         $idaparelho_manutencao = $request->get('idaparelho_manutencao');
+        $total = 0;
         if ($request->has('idservico_id')) {
             $id = $request->get('idservico_id');
             $valor = $request->get('idservico_valor');
@@ -590,8 +592,8 @@ class OrdemServicoController extends Controller
                     'idservico' => $id[$i],
                     'valor' => $valor[$i],
                 ];
-                print_r($data);
                 ServicoPrestado::create($data);
+                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
         if ($request->has('idpeca_id')) {
@@ -603,8 +605,8 @@ class OrdemServicoController extends Controller
                     'idpeca' => $id[$i],
                     'valor' => $valor[$i],
                 ];
-                print_r($data);
                 PecasUtilizadas::create($data);
+                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
         if ($request->has('idkit_id')) {
@@ -616,10 +618,14 @@ class OrdemServicoController extends Controller
                     'idkit' => $id[$i],
                     'valor' => $valor[$i],
                 ];
-                print_r($data);
                 KitsUtilizados::create($data);
+                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
+
+        //atualizando o valor total da OS
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $OrdemServico->update_valores($total);
         return redirect()->route('ordem_servicos.show', $idordem_servico);
     }
 
