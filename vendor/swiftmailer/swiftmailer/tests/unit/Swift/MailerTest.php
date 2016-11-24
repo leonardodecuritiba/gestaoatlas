@@ -25,6 +25,21 @@ class Swift_MailerTest extends \SwiftMailerTestCase
         $mailer->send($message);
     }
 
+    private function _createTransport()
+    {
+        return $this->getMockery('Swift_Transport')->shouldIgnoreMissing();
+    }
+
+    private function _createMessage()
+    {
+        return $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
+    }
+
+    private function _createMailer(Swift_Transport $transport)
+    {
+        return new Swift_Mailer($transport);
+    }
+
     public function testTransportIsOnlyStartedOnce()
     {
         $transport = $this->_createTransport();
@@ -75,6 +90,8 @@ class Swift_MailerTest extends \SwiftMailerTestCase
         $this->assertEquals(57, $mailer->send($message));
     }
 
+    // -- Creation methods
+
     public function testFailedRecipientReferenceIsPassedToTransport()
     {
         $failures = array();
@@ -123,25 +140,8 @@ class Swift_MailerTest extends \SwiftMailerTestCase
         $mailer->registerPlugin($plugin);
     }
 
-    // -- Creation methods
-
     private function _createPlugin()
     {
         return $this->getMockery('Swift_Events_EventListener')->shouldIgnoreMissing();
-    }
-
-    private function _createTransport()
-    {
-        return $this->getMockery('Swift_Transport')->shouldIgnoreMissing();
-    }
-
-    private function _createMessage()
-    {
-        return $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
-    }
-
-    private function _createMailer(Swift_Transport $transport)
-    {
-        return new Swift_Mailer($transport);
     }
 }

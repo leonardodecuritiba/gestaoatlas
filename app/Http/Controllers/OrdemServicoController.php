@@ -141,6 +141,18 @@ class OrdemServicoController extends Controller
             'solucao' => $request->get('solucao'),
             'idsituacao_ordem_servico' => 2
         ]);
+        if ($AparelhoManutencao->has_instrumento()) {
+            $this->updateInstrumento($request, $AparelhoManutencao->idinstrumento);
+        }
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return redirect()->route('ordem_servicos.show', $AparelhoManutencao->idordem_servico);
+    }
+
+    public function updateInstrumento(Request $request, $idinstrumento)
+    {
+        //UPDATE DOS LACRES E SELOS
         //caso não tenha lacre rompido, só atualizar defeito/manutenção
         if ($request->has('lacre_rompido')) {
             $now = Carbon::now()->toDateTimeString();
@@ -172,7 +184,7 @@ class OrdemServicoController extends Controller
                     //Retirar o selo na tabela SeloInstrumento
                     LacreInstrumento::create([
                         'idlacre' => $lacre->idlacre,
-                        'idinstrumento' => $AparelhoManutencao->idinstrumento,
+                        'idinstrumento' => $idinstrumento,
                         'afixado_em' => $now,
                         'retirado_em' => $now,
                     ]);
@@ -186,7 +198,7 @@ class OrdemServicoController extends Controller
             foreach ($idlacres_afixado as $idlacre_afixado) {
                 LacreInstrumento::create([
                     'idlacre' => $idlacre_afixado,
-                    'idinstrumento' => $AparelhoManutencao->idinstrumento,
+                    'idinstrumento' => $idinstrumento,
                     'afixado_em' => $now,
                 ]);
                 Lacre::set_used($idlacre_afixado);
@@ -215,7 +227,7 @@ class OrdemServicoController extends Controller
                 //Retirar o selo na tabela SeloInstrumento
                 SeloInstrumento::create([
                     'idselo' => $selo->idselo,
-                    'idinstrumento' => $AparelhoManutencao->idinstrumento,
+                    'idinstrumento' => $idinstrumento,
                     'afixado_em' => $now,
                     'retirado_em' => $now,
                 ]);
@@ -226,14 +238,12 @@ class OrdemServicoController extends Controller
             Selo::set_used($idselo_afixado);
             SeloInstrumento::create([
                 'idselo' => $idselo_afixado,
-                'idinstrumento' => $AparelhoManutencao->idinstrumento,
+                'idinstrumento' => $idinstrumento,
                 'afixado_em' => $now,
             ]);
 
         }
-        session()->forget('mensagem');
-        session(['mensagem' => $this->Page->msg_upd]);
-        return redirect()->route('ordem_servicos.show', $AparelhoManutencao->idordem_servico);
+        return;
     }
 
     public function show(Request $request, $idordem_servico)

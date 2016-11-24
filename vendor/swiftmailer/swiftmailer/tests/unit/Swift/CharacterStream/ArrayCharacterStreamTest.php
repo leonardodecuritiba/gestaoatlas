@@ -30,6 +30,22 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         );
     }
 
+    private function _getReader()
+    {
+        return $this->getMockery('Swift_CharacterReader');
+    }
+
+    private function _getFactory($reader)
+    {
+        $factory = $this->getMockery('Swift_CharacterReaderFactory');
+        $factory->shouldReceive('getReaderFor')
+            ->zeroOrMoreTimes()
+            ->with('utf-8')
+            ->andReturn($reader);
+
+        return $factory;
+    }
+
     public function testCharactersWrittenUseValidator()
     {
         $reader = $this->_getReader();
@@ -274,6 +290,13 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $stream->importByteStream($os);
     }
 
+    // -- Creation methods
+
+    private function _getByteStream()
+    {
+        return $this->getMockery('Swift_OutputByteStream');
+    }
+
     public function testImportingStreamProducesCorrectCharArray()
     {
         $reader = $this->_getReader();
@@ -333,28 +356,5 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $this->assertIdenticalBinary(pack('C*', 0xD0, 0xB0), $stream->read(1));
 
         $this->assertSame(false, $stream->read(1));
-    }
-
-    // -- Creation methods
-
-    private function _getReader()
-    {
-        return $this->getMockery('Swift_CharacterReader');
-    }
-
-    private function _getFactory($reader)
-    {
-        $factory = $this->getMockery('Swift_CharacterReaderFactory');
-        $factory->shouldReceive('getReaderFor')
-                ->zeroOrMoreTimes()
-                ->with('utf-8')
-                ->andReturn($reader);
-
-        return $factory;
-    }
-
-    private function _getByteStream()
-    {
-        return $this->getMockery('Swift_OutputByteStream');
     }
 }

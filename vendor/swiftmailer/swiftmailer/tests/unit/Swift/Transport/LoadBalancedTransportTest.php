@@ -68,6 +68,14 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         $this->assertEquals(1, $transport->send($message2));
     }
 
+    private function _getTransport(array $transports)
+    {
+        $transport = new Swift_Transport_LoadBalancedTransport();
+        $transport->setTransports($transports);
+
+        return $transport;
+    }
+
     public function testTransportsAreReusedInRotatingFashion()
     {
         $message1 = $this->getMockery('Swift_Mime_Message');
@@ -695,24 +703,6 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         $transport->send($message, $failures);
     }
 
-    public function testRegisterPluginDelegatesToLoadedTransports()
-    {
-        $plugin = $this->_createPlugin();
-
-        $t1 = $this->getMockery('Swift_Transport');
-        $t2 = $this->getMockery('Swift_Transport');
-
-        $t1->shouldReceive('registerPlugin')
-           ->once()
-           ->with($plugin);
-        $t2->shouldReceive('registerPlugin')
-           ->once()
-           ->with($plugin);
-
-        $transport = $this->_getTransport(array($t1, $t2));
-        $transport->registerPlugin($plugin);
-    }
-
     /**
      * Adapted from Yay_Matchers_ReferenceMatcher.
      */
@@ -736,12 +726,22 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
 
     // -- Private helpers
 
-    private function _getTransport(array $transports)
+    public function testRegisterPluginDelegatesToLoadedTransports()
     {
-        $transport = new Swift_Transport_LoadBalancedTransport();
-        $transport->setTransports($transports);
+        $plugin = $this->_createPlugin();
 
-        return $transport;
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $t1->shouldReceive('registerPlugin')
+            ->once()
+            ->with($plugin);
+        $t2->shouldReceive('registerPlugin')
+            ->once()
+            ->with($plugin);
+
+        $transport = $this->_getTransport(array($t1, $t2));
+        $transport->registerPlugin($plugin);
     }
 
     private function _createPlugin()

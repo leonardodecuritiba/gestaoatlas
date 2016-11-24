@@ -240,7 +240,9 @@ if($Instrumento->has_lacres_instrumentos()){
                                                 @foreach($Servicos as $servico)
                                                     <?php
                                                     $tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                                    //                                                        print_r($tabela_preco);
                                                     ?>
+                                                    {{--<option>{{$tabela_preco}}</option>--}}
                                                     <option value="{{$servico->idservico}}"
                                                             data-preco="{{$tabela_preco->preco}}"
                                                             data-preco_minimo="{{$tabela_preco->preco_minimo}}">{{$servico->nome}}</option>
@@ -274,7 +276,7 @@ if($Instrumento->has_lacres_instrumentos()){
                     <h2>Nenhum Serviço cadastrado no sistema!</h2>
                     </div>
             @endif
-
+            {{--{{dd(1)}}--}}
             {{--PEÇAS/PRODUTOS--}}
             @if(count($Pecas)>0)
                 <section class="row">

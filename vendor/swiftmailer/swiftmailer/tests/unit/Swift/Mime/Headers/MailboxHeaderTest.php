@@ -13,6 +13,24 @@ class Swift_Mime_Headers_MailboxHeaderTest extends \SwiftMailerTestCase
         $this->assertEquals(Swift_Mime_Header::TYPE_MAILBOX, $header->getFieldType());
     }
 
+    private function _getHeader($name, $encoder)
+    {
+        $header = new Swift_Mime_Headers_MailboxHeader($name, $encoder, new Swift_Mime_Grammar());
+        $header->setCharset($this->_charset);
+
+        return $header;
+    }
+
+    private function _getEncoder($type, $stub = false)
+    {
+        $encoder = $this->getMockery('Swift_Mime_HeaderEncoder')->shouldIgnoreMissing();
+        $encoder->shouldReceive('getName')
+            ->zeroOrMoreTimes()
+            ->andReturn($type);
+
+        return $encoder;
+    }
+
     public function testMailboxIsSetForAddress()
     {
         $header = $this->_getHeader('From', $this->_getEncoder('Q', true));
@@ -305,23 +323,5 @@ class Swift_Mime_Headers_MailboxHeaderTest extends \SwiftMailerTestCase
             'Mark Corbyn <mark@swiftmailer.org>'."\r\n",
             $header->toString()
             );
-    }
-
-    private function _getHeader($name, $encoder)
-    {
-        $header = new Swift_Mime_Headers_MailboxHeader($name, $encoder, new Swift_Mime_Grammar());
-        $header->setCharset($this->_charset);
-
-        return $header;
-    }
-
-    private function _getEncoder($type, $stub = false)
-    {
-        $encoder = $this->getMockery('Swift_Mime_HeaderEncoder')->shouldIgnoreMissing();
-        $encoder->shouldReceive('getName')
-                ->zeroOrMoreTimes()
-                ->andReturn($type);
-
-        return $encoder;
     }
 }

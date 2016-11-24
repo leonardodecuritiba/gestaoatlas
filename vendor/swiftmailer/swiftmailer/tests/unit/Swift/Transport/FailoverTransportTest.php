@@ -39,6 +39,14 @@ class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
         $this->assertEquals(1, $transport->send($message2));
     }
 
+    private function _getTransport(array $transports)
+    {
+        $transport = new Swift_Transport_FailoverTransport();
+        $transport->setTransports($transports);
+
+        return $transport;
+    }
+
     public function testMessageCanBeTriedOnNextTransportIfExceptionThrown()
     {
         $e = new Swift_TransportException('b0rken');
@@ -486,6 +494,8 @@ class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
         $transport->send($message, $failures);
     }
 
+    // -- Private helpers
+
     public function testRegisterPluginDelegatesToLoadedTransports()
     {
         $plugin = $this->_createPlugin();
@@ -501,16 +511,6 @@ class Swift_Transport_FailoverTransportTest extends \SwiftMailerTestCase
 
         $transport = $this->_getTransport(array($t1, $t2));
         $transport->registerPlugin($plugin);
-    }
-
-    // -- Private helpers
-
-    private function _getTransport(array $transports)
-    {
-        $transport = new Swift_Transport_FailoverTransport();
-        $transport->setTransports($transports);
-
-        return $transport;
     }
 
     private function _createPlugin()

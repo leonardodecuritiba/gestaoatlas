@@ -40,6 +40,18 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
+    protected function _createAttachment()
+    {
+        $entity = new Swift_Mime_Attachment(
+            $this->_headers,
+            $this->_contentEncoder,
+            $this->_cache,
+            $this->_grammar
+        );
+
+        return $entity;
+    }
+
     public function testDispositionIsAttachmentByDefault()
     {
         $attachment = $this->_createAttachment();
@@ -92,6 +104,8 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
+    // -- Private helpers
+
     public function testEndToEnd()
     {
         $attachment = $this->_createAttachment();
@@ -107,19 +121,5 @@ class Swift_Mime_AttachmentAcceptanceTest extends \PHPUnit_Framework_TestCase
             base64_encode('abcd'),
             $attachment->toString()
             );
-    }
-
-    // -- Private helpers
-
-    protected function _createAttachment()
-    {
-        $entity = new Swift_Mime_Attachment(
-            $this->_headers,
-            $this->_contentEncoder,
-            $this->_cache,
-            $this->_grammar
-            );
-
-        return $entity;
     }
 }

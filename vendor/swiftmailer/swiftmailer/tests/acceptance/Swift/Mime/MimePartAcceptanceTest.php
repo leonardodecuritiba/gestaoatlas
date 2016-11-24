@@ -48,6 +48,18 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
+    protected function _createMimePart()
+    {
+        $entity = new Swift_Mime_MimePart(
+            $this->_headers,
+            $this->_contentEncoder,
+            $this->_cache,
+            $this->_grammar
+        );
+
+        return $entity;
+    }
+
     public function testFormatIsSetInHeaders()
     {
         $part = $this->_createMimePart();
@@ -95,6 +107,8 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
+    // -- Private helpers
+
     public function testBodyIsCanonicalized()
     {
         $part = $this->_createMimePart();
@@ -111,19 +125,5 @@ class Swift_Mime_MimePartAcceptanceTest extends \PHPUnit_Framework_TestCase
             "ing\r\n",
             $part->toString()
             );
-    }
-
-    // -- Private helpers
-
-    protected function _createMimePart()
-    {
-        $entity = new Swift_Mime_MimePart(
-            $this->_headers,
-            $this->_contentEncoder,
-            $this->_cache,
-            $this->_grammar
-            );
-
-        return $entity;
     }
 }

@@ -49,24 +49,37 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         }
     }
 
-    public function testAttachmentsDoNotGetTruncatedUsingToString()
+    private function _createMessageWithRandomAttachment($size, $attachmentPath)
     {
-        //Run 100 times with 10KB attachments
-        for ($i = 0; $i < 10; ++$i) {
-            $message = $this->_createMessageWithRandomAttachment(
-                10000, $this->_attachmentFile
-            );
+        $this->_fillFileWithRandomBytes($size, $attachmentPath);
 
-            $emailSource = $message->toString();
+        $message = Swift_Message::newInstance()
+            ->setSubject('test')
+            ->setBody('test')
+            ->setFrom('a@b.c')
+            ->setTo('d@e.f')
+            ->attach(Swift_Attachment::fromPath($attachmentPath));
 
-            $this->assertAttachmentFromSourceMatches(
-                file_get_contents($this->_attachmentFile),
-                $emailSource
-            );
-        }
+        return $message;
     }
 
     // -- Custom Assertions
+
+    private function _fillFileWithRandomBytes($byteCount, $file)
+    {
+        // I was going to use dd with if=/dev/random but this way seems more
+        // cross platform even if a hella expensive!!
+
+        file_put_contents($file, '');
+        $fp = fopen($file, 'wb');
+        for ($i = 0; $i < $byteCount; ++$i) {
+            $byteVal = rand(0, 255);
+            fwrite($fp, pack('i', $byteVal));
+        }
+        fclose($fp);
+    }
+
+    // -- Creation Methods
 
     public function assertAttachmentFromSourceMatches($attachmentData, $source)
     {
@@ -88,34 +101,20 @@ class Swift_Bug51Test extends \SwiftMailerTestCase
         $this->assertIdenticalBinary($attachmentData, base64_decode($attachmentBase64));
     }
 
-    // -- Creation Methods
-
-    private function _fillFileWithRandomBytes($byteCount, $file)
+    public function testAttachmentsDoNotGetTruncatedUsingToString()
     {
-        // I was going to use dd with if=/dev/random but this way seems more
-        // cross platform even if a hella expensive!!
+        //Run 100 times with 10KB attachments
+        for ($i = 0; $i < 10; ++$i) {
+            $message = $this->_createMessageWithRandomAttachment(
+                10000, $this->_attachmentFile
+            );
 
-        file_put_contents($file, '');
-        $fp = fopen($file, 'wb');
-        for ($i = 0; $i < $byteCount; ++$i) {
-            $byteVal = rand(0, 255);
-            fwrite($fp, pack('i', $byteVal));
+            $emailSource = $message->toString();
+
+            $this->assertAttachmentFromSourceMatches(
+                file_get_contents($this->_attachmentFile),
+                $emailSource
+            );
         }
-        fclose($fp);
-    }
-
-    private function _createMessageWithRandomAttachment($size, $attachmentPath)
-    {
-        $this->_fillFileWithRandomBytes($size, $attachmentPath);
-
-        $message = Swift_Message::newInstance()
-            ->setSubject('test')
-            ->setBody('test')
-            ->setFrom('a@b.c')
-            ->setTo('d@e.f')
-            ->attach(Swift_Attachment::fromPath($attachmentPath))
-            ;
-
-        return $message;
     }
 }

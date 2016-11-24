@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AparelhoManutencao extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'aparelho_manutencaos';
     protected $primaryKey = 'idaparelho_manutencao';
-    public $timestamps = true;
     protected $fillable = [
         'idordem_servico',
         'idinstrumento',
@@ -30,24 +30,51 @@ class AparelhoManutencao extends Model
     {
         return ($this->servico_prestados()->count() > 0);
     }
+
+    public function servico_prestados()
+    {
+        return $this->hasMany('App\ServicoPrestado', 'idaparelho_manutencao');
+    }
+
     public function has_pecas_utilizadas()
     {
         return ($this->pecas_utilizadas()->count() > 0);
     }
+
+    public function pecas_utilizadas()
+    {
+        return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
+    }
+
     public function has_kits_utilizados()
     {
         return ($this->kits_utilizados()->count() > 0);
     }
-    public function has_instrumento()
+
+    public function kits_utilizados()
     {
-        return ($this->instrumento()->count() > 0);
-    }
-    public function has_equipamentos()
-    {
-        return ($this->equipamento()->count() > 0);
+        return $this->hasMany('App\KitsUtilizados', 'idaparelho_manutencao');
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+
+    public function has_instrumento()
+    {
+        return ($this->attributes['idinstrumento'] != NULL);
+    }
+
+    public function has_equipamento()
+    {
+        return ($this->attributes['idequipamento'] != NULL);
+    }
+
+    public function has_equipamentos()
+    {
+        return ($this->attributes['idequipamento'] != NULL);
+    }
+
+    // ************************** HASMANY **********************************
+
     public function ordem_servico()
     {
         return $this->belongsTo('App\OrdemServico', 'idordem_servico');
@@ -57,21 +84,9 @@ class AparelhoManutencao extends Model
     {
         return $this->belongsTo('App\Instrumento', 'idinstrumento');
     }
+
     public function equipamento()
     {
         return $this->belongsTo('App\Equipamento', 'idequipamento');
-    }
-    // ************************** HASMANY **********************************
-    public function servico_prestados()
-    {
-        return $this->hasMany('App\ServicoPrestado', 'idaparelho_manutencao');
-    }
-    public function pecas_utilizadas()
-    {
-        return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
-    }
-    public function kits_utilizados()
-    {
-        return $this->hasMany('App\KitsUtilizados', 'idaparelho_manutencao');
     }
 }

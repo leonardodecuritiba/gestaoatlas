@@ -121,28 +121,24 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      * @var array
      */
     protected $_signedHeaders = array();
-
-    /**
-     * If debugHeaders is set store debugDatas here.
-     *
-     * @var string
-     */
-    private $_debugHeadersData = '';
-
-    /**
-     * Stores the bodyHash.
-     *
-     * @var string
-     */
-    private $_bodyHash = '';
-
     /**
      * Stores the signature header.
      *
      * @var Swift_Mime_Headers_ParameterizedHeader
      */
     protected $_dkimHeader;
-
+    /**
+     * If debugHeaders is set store debugDatas here.
+     *
+     * @var string
+     */
+    private $_debugHeadersData = '';
+    /**
+     * Stores the bodyHash.
+     *
+     * @var string
+     */
+    private $_bodyHash = '';
     private $_bodyHashHandler;
 
     private $_headerHash;
@@ -191,23 +187,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     }
 
     /**
-     * Reset the Signer.
-     *
-     * @see Swift_Signer::reset()
-     */
-    public function reset()
-    {
-        $this->_headerHash = null;
-        $this->_signedHeaders = array();
-        $this->_bodyHash = null;
-        $this->_bodyHashHandler = null;
-        $this->_bodyCanonIgnoreStart = 2;
-        $this->_bodyCanonEmptyCounter = 0;
-        $this->_bodyCanonLastChar = null;
-        $this->_bodyCanonSpace = false;
-    }
-
-    /**
      * Writes $bytes to the end of the stream.
      *
      * Writing may not happen immediately if the stream chooses to buffer.  If
@@ -229,6 +208,70 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         foreach ($this->_bound as $is) {
             $is->write($bytes);
         }
+    }
+
+    protected function _canonicalizeBody($string)
+    {
+        $len = strlen($string);
+        $canon = '';
+        $method = ($this->_bodyCanon == 'relaxed');
+        for ($i = 0; $i < $len; ++$i) {
+            if ($this->_bodyCanonIgnoreStart > 0) {
+                --$this->_bodyCanonIgnoreStart;
+                continue;
+            }
+            switch ($string[$i]) {
+                case "\r" :
+                    $this->_bodyCanonLastChar = "\r";
+                    break;
+                case "\n" :
+                    if ($this->_bodyCanonLastChar == "\r") {
+                        if ($method) {
+                            $this->_bodyCanonSpace = false;
+                        }
+                        if ($this->_bodyCanonLine == '') {
+                            ++$this->_bodyCanonEmptyCounter;
+                        } else {
+                            $this->_bodyCanonLine = '';
+                            $canon .= "\r\n";
+                        }
+                    } else {
+                        // Wooops Error
+                        // todo handle it but should never happen
+                    }
+                    break;
+                case ' ' :
+                case "\t" :
+                    if ($method) {
+                        $this->_bodyCanonSpace = true;
+                        break;
+                    }
+                default :
+                    if ($this->_bodyCanonEmptyCounter > 0) {
+                        $canon .= str_repeat("\r\n", $this->_bodyCanonEmptyCounter);
+                        $this->_bodyCanonEmptyCounter = 0;
+                    }
+                    if ($this->_bodyCanonSpace) {
+                        $this->_bodyCanonLine .= ' ';
+                        $canon .= ' ';
+                        $this->_bodyCanonSpace = false;
+                    }
+                    $this->_bodyCanonLine .= $string[$i];
+                    $canon .= $string[$i];
+            }
+        }
+        $this->_addToBodyHash($canon);
+    }
+
+    private function _addToBodyHash($string)
+    {
+        $len = strlen($string);
+        if ($len > ($new_len = ($this->_maxLen - $this->_bodyLen))) {
+            $string = substr($string, 0, $new_len);
+            $len = $new_len;
+        }
+        hash_update($this->_bodyHashHandler, $string);
+        $this->_bodyLen += $len;
     }
 
     /**
@@ -289,6 +332,23 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
     public function flushBuffers()
     {
         $this->reset();
+    }
+
+    /**
+     * Reset the Signer.
+     *
+     * @see Swift_Signer::reset()
+     */
+    public function reset()
+    {
+        $this->_headerHash = null;
+        $this->_signedHeaders = array();
+        $this->_bodyHash = null;
+        $this->_bodyHashHandler = null;
+        $this->_bodyCanonIgnoreStart = 2;
+        $this->_bodyCanonEmptyCounter = 0;
+        $this->_bodyCanonLastChar = null;
+        $this->_bodyCanonSpace = false;
     }
 
     /**
@@ -450,6 +510,15 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         $this->_endOfBody();
     }
 
+    protected function _endOfBody()
+    {
+        // Add trailing Line return if last line is non empty
+        if (strlen($this->_bodyCanonLine) > 0) {
+            $this->_addToBodyHash("\r\n");
+        }
+        $this->_bodyHash = hash_final($this->_bodyHashHandler, true);
+    }
+
     /**
      * Returns the list of Headers Tampered by this plugin.
      *
@@ -463,6 +532,8 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
             return array('DKIM-Signature');
         }
     }
+
+    /* Private helpers */
 
     /**
      * Adds an ignored Header.
@@ -506,6 +577,30 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         }
 
         return $this;
+    }
+
+    protected function _addHeader($header, $is_sig = false)
+    {
+        switch ($this->_headerCanon) {
+            case 'relaxed' :
+                // Prepare Header and cascade
+                $exploded = explode(':', $header, 2);
+                $name = strtolower(trim($exploded[0]));
+                $value = str_replace("\r\n", '', $exploded[1]);
+                $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
+                $header = $name . ':' . trim($value) . ($is_sig ? '' : "\r\n");
+            case 'simple' :
+                // Nothing to do
+        }
+        $this->_addToHeaderHash($header);
+    }
+
+    private function _addToHeaderHash($header)
+    {
+        if ($this->_debugHeaders) {
+            $this->_debugHeadersData[] = trim($header);
+        }
+        $this->_headerCanonData .= $header;
     }
 
     /**
@@ -562,24 +657,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
         return $this;
     }
 
-    /* Private helpers */
-
-    protected function _addHeader($header, $is_sig = false)
-    {
-        switch ($this->_headerCanon) {
-            case 'relaxed' :
-                // Prepare Header and cascade
-                $exploded = explode(':', $header, 2);
-                $name = strtolower(trim($exploded[0]));
-                $value = str_replace("\r\n", '', $exploded[1]);
-                $value = preg_replace("/[ \t][ \t]+/", ' ', $value);
-                $header = $name.':'.trim($value).($is_sig ? '' : "\r\n");
-            case 'simple' :
-                // Nothing to do
-        }
-        $this->_addToHeaderHash($header);
-    }
-
     /**
      * @deprecated This method is currently useless in this class but it must be
      *             kept for BC reasons due to its "protected" scope. This method
@@ -587,87 +664,6 @@ class Swift_Signers_DKIMSigner implements Swift_Signers_HeaderSigner
      */
     protected function _endOfHeaders()
     {
-    }
-
-    protected function _canonicalizeBody($string)
-    {
-        $len = strlen($string);
-        $canon = '';
-        $method = ($this->_bodyCanon == 'relaxed');
-        for ($i = 0; $i < $len; ++$i) {
-            if ($this->_bodyCanonIgnoreStart > 0) {
-                --$this->_bodyCanonIgnoreStart;
-                continue;
-            }
-            switch ($string[$i]) {
-                case "\r" :
-                    $this->_bodyCanonLastChar = "\r";
-                    break;
-                case "\n" :
-                    if ($this->_bodyCanonLastChar == "\r") {
-                        if ($method) {
-                            $this->_bodyCanonSpace = false;
-                        }
-                        if ($this->_bodyCanonLine == '') {
-                            ++$this->_bodyCanonEmptyCounter;
-                        } else {
-                            $this->_bodyCanonLine = '';
-                            $canon .= "\r\n";
-                        }
-                    } else {
-                        // Wooops Error
-                        // todo handle it but should never happen
-                    }
-                    break;
-                case ' ' :
-                case "\t" :
-                    if ($method) {
-                        $this->_bodyCanonSpace = true;
-                        break;
-                    }
-                default :
-                    if ($this->_bodyCanonEmptyCounter > 0) {
-                        $canon .= str_repeat("\r\n", $this->_bodyCanonEmptyCounter);
-                        $this->_bodyCanonEmptyCounter = 0;
-                    }
-                    if ($this->_bodyCanonSpace) {
-                        $this->_bodyCanonLine .= ' ';
-                        $canon .= ' ';
-                        $this->_bodyCanonSpace = false;
-                    }
-                    $this->_bodyCanonLine .= $string[$i];
-                    $canon .= $string[$i];
-            }
-        }
-        $this->_addToBodyHash($canon);
-    }
-
-    protected function _endOfBody()
-    {
-        // Add trailing Line return if last line is non empty
-        if (strlen($this->_bodyCanonLine) > 0) {
-            $this->_addToBodyHash("\r\n");
-        }
-        $this->_bodyHash = hash_final($this->_bodyHashHandler, true);
-    }
-
-    private function _addToBodyHash($string)
-    {
-        $len = strlen($string);
-        if ($len > ($new_len = ($this->_maxLen - $this->_bodyLen))) {
-            $string = substr($string, 0, $new_len);
-            $len = $new_len;
-        }
-        hash_update($this->_bodyHashHandler, $string);
-        $this->_bodyLen += $len;
-    }
-
-    private function _addToHeaderHash($header)
-    {
-        if ($this->_debugHeaders) {
-            $this->_debugHeadersData[] = trim($header);
-        }
-        $this->_headerCanonData .= $header;
     }
 
     /**

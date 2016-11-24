@@ -14,16 +14,9 @@ class Swift_Transport_StreamBufferTest extends \PHPUnit_Framework_TestCase
         $buffer->setWriteTranslations(array('a' => 'b'));
     }
 
-    public function testOverridingTranslationsOnlyAddsNeededFilters()
+    private function _createFactory()
     {
-        $factory = $this->_createFactory();
-        $factory->expects($this->exactly(2))
-                ->method('createFilter')
-                ->will($this->returnCallback(array($this, '_createFilter')));
-
-        $buffer = $this->_createBuffer($factory);
-        $buffer->setWriteTranslations(array('a' => 'b'));
-        $buffer->setWriteTranslations(array('x' => 'y', 'a' => 'b'));
+        return $this->getMock('Swift_ReplacementFilterFactory');
     }
 
     // -- Creation methods
@@ -33,9 +26,16 @@ class Swift_Transport_StreamBufferTest extends \PHPUnit_Framework_TestCase
         return new Swift_Transport_StreamBuffer($replacementFactory);
     }
 
-    private function _createFactory()
+    public function testOverridingTranslationsOnlyAddsNeededFilters()
     {
-        return $this->getMock('Swift_ReplacementFilterFactory');
+        $factory = $this->_createFactory();
+        $factory->expects($this->exactly(2))
+            ->method('createFilter')
+            ->will($this->returnCallback(array($this, '_createFilter')));
+
+        $buffer = $this->_createBuffer($factory);
+        $buffer->setWriteTranslations(array('a' => 'b'));
+        $buffer->setWriteTranslations(array('x' => 'y', 'a' => 'b'));
     }
 
     public function _createFilter()

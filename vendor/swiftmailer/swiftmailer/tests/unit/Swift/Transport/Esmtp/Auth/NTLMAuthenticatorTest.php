@@ -21,6 +21,11 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         $this->assertEquals('NTLM', $login->getAuthKeyword());
     }
 
+    private function _getAuthenticator()
+    {
+        return new Swift_Transport_Esmtp_Auth_NTLMAuthenticator();
+    }
+
     public function testMessage1Generator()
     {
         $login = $this->_getAuthenticator();
@@ -29,6 +34,14 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         $this->assertEquals($this->_message1, bin2hex($message1),
             '%s: We send the smallest ntlm message which should never fail.'
         );
+    }
+
+    private function _invokePrivateMethod($method, $instance, array $args = array())
+    {
+        $methodC = new ReflectionMethod($instance, trim($method));
+        $methodC->setAccessible(true);
+
+        return $methodC->invokeArgs($instance, $args);
     }
 
     public function testLMv1Generator()
@@ -43,6 +56,18 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         $this->assertEquals($lmv1, bin2hex($lmv1Result),
             '%s: The keys should be the same cause we use the same values to generate them.'
         );
+    }
+
+    /**
+     * Hex2bin replacement for < PHP 5.4.
+     *
+     * @param string $hex
+     *
+     * @return string Binary
+     */
+    protected function hex2bin($hex)
+    {
+        return function_exists('hex2bin') ? hex2bin($hex) : pack('H*', $hex);
     }
 
     public function testLMv2Generator()
@@ -139,6 +164,8 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         );
     }
 
+    // -- Private helpers
+
     public function testGetDomainAndUsernameWithAtSymbolAndExtension()
     {
         $username = 'user@domain.com';
@@ -179,6 +206,11 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         );
     }
 
+    private function _getAgent()
+    {
+        return $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
+    }
+
     public function testAuthenticationFailureSendRsetAndReturnFalse()
     {
         $domain = 'TESTNT';
@@ -200,36 +232,5 @@ class Swift_Transport_Esmtp_Auth_NTLMAuthenticatorTest extends \SwiftMailerTestC
         $this->assertFalse($ntlm->authenticate($agent, $username.'@'.$domain, $secret, $this->hex2bin('30fa7e3c677bc301'), $this->hex2bin('f5ce3d2401c8f6e9')),
             '%s: Authentication fails, so RSET should be sent'
         );
-    }
-
-    // -- Private helpers
-    private function _getAuthenticator()
-    {
-        return new Swift_Transport_Esmtp_Auth_NTLMAuthenticator();
-    }
-
-    private function _getAgent()
-    {
-        return $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
-    }
-
-    private function _invokePrivateMethod($method, $instance, array $args = array())
-    {
-        $methodC = new ReflectionMethod($instance, trim($method));
-        $methodC->setAccessible(true);
-
-        return $methodC->invokeArgs($instance, $args);
-    }
-
-    /**
-     * Hex2bin replacement for < PHP 5.4.
-     *
-     * @param string $hex
-     *
-     * @return string Binary
-     */
-    protected function hex2bin($hex)
-    {
-        return function_exists('hex2bin') ? hex2bin($hex) : pack('H*', $hex);
     }
 }

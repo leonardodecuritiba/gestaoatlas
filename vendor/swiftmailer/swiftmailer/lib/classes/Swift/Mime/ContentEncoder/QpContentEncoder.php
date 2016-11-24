@@ -35,20 +35,6 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
         return array('_charStream', '_filter', '_dotEscape');
     }
 
-    protected function getSafeMapShareId()
-    {
-        return get_class($this).($this->_dotEscape ? '.dotEscape' : '');
-    }
-
-    protected function initSafeMap()
-    {
-        parent::initSafeMap();
-        if ($this->_dotEscape) {
-            /* Encode . as =2e for buggy remote servers */
-            unset($this->_safeMap[0x2e]);
-        }
-    }
-
     /**
      * Encode stream $in to stream $out.
      *
@@ -130,5 +116,19 @@ class Swift_Mime_ContentEncoder_QpContentEncoder extends Swift_Encoder_QpEncoder
     public function getName()
     {
         return 'quoted-printable';
+    }
+
+    protected function getSafeMapShareId()
+    {
+        return get_class($this) . ($this->_dotEscape ? '.dotEscape' : '');
+    }
+
+    protected function initSafeMap()
+    {
+        parent::initSafeMap();
+        if ($this->_dotEscape) {
+            /* Encode . as =2e for buggy remote servers */
+            unset($this->_safeMap[0x2e]);
+        }
     }
 }

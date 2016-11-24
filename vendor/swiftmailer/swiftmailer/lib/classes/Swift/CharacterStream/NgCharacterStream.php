@@ -93,18 +93,6 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     /* -- Changing parameters of the stream -- */
 
     /**
-     * Set the character set used in this CharacterStream.
-     *
-     * @param string $charset
-     */
-    public function setCharacterSet($charset)
-    {
-        $this->_charset = $charset;
-        $this->_charReader = null;
-        $this->_mapType = 0;
-    }
-
-    /**
      * Set the CharacterReaderFactory for multi charset support.
      *
      * @param Swift_CharacterReaderFactory $factory
@@ -115,15 +103,15 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     }
 
     /**
-     * @see Swift_CharacterStream::flushContents()
+     * Set the character set used in this CharacterStream.
+     *
+     * @param string $charset
      */
-    public function flushContents()
+    public function setCharacterSet($charset)
     {
-        $this->_datas = null;
-        $this->_map = null;
-        $this->_charCount = 0;
-        $this->_currentPos = 0;
-        $this->_datasSize = 0;
+        $this->_charset = $charset;
+        $this->_charReader = null;
+        $this->_mapType = 0;
     }
 
     /**
@@ -142,6 +130,41 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     }
 
     /**
+     * @see Swift_CharacterStream::flushContents()
+     */
+    public function flushContents()
+    {
+        $this->_datas = null;
+        $this->_map = null;
+        $this->_charCount = 0;
+        $this->_currentPos = 0;
+        $this->_datasSize = 0;
+    }
+
+    /**
+     * @see Swift_CharacterStream::write()
+     *
+     * @param string $chars
+     */
+    public function write($chars)
+    {
+        if (!isset($this->_charReader)) {
+            $this->_charReader = $this->_charReaderFactory->getReaderFor(
+                $this->_charset);
+            $this->_map = array();
+            $this->_mapType = $this->_charReader->getMapType();
+        }
+        $ignored = '';
+        $this->_datas .= $chars;
+        $this->_charCount += $this->_charReader->getCharPositions(substr($this->_datas, $this->_datasSize), $this->_datasSize, $this->_map, $ignored);
+        if ($ignored !== false) {
+            $this->_datasSize = strlen($this->_datas) - strlen($ignored);
+        } else {
+            $this->_datasSize = strlen($this->_datas);
+        }
+    }
+
+    /**
      * @see Swift_CharacterStream::importString()
      *
      * @param string $string
@@ -150,6 +173,25 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     {
         $this->flushContents();
         $this->write($string);
+    }
+
+    /**
+     * @see Swift_CharacterStream::readBytes()
+     *
+     * @param int $length
+     *
+     * @return int[]
+     */
+    public function readBytes($length)
+    {
+        $read = $this->read($length);
+        if ($read !== false) {
+            $ret = array_map('ord', str_split($read, 1));
+
+            return $ret;
+        }
+
+        return false;
     }
 
     /**
@@ -211,25 +253,6 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
     }
 
     /**
-     * @see Swift_CharacterStream::readBytes()
-     *
-     * @param int $length
-     *
-     * @return int[]
-     */
-    public function readBytes($length)
-    {
-        $read = $this->read($length);
-        if ($read !== false) {
-            $ret = array_map('ord', str_split($read, 1));
-
-            return $ret;
-        }
-
-        return false;
-    }
-
-    /**
      * @see Swift_CharacterStream::setPointer()
      *
      * @param int $charOffset
@@ -240,28 +263,5 @@ class Swift_CharacterStream_NgCharacterStream implements Swift_CharacterStream
             $charOffset = $this->_charCount;
         }
         $this->_currentPos = $charOffset;
-    }
-
-    /**
-     * @see Swift_CharacterStream::write()
-     *
-     * @param string $chars
-     */
-    public function write($chars)
-    {
-        if (!isset($this->_charReader)) {
-            $this->_charReader = $this->_charReaderFactory->getReaderFor(
-                $this->_charset);
-            $this->_map = array();
-            $this->_mapType = $this->_charReader->getMapType();
-        }
-        $ignored = '';
-        $this->_datas .= $chars;
-        $this->_charCount += $this->_charReader->getCharPositions(substr($this->_datas, $this->_datasSize), $this->_datasSize, $this->_map, $ignored);
-        if ($ignored !== false) {
-            $this->_datasSize = strlen($this->_datas) - strlen($ignored);
-        } else {
-            $this->_datasSize = strlen($this->_datas);
-        }
     }
 }

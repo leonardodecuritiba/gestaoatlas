@@ -19,6 +19,11 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
         $this->assertEquals('PLAIN', $login->getAuthKeyword());
     }
 
+    private function _getAuthenticator()
+    {
+        return new Swift_Transport_Esmtp_Auth_PlainAuthenticator();
+    }
+
     public function testSuccessfulAuthentication()
     {
         /* -- RFC 4616, 2.
@@ -41,6 +46,8 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
             );
     }
 
+    // -- Private helpers
+
     public function testAuthenticationFailureSendRsetAndReturnFalse()
     {
         $plain = $this->_getAuthenticator();
@@ -58,12 +65,5 @@ class Swift_Transport_Esmtp_Auth_PlainAuthenticatorTest extends \SwiftMailerTest
         $this->assertFalse($plain->authenticate($this->_agent, 'jack', 'pass'),
             '%s: Authentication fails, so RSET should be sent'
             );
-    }
-
-    // -- Private helpers
-
-    private function _getAuthenticator()
-    {
-        return new Swift_Transport_Esmtp_Auth_PlainAuthenticator();
     }
 }

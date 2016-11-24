@@ -12,6 +12,11 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             );
     }
 
+    protected function _createAttachment($headers, $encoder, $cache, $mimeTypes = array())
+    {
+        return new Swift_Mime_Attachment($headers, $encoder, $cache, new Swift_Mime_Grammar(), $mimeTypes);
+    }
+
     public function testDispositionIsReturnedFromHeader()
     {
         /* -- RFC 2183, 2.1, 2.2.
@@ -194,6 +199,30 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
         $attachment->setFile($file);
     }
 
+    protected function _createFileStream($path, $data, $stub = true)
+    {
+        $file = $this->getMockery('Swift_FileStream');
+        $file->shouldReceive('getPath')
+            ->zeroOrMoreTimes()
+            ->andReturn($path);
+        $file->shouldReceive('read')
+            ->zeroOrMoreTimes()
+            ->andReturnUsing(function () use ($data) {
+                static $first = true;
+                if (!$first) {
+                    return false;
+                }
+
+                $first = false;
+
+                return $data;
+            });
+        $file->shouldReceive('setReadPointer')
+            ->zeroOrMoreTimes();
+
+        return $file;
+    }
+
     public function testContentTypeCanBeSetViaSetFile()
     {
         $file = $this->_createFileStream('/bar/file.ext', '');
@@ -250,6 +279,8 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
         $attachment->setFile($file);
     }
 
+    // -- Private helpers
+
     public function testDataCanBeReadFromFile()
     {
         $file = $this->_createFileStream('/foo/file.ext', '<some data>');
@@ -282,39 +313,8 @@ class Swift_Mime_AttachmentTest extends Swift_Mime_AbstractMimeEntityTest
             );
     }
 
-    // -- Private helpers
-
     protected function _createEntity($headers, $encoder, $cache)
     {
         return $this->_createAttachment($headers, $encoder, $cache);
-    }
-
-    protected function _createAttachment($headers, $encoder, $cache, $mimeTypes = array())
-    {
-        return new Swift_Mime_Attachment($headers, $encoder, $cache, new Swift_Mime_Grammar(), $mimeTypes);
-    }
-
-    protected function _createFileStream($path, $data, $stub = true)
-    {
-        $file = $this->getMockery('Swift_FileStream');
-        $file->shouldReceive('getPath')
-             ->zeroOrMoreTimes()
-             ->andReturn($path);
-        $file->shouldReceive('read')
-             ->zeroOrMoreTimes()
-             ->andReturnUsing(function () use ($data) {
-                 static $first = true;
-                 if (!$first) {
-                     return false;
-                 }
-
-                 $first = false;
-
-                 return $data;
-             });
-        $file->shouldReceive('setReadPointer')
-             ->zeroOrMoreTimes();
-
-        return $file;
     }
 }

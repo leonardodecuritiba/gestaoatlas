@@ -104,7 +104,5 @@ class TabelasPrecoTableSeeder extends Seeder
 
 
         echo "\n*** Importacao realizada com sucesso em " . round((microtime(true) - $start), 3) . "s ***";
-        exit;
-
     }
 }

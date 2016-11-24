@@ -64,6 +64,12 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PH
         $this->assertSame('=C3=A4=C3=B6=C3=BC=C3=9F', $encoder->encodeString('äöüß'));
     }
 
+    private function _createEncoderFromContainer()
+    {
+        return Swift_DependencyContainer::getInstance()
+            ->lookup('mime.nativeqpcontentencoder');
+    }
+
     /**
      * @expectedException RuntimeException
      */
@@ -77,12 +83,5 @@ class Swift_Mime_ContentEncoder_NativeQpContentEncoderAcceptanceTest extends \PH
     public function testGetName()
     {
         $this->assertSame('quoted-printable', $this->_encoder->getName());
-    }
-
-    private function _createEncoderFromContainer()
-    {
-        return Swift_DependencyContainer::getInstance()
-            ->lookup('mime.nativeqpcontentencoder')
-            ;
     }
 }

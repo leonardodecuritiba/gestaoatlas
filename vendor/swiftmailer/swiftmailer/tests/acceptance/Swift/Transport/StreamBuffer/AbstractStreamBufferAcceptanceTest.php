@@ -5,8 +5,6 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
 {
     protected $_buffer;
 
-    abstract protected function _initializeBuffer();
-
     public function setUp()
     {
         if (true == getenv('TRAVIS')) {
@@ -33,6 +31,8 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
         $this->assertRegExp('/^[0-9]{3}.*?\r\n$/D', $line);
         $this->_buffer->terminate();
     }
+
+    abstract protected function _initializeBuffer();
 
     public function testWrite()
     {
@@ -80,6 +80,11 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
         $this->_buffer->write('y');
     }
 
+    private function _createMockInputStream()
+    {
+        return $this->getMock('Swift_InputByteStream');
+    }
+
     public function testBindingOtherStreamsMirrorsFlushOperations()
     {
         $this->_initializeBuffer();
@@ -97,6 +102,8 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
 
         $this->_buffer->flushBuffers();
     }
+
+    // -- Creation Methods
 
     public function testUnbindingStreamPreventsFurtherWrites()
     {
@@ -123,12 +130,5 @@ abstract class Swift_Transport_StreamBuffer_AbstractStreamBufferAcceptanceTest
         $this->_buffer->unbind($is2);
 
         $this->_buffer->write('y');
-    }
-
-    // -- Creation Methods
-
-    private function _createMockInputStream()
-    {
-        return $this->getMock('Swift_InputByteStream');
     }
 }

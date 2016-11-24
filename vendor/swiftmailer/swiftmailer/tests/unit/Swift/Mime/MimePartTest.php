@@ -12,6 +12,11 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             );
     }
 
+    protected function _createMimePart($headers, $encoder, $cache)
+    {
+        return new Swift_Mime_MimePart($headers, $encoder, $cache, new Swift_Mime_Grammar());
+    }
+
     public function testCharsetIsReturnedFromHeader()
     {
         /* -- RFC 2046, 4.1.2.
@@ -142,6 +147,11 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $entity->setCharset('iso-2022');
     }
 
+    protected function _createEntity($headers, $encoder, $cache)
+    {
+        return $this->_createMimePart($headers, $encoder, $cache);
+    }
+
     public function testFormatIsReturnedFromHeader()
     {
         /* -- RFC 3676.
@@ -184,6 +194,10 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
         $this->assertSame(false, $part->getDelSp());
     }
 
+    // -- Private helpers
+
+    //abstract
+
     public function testDelSpIsSetInHeader()
     {
         $cType = $this->_createHeader('Content-Type', 'text/plain', array(), false);
@@ -216,18 +230,5 @@ class Swift_Mime_MimePartTest extends Swift_Mime_AbstractMimeEntityTest
             ->setFormat('flowed')
             ->setDelSp(true)
             );
-    }
-
-    // -- Private helpers
-
-    //abstract
-    protected function _createEntity($headers, $encoder, $cache)
-    {
-        return $this->_createMimePart($headers, $encoder, $cache);
-    }
-
-    protected function _createMimePart($headers, $encoder, $cache)
-    {
-        return new Swift_Mime_MimePart($headers, $encoder, $cache, new Swift_Mime_Grammar());
     }
 }

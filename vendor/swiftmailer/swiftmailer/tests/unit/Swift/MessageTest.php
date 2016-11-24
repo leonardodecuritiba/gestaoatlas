@@ -11,50 +11,6 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
         $this->_recursiveObjectCloningCheck($message1, $message2, $message1_clone);
     }
 
-    public function testCloningWithSigners()
-    {
-        $message1 = new Swift_Message('subj', 'body', 'ctype');
-        $signer = new Swift_Signers_DKIMSigner(dirname(dirname(__DIR__)).'/_samples/dkim/dkim.test.priv', 'test.example', 'example');
-        $message1->attachSigner($signer);
-        $message2 = new Swift_Message('subj', 'body', 'ctype');
-        $signer = new Swift_Signers_DKIMSigner(dirname(dirname(__DIR__)).'/_samples/dkim/dkim.test.priv', 'test.example', 'example');
-        $message2->attachSigner($signer);
-        $message1_clone = clone $message1;
-
-        $this->_recursiveObjectCloningCheck($message1, $message2, $message1_clone);
-    }
-
-    public function testBodySwap()
-    {
-        $message1 = new Swift_Message('Test');
-        $html = Swift_MimePart::newInstance('<html></html>', 'text/html');
-        $html->getHeaders()->addTextHeader('X-Test-Remove', 'Test-Value');
-        $html->getHeaders()->addTextHeader('X-Test-Alter', 'Test-Value');
-        $message1->attach($html);
-        $source = $message1->toString();
-        $message2 = clone $message1;
-        $message2->setSubject('Message2');
-        foreach ($message2->getChildren() as $child) {
-            $child->setBody('Test');
-            $child->getHeaders()->removeAll('X-Test-Remove');
-            $child->getHeaders()->get('X-Test-Alter')->setValue('Altered');
-        }
-        $final = $message1->toString();
-        if ($source != $final) {
-            $this->fail("Difference although object cloned \n [".$source."]\n[".$final."]\n");
-        }
-        $final = $message2->toString();
-        if ($final == $source) {
-            $this->fail('Two body matches although they should differ'."\n [".$source."]\n[".$final."]\n");
-        }
-        $id_1 = $message1->getId();
-        $id_2 = $message2->getId();
-        $this->assertEquals($id_1, $id_2, 'Message Ids differ');
-        $id_2 = $message2->generateId();
-        $this->assertNotEquals($id_1, $id_2, 'Message Ids are the same');
-    }
-
-    // -- Private helpers
     protected function _recursiveObjectCloningCheck($obj1, $obj2, $obj1_clone)
     {
         $obj1_properties = (array) $obj1;
@@ -123,8 +79,53 @@ class Swift_MessageTest extends \PHPUnit_Framework_TestCase
                 $arr2_value = $array2[$key];
                 $arr1_clone_value = $array1_clone[$key];
 
-                return $this->_recursiveArrayCloningCheck($obj1_value, $obj2_value, $obj1_clone_value);
+                return $this->_recursiveArrayCloningCheck($arr1_value, $arr2_value, $arr1_clone_value);
             }
         }
+    }
+
+    // -- Private helpers
+
+    public function testCloningWithSigners()
+    {
+        $message1 = new Swift_Message('subj', 'body', 'ctype');
+        $signer = new Swift_Signers_DKIMSigner(dirname(dirname(__DIR__)) . '/_samples/dkim/dkim.test.priv', 'test.example', 'example');
+        $message1->attachSigner($signer);
+        $message2 = new Swift_Message('subj', 'body', 'ctype');
+        $signer = new Swift_Signers_DKIMSigner(dirname(dirname(__DIR__)) . '/_samples/dkim/dkim.test.priv', 'test.example', 'example');
+        $message2->attachSigner($signer);
+        $message1_clone = clone $message1;
+
+        $this->_recursiveObjectCloningCheck($message1, $message2, $message1_clone);
+    }
+
+    public function testBodySwap()
+    {
+        $message1 = new Swift_Message('Test');
+        $html = Swift_MimePart::newInstance('<html></html>', 'text/html');
+        $html->getHeaders()->addTextHeader('X-Test-Remove', 'Test-Value');
+        $html->getHeaders()->addTextHeader('X-Test-Alter', 'Test-Value');
+        $message1->attach($html);
+        $source = $message1->toString();
+        $message2 = clone $message1;
+        $message2->setSubject('Message2');
+        foreach ($message2->getChildren() as $child) {
+            $child->setBody('Test');
+            $child->getHeaders()->removeAll('X-Test-Remove');
+            $child->getHeaders()->get('X-Test-Alter')->setValue('Altered');
+        }
+        $final = $message1->toString();
+        if ($source != $final) {
+            $this->fail("Difference although object cloned \n [" . $source . "]\n[" . $final . "]\n");
+        }
+        $final = $message2->toString();
+        if ($final == $source) {
+            $this->fail('Two body matches although they should differ' . "\n [" . $source . "]\n[" . $final . "]\n");
+        }
+        $id_1 = $message1->getId();
+        $id_2 = $message2->getId();
+        $this->assertEquals($id_1, $id_2, 'Message Ids differ');
+        $id_2 = $message2->generateId();
+        $this->assertNotEquals($id_1, $id_2, 'Message Ids are the same');
     }
 }

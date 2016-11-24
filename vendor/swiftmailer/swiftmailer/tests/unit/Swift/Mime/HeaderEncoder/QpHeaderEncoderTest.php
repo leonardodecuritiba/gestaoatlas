@@ -13,6 +13,16 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
         $this->assertEquals('Q', $encoder->getName());
     }
 
+    private function _createEncoder($charStream)
+    {
+        return new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
+    }
+
+    private function _createCharacterStream($stub = false)
+    {
+        return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
+    }
+
     public function testSpaceAndTabNeverAppear()
     {
         /* -- RFC 2047, 4.
@@ -119,6 +129,8 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
             );
     }
 
+    // -- Creation Methods
+
     public function testOnlyCharactersAllowedInPhrasesAreUsed()
     {
         /* -- RFC 2047, 5.
@@ -207,17 +219,5 @@ class Swift_Mime_HeaderEncoder_QpHeaderEncoderTest extends \SwiftMailerTestCase
 
         $encoder = $this->_createEncoder($charStream);
         $this->assertEquals($output, $encoder->encodeString($input));
-    }
-
-    // -- Creation Methods
-
-    private function _createEncoder($charStream)
-    {
-        return new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
-    }
-
-    private function _createCharacterStream($stub = false)
-    {
-        return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
     }
 }

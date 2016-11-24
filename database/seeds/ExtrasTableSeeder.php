@@ -38,7 +38,7 @@ class ExtrasTableSeeder extends Seeder
         $this->call(PecaKitsTableSeeder::class);
         $this->call(InsumosTableSeeder::class);
         */
-        echo "\n*** Importacao realizada com sucesso em ".round((microtime(true) - $start), 3)."s ***"; exit;
+        echo "\n*** Importacao realizada com sucesso em " . round((microtime(true) - $start), 3) . "s ***";
 
     }
 }

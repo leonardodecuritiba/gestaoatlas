@@ -9,6 +9,27 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
         $this->_factory = $this->_createFactory();
     }
 
+    private function _createFactory($encoder = null, $paramEncoder = null)
+    {
+        return new Swift_Mime_SimpleHeaderFactory(
+            $encoder
+                ? $encoder : $this->_createHeaderEncoder(),
+            $paramEncoder
+                ? $paramEncoder : $this->_createParamEncoder(),
+            new Swift_Mime_Grammar()
+        );
+    }
+
+    private function _createHeaderEncoder()
+    {
+        return $this->getMock('Swift_Mime_HeaderEncoder');
+    }
+
+    private function _createParamEncoder()
+    {
+        return $this->getMock('Swift_Encoder');
+    }
+
     public function testMailboxHeaderIsCorrectType()
     {
         $header = $this->_factory->createMailboxHeader('X-Foo');
@@ -115,6 +136,8 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceof('Swift_Mime_Headers_PathHeader', $header);
     }
 
+    // -- Creation methods
+
     public function testPathHeaderHasCorrectName()
     {
         $header = $this->_factory->createPathHeader('X-Path');
@@ -141,28 +164,5 @@ class Swift_Mime_SimpleHeaderFactoryTest extends \PHPUnit_Framework_TestCase
         $factory = $this->_createFactory($encoder, $paramEncoder);
 
         $factory->charsetChanged('utf-8');
-    }
-
-    // -- Creation methods
-
-    private function _createFactory($encoder = null, $paramEncoder = null)
-    {
-        return new Swift_Mime_SimpleHeaderFactory(
-            $encoder
-                ? $encoder : $this->_createHeaderEncoder(),
-            $paramEncoder
-                ? $paramEncoder : $this->_createParamEncoder(),
-            new Swift_Mime_Grammar()
-            );
-    }
-
-    private function _createHeaderEncoder()
-    {
-        return $this->getMock('Swift_Mime_HeaderEncoder');
-    }
-
-    private function _createParamEncoder()
-    {
-        return $this->getMock('Swift_Encoder');
     }
 }

@@ -68,6 +68,15 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function assertPatternInStream($pattern, $stream, $message = '%s')
+    {
+        $string = '';
+        while (false !== $bytes = $stream->read(8192)) {
+            $string .= $bytes;
+        }
+        $this->assertRegExp($pattern, $string, $message);
+    }
+
     public function testWritingMessageToByteStreamTwiceProducesCorrectStructure()
     {
         $message = new Swift_Message();
@@ -125,6 +134,8 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
         $this->assertPatternInStream($pattern, $streamB);
     }
 
+    // -- Helpers
+
     public function testWritingMessageToByteStreamTwiceUsingAFileAttachment()
     {
         $message = new Swift_Message();
@@ -179,16 +190,5 @@ class Swift_Bug38Test extends \PHPUnit_Framework_TestCase
 
         $this->assertPatternInStream($pattern, $streamA);
         $this->assertPatternInStream($pattern, $streamB);
-    }
-
-    // -- Helpers
-
-    public function assertPatternInStream($pattern, $stream, $message = '%s')
-    {
-        $string = '';
-        while (false !== $bytes = $stream->read(8192)) {
-            $string .= $bytes;
-        }
-        $this->assertRegExp($pattern, $string, $message);
     }
 }

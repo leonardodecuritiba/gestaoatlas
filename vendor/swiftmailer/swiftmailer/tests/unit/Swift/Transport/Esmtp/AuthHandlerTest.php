@@ -15,6 +15,11 @@ class Swift_Transport_Esmtp_AuthHandlerTest extends \SwiftMailerTestCase
         $this->assertEquals('AUTH', $auth->getHandledKeyword());
     }
 
+    private function _createHandler($authenticators)
+    {
+        return new Swift_Transport_Esmtp_AuthHandler($authenticators);
+    }
+
     public function testUsernameCanBeSetAndFetched()
     {
         $auth = $this->_createHandler(array());
@@ -81,6 +86,16 @@ class Swift_Transport_Esmtp_AuthHandlerTest extends \SwiftMailerTestCase
         $auth->afterEhlo($this->_agent);
     }
 
+    private function _createMockAuthenticator($type)
+    {
+        $authenticator = $this->getMockery('Swift_Transport_Esmtp_Authenticator')->shouldIgnoreMissing();
+        $authenticator->shouldReceive('getAuthKeyword')
+            ->zeroOrMoreTimes()
+            ->andReturn($type);
+
+        return $authenticator;
+    }
+
     public function testAuthenticatorsAreNotUsedIfNoUsernameSet()
     {
         $a1 = $this->_createMockAuthenticator('PLAIN');
@@ -99,6 +114,8 @@ class Swift_Transport_Esmtp_AuthHandlerTest extends \SwiftMailerTestCase
         $auth->setKeywordParams(array('CRAM-MD5', 'LOGIN'));
         $auth->afterEhlo($this->_agent);
     }
+
+    // -- Private helpers
 
     public function testSeveralAuthenticatorsAreTriedIfNeeded()
     {
@@ -146,22 +163,5 @@ class Swift_Transport_Esmtp_AuthHandlerTest extends \SwiftMailerTestCase
 
         $auth->setKeywordParams(array('PLAIN', 'LOGIN', 'CRAM-MD5'));
         $auth->afterEhlo($this->_agent);
-    }
-
-    // -- Private helpers
-
-    private function _createHandler($authenticators)
-    {
-        return new Swift_Transport_Esmtp_AuthHandler($authenticators);
-    }
-
-    private function _createMockAuthenticator($type)
-    {
-        $authenticator = $this->getMockery('Swift_Transport_Esmtp_Authenticator')->shouldIgnoreMissing();
-        $authenticator->shouldReceive('getAuthKeyword')
-                      ->zeroOrMoreTimes()
-                      ->andReturn($type);
-
-        return $authenticator;
     }
 }

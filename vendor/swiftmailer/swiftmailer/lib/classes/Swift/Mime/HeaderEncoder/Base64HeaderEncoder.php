@@ -16,17 +16,6 @@
 class Swift_Mime_HeaderEncoder_Base64HeaderEncoder extends Swift_Encoder_Base64Encoder implements Swift_Mime_HeaderEncoder
 {
     /**
-     * Get the name of this encoding scheme.
-     * Returns the string 'B'.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return 'B';
-    }
-
-    /**
      * Takes an unencoded string and produces a Base64 encoded string from it.
      *
      * If the charset is iso-2022-jp, it uses mb_encode_mimeheader instead of
@@ -51,5 +40,16 @@ class Swift_Mime_HeaderEncoder_Base64HeaderEncoder extends Swift_Encoder_Base64E
         }
 
         return parent::encodeString($string, $firstLineOffset, $maxLineLength);
+    }
+
+    /**
+     * Get the name of this encoding scheme.
+     * Returns the string 'B'.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return 'B';
     }
 }

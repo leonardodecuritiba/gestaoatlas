@@ -15,6 +15,22 @@ class Swift_Events_SendEventTest extends \PHPUnit_Framework_TestCase
             );
     }
 
+    private function _createMessage()
+    {
+        return $this->getMock('Swift_Mime_Message');
+    }
+
+    private function _createTransport()
+    {
+        return $this->getMock('Swift_Transport');
+    }
+
+    private function _createEvent(Swift_Transport $source,
+                                  Swift_Mime_Message $message)
+    {
+        return new Swift_Events_SendEvent($source, $message);
+    }
+
     public function testTransportCanBeFetchViaGetter()
     {
         $message = $this->_createMessage();
@@ -40,6 +56,8 @@ class Swift_Events_SendEventTest extends \PHPUnit_Framework_TestCase
             '%s: Transport should be returned from getSource()'
             );
     }
+
+    // -- Creation Methods
 
     public function testResultCanBeSetAndGet()
     {
@@ -77,23 +95,5 @@ class Swift_Events_SendEventTest extends \PHPUnit_Framework_TestCase
 
         $evt = $this->_createEvent($transport, $message);
         $this->assertEquals(array(), $evt->getFailedRecipients());
-    }
-
-    // -- Creation Methods
-
-    private function _createEvent(Swift_Transport $source,
-        Swift_Mime_Message $message)
-    {
-        return new Swift_Events_SendEvent($source, $message);
-    }
-
-    private function _createTransport()
-    {
-        return $this->getMock('Swift_Transport');
-    }
-
-    private function _createMessage()
-    {
-        return $this->getMock('Swift_Mime_Message');
     }
 }

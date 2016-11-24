@@ -63,55 +63,16 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
         closedir($sampleFp);
     }
 
-    public function testEncodingAndDecodingSamplesFromDiConfiguredInstance()
-    {
-        $sampleFp = opendir($this->_samplesDir);
-        while (false !== $encodingDir = readdir($sampleFp)) {
-            if (substr($encodingDir, 0, 1) == '.') {
-                continue;
-            }
-
-            $encoding = $encodingDir;
-            $encoder = $this->_createEncoderFromContainer();
-
-            $sampleDir = $this->_samplesDir.'/'.$encodingDir;
-
-            if (is_dir($sampleDir)) {
-                $fileFp = opendir($sampleDir);
-                while (false !== $sampleFile = readdir($fileFp)) {
-                    if (substr($sampleFile, 0, 1) == '.') {
-                        continue;
-                    }
-
-                    $text = file_get_contents($sampleDir.'/'.$sampleFile);
-
-                    $os = new Swift_ByteStream_ArrayByteStream();
-                    $os->write($text);
-
-                    $is = new Swift_ByteStream_ArrayByteStream();
-                    $encoder->encodeByteStream($os, $is);
-
-                    $encoded = '';
-                    while (false !== $bytes = $is->read(8192)) {
-                        $encoded .= $bytes;
-                    }
-
-                    $this->assertEquals(
-                        str_replace("\r\n", "\n", quoted_printable_decode($encoded)), str_replace("\r\n", "\n", $text),
-                        '%s: Encoded string should decode back to original string for sample '.
-                        $sampleDir.'/'.$sampleFile
-                        );
-                }
-                closedir($fileFp);
-            }
-        }
-        closedir($sampleFp);
-    }
-
     public function testEncodingLFTextWithDiConfiguredInstance()
     {
         $encoder = $this->_createEncoderFromContainer();
         $this->assertEquals("a\r\nb\r\nc", $encoder->encodeString("a\nb\nc"));
+    }
+
+    private function _createEncoderFromContainer()
+    {
+        return Swift_DependencyContainer::getInstance()
+            ->lookup('mime.qpcontentencoder');
     }
 
     public function testEncodingCRTextWithDiConfiguredInstance()
@@ -151,10 +112,48 @@ class Swift_Mime_ContentEncoder_QpContentEncoderAcceptanceTest extends \PHPUnit_
         $this->testEncodingAndDecodingSamplesFromDiConfiguredInstance();
     }
 
-    private function _createEncoderFromContainer()
+    public function testEncodingAndDecodingSamplesFromDiConfiguredInstance()
     {
-        return Swift_DependencyContainer::getInstance()
-            ->lookup('mime.qpcontentencoder')
-            ;
+        $sampleFp = opendir($this->_samplesDir);
+        while (false !== $encodingDir = readdir($sampleFp)) {
+            if (substr($encodingDir, 0, 1) == '.') {
+                continue;
+            }
+
+            $encoding = $encodingDir;
+            $encoder = $this->_createEncoderFromContainer();
+
+            $sampleDir = $this->_samplesDir . '/' . $encodingDir;
+
+            if (is_dir($sampleDir)) {
+                $fileFp = opendir($sampleDir);
+                while (false !== $sampleFile = readdir($fileFp)) {
+                    if (substr($sampleFile, 0, 1) == '.') {
+                        continue;
+                    }
+
+                    $text = file_get_contents($sampleDir . '/' . $sampleFile);
+
+                    $os = new Swift_ByteStream_ArrayByteStream();
+                    $os->write($text);
+
+                    $is = new Swift_ByteStream_ArrayByteStream();
+                    $encoder->encodeByteStream($os, $is);
+
+                    $encoded = '';
+                    while (false !== $bytes = $is->read(8192)) {
+                        $encoded .= $bytes;
+                    }
+
+                    $this->assertEquals(
+                        str_replace("\r\n", "\n", quoted_printable_decode($encoded)), str_replace("\r\n", "\n", $text),
+                        '%s: Encoded string should decode back to original string for sample ' .
+                        $sampleDir . '/' . $sampleFile
+                    );
+                }
+                closedir($fileFp);
+            }
+        }
+        closedir($sampleFp);
     }
 }

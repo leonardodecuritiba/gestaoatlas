@@ -8,6 +8,11 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Swift_Mime_Header::TYPE_PATH, $header->getFieldType());
     }
 
+    private function _getHeader($name)
+    {
+        return new Swift_Mime_Headers_PathHeader($name, new Swift_Mime_Grammar());
+    }
+
     public function testSingleAddressCanBeSetAndFetched()
     {
         $header = $this->_getHeader('Return-Path');
@@ -68,10 +73,5 @@ class Swift_Mime_Headers_PathHeaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Return-Path: <chris@swiftmailer.org>'."\r\n",
             $header->toString()
             );
-    }
-
-    private function _getHeader($name)
-    {
-        return new Swift_Mime_Headers_PathHeader($name, new Swift_Mime_Grammar());
     }
 }

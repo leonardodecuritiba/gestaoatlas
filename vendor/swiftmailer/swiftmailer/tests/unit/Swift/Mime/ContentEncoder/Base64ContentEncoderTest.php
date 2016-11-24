@@ -50,6 +50,16 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
         $this->assertEquals('MTIz', $collection->content);
     }
 
+    private function _createOutputByteStream($stub = false)
+    {
+        return $this->getMockery('Swift_OutputByteStream')->shouldIgnoreMissing();
+    }
+
+    private function _createInputByteStream($stub = false)
+    {
+        return $this->getMockery('Swift_InputByteStream')->shouldIgnoreMissing();
+    }
+
     public function testPadLength()
     {
         /*
@@ -309,15 +319,5 @@ class Swift_Mime_ContentEncoder_Base64ContentEncoderTest extends \SwiftMailerTes
             'EVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY3YWJjZGVmZ2hpamts',
             $collection->content
             );
-    }
-
-    private function _createOutputByteStream($stub = false)
-    {
-        return $this->getMockery('Swift_OutputByteStream')->shouldIgnoreMissing();
-    }
-
-    private function _createInputByteStream($stub = false)
-    {
-        return $this->getMockery('Swift_InputByteStream')->shouldIgnoreMissing();
     }
 }

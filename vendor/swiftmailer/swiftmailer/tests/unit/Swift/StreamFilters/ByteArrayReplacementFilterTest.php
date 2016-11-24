@@ -11,6 +11,11 @@ class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit_Framew
             );
     }
 
+    private function _createFilter($search, $replace)
+    {
+        return new Swift_StreamFilters_ByteArrayReplacementFilter($search, $replace);
+    }
+
     public function testShouldBufferReturnsTrueIfPartialMatchAtEndOfBuffer()
     {
         $filter = $this->_createFilter(array(0x61, 0x62), array(0x63, 0x64));
@@ -107,6 +112,8 @@ class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit_Framew
             );
     }
 
+    // -- Creation methods
+
     public function testConvertingAllLineEndingsToCRLFWhenInputContainsLFLF()
     {
         //Lighthouse Bug #23
@@ -120,12 +127,5 @@ class Swift_StreamFilters_ByteArrayReplacementFilterTest extends \PHPUnit_Framew
             array(0x60, 0x0D, 0x0A, 0x0D, 0x0A, 0x61, 0x0D, 0x0A, 0x0D, 0x0A, 0x62, 0x0D, 0x0A, 0x0D, 0x0A, 0x63),
             $filter->filter(array(0x60, 0x0A, 0x0A, 0x61, 0x0A, 0x0A, 0x62, 0x0A, 0x0A, 0x63))
             );
-    }
-
-    // -- Creation methods
-
-    private function _createFilter($search, $replace)
-    {
-        return new Swift_StreamFilters_ByteArrayReplacementFilter($search, $replace);
     }
 }

@@ -17,6 +17,11 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         $smtp->registerPlugin($listener);
     }
 
+    protected function _createEventDispatcher($stub = true)
+    {
+        return $this->getMockery('Swift_Events_EventDispatcher')->shouldIgnoreMissing();
+    }
+
     public function testSendingDispatchesBeforeSendEvent()
     {
         $buf = $this->_getBuffer();
@@ -526,6 +531,8 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
         }
     }
 
+    // -- Creation Methods
+
     public function testExceptionBubblesCanBeCancelled()
     {
         $buf = $this->_getBuffer();
@@ -549,12 +556,5 @@ abstract class Swift_Transport_AbstractSmtpEventSupportTest extends Swift_Transp
 
         $this->_finishBuffer($buf);
         $smtp->start();
-    }
-
-    // -- Creation Methods
-
-    protected function _createEventDispatcher($stub = true)
-    {
-        return $this->getMockery('Swift_Events_EventDispatcher')->shouldIgnoreMissing();
     }
 }

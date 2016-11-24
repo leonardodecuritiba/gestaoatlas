@@ -27,6 +27,62 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         $plugin->sendPerformed($evt);
     }
 
+    private function _createMessage($headers, $to = array(), $from = null, $subject = null,
+                                    $body = null)
+    {
+        $message = $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
+        foreach ($to as $addr => $name) {
+            $message->shouldReceive('getTo')
+                ->once()
+                ->andReturn(array($addr => $name));
+        }
+        $message->shouldReceive('getHeaders')
+            ->zeroOrMoreTimes()
+            ->andReturn($headers);
+        $message->shouldReceive('getFrom')
+            ->zeroOrMoreTimes()
+            ->andReturn($from);
+        $message->shouldReceive('getSubject')
+            ->zeroOrMoreTimes()
+            ->andReturn($subject);
+        $message->shouldReceive('getBody')
+            ->zeroOrMoreTimes()
+            ->andReturn($body);
+
+        return $message;
+    }
+
+    private function _createHeaders($headers = array())
+    {
+        $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
+        $set->shouldReceive('getAll')
+            ->zeroOrMoreTimes()
+            ->andReturn($headers);
+
+        foreach ($headers as $header) {
+            $set->set($header);
+        }
+
+        return $set;
+    }
+
+    private function _createPlugin($replacements)
+    {
+        return new Swift_Plugins_DecoratorPlugin($replacements);
+    }
+
+    private function _createSendEvent(Swift_Mime_Message $message)
+    {
+        $evt = $this->getMockery('Swift_Events_SendEvent')->shouldIgnoreMissing();
+        $evt->shouldReceive('getMessage')
+            ->zeroOrMoreTimes()
+            ->andReturn($message);
+
+        return $evt;
+    }
+
+    // -- Creation methods
+
     public function testReplacementsCanBeAppliedToSameMessageMultipleTimes()
     {
         $message = $this->_createMessage(
@@ -103,6 +159,19 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         $plugin->sendPerformed($evt);
     }
 
+    private function _createHeader($name, $body = '')
+    {
+        $header = $this->getMockery('Swift_Mime_Header')->shouldIgnoreMissing();
+        $header->shouldReceive('getFieldName')
+            ->zeroOrMoreTimes()
+            ->andReturn($name);
+        $header->shouldReceive('getFieldBodyModel')
+            ->zeroOrMoreTimes()
+            ->andReturn($body);
+
+        return $header;
+    }
+
     public function testReplacementsAreMadeOnSubparts()
     {
         $part1 = $this->_createPart('text/plain', 'Your name is {name}?', '1@x');
@@ -136,6 +205,22 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
 
         $plugin->beforeSendPerformed($evt);
         $plugin->sendPerformed($evt);
+    }
+
+    private function _createPart($type, $body, $id)
+    {
+        $part = $this->getMockery('Swift_Mime_MimeEntity')->shouldIgnoreMissing();
+        $part->shouldReceive('getContentType')
+            ->zeroOrMoreTimes()
+            ->andReturn($type);
+        $part->shouldReceive('getBody')
+            ->zeroOrMoreTimes()
+            ->andReturn($body);
+        $part->shouldReceive('getId')
+            ->zeroOrMoreTimes()
+            ->andReturn($id);
+
+        return $part;
     }
 
     public function testReplacementsCanBeTakenFromCustomReplacementsObject()
@@ -177,93 +262,8 @@ class Swift_Plugins_DecoratorPluginTest extends \SwiftMailerTestCase
         $plugin->sendPerformed($evt);
     }
 
-    // -- Creation methods
-
-    private function _createMessage($headers, $to = array(), $from = null, $subject = null,
-        $body = null)
-    {
-        $message = $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
-        foreach ($to as $addr => $name) {
-            $message->shouldReceive('getTo')
-                    ->once()
-                    ->andReturn(array($addr => $name));
-        }
-        $message->shouldReceive('getHeaders')
-                ->zeroOrMoreTimes()
-                ->andReturn($headers);
-        $message->shouldReceive('getFrom')
-                ->zeroOrMoreTimes()
-                ->andReturn($from);
-        $message->shouldReceive('getSubject')
-                ->zeroOrMoreTimes()
-                ->andReturn($subject);
-        $message->shouldReceive('getBody')
-                ->zeroOrMoreTimes()
-                ->andReturn($body);
-
-        return $message;
-    }
-
-    private function _createPlugin($replacements)
-    {
-        return new Swift_Plugins_DecoratorPlugin($replacements);
-    }
-
     private function _createReplacements()
     {
         return $this->getMockery('Swift_Plugins_Decorator_Replacements')->shouldIgnoreMissing();
-    }
-
-    private function _createSendEvent(Swift_Mime_Message $message)
-    {
-        $evt = $this->getMockery('Swift_Events_SendEvent')->shouldIgnoreMissing();
-        $evt->shouldReceive('getMessage')
-            ->zeroOrMoreTimes()
-            ->andReturn($message);
-
-        return $evt;
-    }
-
-    private function _createPart($type, $body, $id)
-    {
-        $part = $this->getMockery('Swift_Mime_MimeEntity')->shouldIgnoreMissing();
-        $part->shouldReceive('getContentType')
-             ->zeroOrMoreTimes()
-             ->andReturn($type);
-        $part->shouldReceive('getBody')
-             ->zeroOrMoreTimes()
-             ->andReturn($body);
-        $part->shouldReceive('getId')
-             ->zeroOrMoreTimes()
-             ->andReturn($id);
-
-        return $part;
-    }
-
-    private function _createHeaders($headers = array())
-    {
-        $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
-        $set->shouldReceive('getAll')
-            ->zeroOrMoreTimes()
-            ->andReturn($headers);
-
-        foreach ($headers as $header) {
-            $set->set($header);
-        }
-
-        return $set;
-    }
-
-    private function _createHeader($name, $body = '')
-    {
-        $header = $this->getMockery('Swift_Mime_Header')->shouldIgnoreMissing();
-        $header->shouldReceive('getFieldName')
-               ->zeroOrMoreTimes()
-               ->andReturn($name);
-        $header->shouldReceive('getFieldBodyModel')
-               ->zeroOrMoreTimes()
-               ->andReturn($body);
-
-        return $header;
     }
 }

@@ -41,6 +41,18 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
+    protected function _createEmbeddedFile()
+    {
+        $entity = new Swift_Mime_EmbeddedFile(
+            $this->_headers,
+            $this->_contentEncoder,
+            $this->_cache,
+            $this->_grammar
+        );
+
+        return $entity;
+    }
+
     public function testDispositionIsSetInHeader()
     {
         $file = $this->_createEmbeddedFile();
@@ -103,6 +115,8 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
+    // -- Private helpers
+
     public function testEndToEnd()
     {
         $file = $this->_createEmbeddedFile();
@@ -120,19 +134,5 @@ class Swift_Mime_EmbeddedFileAcceptanceTest extends \PHPUnit_Framework_TestCase
             base64_encode('abcd'),
             $file->toString()
             );
-    }
-
-    // -- Private helpers
-
-    protected function _createEmbeddedFile()
-    {
-        $entity = new Swift_Mime_EmbeddedFile(
-            $this->_headers,
-            $this->_contentEncoder,
-            $this->_cache,
-            $this->_grammar
-            );
-
-        return $entity;
     }
 }

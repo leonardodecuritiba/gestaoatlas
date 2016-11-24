@@ -31,6 +31,18 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
         );
     }
 
+    public function testTimeoutException()
+    {
+        $this->_initializeBuffer();
+        $e = null;
+        try {
+            $line = $this->_buffer->readLine(0);
+        } catch (Exception $e) {
+        }
+        $this->assertInstanceof('Swift_IoException', $e, 'IO Exception Not Thrown On Connection Timeout');
+        $this->assertRegExp('/Connection to .* Timed Out/', $e->getMessage());
+    }
+
     protected function _initializeBuffer()
     {
         $host = '127.0.0.1';
@@ -44,18 +56,6 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
             'blocking' => 1,
             'timeout' => 1,
         ));
-    }
-
-    public function testTimeoutException()
-    {
-        $this->_initializeBuffer();
-        $e = null;
-        try {
-            $line = $this->_buffer->readLine(0);
-        } catch (Exception $e) {
-        }
-        $this->assertInstanceof('Swift_IoException', $e, 'IO Exception Not Thrown On Connection Timeout');
-        $this->assertRegExp('/Connection to .* Timed Out/', $e->getMessage());
     }
 
     public function tearDown()

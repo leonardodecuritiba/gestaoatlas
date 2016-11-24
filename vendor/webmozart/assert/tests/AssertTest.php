@@ -13,6 +13,8 @@ namespace Webmozart\Assert\Tests;
 
 use ArrayIterator;
 use Exception;
+use Error;
+use LogicException;
 use PHPUnit_Framework_TestCase;
 use RuntimeException;
 use stdClass;
@@ -27,18 +29,20 @@ class AssertTest extends PHPUnit_Framework_TestCase
 {
     private static $resource;
 
-    public static function getResource()
-    {
-        if (!static::$resource) {
-            static::$resource = fopen(__FILE__, 'r');
-        }
-
-        return static::$resource;
-    }
-
     public static function tearDownAfterClass()
     {
         @fclose(self::$resource);
+    }
+
+    public function getMethods()
+    {
+        $methods = array();
+
+        foreach ($this->getTests() as $params) {
+            $methods[$params[0]] = array($params[0]);
+        }
+
+        return array_values($methods);
     }
 
     public function getTests()
@@ -275,6 +279,8 @@ class AssertTest extends PHPUnit_Framework_TestCase
             array('keyNotExists', array(array('key' => 0), 'key'), false),
             array('keyNotExists', array(array('key' => null), 'key'), false),
             array('keyNotExists', array(array('key' => null), 'foo'), true),
+            array('count', array(array(0, 1, 2), 3), true),
+            array('count', array(array(0, 1, 2), 2), false),
             array('uuid', array('00000000-0000-0000-0000-000000000000'), true),
             array('uuid', array('ff6f8cb0-c57d-21e1-9b21-0800200c9a66'), true),
             array('uuid', array('ff6f8cb0-c57d-11e1-9b21-0800200c9a66'), true),
@@ -287,28 +293,48 @@ class AssertTest extends PHPUnit_Framework_TestCase
             array('uuid', array('ff6f8cb0-c57da-51e1-9b21-0800200c9a66'), false),
             array('uuid', array('af6f8cb-c57d-11e1-9b21-0800200c9a66'), false),
             array('uuid', array('3f6f8cb0-c57d-11e1-9b21-0800200c9a6'), false),
-
+            array('throws', array(function () {
+                throw new LogicException('test');
+            }, 'LogicException'), true),
+            array('throws', array(function () {
+                throw new LogicException('test');
+            }, 'IllogicException'), false),
+            array('throws', array(function () {
+                throw new Exception('test');
+            }), true),
+            array('throws', array(function () {
+                trigger_error('test');
+            }, 'Throwable'), true, false, 70000),
+            array('throws', array(function () {
+                trigger_error('test');
+            }, 'Unthrowable'), false, false, 70000),
+            array('throws', array(function () {
+                throw new Error();
+            }, 'Throwable'), true, true, 70000),
         );
     }
 
-    public function getMethods()
+    public static function getResource()
     {
-        $methods = array();
-
-        foreach ($this->getTests() as $params) {
-            $methods[$params[0]] = array($params[0]);
+        if (!static::$resource) {
+            static::$resource = fopen(__FILE__, 'r');
         }
 
-        return array_values($methods);
+        return static::$resource;
     }
 
     /**
      * @dataProvider getTests
      */
-    public function testAssert($method, $args, $success, $multibyte = false)
+    public function testAssert($method, $args, $success, $multibyte = false, $minVersion = null)
     {
+        if ($minVersion && PHP_VERSION_ID < $minVersion) {
+            $this->markTestSkipped(sprintf('This test requires php %s or upper.', $minVersion));
+
+            return;
+        }
         if ($multibyte && !function_exists('mb_strlen')) {
-            $this->markTestSkipped('The fucntion mb_strlen() is not available');
+            $this->markTestSkipped('The function mb_strlen() is not available');
 
             return;
         }
@@ -323,10 +349,15 @@ class AssertTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getTests
      */
-    public function testNullOr($method, $args, $success, $multibyte = false)
+    public function testNullOr($method, $args, $success, $multibyte = false, $minVersion = null)
     {
+        if ($minVersion && PHP_VERSION_ID < $minVersion) {
+            $this->markTestSkipped(sprintf('This test requires php %s or upper.', $minVersion));
+
+            return;
+        }
         if ($multibyte && !function_exists('mb_strlen')) {
-            $this->markTestSkipped('The fucntion mb_strlen() is not available');
+            $this->markTestSkipped('The function mb_strlen() is not available');
 
             return;
         }
@@ -349,10 +380,15 @@ class AssertTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getTests
      */
-    public function testAllArray($method, $args, $success, $multibyte = false)
+    public function testAllArray($method, $args, $success, $multibyte = false, $minVersion = null)
     {
+        if ($minVersion && PHP_VERSION_ID < $minVersion) {
+            $this->markTestSkipped(sprintf('This test requires php %s or upper.', $minVersion));
+
+            return;
+        }
         if ($multibyte && !function_exists('mb_strlen')) {
-            $this->markTestSkipped('The fucntion mb_strlen() is not available');
+            $this->markTestSkipped('The function mb_strlen() is not available');
 
             return;
         }
@@ -370,10 +406,15 @@ class AssertTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider getTests
      */
-    public function testAllTraversable($method, $args, $success, $multibyte = false)
+    public function testAllTraversable($method, $args, $success, $multibyte = false, $minVersion = null)
     {
+        if ($minVersion && PHP_VERSION_ID < $minVersion) {
+            $this->markTestSkipped(sprintf('This test requires php %s or upper.', $minVersion));
+
+            return;
+        }
         if ($multibyte && !function_exists('mb_strlen')) {
-            $this->markTestSkipped('The fucntion mb_strlen() is not available');
+            $this->markTestSkipped('The function mb_strlen() is not available');
 
             return;
         }

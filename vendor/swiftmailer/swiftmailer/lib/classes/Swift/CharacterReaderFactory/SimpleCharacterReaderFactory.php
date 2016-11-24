@@ -37,11 +37,6 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift
         $this->init();
     }
 
-    public function __wakeup()
-    {
-        $this->init();
-    }
-
     public function init()
     {
         if (count(self::$_map) > 0) {
@@ -92,6 +87,11 @@ class Swift_CharacterReaderFactory_SimpleCharacterReaderFactory implements Swift
 
         // Fallback
         self::$_map['.*'] = $singleByte;
+    }
+
+    public function __wakeup()
+    {
+        $this->init();
     }
 
     /**

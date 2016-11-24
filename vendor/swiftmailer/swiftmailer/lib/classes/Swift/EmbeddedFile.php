@@ -40,20 +40,6 @@ class Swift_EmbeddedFile extends Swift_Mime_EmbeddedFile
     }
 
     /**
-     * Create a new EmbeddedFile.
-     *
-     * @param string|Swift_OutputByteStream $data
-     * @param string                        $filename
-     * @param string                        $contentType
-     *
-     * @return Swift_Mime_EmbeddedFile
-     */
-    public static function newInstance($data = null, $filename = null, $contentType = null)
-    {
-        return new self($data, $filename, $contentType);
-    }
-
-    /**
      * Create a new EmbeddedFile from a filesystem path.
      *
      * @param string $path
@@ -64,6 +50,20 @@ class Swift_EmbeddedFile extends Swift_Mime_EmbeddedFile
     {
         return self::newInstance()->setFile(
             new Swift_ByteStream_FileByteStream($path)
-            );
+        );
+    }
+
+    /**
+     * Create a new EmbeddedFile.
+     *
+     * @param string|Swift_OutputByteStream $data
+     * @param string $filename
+     * @param string $contentType
+     *
+     * @return Swift_Mime_EmbeddedFile
+     */
+    public static function newInstance($data = null, $filename = null, $contentType = null)
+    {
+        return new self($data, $filename, $contentType);
     }
 }

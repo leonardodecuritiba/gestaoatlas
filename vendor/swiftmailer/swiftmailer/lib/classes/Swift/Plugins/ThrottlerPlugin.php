@@ -118,31 +118,6 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
     }
 
     /**
-     * Invoked when a Message is sent.
-     *
-     * @param Swift_Events_SendEvent $evt
-     */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
-    {
-        parent::sendPerformed($evt);
-        ++$this->_messages;
-    }
-
-    /**
-     * Sleep for $seconds.
-     *
-     * @param int $seconds
-     */
-    public function sleep($seconds)
-    {
-        if (isset($this->_sleeper)) {
-            $this->_sleeper->sleep($seconds);
-        } else {
-            sleep($seconds);
-        }
-    }
-
-    /**
      * Get the current UNIX timestamp.
      *
      * @return int
@@ -196,5 +171,30 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
         $expectedDuration = $this->_messages / ($this->_rate / 60);
 
         return (int) ceil($expectedDuration - $timePassed);
+    }
+
+    /**
+     * Sleep for $seconds.
+     *
+     * @param int $seconds
+     */
+    public function sleep($seconds)
+    {
+        if (isset($this->_sleeper)) {
+            $this->_sleeper->sleep($seconds);
+        } else {
+            sleep($seconds);
+        }
+    }
+
+    /**
+     * Invoked when a Message is sent.
+     *
+     * @param Swift_Events_SendEvent $evt
+     */
+    public function sendPerformed(Swift_Events_SendEvent $evt)
+    {
+        parent::sendPerformed($evt);
+        ++$this->_messages;
     }
 }

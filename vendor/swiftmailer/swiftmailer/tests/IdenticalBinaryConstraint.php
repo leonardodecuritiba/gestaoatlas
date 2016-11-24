@@ -31,16 +31,6 @@ class IdenticalBinaryConstraint extends \PHPUnit_Framework_Constraint
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'indentical binary';
-    }
-
-    /**
      * Get the given string of bytes as a stirng of Hexadecimal sequences.
      *
      * @param string $binary
@@ -58,5 +48,15 @@ class IdenticalBinaryConstraint extends \PHPUnit_Framework_Constraint
         }
 
         return implode('', $bytes);
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'indentical binary';
     }
 }

@@ -36,6 +36,6 @@ class DatabaseSeeder extends Seeder
 
         DB::table('ajustes')->insert(['meta_key'=>'custo_km','meta_value'=>'3.50']);
         echo "\n*****************************************************";
-        echo "\n*** Importacao realizada com sucesso em ".round((microtime(true) - $start), 3)."s ***"; exit;
+        echo "\n*** Importacao realizada com sucesso em " . round((microtime(true) - $start), 3) . "s ***";
     }
 }
