@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ServicoPrestado extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'servico_prestados';
     protected $primaryKey = 'idservico_prestado';
-    public $timestamps = true;
     protected $fillable = [
         'idaparelho_manutencao',
         'idservico',
@@ -30,6 +30,11 @@ class ServicoPrestado extends Model
     public function valor_original()
     {
         return $this->servico->valor;
+    }
+
+    public function valor_float()
+    {
+        return $this->attributes['valor'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************

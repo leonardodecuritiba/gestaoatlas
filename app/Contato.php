@@ -2,14 +2,15 @@
 
 namespace App;
 
+use App\Helpers\DataHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 
 class Contato extends Model
 {
+    public $timestamps = true;
     protected $table = 'contatos';
     protected $primaryKey = 'idcontato';
-    public $timestamps = true;
     protected $fillable = [
         'telefone',
         'celular',
@@ -30,24 +31,32 @@ class Contato extends Model
     }
     public function getTelefoneAttribute($value)
     {
-        return Controller::mask($value, '(##) ####-####');
+        return DataHelper::mask($value, '(##) ####-####');
     }
     public function getCelularAttribute($value)
     {
-        return Controller::mask($value, '(##) #####-####');
+        return DataHelper::mask($value, '(##) #####-####');
     }
     public function getCepAttribute($value)
     {
-        return Controller::mask($value, '#####-###');
+        return DataHelper::mask($value, '#####-###');
+    }
+
+    public function getRua()
+    {
+        $endereco = '';
+        $endereco .= ($this->attributes['logradouro'] != '') ? $this->attributes['logradouro'] : '';
+        $endereco .= ($this->attributes['numero'] != '') ? ', ' . $this->attributes['numero'] : ', s/n';
+        return $endereco;
     }
     public function getEnderecoCompleto()
     {
         $endereco = '';
-        $endereco .= ($this->logradouro != '')?$this->logradouro:'';
-        $endereco .= ($this->numero != '')?', '.$this->numero:', s/n';
-        $endereco .= ($this->bairro != '')?' - '.$this->bairro:' - sem bairro';
-        $endereco .= ($this->cidade != '')?' - '.$this->cidade:' - sem cidade';
-        $endereco .= ($this->estado != '')?'/'.$this->estado:'';
+        $endereco .= ($this->attributes['logradouro'] != '') ? $this->attributes['logradouro'] : '';
+        $endereco .= ($this->attributes['numero'] != '') ? ', ' . $this->attributes['numero'] : ', s/n';
+        $endereco .= ($this->attributes['bairro'] != '') ? ' - ' . $this->attributes['bairro'] : ' - sem bairro';
+        $endereco .= ($this->attributes['cidade'] != '') ? ' - ' . $this->attributes['cidade'] : ' - sem cidade';
+        $endereco .= ($this->attributes['estado'] != '') ? '/' . $this->attributes['estado'] : '';
 
         return $endereco;
     }
