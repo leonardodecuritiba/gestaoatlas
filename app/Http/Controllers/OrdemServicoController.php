@@ -30,6 +30,7 @@ class OrdemServicoController extends Controller
     private $Page;
     private $colaborador;
     private $tecnico;
+    private $linha_xls;
 
     public function __construct()
     {
@@ -321,28 +322,64 @@ class OrdemServicoController extends Controller
             'dados' => $atlas,
             'logo' => storage_path('uploads\institucional\logo_atlas.png'),
         );
+        $aviso_txt = ['ASSINATURA: CLIENTE CONFIRMA A EXECUÇÃO DOS SERVIÇOS E TROCA DE PEÇAS ACIMA SITADOS, E TAMBEM APROVA OS PREÇOS COBRADOS. INSTRUMENTOS - EQUIPAMANTOS DEIXADOS POR CLIENTES NA EMPRESA: O CLIENTE AUTORIZA PREVIA E EXPRESSAMANTE UMA VEZ QUE ORÇAMANTOS NÃO FOREM APROVADOS A NÃO RETIRADA DOS INSTRUMENTOS - EQUIPAMANTOS NO PRAZO DE 90 DIAS DA ASSINATURA DESSA ORDEM OS MESMOS SERÃO DESCARTADOS PARA LIXO OU SUCATA.'];
 
-        $dados_cliente = [
-            array('Cliente / Razão Social:', 'Macedo automação Comercial -ME',
-                'Fantasia:', 'Grupo Atlas Tecnologia',
-                'DATA / HR I', '31/10/2016 - 10:00'
-            ),
-            array('CNPJ:', '10.555.180/0001-21',
-                'I.E:', '222.222.222.222',
-                'DATA / HR F', '31/10/2016 - 13:00'
-            ),
-            array('Endereço:', 'Rua Platina, 121',
-                'CEP: 14020-670', 'UF: SP',
-                'Cidade: Ribeirão Preto'
-            ),
-            array('Telefone:', '(16)3329-4365'
-            ),
-            array('Contato:', 'Willian/ Daniela'
-            ),
-            array('Email:', 'financeiro@atlastecnologia.com.br',
-                'Nº Chamado Sist. Cliente:', '12 -13 -14 -15'
-            ),
-        ];
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $Cliente = $OrdemServico->cliente;
+        if ($Cliente->is_pjuridica()) {
+            //empresa
+            $Pessoa_juridica = $Cliente->pessoa_juridica;
+            $Contato = $Cliente->contato;
+
+            $dados_cliente = [
+                array(
+                    'Cliente / Razão Social:', $Pessoa_juridica->razao_social,
+                    'Fantasia:', $Pessoa_juridica->nome_fantasia,
+                    'HR / DATA I', $OrdemServico->created_at
+                ),
+                array(
+                    'CNPJ:', $Pessoa_juridica->cnpj,
+                    'I.E:', $Pessoa_juridica->ie,
+                    'DATA / HR F', $OrdemServico->fechamento
+                ),
+                array(
+                    'Endereço:', $Contato->getRua(),
+                    'CEP: ' . $Contato->cep, 'UF: ' . $Contato->estado,
+                    'Cidade: ' . $Contato->cidade
+                ),
+                array(
+                    'Telefone:', $Contato->telefone,
+                    'Contato:', $Cliente->nome_responsavel
+                ),
+                array(
+                    'Email:', $Cliente->email_nota,
+                    'Nº Chamado Sist. Cliente:', $OrdemServico->numero_chamado
+                ),
+            ];
+        } else {
+            $dados_cliente = [
+                array('Cliente / Razão Social:', 'Cliente sem CNPJ',
+                    'Fantasia:', 'Cliente sem CNPJ',
+                    'DATA / HR I', '31/10/2016 - 10:00'
+                ),
+                array('CNPJ:', '10.555.180/0001-21',
+                    'I.E:', '222.222.222.222',
+                    'DATA / HR F', '31/10/2016 - 13:00'
+                ),
+                array('Endereço:', 'Rua Platina, 121',
+                    'CEP: 14020-670', 'UF: SP',
+                    'Cidade: Ribeirão Preto'
+                ),
+                array('Telefone:', '(16)3329-4365'
+                ),
+                array('Contato:', 'Willian/ Daniela'
+                ),
+                array('Email:', 'financeiro@atlastecnologia.com.br',
+                    'Nº Chamado Sist. Cliente:', '12 -13 -14 -15'
+                ),
+            ];
+        }
+
 
         $font = [
             'nome' => array(
@@ -365,6 +402,8 @@ class OrdemServicoController extends Controller
         $data = [
             'empresa' => $empresa,
             'dados_cliente' => $dados_cliente,
+            'ordem_servico' => $OrdemServico,
+            'aviso_txt' => $aviso_txt,
             'fonts' => $font
         ];
 
@@ -417,89 +456,258 @@ class OrdemServicoController extends Controller
                 $objDrawing->setWorksheet($sheet);
 
 
-                //QUEBRA ------------------------------------------
-                $linha = 9;
-                $info = ['Ordem Serviço n° 631288'];
-                $sheet->mergeCells('A' . $linha . ':G' . $linha);
-                $sheet->row($linha, function ($row) use ($data) {
+                //QUEBRA -------------------------------------------------------------------------------
+                //********************************************************************************************//
+                //********************************************************************************************//
+                $OrdemServico = $data['ordem_servico'];
+                $this->linha_xls = 9;
+                $info = ['Ordem Serviço n° ' . $OrdemServico->idordem_servico];
+                $sheet->mergeCells('A' . $this->linha_xls . ':G' . $this->linha_xls);
+                $sheet->row($this->linha_xls, function ($row) use ($data) {
                     // call cell manipulation methods
                     $row->setBackground('#d9d9d9');
                     $row->setAlignment('center');
                     $row->setFont($data['fonts']['quebra']);
                 });
-                $sheet->row($linha, $info);
+                $sheet->row($this->linha_xls, $info);
+                $this->linha_xls++;
                 //\QUEBRA ------------------------------------------
 
                 //CABEÇALHO DADOS CLIENTE
                 $sheet->rows($data['dados_cliente']);
+                $this->linha_xls += 6;
 
                 //********************************************************************************************//
-                //QUEBRA ------------------------------------------
-                //\QUEBRA ------------------------------------------
-
                 //INSTRUMENTOS ------------------------------------------
-                $dados_instrumento = [
-                    array('Marca: Toledo', 'Modelo: Prix 5 Plus', 'N° de Série: 123456', 'Patrimônio: 123154', 'Ano: 2008', 'Inventário: 123131'),
-                    array('Portaria: 12220', 'Capacidade: 10KG', 'Divisão: 101/12', 'Setor: 12', 'IP: 100.100.100.1', 'Endereço: 100')
-                ];
-                $selo_lacre = [
-                    array('Selo retirado: 12345',
-                        'Selo Afixado: 122211',
-                        'Lacres Retirados: 123;111;102',
-                        'Lacres Afixados: 10222;222;233')
-                ];
-                $defeitos_solucao = [
-                    array('Defeito:', 'TECLADO, CABEÇA IMPRESSÃO, CABO FORÇA',
-                        '', 'Solução:', 'TROCA DOS MESMOS.')
-                ];
-                $instrumento = [
-                    'line' => 16,
-                    'info' => ['Instrumento'],
-                    'dados_instrumentos' => $dados_instrumento,
-                    'selo_lacre' => $selo_lacre,
-                    'defeito_solucao' => $defeitos_solucao,
-                ];
-                $sheet = self::setInstrumento($sheet, $data, $instrumento);
-                ///INSTRUMENTOS ------------------------------------------
+                $InstrumentosManutencao = $OrdemServico->instrumentos_manutencao;
+                foreach ($InstrumentosManutencao as $instrumentoManutencao) {
+                    $Instrumento = $instrumentoManutencao->instrumento;
+                    $dados_instrumento = [
+                        array(
+                            'Marca: ' . $Instrumento->marca->descricao,
+                            'Modelo: ' . $Instrumento->modelo,
+                            'N° de Série: ' . $Instrumento->numero_serie,
+                            'Patrimônio: ' . $Instrumento->patrimonio,
+                            'Ano: ' . $Instrumento->ano,
+                            'Inventário: ' . $Instrumento->inventario
+                        ),
+                        array(
+                            'Portaria: ' . $Instrumento->portaria,
+                            'Capacidade: ' . $Instrumento->capacidade,
+                            'Divisão: ' . $Instrumento->divisao,
+                            'Setor: ' . $Instrumento->setor,
+                            'IP: ' . $Instrumento->ip,
+                            'Endereço: ' . $Instrumento->endereco
+                        )
+                    ];
+                    $selo_lacre = [
+                        array(
+//                            'Selo retirado: '.$Instrumento->selo_afixado()->numeracao,
+                            'Selo Afixado: ' . $Instrumento->selo_afixado()->numeracao,
+//                            'Lacres Retirados: '.$Instrumento->selo_afixado()->numeracao,
+                            'Lacres Afixados: ' . $Instrumento->lacres_afixados_valores()
+                        )
+                    ];
+                    $defeitos_solucao = [
+                        array(
+                            'Defeito:', $instrumentoManutencao->defeito,
+                            '',
+                            'Solução:', $instrumentoManutencao->solucao
+                        )
+                    ];
+                    $instrumento = [
+                        'line' => $this->linha_xls,
+                        'info' => ['Instrumento'],
+                        'dados_instrumentos' => $dados_instrumento,
+                        'selo_lacre' => $selo_lacre,
+                        'defeito_solucao' => $defeitos_solucao,
+                    ];
+                    $this->linha_xls += 5;
+                    $sheet = self::setInstrumento($sheet, $data, $instrumento);
+
+                    //********************************************************************************************//
+                    //************************** PEÇAS ***********************************************************//
+                    //********************************************************************************************//
+                    if ($instrumentoManutencao->has_pecas_utilizadas()) {
+                        $total = 0;
+                        foreach ($instrumentoManutencao->pecas_utilizadas as $Peca_utilizada) {
+                            $Peca = $Peca_utilizada->peca;
+//                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $data['pecas'][] = [
+                                $Peca->idpeca,
+                                $Peca->descricao,
+                                '1',
+                                'R$ ' . $Peca_utilizada->valor,
+                                'R$ ' . $Peca_utilizada->valor,
+                                '-',
+                                '-'
+                            ];
+                            $total += $Peca_utilizada->valor_float();
+                        }
+                        $data['total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($total);
+                        $cabecalho = [
+                            'line' => $this->linha_xls,
+                            'info' => ['Peças'],
+                            'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                            'values' => $data['pecas'],
+                        ];
+                        $sheet = self::setData($sheet, $data, $cabecalho);
+                        $this->linha_xls += count($data['pecas']) + 2;
+                    }
+                    //********************************************************************************************//
+                    //************************** KITS ************************************************************//
+                    //********************************************************************************************//
+                    if ($instrumentoManutencao->has_kits_utilizados()) {
+                        $total = 0;
+                        foreach ($instrumentoManutencao->kits_utilizados as $Kit_utilizado) {
+                            $Kit = $Kit_utilizado->kit;
+//                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $data['kits'][] = [
+                                $Kit->idkit,
+                                $Kit->descricao,
+                                '1',
+                                'R$ ' . $Kit_utilizado->valor,
+                                'R$ ' . $Kit_utilizado->valor,
+                                '-',
+                                '-'
+                            ];
+                            $total += $Kit_utilizado->valor_float();
+                        }
+                        $data['total_kits'] = 'R$ ' . DataHelper::getFloat2Real($total);;
+                        $cabecalho = [
+                            'line' => $this->linha_xls,
+                            'info' => ['Kits'],
+                            'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                            'values' => $data['kits'],
+                        ];
+                        $sheet = self::setData($sheet, $data, $cabecalho);
+                        $this->linha_xls += count($data['kits']) + 2;
+                    }
+                    //********************************************************************************************//
+                    //************************** SERVIÇOS ********************************************************//
+                    //********************************************************************************************//
+                    if ($instrumentoManutencao->has_servico_prestados()) {
+                        $total = 0;
+                        foreach ($instrumentoManutencao->servico_prestados as $Servico_prestados) {
+                            $Servico = $Servico_prestados->servico;
+//                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $data['servicos'][] = [
+                                $Servico->idservico,
+                                $Servico->descricao,
+                                '1',
+                                'R$ ' . $Servico_prestados->valor,
+                                'R$ ' . $Servico_prestados->valor
+                            ];
+                            $total += $Servico_prestados->valor_float();
+                        }
+                        $data['total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($total);;
+                        $cabecalho = [
+                            'line' => $this->linha_xls,
+                            'info' => ['Serviços'],
+                            'cabecalho' => ['Codigo', 'Kit', 'Qtde', 'V. un', 'V. Total'],
+                            'values' => $data['servicos'],
+                        ];
+                        $sheet = self::setData($sheet, $data, $cabecalho);
+                        $this->linha_xls += count($data['servicos']) + 2;
+                    }
+                }
 
                 //********************************************************************************************//
-                $data['pecas'] = [
-                    array('1', 'TECLADO PRIX 5 PLUS PT', '1', '-', '-', 'SIM', '-'),
-                    array('33', 'CABEÇA TERMICA TOLEDO', '1', 'R$ 390,00', 'R$ 390,00', 'NÃO', '-'),
-                    array('50', 'CABO FORÇA TOLEDO', '1', 'R$ 45,00', 'R$ 45,00', 'SIM', 'CABO DE FORÇA FOI CORTADO, MAU USO.')
-                ];
-                $kits = [
-                    'line' => 21,
-                    'info' => ['Peças'],
-                    'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
-                    'values' => $data['pecas'],
-                ];
-                $sheet = self::setData($sheet, $data, $kits);
-
+                //************************** FECHAMENTO ******************************************************//
                 //********************************************************************************************//
+                $this->linha_xls++;
+                $cabecalho = [
+                    'line' => $this->linha_xls,
+                    'info' => ['Fechamento de Valores'],
+                ];
+                $sheet = self::setCabecalho($sheet, $data, $cabecalho);
 
-                $data['kits'] = [
-                    array('33', 'KIT X', '1', 'R$ 300,00', 'R$ 200,00', 'NÃO', '-')
-                ];
-                $kits = [
-                    'line' => 26,
-                    'info' => ['Kits'],
-                    'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
-                    'values' => $data['kits'],
-                ];
-                $sheet = self::setData($sheet, $data, $kits);
+                //************************* PEÇAS ***********************************************************//
+                if (isset($data['pecas'])) {
+                    $this->linha_xls += 2;
+                    $cabecalho = [
+                        'line' => $this->linha_xls,
+                        'info' => ['Peças'],
+                        'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                        'values' => $data['pecas'],
+                    ];
+                    $sheet = self::setData($sheet, $data, $cabecalho);
+                    $this->linha_xls += count($data['pecas']) + 2;
 
-                //********************************************************************************************//
-                $data['servicos'] = [
-                    array('1', 'SERVIÇO 1º BALANÇA SAVEGNAGO ATÉ 30 KG', 'R$ 120,00')
+                    //total
+                    $sheet->cell('E' . $this->linha_xls, function ($cell) use ($data) {
+                        $cell->setFontWeight(true);
+                        $cell->setValue($data['total_pecas']);
+                    });
+                }
+                //************************* KITS ***********************************************************//
+                if (isset($data['kits'])) {
+                    $this->linha_xls += 2;
+                    $cabecalho = [
+                        'line' => $this->linha_xls,
+                        'info' => ['Kits'],
+                        'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                        'values' => $data['kits'],
+                    ];
+                    $sheet = self::setData($sheet, $data, $cabecalho);
+                    $this->linha_xls += count($data['kits']) + 2;
+
+                    //total
+                    $sheet->cell('E' . $this->linha_xls, function ($cell) use ($data) {
+                        $cell->setFontWeight(true);
+                        $cell->setValue($data['total_kits']);
+                    });
+                }
+                //************************* SERVIÇOS *******************************************************//
+                if (isset($data['servicos'])) {
+                    $this->linha_xls += 2;
+                    $cabecalho = [
+                        'line' => $this->linha_xls,
+                        'info' => ['Serviços'],
+                        'cabecalho' => ['Codigo', 'Kit', 'Qtde', 'V. un', 'V. Total'],
+                        'values' => $data['servicos'],
+                    ];
+                    $sheet = self::setData($sheet, $data, $cabecalho);
+                    $this->linha_xls += count($data['servicos']) + 2;
+
+                    //total
+                    $sheet->cell('E' . $this->linha_xls, function ($cell) use ($data) {
+                        $cell->setFontWeight(true);
+                        $cell->setValue($data['total_servicos']);
+                    });
+                }
+                //************************* OUTROS *********************************************************//
+                $dados_fechamento = [
+                    array('Deslocamento', '', '', '', 'R$ ' . $OrdemServico->custos_deslocamento),
+                    array('Pedagios', '', '', '', 'R$ ' . $OrdemServico->pedagios),
+                    array('Outros Custos', '', '', '', 'R$ ' . $OrdemServico->outros_custos),
                 ];
-                $servicos = [
-                    'line' => 29,
-                    'info' => ['Serviços'],
-                    'cabecalho' => ['Codigo', 'Kit', 'V. Total'],
-                    'values' => $data['servicos'],
+                $data['outros'] = $dados_fechamento;
+                //
+                $this->linha_xls += 2;
+                $cabecalho = [
+                    'line' => $this->linha_xls,
+                    'info' => ['Outros'],
+                    'cabecalho' => ['Descrição', '', '', '', 'V. Total'],
+                    'values' => $data['outros'],
                 ];
-                $sheet = self::setData($sheet, $data, $servicos);
+                $sheet = self::setData($sheet, $data, $cabecalho);
+                $this->linha_xls += count($data['outros']) + 3;
+
+                //************************* FECHAMENTO FINAL *********************************************//
+                $sheet->row($this->linha_xls, function ($row) {
+                    $row->setFontWeight(true);
+                });
+                $sheet->row($this->linha_xls, ['TOTAL  DA ORDEM SERVIÇO', '', '', '', 'R$ ' . $OrdemServico->valor_final]);
+                $this->linha_xls++;
+                $sheet->row($this->linha_xls, ['TÉCNICO', '', '', '', $OrdemServico->colaborador->nome]);
+                $this->linha_xls += 2;
+
+                $sheet->mergeCells('A' . $this->linha_xls . ':G' . $this->linha_xls);
+                $sheet->row($this->linha_xls, $data['aviso_txt']);
+//:	RONI CAMARGO RG:26148976
+//RESPONSAVEL PELO ESTABELECIMENTO:	WILLIAN T MACEDO RG: 14079508 	ASSINATURA - CARIMBO - FOTO
+
 
             });
 
@@ -515,28 +723,45 @@ class OrdemServicoController extends Controller
         return redirect()->route('ordem_servicos.resumo', $idordem_servico);
     }
 
+//    static public function setLinhaVazia($sheet, $texto)
+//    {
+//        $linha = $dados['line'];
+//        $sheet->mergeCells('A' . $linha . ':G' . $linha);
+//        $sheet->row($linha, function ($row) use ($data) {
+//            // call cell manipulation methods
+//            $row->setBackground('#d9d9d9');
+//            $row->setAlignment('center');
+//            $row->setFont($data['fonts']['quebra']);
+//        });
+//        $sheet->row($linha, $dados['info']);
+//
+//        $sheet->rows($dados['dados_instrumentos']);
+//        $sheet->rows($dados['selo_lacre']);
+//        $sheet->rows($dados['defeito_solucao']);
+//
+//        $linha += 4;
+//        $sheet->mergeCells('B' . $linha . ':C' . $linha);
+//        $sheet->mergeCells('E' . $linha . ':G' . $linha);
+//        return $sheet;
+//    }
+
     static public function setInstrumento($sheet, $data, $dados)
     {
-
-        $linha = $dados['line'];
-        $sheet->mergeCells('A' . $linha . ':G' . $linha);
-        $sheet->row($linha, function ($row) use ($data) {
-            // call cell manipulation methods
-            $row->setBackground('#d9d9d9');
-            $row->setAlignment('center');
-            $row->setFont($data['fonts']['quebra']);
-        });
-        $sheet->row($linha, $dados['info']);
-
+        //LINHA ------------------------------------------
+        $sheet = self::setCabecalho($sheet, $data, $dados);
+        //CABEÇALHO ------------------------------------------
+        $linha = $dados['line']++;
         $sheet->rows($dados['dados_instrumentos']);
         $sheet->rows($dados['selo_lacre']);
         $sheet->rows($dados['defeito_solucao']);
-        $sheet->mergeCells('B20:C20');
-        $sheet->mergeCells('E20:G20');
+
+        $linha += 4;
+        $sheet->mergeCells('B' . $linha . ':C' . $linha);
+        $sheet->mergeCells('E' . $linha . ':G' . $linha);
         return $sheet;
     }
 
-    static public function setData($sheet, $data, $dados)
+    static public function setCabecalho($sheet, $data, $dados)
     {
         $linha = $dados['line'];
         //LINHA ------------------------------------------
@@ -547,9 +772,15 @@ class OrdemServicoController extends Controller
             $row->setFont($data['fonts']['quebra']);
         });
         $sheet->row($linha, $dados['info']);
+        return $sheet;
+    }
 
+    static public function setData($sheet, $data, $dados)
+    {
+        //LINHA ------------------------------------------
+        $sheet = self::setCabecalho($sheet, $data, $dados);
         //CABEÇALHO ------------------------------------------
-        $linha++;
+        $linha = $dados['line'] + 1;
         $sheet->row($linha, function ($row) {
             $row->setFontWeight(true);
         });

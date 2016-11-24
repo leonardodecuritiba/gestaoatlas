@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PecasUtilizadas extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'pecas_utilizadas';
     protected $primaryKey = 'id';
-    public $timestamps = true;
     protected $fillable = [
         'idaparelho_manutencao',
         'idpeca',
@@ -30,6 +30,11 @@ class PecasUtilizadas extends Model
     public function valor_original()
     {
         return $this->peca->custo_final;
+    }
+
+    public function valor_float()
+    {
+        return $this->attributes['valor'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************

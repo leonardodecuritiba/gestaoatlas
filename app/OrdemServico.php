@@ -98,6 +98,11 @@ class OrdemServico extends Model
         return $this->hasMany('App\AparelhoManutencao', 'idordem_servico');
     }
 
+    public function instrumentos_manutencao()
+    {
+        return $this->hasMany('App\AparelhoManutencao', 'idordem_servico')->whereNotNull('idinstrumento');
+    }
+
     public function cliente()
     {
         return $this->belongsTo('App\Cliente', 'idcliente');

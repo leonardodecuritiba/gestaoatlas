@@ -82,6 +82,10 @@ class Cliente extends Model
         return implode(" / ",$retorno);
     }
 
+    public function is_pjuridica()
+    {
+        return ($this->attributes['idpjuridica'] != NULL);
+    }
     public function getType()
     {
         if ($this->attributes['idpjuridica'] != NULL) {
@@ -90,13 +94,15 @@ class Cliente extends Model
                 'tipo'           => 'CNPJ',
                 'entidade'       => $this->pessoa_juridica()->first()->cnpj,
                 'nome_principal' => $this->pessoa_juridica()->first()->nome_fantasia,
+                'razao_social' => $this->pessoa_juridica()->first()->razao_social,
             ];
         } else {
             $retorno = (object)[
                 'tipo_cliente'   => 0,
                 'tipo'           => 'CPF',
                 'entidade'       => $this->pessoa_fisica()->first()->cpf,
-                'nome_principal' => '-'
+                'nome_principal' => '-',
+                'razao_social' => '-',
             ];
         }
         return $retorno;

@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class KitsUtilizados extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'kits_utilizados';
     protected $primaryKey = 'id';
-    public $timestamps = true;
     protected $fillable = [
         'idaparelho_manutencao',
         'idkit',
@@ -34,6 +34,11 @@ class KitsUtilizados extends Model
     public function valor_original()
     {
         return $this->kit->valor_total();
+    }
+
+    public function valor_float()
+    {
+        return $this->attributes['valor'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
