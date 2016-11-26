@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Equipamento;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redirect;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -33,13 +34,6 @@ class EquipamentosController extends Controller
             'titulo_secundario' => "",
             'search_no_results' => "Nenhum Equipamento encontrado!",
         ];
-    }
-
-    public function RedirectCliente($id,$tab='equipamentos')
-    {
-        $ClientesController = new ClientesController();
-        return $ClientesController->show($id,$tab);
-
     }
 
     public function store(Request $request)
@@ -79,17 +73,26 @@ class EquipamentosController extends Controller
         }
     }
 
+    public function RedirectCliente($id, $tab = 'equipamentos')
+    {
+//        $ClientesController = new ClientesController();
+//        return $ClientesController->show($id,$tab);
+        return redirect()->route('clientes.show', [$id, $tab]);
+
+    }
+
     public function update(Request $request, $id)
     {
         $Equipamento = Equipamento::find($id);
-        $validator = Validator::make($request->all(), [
+        $validacao = [
             'idcliente'    => 'required',
             'idmarca'      => 'required',
             'descricao'    => 'required',
-            'foto'         => 'required',
             'modelo'       => 'required',
             'numero_serie' => 'required'
-        ]);
+        ];
+        $validacao = ($Equipamento->foto == NULL) ? array_merge($validacao, ['foto' => 'required']) : $validacao;
+        $validator = Validator::make($request->all(), $validacao);
 
         if ($validator->fails()) {
             return redirect()->to($this->getRedirectUrl())

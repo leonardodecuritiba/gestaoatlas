@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Equipamento extends Model
 {
+    public $timestamps = true;
     protected $table = 'equipamentos';
     protected $primaryKey = 'idequipamento';
-    public $timestamps = true;
     protected $fillable = [
         'idcliente',
         'idmarca',
@@ -25,29 +25,34 @@ class Equipamento extends Model
     {
         return ($this->aparelho_manutencao()->count() > 0);
     }
+
+    public function aparelho_manutencao()
+    {
+        return $this->hasMany('App\AparelhoManutencao', 'idequipamento');
+    }
+
     public function getFoto()
     {
-        return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/'.$this->foto):asset('imgs/cogs.png');
-    }
-    public function getFotoThumb()
-    {
-        return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/thumb_'.$this->foto):asset('imgs/cogs.png');
+        return ($this->attributes['foto'] != '') ? asset('../storage/uploads/' . $this->table . '/' . $this->attributes['foto']) : asset('imgs/cogs.png');
     }
 
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
+
+    public function getFotoThumb()
+    {
+        return ($this->attributes['foto'] != '') ? asset('../storage/uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/cogs.png');
+    }
+
     public function marca()
     {
-        return $this->hasOne('App\Marca', 'idmarca');
-    }
-    public function cliente()
-    {
-        return $this->belongsTo('App\Cliente', 'idcliente');
+        return $this->belongsTo('App\Marca', 'idmarca');
     }
 
     // ************************** HASMANY **********************************
-    public function aparelho_manutencao()
+
+    public function cliente()
     {
-        return $this->hasMany('App\AparelhoManutencao', 'idequipamento');
+        return $this->belongsTo('App\Cliente', 'idcliente');
     }
 }

@@ -134,6 +134,7 @@
 <script>
     var $novo_equipamento_container      = $('section#novo-equipamento');
     $ACTION_NEW_EQUIPAMENTO = "{{route('equipamentos.store')}}";
+    $ACTION_EDIT = "{{route('equipamentos.update',0)}}";
     $CAMINHO_FOTO_EQUIPAMENTO = "{{asset('../storage/uploads/equipamentos/X')}}";
     function equipamento_toggle(){
         $($novo_equipamento_container).find('div#campo-fotos').parent('div.x_panel').addClass('hide');
@@ -151,13 +152,14 @@
 
     $('button.edit-equipamento').click(function(){
         equipamento_toggle();
-        $dados = $(this).data('dados');
+        var $dados = $(this).data('dados');
+        var upd_url = $ACTION_EDIT.replace('/0', '/' + $dados.idequipamento);
         console.log($dados);
-        $ACTION_EDIT = "{{route('equipamentos.update',0)}}";
-        console.log( $ACTION_EDIT.replace(0,$dados.idequipamento));
-        $($novo_equipamento_container).find('form').get(0).setAttribute('action', $ACTION_EDIT.replace(0,$dados.idequipamento));
-        $($novo_equipamento_container).find('form').append('<input name="_method" type="hidden" value="PATCH">');
-        html_foto = '';
+        console.log(upd_url);
+        var $form = $($novo_equipamento_container).find('form').get(0);
+        $form.setAttribute('action', upd_url);
+        $($form).append('<input name="_method" type="hidden" value="PATCH">');
+        var html_foto = '';
         $.each($dados, function(i,v){
             if(i!='foto') {
                 $($novo_equipamento_container).find('div#equipamento-container').find(":input[name="+ i +"]").val(v);
@@ -165,7 +167,7 @@
                 console.log('v-' + v + '-');
                 if(v!='' && v!=null){
                     $($novo_equipamento_container).find('div#campo-fotos').parent('div.x_panel').removeClass('hide');
-                    foto = $CAMINHO_FOTO_EQUIPAMENTO.replace('X',v);
+                    var foto = $CAMINHO_FOTO_EQUIPAMENTO.replace('X', v);
                     html_foto = '<div class="form-group">'+
                             '<div class="peca_image">' +
                             '<img src="' + foto + '" />' +
