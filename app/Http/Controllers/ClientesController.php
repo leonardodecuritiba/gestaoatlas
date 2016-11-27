@@ -9,6 +9,7 @@ use App\Segmento;
 use App\TabelaPreco;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use App\Cliente;
 use App\PessoaJuridica;

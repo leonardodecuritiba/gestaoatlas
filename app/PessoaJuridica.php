@@ -2,15 +2,16 @@
 
 namespace App;
 
+use App\Helpers\DataHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 class PessoaJuridica extends Model
 {
+    public $timestamps = true;
     protected $table = 'pjuridicas';
     protected $primaryKey = 'idpjuridica';
-    public $timestamps = true;
     protected $fillable = [
         'cnpj',
         'ie',
@@ -30,25 +31,37 @@ class PessoaJuridica extends Model
     // ************************ FUNCTIONS ******************************
     public function getIeAttribute($value)
     {
-        return Controller::mask($value, '###.###.###.###');
+        return DataHelper::mask($value, '###.###.###.###');
     }
+
     public function getCnpjAttribute($value)
     {
-        return Controller::mask($value, '##.###.###/####-##');
+        return DataHelper::mask($value, '##.###.###/####-##');
     }
+
     public function getDataSitCadAttribute($value)
     {
-        return ($value != NULL)? Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y'):NULL;
+        return DataHelper::getPrettyDate($value);
     }
 
     public function getDataCredenciamentoAttribute($value)
     {
-        return ($value != NULL)? Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y'):NULL;
+        return DataHelper::getPrettyDate($value);
     }
 
     public function getDataIniObrigatoriedadeAttribute($value)
     {
-        return ($value != NULL)? Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y'):NULL;
+        return DataHelper::getPrettyDate($value);
+    }
+
+    public function setIeAttribute($value)
+    {
+        $this->attributes['ie'] = DataHelper::getOnlyNumbers($value);
+    }
+
+    public function setCnpjAttribute($value)
+    {
+        $this->attributes['cnpj'] = DataHelper::getOnlyNumbers($value);
     }
 
     public function setDataSitCadAttribute($value)

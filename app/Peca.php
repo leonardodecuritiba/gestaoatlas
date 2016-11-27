@@ -83,7 +83,7 @@ class Peca extends Model
 
     public function setTipoAttribute($value)
     {
-        $this->attributes['tipo'] = ($value == 'Peça')?'peca':'produto';
+        $this->attributes['tipo'] = ($value == 'Peça' || $value == 'peca') ? 'peca' : 'produto';
     }
 
     public function getTipoAttribute($value)

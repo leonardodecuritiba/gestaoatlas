@@ -14,6 +14,7 @@ use App\Peca;
 use App\TabelaPreco;
 use App\Unidade;
 use Illuminate\Support\Facades\Redirect;
+use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use App\Fornecedor;
 use Illuminate\Http\Request;
@@ -64,6 +65,12 @@ class PecasController extends Controller
         return view('pages.'.$this->Page->link.'.index')
             ->with('Page', $this->Page)
             ->with('Buscas',$Buscas);
+    }
+
+    public function importacao()
+    {
+
+        return 'ok';
     }
 
     public function create()

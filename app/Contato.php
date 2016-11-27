@@ -42,6 +42,21 @@ class Contato extends Model
         return DataHelper::mask($value, '#####-###');
     }
 
+    public function setTelefoneAttribute($value)
+    {
+        $this->attributes['telefone'] = DataHelper::getOnlyNumbers($value);
+    }
+
+    public function setCelularAttribute($value)
+    {
+        $this->attributes['celular'] = DataHelper::getOnlyNumbers($value);
+    }
+
+    public function setCepAttribute($value)
+    {
+        $this->attributes['cep'] = DataHelper::getOnlyNumbers($value);
+    }
+
     public function getRua()
     {
         $endereco = '';
