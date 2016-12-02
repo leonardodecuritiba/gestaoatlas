@@ -4,9 +4,10 @@
 </div>
 <div class="x_content">
     <div class="form-horizontal form-label-left">
-        @foreach($Servico->tabela_preco as $tabela_preco)
+        <?php $Tabelas_precos = isset($Servico) ? $Servico->tabela_preco : $Page->extras['tabela_preco'];?>
+        @foreach($Tabelas_precos as $tabela_preco)
             <div class="x_title">
-                <h4>{{$tabela_preco->tabela_preco->descricao}}</h4>
+                <h4>{{isset($Servico)?$tabela_preco->tabela_preco->descricao:$tabela_preco->descricao}}</h4>
                 <div class="clearfix"></div>
             </div>
             <div class="form-group">

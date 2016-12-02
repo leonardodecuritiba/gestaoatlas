@@ -105,6 +105,16 @@ class ClassLoader
     }
 
     /**
+     * Turns on searching the include for class files.
+     *
+     * @param bool $useIncludePath
+     */
+    public function setUseIncludePath($useIncludePath)
+    {
+        $this->useIncludePath = (bool) $useIncludePath;
+    }
+
+    /**
      * Can be used to check if the autoloader uses the include path to check
      * for classes.
      *
@@ -113,16 +123,6 @@ class ClassLoader
     public function getUseIncludePath()
     {
         return $this->useIncludePath;
-    }
-
-    /**
-     * Turns on searching the include for class files.
-     *
-     * @param bool $useIncludePath
-     */
-    public function setUseIncludePath($useIncludePath)
-    {
-        $this->useIncludePath = (bool)$useIncludePath;
     }
 
     /**

@@ -19,7 +19,6 @@
         </div>
     </div>
 </div>
-
 <div class="x_panel" id="tabela_preco">
     @include('pages.servicos.forms.tabela_preco')
 </div>

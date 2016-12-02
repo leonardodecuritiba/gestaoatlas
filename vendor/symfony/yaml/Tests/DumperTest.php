@@ -36,6 +36,21 @@ class DumperTest extends \PHPUnit_Framework_TestCase
         ),
     );
 
+    protected function setUp()
+    {
+        $this->parser = new Parser();
+        $this->dumper = new Dumper();
+        $this->path = __DIR__.'/Fixtures';
+    }
+
+    protected function tearDown()
+    {
+        $this->parser = null;
+        $this->dumper = null;
+        $this->path = null;
+        $this->array = null;
+    }
+
     public function testIndentationInConstructor()
     {
         $dumper = new Dumper(7);
@@ -346,21 +361,6 @@ EOF;
     public function testNegativeIndentationThrowsException()
     {
         new Dumper(-4);
-    }
-
-    protected function setUp()
-    {
-        $this->parser = new Parser();
-        $this->dumper = new Dumper();
-        $this->path = __DIR__ . '/Fixtures';
-    }
-
-    protected function tearDown()
-    {
-        $this->parser = null;
-        $this->dumper = null;
-        $this->path = null;
-        $this->array = null;
     }
 }
 

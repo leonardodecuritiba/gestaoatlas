@@ -21,6 +21,16 @@ class CookieJar
     protected $cookieJar = array();
 
     /**
+     * Sets a cookie.
+     *
+     * @param Cookie $cookie A Cookie instance
+     */
+    public function set(Cookie $cookie)
+    {
+        $this->cookieJar[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
+    }
+
+    /**
      * Gets a cookie by name.
      *
      * You should never use an empty domain, but if you do so,
@@ -64,22 +74,6 @@ class CookieJar
         foreach ($this->cookieJar as $cookies) {
             if (isset($cookies[$path][$name])) {
                 return $cookies[$path][$name];
-            }
-        }
-    }
-
-    /**
-     * Removes all expired cookies.
-     */
-    public function flushExpiredCookies()
-    {
-        foreach ($this->cookieJar as $domain => $pathCookies) {
-            foreach ($pathCookies as $path => $namedCookies) {
-                foreach ($namedCookies as $name => $cookie) {
-                    if ($cookie->isExpired()) {
-                        unset($this->cookieJar[$domain][$path][$name]);
-                    }
-                }
             }
         }
     }
@@ -131,17 +125,6 @@ class CookieJar
     }
 
     /**
-     * Updates the cookie jar from a Response object.
-     *
-     * @param Response $response A Response object
-     * @param string $uri The base URL
-     */
-    public function updateFromResponse(Response $response, $uri = null)
-    {
-        $this->updateFromSetCookie($response->getHeader('Set-Cookie', false), $uri);
-    }
-
-    /**
      * Updates the cookie jar from a response Set-Cookie headers.
      *
      * @param array  $setCookies Set-Cookie headers from an HTTP response
@@ -171,13 +154,14 @@ class CookieJar
     }
 
     /**
-     * Sets a cookie.
+     * Updates the cookie jar from a Response object.
      *
-     * @param Cookie $cookie A Cookie instance
+     * @param Response $response A Response object
+     * @param string   $uri      The base URL
      */
-    public function set(Cookie $cookie)
+    public function updateFromResponse(Response $response, $uri = null)
     {
-        $this->cookieJar[$cookie->getDomain()][$cookie->getPath()][$cookie->getName()] = $cookie;
+        $this->updateFromSetCookie($response->getHeader('Set-Cookie', false), $uri);
     }
 
     /**
@@ -199,18 +183,6 @@ class CookieJar
         }
 
         return $flattenedCookies;
-    }
-
-    /**
-     * Returns not yet expired raw cookie values for the given URI.
-     *
-     * @param string $uri A URI
-     *
-     * @return array An array of cookie values
-     */
-    public function allRawValues($uri)
-    {
-        return $this->allValues($uri, true);
     }
 
     /**
@@ -251,5 +223,33 @@ class CookieJar
         }
 
         return $cookies;
+    }
+
+    /**
+     * Returns not yet expired raw cookie values for the given URI.
+     *
+     * @param string $uri A URI
+     *
+     * @return array An array of cookie values
+     */
+    public function allRawValues($uri)
+    {
+        return $this->allValues($uri, true);
+    }
+
+    /**
+     * Removes all expired cookies.
+     */
+    public function flushExpiredCookies()
+    {
+        foreach ($this->cookieJar as $domain => $pathCookies) {
+            foreach ($pathCookies as $path => $namedCookies) {
+                foreach ($namedCookies as $name => $cookie) {
+                    if ($cookie->isExpired()) {
+                        unset($this->cookieJar[$domain][$path][$name]);
+                    }
+                }
+            }
+        }
     }
 }

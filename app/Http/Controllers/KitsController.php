@@ -71,7 +71,8 @@ class KitsController extends Controller
         $this->Page->titulo_secundario  = "Dados do ".$this->Page->Target;
         $Kit = Kit::find($id);
         $this->Page->extras = [
-            'pecas'             => Peca::all()
+            'pecas' => Peca::all(),
+            'tabela_preco' => TabelaPreco::all(),
         ];
         return view('pages.'.$this->Page->link.'.show')
             ->with('Kit', $Kit)
@@ -185,22 +186,13 @@ class KitsController extends Controller
             }
 
             //ATUALIZANDO OS PREÇOS E MARGENS
-            $margens = $request->get('margem');
-            $margem_minimos = $request->get('margem_minimo');
-            $custo_final = $Kit->valor_total_float();
-            foreach ($Kit->tabela_preco as $tabela_preco) {
-                $margem = DataHelper::getPercent2Float($margens[$tabela_preco->idtabela_preco]);
-                $margem_minimo = DataHelper::getPercent2Float($margem_minimos[$tabela_preco->idtabela_preco]);
-
-                $dataUpd = [
-                    'preco' => $custo_final + ($custo_final * $margem) / 100,
-                    'margem' => $margem,
-                    'preco_minimo' => $custo_final + ($custo_final * $margem_minimo) / 100,
-                    'margem_minimo' => $margem_minimo,
-                ];
-                $tabela_preco->update($dataUpd);
-            }
-
+            $dados = [
+                'margens' => $request->get('margem'),
+                'margem_minimo' => $request->get('margem_minimo'),
+                'valor' => $Kit->valor_total_float(),
+            ];
+            $Tabelas_preco = $Kit->tabela_preco;
+            DataHelper::updatePriceTable($request, $Tabelas_preco);
 
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->msg_upd]);

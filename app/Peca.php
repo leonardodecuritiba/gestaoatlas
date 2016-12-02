@@ -221,6 +221,16 @@ class Peca extends Model
         return $this->hasMany('App\TabelaPrecoPeca', 'idpeca');
     }
 
+    public function pecas_utilizadas()
+    {
+        return $this->hasMany('App\PecasUtilizadas', 'idpeca');
+    }
+
+    public function peca_kits()
+    {
+        return $this->hasMany('App\PecaKit', 'idpeca');
+    }
+
     public function tabela_cliente($idtabela_preco)
     {
         $tabela_preco = $this->tabela_preco_cliente($idtabela_preco)->first();

@@ -35,15 +35,18 @@ class DatabaseSeeder extends Seeder
             DB::unprepared(file_get_contents(storage_path('uploads').'\import\\'.$d.'.sql'));
             echo "\n Importacao (" . ('\import\\' . $d . '.sql') . ")***************************************************";
         }
+//        exit;
         $this->call(TecnicosTableSeeder::class);
 
         $user = User::find(1);
         $user->email = 'admin@email.com'; //admin
         $user->save();
+        echo "\n Set ADMIN ***************************************************";
         $user = User::find(2);
         $user->email = 'tecnico@email.com'; //técnico
         $user->save();
         $user->attachRole(2); //técnico
+        echo "\n Set TECNICO ***************************************************";
 
         $this->call(ImportSeeder::class);
         DB::table('ajustes')->insert(['meta_key'=>'custo_km','meta_value'=>'3.50']);

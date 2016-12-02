@@ -12,6 +12,7 @@ use App\Helpers\DataHelper;
 use App\Marca;
 use App\Peca;
 use App\TabelaPreco;
+use App\TabelaPrecoPeca;
 use App\Unidade;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
@@ -195,9 +196,19 @@ class PecasController extends Controller
 
             $Peca = Peca::create($data);
 
+            $dados = [
+                'margens' => $request->get('margem'),
+                'margem_minimo' => $request->get('margem_minimo'),
+                'valor' => $request->get('valor'),
+            ];
+            $Tabelas_preco = TabelaPreco::all();
+            $id['idpeca'] = $Peca->idpeca;
+
+            TabelaPrecoPeca::insert(DataHelper::storePriceTable($id, $dados, $Tabelas_preco));
+
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->msg_add]);
-            return $this->show($Peca->idpeca);
+            return Redirect::route('pecas.show', $Peca->idpeca);
         }
     }
 
@@ -278,22 +289,14 @@ class PecasController extends Controller
             $Peca->update($dataUpdate);
 
             //ATUALIZANDO OS PREÇOS E MARGENS
-            $margens = $request->get('margem');
-            $margem_minimos = $request->get('margem_minimo');
-            $custo_final = $Peca->custo_final_float();
-            foreach ($Peca->tabela_preco as $tabela_preco) {
-                $margem = DataHelper::getPercent2Float($margens[$tabela_preco->idtabela_preco]);
-                $margem_minimo = DataHelper::getPercent2Float($margem_minimos[$tabela_preco->idtabela_preco]);
+            $dados = [
+                'margens' => $request->get('margem'),
+                'margem_minimo' => $request->get('margem_minimo'),
+                'valor' => $Peca->custo_final_float(),
+            ];
+            $Tabelas_preco = $Peca->tabela_preco;
+            DataHelper::updatePriceTable($request, $Tabelas_preco);
 
-                $dataUpd = [
-                    'preco' => $custo_final + ($custo_final * $margem) / 100,
-                    'margem' => $margem,
-                    'preco_minimo' => $custo_final + ($custo_final * $margem_minimo) / 100,
-                    'margem_minimo' => $margem_minimo,
-                ];
-//                return $dataUpd;
-                $tabela_preco->update($dataUpd);
-            }
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->msg_upd]);
             return Redirect::route('pecas.show', $Peca->idpeca);
@@ -350,10 +353,8 @@ class PecasController extends Controller
 
     public function destroy($id)
     {
-        // Remover peca
-        $Peca = Peca::find($id);
-//        $Peca->tributacao->delete();
-        $Peca->delete();
+        $data = Peca::find($id);
+        $data->delete();
         return response()->json(['status' => '1',
             'response' => $this->Page->msg_rem]);
     }

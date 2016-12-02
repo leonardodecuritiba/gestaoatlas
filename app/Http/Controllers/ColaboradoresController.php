@@ -9,6 +9,7 @@ use App\Selo;
 use App\User;
 use App\Contato;
 use App\Tecnico;
+use Illuminate\Support\Facades\Redirect;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -17,6 +18,8 @@ use App\Http\Requests;
 class ColaboradoresController extends Controller
 {
     private $Page;
+
+//    private $colaborador;
 
     public function __construct()
     {
@@ -27,7 +30,8 @@ class ColaboradoresController extends Controller
             $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
         }
         */
-        $this->idprofissional_criador = 1;
+
+//        $this->colaborador = Auth::user()->colaborador;
         $this->Page = (object)[
             'link'              => "colaboradores",
             'Target'            => "Colaborador",
@@ -147,6 +151,16 @@ class ColaboradoresController extends Controller
         }
     }
 
+    public function show($id, $tab = 'sobre')
+    {
+        $this->Page->titulo_primario = "Visualização de ";
+        $this->Page->tab = $tab;
+        $Colaborador = Colaborador::find($id);
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Colaborador', $Colaborador)
+            ->with('Page', $this->Page);
+    }
+
     public function selolacre_store(Request $request, $idtecnico)
     {
         $ini = $request->get('numeracao_inicial');
@@ -205,7 +219,7 @@ class ColaboradoresController extends Controller
             'cnh'               => 'image',
             'carteira_trabalho' => 'image',
         ];
-        if($Colaborador->is->name == 'tecnico'){
+        if ($Colaborador->hasRole('tecnico')) {
             $validacao = array_merge($validacao,[
                 'carteira_imetro' => 'image',
                 'carteira_ipem'   => 'image',
@@ -218,10 +232,10 @@ class ColaboradoresController extends Controller
             return redirect()->to($this->getRedirectUrl())
                 ->withErrors($validator)
                 ->withInput($request->all());
-//                ->withInput();
         } else {
             $dataUpdate = $request->all();
 
+//            return $Colaborador;
             //update CONTATO
             $Colaborador->contato->update($dataUpdate);
 
@@ -229,16 +243,15 @@ class ColaboradoresController extends Controller
             $Colaborador->user->update($dataUpdate);
 
             foreach(['cnh','carteira_trabalho'] as $doc){
-                if($request->hasfile($doc)){
+                if ($request->hasfile($doc)) {
                     $img = new ImageController();
                     $dataUpdate[$doc] = $img->store($request->file($doc), $this->Page->link);
-                } else {
-                    $dataUpdate[$doc] = NULL;
                 }
             }
             $Colaborador->update($dataUpdate);
 
-            if($Colaborador->is->name == 'tecnico'){
+//            return $Colaborador;
+            if ($Colaborador->hasRole('tecnico')) {
                 foreach(['carteira_imetro','carteira_ipem'] as $doc){
                     if($request->hasfile($doc)){
                         $img = new ImageController();
@@ -252,18 +265,8 @@ class ColaboradoresController extends Controller
 
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
-            return $this->show($Colaborador->idcolaborador);
+            return Redirect::route('colaboradores.show', $Colaborador->idcolaborador);
         }
-    }
-
-    public function show($id,$tab='sobre')
-    {
-        $this->Page->titulo_primario = "Visualização de ";
-        $this->Page->tab = $tab;
-        $Colaborador = Colaborador::find($id);
-        return view('pages.'.$this->Page->link.'.show')
-            ->with('Colaborador', $Colaborador)
-            ->with('Page', $this->Page);
     }
 
     public function destroy($id)

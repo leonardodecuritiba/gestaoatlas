@@ -26,10 +26,14 @@ class Colaborador extends Model
 
     public function setDataNascimentoAttribute($value)
     {
-        if($value != NULL && $value != 0){
-            $this->attributes['data_nascimento'] = Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d');
-        }
+        $this->attributes['data_nascimento'] = DataHelper::setDate($value);
     }
+
+    public function getDataNascimentoAttribute($value)
+    {
+        return DataHelper::getPrettyDate($value);
+    }
+
     // ************************ FUNCTIONS ******************************
     public function getEnderecoResumido() {
         $contato = $this->contato()->first();

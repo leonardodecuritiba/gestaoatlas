@@ -18,6 +18,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ContainerAwareEventDispatcherTest extends AbstractEventDispatcherTest
 {
+    protected function createEventDispatcher()
+    {
+        $container = new Container();
+
+        return new ContainerAwareEventDispatcher($container);
+    }
+
     public function testAddAListenerService()
     {
         $event = new Event();
@@ -165,13 +172,6 @@ class ContainerAwareEventDispatcherTest extends AbstractEventDispatcherTest
 
         $dispatcher->removeListener('onEvent', array($container->get('service.listener'), 'onEvent'));
         $this->assertFalse($dispatcher->hasListeners('onEvent'));
-    }
-
-    protected function createEventDispatcher()
-    {
-        $container = new Container();
-
-        return new ContainerAwareEventDispatcher($container);
     }
 }
 

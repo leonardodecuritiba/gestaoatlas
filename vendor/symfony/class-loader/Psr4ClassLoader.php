@@ -39,23 +39,6 @@ class Psr4ClassLoader
     /**
      * @param string $class
      *
-     * @return bool
-     */
-    public function loadClass($class)
-    {
-        $file = $this->findFile($class);
-        if (null !== $file) {
-            require $file;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param string $class
-     *
      * @return string|null
      */
     public function findFile($class)
@@ -71,6 +54,23 @@ class Psr4ClassLoader
                 }
             }
         }
+    }
+
+    /**
+     * @param string $class
+     *
+     * @return bool
+     */
+    public function loadClass($class)
+    {
+        $file = $this->findFile($class);
+        if (null !== $file) {
+            require $file;
+
+            return true;
+        }
+
+        return false;
     }
 
     /**

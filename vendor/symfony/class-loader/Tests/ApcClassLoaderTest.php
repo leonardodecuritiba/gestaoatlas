@@ -16,6 +16,22 @@ use Symfony\Component\ClassLoader\ClassLoader;
 
 class ApcClassLoaderTest extends \PHPUnit_Framework_TestCase
 {
+    protected function setUp()
+    {
+        if (!(ini_get('apc.enabled') && ini_get('apc.enable_cli'))) {
+            $this->markTestSkipped('The apc extension is not enabled.');
+        } else {
+            apcu_clear_cache();
+        }
+    }
+
+    protected function tearDown()
+    {
+        if (ini_get('apc.enabled') && ini_get('apc.enable_cli')) {
+            apcu_clear_cache();
+        }
+    }
+
     public function testConstructor()
     {
         $loader = new ClassLoader();
@@ -176,21 +192,5 @@ class ApcClassLoaderTest extends \PHPUnit_Framework_TestCase
                '->loadClass() loads ApcPrefixCollision_A_B_Bar from beta.',
            ),
         );
-    }
-
-    protected function setUp()
-    {
-        if (!(ini_get('apc.enabled') && ini_get('apc.enable_cli'))) {
-            $this->markTestSkipped('The apc extension is not enabled.');
-        } else {
-            apcu_clear_cache();
-        }
-    }
-
-    protected function tearDown()
-    {
-        if (ini_get('apc.enabled') && ini_get('apc.enable_cli')) {
-            apcu_clear_cache();
-        }
     }
 }

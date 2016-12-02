@@ -8,7 +8,7 @@
         <label class="control-label col-md-2 col-sm-2 col-xs-12">Nascimento <span class="required">*</span></label>
         <div class="col-md-3 col-sm-3 col-xs-12">
             <input value="{{($existe_entidade)?$Entidade->data_nascimento:old('data_nascimento')}}"
-                   type="date" class="form-control" name="data_nascimento" required>
+                   type="text" class="form-control data-to-now" name="data_nascimento" required>
         </div>
     </div>
     <div class="form-group">
@@ -34,14 +34,15 @@
         <label class="control-label col-md-2 col-sm-2 col-xs-12">CNH <span class="required">*</span></label>
         <div class="col-md-10 col-sm-10 col-xs-12">
             <input value="{{($existe_entidade)?$Entidade->cnh:old('cnh')}}"
-                   type="file" class="form-control" name="cnh" placeholder="CNH" required>
+                   type="file" class="form-control" name="cnh" placeholder="CNH" @if(!$existe_entidade) required @endif>
         </div>
     </div>
     <div class="form-group">
         <label class="control-label col-md-2 col-sm-2 col-xs-12">Cart. Trabalho <span class="required">*</span></label>
         <div class="col-md-10 col-sm-10 col-xs-12">
             <input value="{{($existe_entidade)?$Entidade->carteira_trabalho:old('carteira_trabalho')}}"
-                   type="file" class="form-control" name="carteira_trabalho" placeholder="Carteira de Trabalho" required>
+                   type="file" class="form-control" name="carteira_trabalho" placeholder="Carteira de Trabalho"
+                   @if(!$existe_entidade) required @endif>
         </div>
     </div>
 </div>

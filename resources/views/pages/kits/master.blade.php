@@ -20,7 +20,7 @@
                         <h2>Dados do {{$Page->Target}}</h2>
                         <div class="clearfix"></div>
                     </div>
-                    <div class="x_content">
+                    <div class="x_content div_pai">
                         <div class="form-horizontal form-label-left">
                             @include('pages.'.$Page->link.'.forms.form')
                         </div>
@@ -40,10 +40,12 @@
                             <div class="form-group">
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Peça/Produto: <span class="required">*</span></label>
                                 <div class="col-md-10 col-sm-10 col-xs-12">
-                                    <select name="idpeca[0]" onchange="get_unidade(this)" class="form-control" required>
+                                    <select name="idpeca[0]" onchange="get_data(this)" class="form-control" required>
                                         <option value="">Selecione a Peça</option>
                                         @foreach($Page->extras['pecas'] as $sel)
-                                            <option data-unidade="{{$sel->unidade}}" value="{{$sel->idpeca}}">{{$sel->descricao}}</option>
+                                            <option data-valor="{{$sel->custo_final_float()}}"
+                                                    data-unidade="{{$sel->unidade}}"
+                                                    value="{{$sel->idpeca}}">{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -106,12 +108,16 @@
         var ind_peca_kit = 1;
 
 
-        function get_unidade($this){
+        function get_data($this) {
             $select = $($this);
-            unidade = $($select).find(':selected').data('unidade');
+            var unidade = $($select).find(':selected').data('unidade');
+            var valor = $($select).find(':selected').data('valor');
 
             $parent = $($select).parents('div.form-group').next().next();
-            $($parent).find('input#unidade').val(unidade.codigo);
+            $($parent).find('input#qtd').val(1);
+            $($parent).find('input#unidade').val(unidade.codigo)
+            $($parent).find('input#vlr').val(valor);
+            $($parent).find('input#vlr_total').val(valor);
         }
 
         function remove_peca($this){
@@ -138,10 +144,10 @@
                             '<div class="form-group">' +
                                 '<label class="control-label col-md-2 col-sm-2 col-xs-12">Peça/Produto: <span class="required">*</span></label>' +
                                 '<div class="col-md-8 col-sm-8 col-xs-12">' +
-                                    '<select name="idpeca[' + ind_peca_kit + ']" onchange="get_unidade(this)" class="form-control" required>' +
+                    '<select name="idpeca[' + ind_peca_kit + ']" onchange="get_data(this)" class="form-control" required>' +
                                         '<option value="">Selecione a Peça</option>';
                 @foreach($Page->extras['pecas'] as $sel)
-                    html += '<option data-unidade="{{$sel->unidade}}" value="{{$sel->idpeca}}">{{$sel->descricao}}</option>';
+                    html += '<option data-valor="{{$sel->custo_final_float()}}"  data-unidade="{{$sel->unidade}}" value="{{$sel->idpeca}}">{{$sel->descricao}}</option>';
                 @endforeach
                 html += '</select>' +
                                 '</div>' +
@@ -179,9 +185,6 @@
                 ind_peca_kit++;
                 return false;
             });
-
-
-
         })
     </script>
 @endsection

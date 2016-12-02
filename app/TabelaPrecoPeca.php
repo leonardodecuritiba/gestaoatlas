@@ -4,9 +4,11 @@ namespace App;
 
 use App\Helpers\DataHelper;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TabelaPrecoPeca extends Model
 {
+    use SoftDeletes;
     public $timestamps = true;
     protected $table = 'tabela_precos_peca';
     protected $primaryKey = 'id';

@@ -13,8 +13,8 @@ class TecnicosTableSeeder extends Seeder
     {
         //php artisan db:seed --class=TecnicosTableSeeder
         $start = microtime(true);
-        echo "*** Iniciando os Seeders ***";
+        echo "*** Iniciando os TecnicosTableSeeder ***";
         factory(App\Tecnico::class)->create();
-        echo "\n*** Tecnico completo em ".round((microtime(true) - $start), 3)."s ***";
+        echo "\n*** Tecnico completo em " . round((microtime(true) - $start), 3) . "s ***\n";
     }
 }

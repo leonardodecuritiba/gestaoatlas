@@ -86,8 +86,10 @@
                     <li><a><i class="fa fa-users"></i> Pessoas <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{{ route('clientes.index') }}">Clientes</a></li>
+                            @role('admin')
                             <li><a href="{{ route('fornecedores.index') }}">Fornecedores</a></li>
-                            @if(Auth::user()->hasRole('admin')) <li><a href="{{ route('colaboradores.index') }}">Colaboradores</a></li> @endif
+                            <li><a href="{{ route('colaboradores.index') }}">Colaboradores</a></li>
+                            @endrole
                         </ul>
                     </li>
                     @role('admin')

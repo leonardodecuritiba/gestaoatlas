@@ -34,6 +34,18 @@ class Tecnico extends Model
         return $this->hasMany('App\Selo', 'idtecnico')->orderBy('numeracao', 'dsc');
     }
 
+    public function last_selo()
+    {
+        $data = $this->hasMany('App\Selo', 'idtecnico')->orderBy('numeracao', 'dsc')->first();
+        return (count($data) > 0) ? $data->numeracao : 0;
+    }
+
+    public function last_lacre()
+    {
+        $data = $this->hasMany('App\Lacre', 'idtecnico')->orderBy('numeracao', 'dsc')->first();
+        return (count($data) > 0) ? $data->numeracao : 0;
+    }
+
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
 

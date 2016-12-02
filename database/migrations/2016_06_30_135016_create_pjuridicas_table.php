@@ -20,6 +20,7 @@ class CreatePjuridicasTable extends Migration
             $table->boolean('isencao_ie')->default(0);
             $table->string('razao_social',100);
             $table->string('nome_fantasia',100);
+
             $table->string('ativ_economica', 100)->nullable();
             $table->string('sit_cad_vigente', 50)->nullable();
             $table->string('sit_cad_status', 50)->nullable();

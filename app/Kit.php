@@ -48,6 +48,11 @@ class Kit extends Model
         return $this->hasMany('App\TabelaPrecoKit', 'idkit');
     }
 
+    public function kits_utilizados()
+    {
+        return $this->hasMany('App\KitsUtilizados', 'idkit');
+    }
+
     public function tabela_cliente($idtabela_preco)
     {
         $tabela_preco = $this->tabela_preco_cliente($idtabela_preco)->first();

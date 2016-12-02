@@ -23,46 +23,16 @@ class ClientesController extends Controller
 {
     private $Page;
     private $colaborador;
-    /*
-    private $Validation = [
-        'pessoa_juridica' => array(
-            'data_abertura'             => 'required',
-            'nome_empresarial'          => 'required',
-            'nome_fantasia'             => 'required',
-            'cod_atividade_principal'   => 'required',
-            'desc_atividade_principal'  => 'required',
-            'cod_natureza_juridica'     => 'required',
-            'desc_natureza_juridica'    => 'required',
-            'ent_fed_responsavel'       => 'required',
-            'situacao_cadastral'        => 'required',
-            'data_situacao_cadastral'   => 'required'
-        )
-    ];
-    */
+
     private $Validation = [
         'pessoa_juridica' => array(
             'razao_social'              => 'required',
             'nome_fantasia'             => 'required',
-            'ativ_economica'            => 'required',
-            'sit_cad_vigente'           => 'required',
-            'sit_cad_status'            => 'required',
-            'data_sit_cad'              => 'required',
-            'reg_apuracao'              => 'required',
-            'data_credenciamento'       => 'required',
-            'ind_obrigatoriedade'       => 'required',
-            'data_ini_obrigatoriedade'  => 'required'
         )
     ];
 
     public function __construct()
     {
-        /*
-        $this->middleware('role:empresa');
-        if(Auth::check()){
-            $this->empresa_id = (Auth::user()->empresa == "")?'*':Auth::user()->empresa->EMP_ID;
-            $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
-        }
-        */
         $this->colaborador = Auth::user()->colaborador;
         $this->Page = (object)[
             'link'              => "clientes",
@@ -284,6 +254,7 @@ class ClientesController extends Controller
 //                ->withInput();
         } else {
 
+//            return $validacao;
             if($Cliente->getType()->tipo_cliente==0){
                 //update física
                 $Cliente->pessoa_fisica->update($dataUpdate);

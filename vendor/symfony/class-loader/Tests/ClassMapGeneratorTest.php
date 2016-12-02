@@ -20,22 +20,6 @@ class ClassMapGeneratorTest extends \PHPUnit_Framework_TestCase
      */
     private $workspace = null;
 
-    /**
-     * @dataProvider getTestCreateMapTests
-     */
-    public function testDump($directory)
-    {
-        $this->prepare_workspace();
-
-        $file = $this->workspace . '/file';
-
-        $generator = new ClassMapGenerator();
-        $generator->dump($directory, $file);
-        $this->assertFileExists($file);
-
-        $this->clean($this->workspace);
-    }
-
     public function prepare_workspace()
     {
         $this->workspace = sys_get_temp_dir().'/'.microtime(true).'.'.mt_rand();
@@ -63,20 +47,25 @@ class ClassMapGeneratorTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getTestCreateMapTests
      */
+    public function testDump($directory)
+    {
+        $this->prepare_workspace();
+
+        $file = $this->workspace.'/file';
+
+        $generator = new ClassMapGenerator();
+        $generator->dump($directory, $file);
+        $this->assertFileExists($file);
+
+        $this->clean($this->workspace);
+    }
+
+    /**
+     * @dataProvider getTestCreateMapTests
+     */
     public function testCreateMap($directory, $expected)
     {
         $this->assertEqualsNormalized($expected, ClassMapGenerator::createMap($directory));
-    }
-
-    protected function assertEqualsNormalized($expected, $actual, $message = null)
-    {
-        foreach ($expected as $ns => $path) {
-            $expected[$ns] = str_replace('\\', '/', $path);
-        }
-        foreach ($actual as $ns => $path) {
-            $actual[$ns] = str_replace('\\', '/', $path);
-        }
-        $this->assertEquals($expected, $actual, $message);
     }
 
     public function getTestCreateMapTests()
@@ -87,10 +76,10 @@ class ClassMapGeneratorTest extends \PHPUnit_Framework_TestCase
                 'Namespaced\\Foo' => realpath(__DIR__).'/Fixtures/Namespaced/Foo.php',
                 'Namespaced\\Baz' => realpath(__DIR__).'/Fixtures/Namespaced/Baz.php',
                 'Namespaced\\WithComments' => realpath(__DIR__).'/Fixtures/Namespaced/WithComments.php',
-                'Namespaced\\WithStrictTypes' => realpath(__DIR__) . '/Fixtures/Namespaced/WithStrictTypes.php',
-                'Namespaced\\WithHaltCompiler' => realpath(__DIR__) . '/Fixtures/Namespaced/WithHaltCompiler.php',
-                'Namespaced\\WithDirMagic' => realpath(__DIR__) . '/Fixtures/Namespaced/WithDirMagic.php',
-                'Namespaced\\WithFileMagic' => realpath(__DIR__) . '/Fixtures/Namespaced/WithFileMagic.php',
+                'Namespaced\\WithStrictTypes' => realpath(__DIR__).'/Fixtures/Namespaced/WithStrictTypes.php',
+                'Namespaced\\WithHaltCompiler' => realpath(__DIR__).'/Fixtures/Namespaced/WithHaltCompiler.php',
+                'Namespaced\\WithDirMagic' => realpath(__DIR__).'/Fixtures/Namespaced/WithDirMagic.php',
+                'Namespaced\\WithFileMagic' => realpath(__DIR__).'/Fixtures/Namespaced/WithFileMagic.php',
             )),
             array(__DIR__.'/Fixtures/beta/NamespaceCollision', array(
                 'NamespaceCollision\\A\\B\\Bar' => realpath(__DIR__).'/Fixtures/beta/NamespaceCollision/A/B/Bar.php',
@@ -143,5 +132,16 @@ class ClassMapGeneratorTest extends \PHPUnit_Framework_TestCase
             'NamespaceCollision\\C\\B\\Bar' => realpath(__DIR__).'/Fixtures/beta/NamespaceCollision/C/B/Bar.php',
             'NamespaceCollision\\C\\B\\Foo' => realpath(__DIR__).'/Fixtures/beta/NamespaceCollision/C/B/Foo.php',
         ), ClassMapGenerator::createMap($finder));
+    }
+
+    protected function assertEqualsNormalized($expected, $actual, $message = null)
+    {
+        foreach ($expected as $ns => $path) {
+            $expected[$ns] = str_replace('\\', '/', $path);
+        }
+        foreach ($actual as $ns => $path) {
+            $actual[$ns] = str_replace('\\', '/', $path);
+        }
+        $this->assertEquals($expected, $actual, $message);
     }
 }

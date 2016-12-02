@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TabelaPrecoKit extends Model
 {
+    use SoftDeletes;
     public $timestamps = true;
     protected $table = 'tabela_precos_kit';
     protected $primaryKey = 'id';

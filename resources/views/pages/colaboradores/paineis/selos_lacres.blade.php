@@ -53,8 +53,8 @@
 @endforeach
 <script>
     //ABRE MODAL SELO-LACRE
-    var last_selo = parseInt('{{$Colaborador->tecnico->selos->first()->numeracao}}')+1;
-    var last_lacre = parseInt('{{$Colaborador->tecnico->lacres->first()->numeracao}}')+1;
+    var last_selo = parseInt('{{$Colaborador->tecnico->last_selo()}}') + 1;
+    var last_lacre = parseInt('{{$Colaborador->tecnico->last_lacre()}}') + 1;
     $(document).ready(function () {
         $('form#form-selolacre').on('submit', function (e) {
             var $input_numeracao_inicial = $(this).find('input[name=numeracao_inicial]');
