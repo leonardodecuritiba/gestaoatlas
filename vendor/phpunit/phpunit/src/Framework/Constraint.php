@@ -11,9 +11,9 @@
 use SebastianBergmann\Exporter\Exporter;
 
 /**
- * Abstract base class for constraints. which are placed upon any value.
+ * Abstract base class for constraints which can be applied to any value.
  *
- * @since      Interface available since Release 3.0.0
+ * @since Interface available since Release 3.0.0
  */
 abstract class PHPUnit_Framework_Constraint implements Countable, PHPUnit_Framework_SelfDescribing
 {
@@ -75,6 +75,18 @@ abstract class PHPUnit_Framework_Constraint implements Countable, PHPUnit_Framew
     }
 
     /**
+     * Counts the number of constraint elements.
+     *
+     * @return int
+     *
+     * @since  Method available since Release 3.4.0
+     */
+    public function count()
+    {
+        return 1;
+    }
+
+    /**
      * Throws an exception for the given compared value and test description
      *
      * @param mixed                                          $other             Evaluated value or object.
@@ -107,24 +119,6 @@ abstract class PHPUnit_Framework_Constraint implements Countable, PHPUnit_Framew
     }
 
     /**
-     * Returns the description of the failure
-     *
-     * The beginning of failure messages is "Failed asserting that" in most
-     * cases. This method should return the second part of that sentence.
-     *
-     * To provide additional failure information additionalFailureDescription
-     * can be used.
-     *
-     * @param mixed $other Evaluated value or object.
-     *
-     * @return string
-     */
-    protected function failureDescription($other)
-    {
-        return $this->exporter->export($other) . ' ' . $this->toString();
-    }
-
-    /**
      * Return additional failure description where needed
      *
      * The function can be overridden to provide additional failure
@@ -140,14 +134,20 @@ abstract class PHPUnit_Framework_Constraint implements Countable, PHPUnit_Framew
     }
 
     /**
-     * Counts the number of constraint elements.
+     * Returns the description of the failure
      *
-     * @return int
+     * The beginning of failure messages is "Failed asserting that" in most
+     * cases. This method should return the second part of that sentence.
      *
-     * @since  Method available since Release 3.4.0
+     * To provide additional failure information additionalFailureDescription
+     * can be used.
+     *
+     * @param mixed $other Evaluated value or object.
+     *
+     * @return string
      */
-    public function count()
+    protected function failureDescription($other)
     {
-        return 1;
+        return $this->exporter->export($other) . ' ' . $this->toString();
     }
 }

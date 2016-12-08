@@ -57,6 +57,14 @@ class PHPUnit_Framework_IncompleteTestCase extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * @throws PHPUnit_Framework_Exception
+     */
+    protected function runTest()
+    {
+        $this->markTestIncomplete($this->message);
+    }
+
+    /**
      * @return string
      */
     public function getMessage()
@@ -72,13 +80,5 @@ class PHPUnit_Framework_IncompleteTestCase extends PHPUnit_Framework_TestCase
     public function toString()
     {
         return $this->getName();
-    }
-
-    /**
-     * @throws PHPUnit_Framework_Exception
-     */
-    protected function runTest()
-    {
-        $this->markTestIncomplete($this->message);
     }
 }

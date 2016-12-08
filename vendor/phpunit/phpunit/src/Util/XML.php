@@ -276,33 +276,50 @@ class PHPUnit_Util_XML
     }
 
     /**
-     * Parse an $actual document and return an array of DOMNodes
-     * matching the CSS $selector.  If an error occurs, it will
-     * return false.
+     * Validate list of keys in the associative array.
      *
-     * To only return nodes containing a certain content, give
-     * the $content to match as a string.  Otherwise, setting
-     * $content to true will return all nodes matching $selector.
+     * @param array $hash
+     * @param array $validKeys
      *
-     * The $actual document may be a DOMDocument or a string
-     * containing XML or HTML, identified by $isHtml.
+     * @return array
      *
-     * @param array $selector
-     * @param string $content
-     * @param mixed $actual
-     * @param bool $isHtml
-     *
-     * @return bool|array
+     * @throws PHPUnit_Framework_Exception
      *
      * @since  Method available since Release 3.3.0
      */
-    public static function cssSelect($selector, $content, $actual, $isHtml = true)
+    public static function assertValidKeys(array $hash, array $validKeys)
     {
-        $matcher = self::convertSelectToTag($selector, $content);
-        $dom = self::load($actual, $isHtml);
-        $tags = self::findNodes($dom, $matcher, $isHtml);
+        $valids = array();
 
-        return $tags;
+        // Normalize validation keys so that we can use both indexed and
+        // associative arrays.
+        foreach ($validKeys as $key => $val) {
+            is_int($key) ? $valids[$val] = null : $valids[$key] = $val;
+        }
+
+        $validKeys = array_keys($valids);
+
+        // Check for invalid keys.
+        foreach ($hash as $key => $value) {
+            if (!in_array($key, $validKeys)) {
+                $unknown[] = $key;
+            }
+        }
+
+        if (!empty($unknown)) {
+            throw new PHPUnit_Framework_Exception(
+                'Unknown key(s): ' . implode(', ', $unknown)
+            );
+        }
+
+        // Add default values for any valid keys that are empty.
+        foreach ($valids as $key => $value) {
+            if (!isset($hash[$key])) {
+                $hash[$key] = $value;
+            }
+        }
+
+        return $hash;
     }
 
     /**
@@ -431,6 +448,36 @@ class PHPUnit_Util_XML
         }
 
         return $tag;
+    }
+
+    /**
+     * Parse an $actual document and return an array of DOMNodes
+     * matching the CSS $selector.  If an error occurs, it will
+     * return false.
+     *
+     * To only return nodes containing a certain content, give
+     * the $content to match as a string.  Otherwise, setting
+     * $content to true will return all nodes matching $selector.
+     *
+     * The $actual document may be a DOMDocument or a string
+     * containing XML or HTML, identified by $isHtml.
+     *
+     * @param array  $selector
+     * @param string $content
+     * @param mixed  $actual
+     * @param bool   $isHtml
+     *
+     * @return bool|array
+     *
+     * @since  Method available since Release 3.3.0
+     */
+    public static function cssSelect($selector, $content, $actual, $isHtml = true)
+    {
+        $matcher = self::convertSelectToTag($selector, $content);
+        $dom     = self::load($actual, $isHtml);
+        $tags    = self::findNodes($dom, $matcher, $isHtml);
+
+        return $tags;
     }
 
     /**
@@ -818,50 +865,30 @@ class PHPUnit_Util_XML
     }
 
     /**
-     * Validate list of keys in the associative array.
+     * Recursively get flat array of all descendants of this node.
      *
-     * @param array $hash
-     * @param array $validKeys
+     * @param DOMNode $node
      *
      * @return array
      *
-     * @throws PHPUnit_Framework_Exception
-     *
      * @since  Method available since Release 3.3.0
      */
-    public static function assertValidKeys(array $hash, array $validKeys)
+    protected static function getDescendants(DOMNode $node)
     {
-        $valids = array();
+        $allChildren = array();
+        $childNodes  = $node->childNodes ? $node->childNodes : array();
 
-        // Normalize validation keys so that we can use both indexed and
-        // associative arrays.
-        foreach ($validKeys as $key => $val) {
-            is_int($key) ? $valids[$val] = null : $valids[$key] = $val;
-        }
-
-        $validKeys = array_keys($valids);
-
-        // Check for invalid keys.
-        foreach ($hash as $key => $value) {
-            if (!in_array($key, $validKeys)) {
-                $unknown[] = $key;
+        foreach ($childNodes as $child) {
+            if ($child->nodeType === XML_CDATA_SECTION_NODE ||
+                $child->nodeType === XML_TEXT_NODE) {
+                continue;
             }
+
+            $children    = self::getDescendants($child);
+            $allChildren = array_merge($allChildren, $children, array($child));
         }
 
-        if (!empty($unknown)) {
-            throw new PHPUnit_Framework_Exception(
-                'Unknown key(s): ' . implode(', ', $unknown)
-            );
-        }
-
-        // Add default values for any valid keys that are empty.
-        foreach ($valids as $key => $value) {
-            if (!isset($hash[$key])) {
-                $hash[$key] = $value;
-            }
-        }
-
-        return $hash;
+        return isset($allChildren) ? $allChildren : array();
     }
 
     /**
@@ -912,33 +939,5 @@ class PHPUnit_Util_XML
         }
 
         return str_replace('  ', ' ', $result);
-    }
-
-    /**
-     * Recursively get flat array of all descendants of this node.
-     *
-     * @param DOMNode $node
-     *
-     * @return array
-     *
-     * @since  Method available since Release 3.3.0
-     */
-    protected static function getDescendants(DOMNode $node)
-    {
-        $allChildren = array();
-        $childNodes = $node->childNodes ? $node->childNodes : array();
-
-        foreach ($childNodes as $child) {
-            if ($child->nodeType === XML_CDATA_SECTION_NODE ||
-                $child->nodeType === XML_TEXT_NODE
-            ) {
-                continue;
-            }
-
-            $children = self::getDescendants($child);
-            $allChildren = array_merge($allChildren, $children, array($child));
-        }
-
-        return isset($allChildren) ? $allChildren : array();
     }
 }

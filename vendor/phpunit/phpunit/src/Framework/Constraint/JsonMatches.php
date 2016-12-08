@@ -32,19 +32,6 @@ class PHPUnit_Framework_Constraint_JsonMatches extends PHPUnit_Framework_Constra
     }
 
     /**
-     * Returns a string representation of the object.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return sprintf(
-            'matches JSON string "%s"',
-            $this->value
-        );
-    }
-
-    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -67,5 +54,18 @@ class PHPUnit_Framework_Constraint_JsonMatches extends PHPUnit_Framework_Constra
         }
 
         return $decodedOther == $decodedValue;
+    }
+
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return sprintf(
+            'matches JSON string "%s"',
+            $this->value
+        );
     }
 }

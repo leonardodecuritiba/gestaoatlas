@@ -119,6 +119,30 @@ class ImportSeeder extends Seeder
                 }
             });
         })->ignoreEmpty();
+
+
+        echo "\n*** Importacao TabelaPreco Servicos  ***";
+        $Tabelas_preco = \App\TabelaPreco::all();
+        $Servicos = \App\Servico::all();
+        $margem_minimo = 10;
+        $margem = $margem_minimo + 5;
+        foreach ($Tabelas_preco as $tabela_preco) {
+            foreach ($Servicos as $servico) {
+                $valor = $servico->valor_float();
+                $preco = $valor + ($margem * $valor) / 100;
+                $preco_minimo = $valor + ($margem_minimo * $valor) / 100;
+                $data = [
+                    'idtabela_preco' => $tabela_preco->idtabela_preco,
+                    'idservico' => $servico->idservico,
+                    'margem' => $margem,
+                    'preco' => $preco,
+                    'margem_minimo' => $margem_minimo,
+                    'preco_minimo' => $preco_minimo,
+                ];
+                \App\TabelaPrecoServico::create($data);
+                //                    echo "* inserido\n";
+            }
+        }
         echo "\n*** Importacao IMPORTSEEDER (part2) realizada com sucesso em " . round((microtime(true) - $start), 3) . "s ***";
 
     }

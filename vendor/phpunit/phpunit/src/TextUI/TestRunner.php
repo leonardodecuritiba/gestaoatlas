@@ -21,22 +21,27 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
     const SUCCESS_EXIT   = 0;
     const FAILURE_EXIT   = 1;
     const EXCEPTION_EXIT = 2;
-    /**
-     * @var bool
-     */
-    protected static $versionStringPrinted = false;
+
     /**
      * @var PHP_CodeCoverage_Filter
      */
     protected $codeCoverageFilter;
+
     /**
      * @var PHPUnit_Runner_TestSuiteLoader
      */
     protected $loader = null;
+
     /**
      * @var PHPUnit_TextUI_ResultPrinter
      */
     protected $printer = null;
+
+    /**
+     * @var bool
+     */
+    protected static $versionStringPrinted = false;
+
     /**
      * @var array
      */
@@ -65,26 +70,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
     }
 
     /**
-     * @return PHP_CodeCoverage_Filter
-     */
-    private function getCodeCoverageFilter()
-    {
-        $filter = new PHP_CodeCoverage_Filter;
-
-        if (defined('__PHPUNIT_PHAR__')) {
-            $filter->addFileToBlacklist(__PHPUNIT_PHAR__);
-        }
-
-        $blacklist = new PHPUnit_Util_Blacklist;
-
-        foreach ($blacklist->getBlacklistedDirectories() as $directory) {
-            $filter->addDirectoryToBlacklist($directory);
-        }
-
-        return $filter;
-    }
-
-    /**
      * @param PHPUnit_Framework_Test|ReflectionClass $test
      * @param array                                  $arguments
      *
@@ -110,6 +95,47 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
                 'No test case or test suite found.'
             );
         }
+    }
+
+    /**
+     * @return PHPUnit_Framework_TestResult
+     */
+    protected function createTestResult()
+    {
+        return new PHPUnit_Framework_TestResult;
+    }
+
+    private function processSuiteFilters(PHPUnit_Framework_TestSuite $suite, array $arguments)
+    {
+        if (!$arguments['filter'] &&
+            empty($arguments['groups']) &&
+            empty($arguments['excludeGroups'])) {
+            return;
+        }
+
+        $filterFactory = new PHPUnit_Runner_Filter_Factory();
+
+        if (!empty($arguments['excludeGroups'])) {
+            $filterFactory->addFilter(
+                new ReflectionClass('PHPUnit_Runner_Filter_Group_Exclude'),
+                $arguments['excludeGroups']
+            );
+        }
+
+        if (!empty($arguments['groups'])) {
+            $filterFactory->addFilter(
+                new ReflectionClass('PHPUnit_Runner_Filter_Group_Include'),
+                $arguments['groups']
+            );
+        }
+
+        if ($arguments['filter']) {
+            $filterFactory->addFilter(
+                new ReflectionClass('PHPUnit_Runner_Filter_Test'),
+                $arguments['filter']
+            );
+        }
+        $suite->injectFilter($filterFactory);
     }
 
     /**
@@ -545,6 +571,60 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
     }
 
     /**
+     * @param PHPUnit_TextUI_ResultPrinter $resultPrinter
+     */
+    public function setPrinter(PHPUnit_TextUI_ResultPrinter $resultPrinter)
+    {
+        $this->printer = $resultPrinter;
+    }
+
+    /**
+     * Override to define how to handle a failed loading of
+     * a test suite.
+     *
+     * @param string $message
+     */
+    protected function runFailed($message)
+    {
+        $this->write($message . PHP_EOL);
+        exit(self::FAILURE_EXIT);
+    }
+
+    /**
+     * @param string $buffer
+     *
+     * @since  Method available since Release 3.1.0
+     */
+    protected function write($buffer)
+    {
+        if (PHP_SAPI != 'cli' && PHP_SAPI != 'phpdbg') {
+            $buffer = htmlspecialchars($buffer);
+        }
+
+        if ($this->printer !== null) {
+            $this->printer->write($buffer);
+        } else {
+            print $buffer;
+        }
+    }
+
+    /**
+     * Returns the loader to be used.
+     *
+     * @return PHPUnit_Runner_TestSuiteLoader
+     *
+     * @since  Method available since Release 2.2.0
+     */
+    public function getLoader()
+    {
+        if ($this->loader === null) {
+            $this->loader = new PHPUnit_Runner_StandardTestSuiteLoader;
+        }
+
+        return $this->loader;
+    }
+
+    /**
      * @param array $arguments
      *
      * @since  Method available since Release 3.2.1
@@ -938,48 +1018,6 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
         $arguments['verbose']                            = isset($arguments['verbose'])                            ? $arguments['verbose']                            : false;
     }
 
-    private function processSuiteFilters(PHPUnit_Framework_TestSuite $suite, array $arguments)
-    {
-        if (!$arguments['filter'] &&
-            empty($arguments['groups']) &&
-            empty($arguments['excludeGroups'])
-        ) {
-            return;
-        }
-
-        $filterFactory = new PHPUnit_Runner_Filter_Factory();
-
-        if (!empty($arguments['excludeGroups'])) {
-            $filterFactory->addFilter(
-                new ReflectionClass('PHPUnit_Runner_Filter_Group_Exclude'),
-                $arguments['excludeGroups']
-            );
-        }
-
-        if (!empty($arguments['groups'])) {
-            $filterFactory->addFilter(
-                new ReflectionClass('PHPUnit_Runner_Filter_Group_Include'),
-                $arguments['groups']
-            );
-        }
-
-        if ($arguments['filter']) {
-            $filterFactory->addFilter(
-                new ReflectionClass('PHPUnit_Runner_Filter_Test'),
-                $arguments['filter']
-            );
-        }
-        $suite->injectFilter($filterFactory);
-    }
-
-    /**
-     * @return PHPUnit_Framework_TestResult
-     */
-    protected function createTestResult()
-    {
-        return new PHPUnit_Framework_TestResult;
-    }
-
     /**
      * @param $extension
      * @param string $message
@@ -1002,56 +1040,22 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
     }
 
     /**
-     * @param string $buffer
-     *
-     * @since  Method available since Release 3.1.0
+     * @return PHP_CodeCoverage_Filter
      */
-    protected function write($buffer)
+    private function getCodeCoverageFilter()
     {
-        if (PHP_SAPI != 'cli' && PHP_SAPI != 'phpdbg') {
-            $buffer = htmlspecialchars($buffer);
+        $filter = new PHP_CodeCoverage_Filter;
+
+        if (defined('__PHPUNIT_PHAR__')) {
+            $filter->addFileToBlacklist(__PHPUNIT_PHAR__);
         }
 
-        if ($this->printer !== null) {
-            $this->printer->write($buffer);
-        } else {
-            print $buffer;
-        }
-    }
+        $blacklist = new PHPUnit_Util_Blacklist;
 
-    /**
-     * @param PHPUnit_TextUI_ResultPrinter $resultPrinter
-     */
-    public function setPrinter(PHPUnit_TextUI_ResultPrinter $resultPrinter)
-    {
-        $this->printer = $resultPrinter;
-    }
-
-    /**
-     * Returns the loader to be used.
-     *
-     * @return PHPUnit_Runner_TestSuiteLoader
-     *
-     * @since  Method available since Release 2.2.0
-     */
-    public function getLoader()
-    {
-        if ($this->loader === null) {
-            $this->loader = new PHPUnit_Runner_StandardTestSuiteLoader;
+        foreach ($blacklist->getBlacklistedDirectories() as $directory) {
+            $filter->addDirectoryToBlacklist($directory);
         }
 
-        return $this->loader;
-    }
-
-    /**
-     * Override to define how to handle a failed loading of
-     * a test suite.
-     *
-     * @param string $message
-     */
-    protected function runFailed($message)
-    {
-        $this->write($message . PHP_EOL);
-        exit(self::FAILURE_EXIT);
+        return $filter;
     }
 }

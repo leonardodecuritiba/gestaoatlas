@@ -24,6 +24,16 @@ abstract class PHPUnit_Runner_BaseTestRunner
     const SUITE_METHODNAME  = 'suite';
 
     /**
+     * Returns the loader to be used.
+     *
+     * @return PHPUnit_Runner_TestSuiteLoader
+     */
+    public function getLoader()
+    {
+        return new PHPUnit_Runner_StandardTestSuiteLoader;
+    }
+
+    /**
      * Returns the Test corresponding to the given suite.
      * This is a template method, subclasses override
      * the runFailed() and clearStatus() methods.
@@ -114,13 +124,10 @@ abstract class PHPUnit_Runner_BaseTestRunner
     }
 
     /**
-     * Returns the loader to be used.
-     *
-     * @return PHPUnit_Runner_TestSuiteLoader
+     * Clears the status message.
      */
-    public function getLoader()
+    protected function clearStatus()
     {
-        return new PHPUnit_Runner_StandardTestSuiteLoader;
     }
 
     /**
@@ -130,11 +137,4 @@ abstract class PHPUnit_Runner_BaseTestRunner
      * @param string $message
      */
     abstract protected function runFailed($message);
-
-    /**
-     * Clears the status message.
-     */
-    protected function clearStatus()
-    {
-    }
 }

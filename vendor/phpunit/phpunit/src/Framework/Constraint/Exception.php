@@ -28,19 +28,6 @@ class PHPUnit_Framework_Constraint_Exception extends PHPUnit_Framework_Constrain
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return sprintf(
-            'exception of type "%s"',
-            $this->className
-        );
-    }
-
-    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -82,6 +69,19 @@ class PHPUnit_Framework_Constraint_Exception extends PHPUnit_Framework_Constrain
 
         return sprintf(
             'exception of type "%s" is thrown',
+            $this->className
+        );
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return sprintf(
+            'exception of type "%s"',
             $this->className
         );
     }

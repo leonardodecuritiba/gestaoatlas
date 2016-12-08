@@ -7,6 +7,10 @@ class Singleton
     {
     }
 
+    final private function __clone()
+    {
+    }
+
     public static function getInstance()
     {
         if (self::$uniqueInstance === null) {
@@ -14,9 +18,5 @@ class Singleton
         }
 
         return self::$uniqueInstance;
-    }
-
-    final private function __clone()
-    {
     }
 }

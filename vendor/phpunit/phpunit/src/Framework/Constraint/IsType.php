@@ -79,19 +79,6 @@ class PHPUnit_Framework_Constraint_IsType extends PHPUnit_Framework_Constraint
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return sprintf(
-            'is of type "%s"',
-            $this->type
-        );
-    }
-
-    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -139,5 +126,18 @@ class PHPUnit_Framework_Constraint_IsType extends PHPUnit_Framework_Constraint
             case 'callable':
                 return is_callable($other);
         }
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return sprintf(
+            'is of type "%s"',
+            $this->type
+        );
     }
 }

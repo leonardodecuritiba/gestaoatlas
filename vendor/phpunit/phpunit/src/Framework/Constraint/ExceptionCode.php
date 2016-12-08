@@ -28,14 +28,6 @@ class PHPUnit_Framework_Constraint_ExceptionCode extends PHPUnit_Framework_Const
     }
 
     /**
-     * @return string
-     */
-    public function toString()
-    {
-        return 'exception code is ';
-    }
-
-    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -65,5 +57,13 @@ class PHPUnit_Framework_Constraint_ExceptionCode extends PHPUnit_Framework_Const
             $this->exporter->export($other->getCode()),
             $this->exporter->export($this->expectedCode)
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function toString()
+    {
+        return 'exception code is ';
     }
 }

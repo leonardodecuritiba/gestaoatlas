@@ -158,6 +158,26 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
     }
 
     /**
+     * Returns the name of the test case.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->toString();
+    }
+
+    /**
+     * Returns a string representation of the test case.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return $this->filename;
+    }
+
+    /**
      * @return array
      *
      * @throws PHPUnit_Framework_Exception
@@ -217,25 +237,5 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
     protected function parseIniSection($content)
     {
         return preg_split('/\n|\r/', $content, -1, PREG_SPLIT_NO_EMPTY);
-    }
-
-    /**
-     * Returns the name of the test case.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->toString();
-    }
-
-    /**
-     * Returns a string representation of the test case.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return $this->filename;
     }
 }

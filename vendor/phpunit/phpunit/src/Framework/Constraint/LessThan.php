@@ -31,16 +31,6 @@ class PHPUnit_Framework_Constraint_LessThan extends PHPUnit_Framework_Constraint
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'is less than ' . $this->exporter->export($this->value);
-    }
-
-    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -51,5 +41,15 @@ class PHPUnit_Framework_Constraint_LessThan extends PHPUnit_Framework_Constraint
     protected function matches($other)
     {
         return $this->value > $other;
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'is less than ' . $this->exporter->export($this->value);
     }
 }

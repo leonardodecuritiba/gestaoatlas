@@ -28,14 +28,6 @@ class PHPUnit_Framework_Constraint_ExceptionMessage extends PHPUnit_Framework_Co
     }
 
     /**
-     * @return string
-     */
-    public function toString()
-    {
-        return 'exception message contains ';
-    }
-
-    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -65,5 +57,13 @@ class PHPUnit_Framework_Constraint_ExceptionMessage extends PHPUnit_Framework_Co
             $other->getMessage(),
             $this->expectedMessage
         );
+    }
+
+    /**
+     * @return string
+     */
+    public function toString()
+    {
+        return 'exception message contains ';
     }
 }

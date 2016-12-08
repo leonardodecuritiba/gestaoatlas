@@ -92,22 +92,6 @@ class PHPUnit_Framework_Constraint_IsIdentical extends PHPUnit_Framework_Constra
     }
 
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        if (is_object($this->value)) {
-            return 'is identical to an object of class "' .
-            get_class($this->value) . '"';
-        } else {
-            return 'is identical to ' .
-            $this->exporter->export($this->value);
-        }
-    }
-
-    /**
      * Returns the description of the failure
      *
      * The beginning of failure messages is "Failed asserting that" in most
@@ -128,5 +112,21 @@ class PHPUnit_Framework_Constraint_IsIdentical extends PHPUnit_Framework_Constra
         }
 
         return parent::failureDescription($other);
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        if (is_object($this->value)) {
+            return 'is identical to an object of class "' .
+                   get_class($this->value) . '"';
+        } else {
+            return 'is identical to ' .
+                   $this->exporter->export($this->value);
+        }
     }
 }

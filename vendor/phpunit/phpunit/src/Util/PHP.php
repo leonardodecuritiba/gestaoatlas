@@ -65,6 +65,24 @@ abstract class PHPUnit_Util_PHP
     abstract public function runJob($job, array $settings = array());
 
     /**
+     * @param array $settings
+     *
+     * @return string
+     *
+     * @since Method available since Release 4.0.0
+     */
+    protected function settingsToParameters(array $settings)
+    {
+        $buffer = '';
+
+        foreach ($settings as $setting) {
+            $buffer .= ' -d ' . $setting;
+        }
+
+        return $buffer;
+    }
+
+    /**
      * Processes the TestResult object from an isolated process.
      *
      * @param PHPUnit_Framework_Test       $test
@@ -205,23 +223,5 @@ abstract class PHPUnit_Util_PHP
         }
 
         return $exception;
-    }
-
-    /**
-     * @param array $settings
-     *
-     * @return string
-     *
-     * @since Method available since Release 4.0.0
-     */
-    protected function settingsToParameters(array $settings)
-    {
-        $buffer = '';
-
-        foreach ($settings as $setting) {
-            $buffer .= ' -d ' . $setting;
-        }
-
-        return $buffer;
     }
 }

@@ -16,17 +16,19 @@
 class PHPUnit_Framework_TestFailure
 {
     /**
+     * @var string
+     */
+    private $testName;
+
+    /**
      * @var PHPUnit_Framework_Test|null
      */
     protected $failedTest;
+
     /**
      * @var Exception
      */
     protected $thrownException;
-    /**
-     * @var string
-     */
-    private $testName;
 
     /**
      * Constructs a TestFailure with the given test and exception.
@@ -133,16 +135,6 @@ class PHPUnit_Framework_TestFailure
     }
 
     /**
-     * Returns the exception's message.
-     *
-     * @return string
-     */
-    public function exceptionMessage()
-    {
-        return $this->thrownException()->getMessage();
-    }
-
-    /**
      * Gets the thrown exception.
      *
      * @return Exception
@@ -150,6 +142,16 @@ class PHPUnit_Framework_TestFailure
     public function thrownException()
     {
         return $this->thrownException;
+    }
+
+    /**
+     * Returns the exception's message.
+     *
+     * @return string
+     */
+    public function exceptionMessage()
+    {
+        return $this->thrownException()->getMessage();
     }
 
     /**

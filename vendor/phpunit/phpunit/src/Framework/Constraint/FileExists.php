@@ -18,16 +18,6 @@
 class PHPUnit_Framework_Constraint_FileExists extends PHPUnit_Framework_Constraint
 {
     /**
-     * Returns a string representation of the constraint.
-     *
-     * @return string
-     */
-    public function toString()
-    {
-        return 'file exists';
-    }
-
-    /**
      * Evaluates the constraint for parameter $other. Returns true if the
      * constraint is met, false otherwise.
      *
@@ -56,5 +46,15 @@ class PHPUnit_Framework_Constraint_FileExists extends PHPUnit_Framework_Constrai
             'file "%s" exists',
             $other
         );
+    }
+
+    /**
+     * Returns a string representation of the constraint.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        return 'file exists';
     }
 }

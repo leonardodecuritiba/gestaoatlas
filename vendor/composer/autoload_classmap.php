@@ -2812,6 +2812,7 @@ return array(
     'SuperClosure\\Analyzer\\Visitor\\MagicConstantVisitor' => $vendorDir . '/jeremeamia/SuperClosure/src/Analyzer/Visitor/MagicConstantVisitor.php',
     'SuperClosure\\Analyzer\\Visitor\\ThisDetectorVisitor' => $vendorDir . '/jeremeamia/SuperClosure/src/Analyzer/Visitor/ThisDetectorVisitor.php',
     'SuperClosure\\Exception\\ClosureAnalysisException' => $vendorDir . '/jeremeamia/SuperClosure/src/Exception/ClosureAnalysisException.php',
+    'SuperClosure\\Exception\\ClosureSerializationException' => $vendorDir . '/jeremeamia/SuperClosure/src/Exception/ClosureSerializationException.php',
     'SuperClosure\\Exception\\ClosureUnserializationException' => $vendorDir . '/jeremeamia/SuperClosure/src/Exception/ClosureUnserializationException.php',
     'SuperClosure\\Exception\\SuperClosureException' => $vendorDir . '/jeremeamia/SuperClosure/src/Exception/SuperClosureException.php',
     'SuperClosure\\SerializableClosure' => $vendorDir . '/jeremeamia/SuperClosure/src/SerializableClosure.php',
