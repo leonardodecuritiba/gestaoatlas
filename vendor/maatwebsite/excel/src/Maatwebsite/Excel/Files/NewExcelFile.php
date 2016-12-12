@@ -16,6 +16,23 @@ abstract class NewExcelFile extends File {
     }
 
     /**
+     * Get file
+     * @return string
+     */
+    abstract public function getFilename();
+
+    /**
+     * Start importing
+     */
+    public function handleExport()
+    {
+        return $this->handle( 
+            get_class($this) 
+        );
+    }
+
+
+    /**
      * Load the file
      * @return \Maatwebsite\Excel\Readers\LaravelExcelReader
      */
@@ -27,22 +44,6 @@ abstract class NewExcelFile extends File {
         );
 
         return $file;
-    }
-
-    /**
-     * Get file
-     * @return string
-     */
-    abstract public function getFilename();
-
-    /**
-     * Start importing
-     */
-    public function handleExport()
-    {
-        return $this->handle(
-            get_class($this)
-        );
     }
 
     /**

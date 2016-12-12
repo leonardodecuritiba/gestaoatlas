@@ -117,6 +117,7 @@ class ColaboradoresController extends Controller
 
             //store USER
             $data['remember_token'] = str_random(60);
+            $data['password'] = bcrypt('123');
             $User = User::create($data);
             $User->attachRole($role);
             $data['iduser'] = $User->iduser;

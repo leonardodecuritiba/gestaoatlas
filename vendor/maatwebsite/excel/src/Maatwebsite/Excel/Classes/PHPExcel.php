@@ -1,7 +1,6 @@
 <?php namespace Maatwebsite\Excel\Classes;
 
 use PHPExcel as PHPOffice_PHPExcel;
-use Illuminate\Support\Facades\Config;
 
 /**
  *
@@ -64,15 +63,6 @@ class PHPExcel extends PHPOffice_PHPExcel {
     }
 
     /**
-     * Return all allowed properties
-     * @return array
-     */
-    public function getAllowedProperties()
-    {
-        return $this->allowedProperties;
-    }
-
-    /**
      * Set default properties
      * @param array $custom
      * @return  void
@@ -89,7 +79,7 @@ class PHPExcel extends PHPOffice_PHPExcel {
             $method = 'set' . ucfirst($prop);
 
             // get the value
-            $value = in_array($prop, array_keys($custom)) ? $custom[$prop] : Config::get('excel.properties.' . $prop, null);
+            $value = in_array($prop, array_keys($custom)) ? $custom[$prop] : config('excel.properties.' . $prop, null);
 
             // set the property
             call_user_func_array(array($properties, $method), array($value));
@@ -120,5 +110,14 @@ class PHPExcel extends PHPOffice_PHPExcel {
         }
 
         return $this;
+    }
+
+    /**
+     * Return all allowed properties
+     * @return array
+     */
+    public function getAllowedProperties()
+    {
+        return $this->allowedProperties;
     }
 }

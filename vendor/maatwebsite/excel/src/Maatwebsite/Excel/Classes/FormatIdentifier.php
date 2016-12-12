@@ -56,16 +56,6 @@ class FormatIdentifier {
     }
 
     /**
-     * Get the file extension
-     * @param  string $file
-     * @return string
-     */
-    protected function getExtension($file)
-    {
-        return strtolower($this->filesystem->extension($file));
-    }
-
-    /**
      * Identify file format
      * @param $ext
      * @return  string $format
@@ -166,54 +156,6 @@ class FormatIdentifier {
     }
 
     /**
-     * Check if we can read the file
-     * @param $format
-     * @param $file
-     * @return boolean
-     */
-    protected function canRead($format, $file)
-    {
-        if ($format) {
-            $reader = $this->initReader($format);
-
-            return $reader && $reader->canRead($file);
-        }
-
-        return false;
-    }
-
-    /**
-     * Init the reader based on the format
-     * @param  string $format
-     * @return \PHPExcel_Reader_IReader
-     */
-    protected function initReader($format)
-    {
-        return PHPExcel_IOFactory::createReader($format);
-    }
-
-    /**
-     * Try every reader we have
-     * @param        $file
-     * @param bool $wrongFormat
-     * @param string $ext
-     * @throws LaravelExcelException
-     * @return string $format
-     */
-    protected function lastResort($file, $wrongFormat = false, $ext = 'xls')
-    {
-        // Loop through all available formats
-        foreach ($this->formats as $format) {
-            // Check if the file could be read
-            if ($wrongFormat != $format && $this->canRead($format, $file))
-                return $format;
-        }
-
-        // Give up searching and throw an exception
-        throw new LaravelExcelException('[ERROR] Reader could not identify file format for file [' . $file . '] with extension [' . $ext . ']');
-    }
-
-    /**
      * Get the content type by file format
      * @param  string $format
      * @return string $contentType
@@ -268,5 +210,65 @@ class FormatIdentifier {
                  return'application/pdf; charset=UTF-8';
                  break;
         }
+    }
+
+    /**
+     * Try every reader we have
+     * @param        $file
+     * @param bool   $wrongFormat
+     * @param string $ext
+     * @throws LaravelExcelException
+     * @return string $format
+     */
+    protected function lastResort($file, $wrongFormat = false, $ext = 'xls')
+    {
+        // Loop through all available formats
+        foreach ($this->formats as $format)
+        {
+            // Check if the file could be read
+            if ($wrongFormat != $format && $this->canRead($format, $file))
+                return $format;
+        }
+
+        // Give up searching and throw an exception
+        throw new LaravelExcelException('[ERROR] Reader could not identify file format for file [' . $file . '] with extension [' . $ext . ']');
+    }
+
+    /**
+     * Check if we can read the file
+     * @param $format
+     * @param $file
+     * @return boolean
+     */
+    protected function canRead($format, $file)
+    {
+        if ($format)
+        {
+            $reader = $this->initReader($format);
+
+            return $reader && $reader->canRead($file);
+        }
+
+        return false;
+    }
+
+    /**
+     * Init the reader based on the format
+     * @param  string $format
+     * @return \PHPExcel_Reader_IReader
+     */
+    protected function initReader($format)
+    {
+        return PHPExcel_IOFactory::createReader($format);
+    }
+
+    /**
+     * Get the file extension
+     * @param  string $file
+     * @return string
+     */
+    protected function getExtension($file)
+    {
+        return strtolower($this->filesystem->extension($file));
     }
 }

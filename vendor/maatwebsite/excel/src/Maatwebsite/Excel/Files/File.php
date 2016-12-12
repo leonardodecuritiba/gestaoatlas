@@ -62,6 +62,15 @@ abstract class File {
     }
 
     /**
+     * Get the file instance
+     * @return mixed
+     */
+    public function getFileInstance()
+    {
+        return $this->file;
+    }
+
+    /**
      * Get the handler class name
      * @throws LaravelExcelException
      * @return string
@@ -77,14 +86,5 @@ abstract class File {
             throw new LaravelExcelException("$type handler [$handler] does not exist.");
 
         return $handler;
-    }
-
-    /**
-     * Get the file instance
-     * @return mixed
-     */
-    public function getFileInstance()
-    {
-        return $this->file;
     }
 }

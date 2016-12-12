@@ -32,6 +32,49 @@ abstract class ExcelFile extends File {
     }
 
     /**
+     * Get file
+     * @return string
+     */
+    abstract public function getFile();
+
+    /**
+     * Get delimiter
+     * @return string
+     */
+    protected function getDelimiter()
+    {
+        return $this->delimiter;
+    }
+
+    /**
+     * Get enclosure
+     * @return string
+     */
+    protected function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    /**
+     * Get filters
+     * @return array
+     */
+    public function getFilters()
+    {
+        return [];
+    }
+
+    /**
+     * Start importing
+     */
+    public function handleImport()
+    {
+        return $this->handle(
+            get_class($this)
+        );
+    }
+
+    /**
      * Load the file
      * @return \Maatwebsite\Excel\Readers\LaravelExcelReader
      */
@@ -73,15 +116,6 @@ abstract class ExcelFile extends File {
     }
 
     /**
-     * Get filters
-     * @return array
-     */
-    public function getFilters()
-    {
-        return [];
-    }
-
-    /**
      * Load base settings
      */
     protected function loadBaseSettings()
@@ -107,40 +141,6 @@ abstract class ExcelFile extends File {
         // Set it when given
         if($enclosure)
             $this->excel->setEnclosure($enclosure);
-    }
-
-    /**
-     * Get delimiter
-     * @return string
-     */
-    protected function getDelimiter()
-    {
-        return $this->delimiter;
-    }
-
-    /**
-     * Get enclosure
-     * @return string
-     */
-    protected function getEnclosure()
-    {
-        return $this->enclosure;
-    }
-
-    /**
-     * Get file
-     * @return string
-     */
-    abstract public function getFile();
-
-    /**
-     * Start importing
-     */
-    public function handleImport()
-    {
-        return $this->handle(
-            get_class($this)
-        );
     }
 
     /**
