@@ -22,6 +22,9 @@
     @if($Colaborador->hasRole('tecnico'))
         @include('pages.colaboradores.modal.selolacre')
     @endif
+    @if($Colaborador->isSelf())
+        @include('pages.colaboradores.modal.pwd')
+    @endif
     <?php $existe_entidade = 1; $Entidade=$Colaborador; ?>
     <div class="x_panel">
         <div class="x_title">

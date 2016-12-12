@@ -205,6 +205,24 @@ class ColaboradoresController extends Controller
 
     }
 
+    public function upd_pass(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), ['password' => 'required|confirmed|min:6|max:20']);
+        if ($validator->fails()) {
+            return redirect()->to($this->getRedirectUrl())
+                ->withErrors($validator)
+                ->withInput($request->all());
+        } else {
+            $Colaborador = Colaborador::find($id);
+            $Colaborador->user->update([
+                'password' => bcrypt($request->get('password'))
+            ]);
+            session()->forget('mensagem');
+            session(['mensagem' => $this->Page->Target . ' atualizado com sucesso!']);
+            return redirect()->route('colaboradores.show', ['idcolaborador' => $Colaborador->idcolaborador]);
+        }
+    }
+
     public function update(Request $request, $id)
     {
         //colaborador

@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('servicos', 'ServicosController');
 
     Route::resource('colaboradores', 'ColaboradoresController');
+    Route::post('pwd/{colaborador}/colaboradores', 'ColaboradoresController@upd_pass')->name('colaboradores.upd_pass');
         Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
 
     //    Route::get('/', 'AdminController@welcome');

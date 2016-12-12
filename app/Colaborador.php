@@ -6,6 +6,7 @@ use App\Helpers\DataHelper;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Colaborador extends Model
 {
@@ -90,11 +91,15 @@ class Colaborador extends Model
         return $this->user->hasRole($tipo);
     }
 
-    public function hasAvisosClientes()
+    public function hasAvisosClientes($tipo)
     {
         return $this->user->hasRole($tipo);
     }
 
+    public function isSelf()
+    {
+        return (Auth::user()->colaborador->idcolaborador == $this->attributes['idcolaborador']) ? 1 : 0;
+    }
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
 

@@ -18,4 +18,9 @@
         <i class="fa fa-calendar-o user-profile-icon"></i>
         <a href="#">{{$Colaborador->created_at}}</a>
     </li>
+    @if($Colaborador->isSelf())
+        <li class="m-top-xs">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalPWD">Atualizar Senha</button>
+        </li>
+    @endif
 </ul>

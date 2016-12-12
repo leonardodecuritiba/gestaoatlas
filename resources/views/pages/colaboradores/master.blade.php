@@ -2,6 +2,9 @@
 @section('page_content')
     {{--@include('admin.master.forms.search')--}}
     <!-- mascaras -->
+    {{--@if(Auth::user()->colaborador)--}}
+    {{--        @include('pages.colaboradores.modal.pwd')--}}
+    {{--@endif--}}
     <?php $existe_entidade = 0; ?>
     <div class="">
         <div class="page-title">
