@@ -48,22 +48,13 @@ class ClientesController extends Controller
 
     public function index(Request $request)
     {
-//        print_r(Auth::user());
-//        return $this->empresa_id;
-        /**/
-//        $titulo = "Busca de ";
-//        if(isset($request['busca'])){
-//            $busca = $request['busca'];
-//            $Buscas = Cliente::where('responsavel', 'like', '%'.$busca.'%')
-//                ->orwhere('cpf', 'like', '%'.$busca.'%')
-//                ->orwhere('rg', 'like', '%'.$busca.'%')
-//                ->orwhere('email', 'like', '%'.$busca.'%')
-//                ->paginate(1);
-//        } else {
-//            $Buscas = Cliente::paginate(10);
-//        }
+        if (isset($request['busca'])) {
+            $busca = $request['busca'];
+            $Buscas = Cliente::getAll($busca)->paginate(10);
+        } else {
+            $Buscas = Cliente::paginate(10);
+        }
 
-        $Buscas = Cliente::paginate(10);
         return view('pages.'.$this->Page->link.'.index')
             ->with('Page', $this->Page)
             ->with('Buscas',$Buscas);

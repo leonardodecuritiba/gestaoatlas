@@ -46,6 +46,13 @@ class Cliente extends Model
         return self::whereNotNull('idcolaborador_validador')->whereNotNull('validated_at');
     }
 
+    static public function getAll($search)
+    {
+        $pessoa_juridica_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
+            ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
+        return self::whereIn('idpjuridica', $pessoa_juridica_ids);
+    }
+
     public function custo_deslocamento()
     {
         return DataHelper::getFloat2Real($this->attributes['distancia'] * DataHelper::getReal2Float(Ajuste::getByMetaKey('custo_km')->meta_value));
@@ -86,6 +93,7 @@ class Cliente extends Model
     {
         return ($this->attributes['idpjuridica'] != NULL);
     }
+
     public function getType()
     {
         if ($this->attributes['idpjuridica'] != NULL) {
