@@ -52,8 +52,8 @@ class CreateClientesTable extends Migration
             $table->decimal('limite_credito',11,2);
 
             $table->decimal('distancia',11,2); //em km
-            $table->decimal('pedagios',11,2); //em R$
-            $table->decimal('outros_custos',11,2); //em R$
+            $table->decimal('pedagios', 11, 2)->default(0); //em R$
+            $table->decimal('outros_custos', 11, 2)->default(0); //em R$
             $table->string('nome_responsavel',100)->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -106,11 +106,14 @@
                             </div>
                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Custo em Pedágios (R$)<span class="required">*</span></label>
                             <div class="col-md-2 col-sm-2 col-xs-12">
-                                <input value="{{$Cliente->pedagios}}" type="text" class="form-control show-dinheiro" name="pedagios" placeholder="Custo Pedágios" required>
+                                <input value="{{$Cliente->pedagios}}" type="text" class="form-control show-dinheiro"
+                                       name="pedagios" placeholder="Custo Pedágios">
                             </div>
                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Outros Custos (R$)<span class="required">*</span></label>
                             <div class="col-md-2 col-sm-2 col-xs-12">
-                                <input value="{{$Cliente->outros_custos}}" type="text" class="form-control show-dinheiro" name="outros_custos" placeholder="Outros Custos" required>
+                                <input value="{{$Cliente->outros_custos}}" type="text"
+                                       class="form-control show-dinheiro" name="outros_custos"
+                                       placeholder="Outros Custos">
                             </div>
                         </div>
                     </div>
