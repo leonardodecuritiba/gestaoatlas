@@ -73,12 +73,12 @@ class Peca extends Model
 
     public function getFoto()
     {
-        return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/'.$this->foto):asset('imgs/cogs.png');
+        return ($this->foto != '') ? asset('uploads/' . $this->table . '/' . $this->foto) : asset('imgs/cogs.png');
     }
 
     public function getFotoThumb()
     {
-        return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/thumb_'.$this->foto):asset('imgs/cogs.png');
+        return ($this->foto != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->foto) : asset('imgs/cogs.png');
     }
 
     public function setTipoAttribute($value)

@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Instrumento extends Model
 {
+    public $timestamps = true;
     protected $table = 'instrumentos';
     protected $primaryKey = 'idinstrumento';
-    public $timestamps = true;
     protected $fillable = [
         'idcliente',
         'idmarca',
@@ -36,45 +36,52 @@ class Instrumento extends Model
         return ($this->aparelho_manutencao()->count() > 0);
     }
 
-    public function has_selo_instrumentos()
+    public function aparelho_manutencao()
     {
-        return ($this->selo_instrumentos()->count() > 0);
+        return $this->hasMany('App\AparelhoManutencao', 'idequipamento');
     }
 
     public function has_lacres_instrumentos()
     {
         return ($this->lacres_instrumentos()->count() > 0);
     }
+
+    public function lacres_instrumentos()
+    {
+        return $this->hasMany('App\LacreInstrumento', 'idinstrumento', 'idinstrumento');
+    }
+
     public function getFoto()
     {
-        return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/'.$this->foto):asset('imgs/cogs.png');
-    }
-    public function getFotoThumb()
-    {
-        return ($this->foto!='')?asset('../storage/uploads/'.$this->table.'/thumb_'.$this->foto):asset('imgs/cogs.png');
+        return ($this->foto != '') ? asset('uploads/' . $this->table . '/' . $this->foto) : asset('imgs/cogs.png');
     }
 
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
+
+    public function getFotoThumb()
+    {
+        return ($this->foto != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->foto) : asset('imgs/cogs.png');
+    }
+
     public function marca()
     {
         return $this->belongsTo('App\Marca', 'idmarca');
     }
+
+    // ************************** HASMANY **********************************
+
     public function cliente()
     {
         return $this->belongsTo('App\Cliente', 'idcliente');
     }
 
-    // ************************** HASMANY **********************************
-    public function aparelho_manutencao()
+    public function selo_afixado_numeracao()
     {
-        return $this->hasMany('App\AparelhoManutencao', 'idequipamento');
+        $selo = $this->selo_afixado();
+        return ($selo != NULL) ? $selo->numeracao : $selo;
     }
 
-    public function selo_instrumentos()
-    {
-        return $this->hasMany('App\SeloInstrumento', 'idinstrumento', 'idinstrumento');
-    }
     public function selo_afixado()
     {
         if($this->has_selo_instrumentos()){
@@ -84,17 +91,17 @@ class Instrumento extends Model
             return NULL;
         }
     }
-    public function selo_afixado_numeracao()
+
+    public function has_selo_instrumentos()
     {
-        $selo = $this->selo_afixado();
-        return ($selo != NULL)?$selo->numeracao:$selo;
+        return ($this->selo_instrumentos()->count() > 0);
     }
 
-
-    public function lacres_instrumentos()
+    public function selo_instrumentos()
     {
-        return $this->hasMany('App\LacreInstrumento', 'idinstrumento', 'idinstrumento');
+        return $this->hasMany('App\SeloInstrumento', 'idinstrumento', 'idinstrumento');
     }
+
     public function lacres_afixados()
     {
         return $this->hasMany('App\LacreInstrumento', 'idinstrumento', 'idinstrumento')

@@ -320,7 +320,7 @@ class OrdemServicoController extends Controller
                 'Fone: ' . $atlas['fone'] . '\n' .
                 'E-mail: ' . $atlas['email'] . '\n',
             'dados' => $atlas,
-            'logo' => storage_path('uploads\institucional\logo_atlas.png'),
+            'logo' => public_path('uploads/institucional/logo_atlas.png'),
         );
         $aviso_txt = ['ASSINATURA: CLIENTE CONFIRMA A EXECUÇÃO DOS SERVIÇOS E TROCA DE PEÇAS ACIMA SITADOS, E TAMBEM APROVA OS PREÇOS COBRADOS. INSTRUMENTOS - EQUIPAMANTOS DEIXADOS POR CLIENTES NA EMPRESA: O CLIENTE AUTORIZA PREVIA E EXPRESSAMANTE UMA VEZ QUE ORÇAMANTOS NÃO FOREM APROVADOS A NÃO RETIRADA DOS INSTRUMENTOS - EQUIPAMANTOS NO PRAZO DE 90 DIAS DA ASSINATURA DESSA ORDEM OS MESMOS SERÃO DESCARTADOS PARA LIXO OU SUCATA.'];
 
@@ -407,7 +407,8 @@ class OrdemServicoController extends Controller
             'fonts' => $font
         ];
 
-        Excel::create('Filename', function ($excel) use ($data) {
+        $now = Carbon::now()->format('H-i_d-m-Y');
+        Excel::create('OrdemServico_' . $now, function ($excel) use ($data) {
 
 //            dd($data['empresa']['cabecalho']);
             $excel->sheet('Sheetname', function ($sheet) use ($data) {

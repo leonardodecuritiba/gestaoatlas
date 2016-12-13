@@ -19,8 +19,8 @@ class Tecnico extends Model
     public function getDocumentos()
     {
         return json_encode([
-            'Carteira do IMETRO' => ($this->carteira_imetro != '') ? asset('../storage/uploads/' . $this->table . '/' . $this->carteira_imetro) : asset('imgs/documents.png'),
-            'Carteira do IPEM' => ($this->carteira_ipem != '') ? asset('../storage/uploads/' . $this->table . '/' . $this->carteira_ipem) : asset('imgs/documents.png')
+            'Carteira do IMETRO' => ($this->carteira_imetro != '') ? asset('uploads/' . $this->table . '/' . $this->carteira_imetro) : asset('imgs/documents.png'),
+            'Carteira do IPEM' => ($this->carteira_ipem != '') ? asset('uploads/' . $this->table . '/' . $this->carteira_ipem) : asset('imgs/documents.png')
         ]);
     }
 

@@ -22,9 +22,9 @@
     @if($Colaborador->hasRole('tecnico'))
         @include('pages.colaboradores.modal.selolacre')
     @endif
-    @if($Colaborador->isSelf())
+    @role('admin')
         @include('pages.colaboradores.modal.pwd')
-    @endif
+    @endrole
     <?php $existe_entidade = 1; $Entidade=$Colaborador; ?>
     <div class="x_panel">
         <div class="x_title">
@@ -69,8 +69,6 @@
     <!-- form validation -->
     {!! Html::script('js/parsley/parsley.min.js') !!}
     <!-- textarea resize -->
-
-
     <script>
         list_required_tecnico = [
             'carteira_imetro',

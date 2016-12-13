@@ -33,7 +33,7 @@ class Equipamento extends Model
 
     public function getFoto()
     {
-        return ($this->attributes['foto'] != '') ? asset('../storage/uploads/' . $this->table . '/' . $this->attributes['foto']) : asset('imgs/cogs.png');
+        return ($this->attributes['foto'] != '') ? asset('uploads/' . $this->table . '/' . $this->attributes['foto']) : asset('imgs/cogs.png');
     }
 
     // ******************** RELASHIONSHIP ******************************
@@ -41,7 +41,7 @@ class Equipamento extends Model
 
     public function getFotoThumb()
     {
-        return ($this->attributes['foto'] != '') ? asset('../storage/uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/cogs.png');
+        return ($this->attributes['foto'] != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/cogs.png');
     }
 
     public function marca()

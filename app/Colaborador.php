@@ -61,7 +61,7 @@ class Colaborador extends Model
     public function getDocumentos()
     {
         return json_encode([
-            'CNH' => ($this->attributes['cnh'] != '') ? storage_path('/uploads/' . $this->table . '/' . $this->attributes['cnh']) : asset('imgs/documents.png'),
+            'CNH' => ($this->attributes['cnh'] != '') ? asset('uploads/' . $this->table . '/' . $this->attributes['cnh']) : asset('imgs/documents.png'),
             'Carteira de Trabalho' => ($this->attributes['carteira_trabalho'] != '') ? storage_path('/uploads/' . $this->table . '/' . $this->attributes['carteira_trabalho']) : asset('imgs/documents.png')
         ]);
     }

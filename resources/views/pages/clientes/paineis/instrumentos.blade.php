@@ -235,33 +235,37 @@
         console.log($dados);
 
         $selo = $(this).data('selo-afixado');
-        console.log($selo);
-        $($novo_instrumento_container).find('div#selos-container').find('tbody').empty();
-        $($novo_instrumento_container).find('div#selos-container').find('tbody').append(
-            '<tr>' +
-            '<td>' + $selo.afixado_em + '</td>' +
-            '<td>' + $selo.tecnico + '</td>' +
-            '<td>' + $selo.numeracao + '</td>' +
-            '</tr>'
-        );
+        if (($selo != null) && ($selo != "")) {
+            console.log($selo);
+            $($novo_instrumento_container).find('div#selos-container').find('tbody').empty();
+            $($novo_instrumento_container).find('div#selos-container').find('tbody').append(
+                '<tr>' +
+                '<td>' + $selo.afixado_em + '</td>' +
+                '<td>' + $selo.tecnico + '</td>' +
+                '<td>' + $selo.numeracao + '</td>' +
+                '</tr>'
+            );
+        }
 
         $lacres = $(this).data('lacres-afixados');
-        console.log($lacres);
-        $($novo_instrumento_container).find('div#lacres-container').find('tbody').empty();
-        $.each($lacres, function(i,lacre){
-            $($novo_instrumento_container).find('div#lacres-container').find('tbody').append(
+        if (($lacres != null) && ($lacres != "")) {
+            console.log($lacres);
+            $($novo_instrumento_container).find('div#lacres-container').find('tbody').empty();
+            $.each($lacres, function (i, lacre) {
+                $($novo_instrumento_container).find('div#lacres-container').find('tbody').append(
                     '<tr>' +
                     '<td>' + lacre.afixado_em + '</td>' +
                     '<td>' + lacre.tecnico + '</td>' +
                     '<td>' + lacre.numeracao + '</td>' +
                     '</tr>'
-            );
-        });
+                );
+            });
+        }
 
 
         $ACTION_EDIT = "{{route('instrumentos.update',0)}}";
-        console.log( $ACTION_EDIT.replace(0,$dados.idinstrumento));
-        $($novo_instrumento_container).find('form').get(0).setAttribute('action', $ACTION_EDIT.replace(0,$dados.idinstrumento));
+        console.log($ACTION_EDIT.replace('/0', '/' + $dados.idinstrumento));
+        $($novo_instrumento_container).find('form').get(0).setAttribute('action', $ACTION_EDIT.replace('/0', '/' + $dados.idinstrumento));
         $($novo_instrumento_container).find('form').append('<input name="_method" type="hidden" value="PATCH">');
         html_foto = '';
 

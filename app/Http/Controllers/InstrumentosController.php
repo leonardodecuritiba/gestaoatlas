@@ -35,13 +35,6 @@ class InstrumentosController extends Controller
         ];
     }
 
-    public function RedirectCliente($id,$tab='instrumentos')
-    {
-        $ClientesController = new ClientesController();
-        return $ClientesController->show($id,$tab);
-
-    }
-
     public function store(Request $request)
     {
 //        RETURN $request->all();
@@ -84,6 +77,11 @@ class InstrumentosController extends Controller
             session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
             return $this->RedirectCliente($Instrumento->idcliente,'instrumentos');
         }
+    }
+
+    public function RedirectCliente($id, $tab = 'instrumentos')
+    {
+        return redirect()->route('clientes.show', [$id, 'tab' => $tab]);
     }
 
     public function update(Request $request, $id)
