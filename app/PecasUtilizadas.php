@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PecasUtilizadas extends Model
 {
-    use SoftDeletes;
+//    use SoftDeletes;
     public $timestamps = true;
     protected $table = 'pecas_utilizadas';
     protected $primaryKey = 'id';
@@ -16,6 +16,7 @@ class PecasUtilizadas extends Model
         'idaparelho_manutencao',
         'idpeca',
         'valor',
+        'valor_float',
     ];
 
     // ******************** FUNCTIONS ******************************
@@ -34,10 +35,16 @@ class PecasUtilizadas extends Model
 
     public function valor_float()
     {
+        return $this->getValorFloatAttribute();
+    }
+
+    public function getValorFloatAttribute()
+    {
         return $this->attributes['valor'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+
     public function aparelho_manutencao()
     {
         return $this->belongsTo('App\AparelhoManutencao', 'idaparelho_manutencao');

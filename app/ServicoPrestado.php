@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServicoPrestado extends Model
 {
-    use SoftDeletes;
+//    use SoftDeletes;
     public $timestamps = true;
     protected $table = 'servico_prestados';
     protected $primaryKey = 'idservico_prestado';
@@ -16,6 +16,7 @@ class ServicoPrestado extends Model
         'idaparelho_manutencao',
         'idservico',
         'valor',
+        'valor_float',
     ];
 
     // ******************** FUNCTIONS ******************************
@@ -34,10 +35,16 @@ class ServicoPrestado extends Model
 
     public function valor_float()
     {
+        return $this->getValorFloatAttribute();
+    }
+
+    public function getValorFloatAttribute()
+    {
         return $this->attributes['valor'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+
     public function aparelho_manutencao()
     {
         return $this->belongsTo('App\AparelhoManutencao', 'idaparelho_manutencao');

@@ -814,7 +814,6 @@ class OrdemServicoController extends Controller
     public function add_insumos(Request $request, $idordem_servico)
     {
         $idaparelho_manutencao = $request->get('idaparelho_manutencao');
-        $total = 0;
         if ($request->has('idservico_id')) {
             $id = $request->get('idservico_id');
             $valor = $request->get('idservico_valor');
@@ -825,7 +824,7 @@ class OrdemServicoController extends Controller
                     'valor' => $valor[$i],
                 ];
                 ServicoPrestado::create($data);
-                $total += DataHelper::getReal2Float($valor[$i]);
+//                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
         if ($request->has('idpeca_id')) {
@@ -838,7 +837,7 @@ class OrdemServicoController extends Controller
                     'valor' => $valor[$i],
                 ];
                 PecasUtilizadas::create($data);
-                $total += DataHelper::getReal2Float($valor[$i]);
+//                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
         if ($request->has('idkit_id')) {
@@ -851,9 +850,11 @@ class OrdemServicoController extends Controller
                     'valor' => $valor[$i],
                 ];
                 KitsUtilizados::create($data);
-                $total += DataHelper::getReal2Float($valor[$i]);
+//                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
+        $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
+        $total = $AparelhoManutencao->get_total();
 
         //atualizando o valor total da OS
         $OrdemServico = OrdemServico::find($idordem_servico);

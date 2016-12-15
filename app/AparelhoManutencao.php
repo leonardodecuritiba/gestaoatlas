@@ -36,12 +36,27 @@ class AparelhoManutencao extends Model
         return $this->hasMany('App\ServicoPrestado', 'idaparelho_manutencao');
     }
 
+    public function get_total()
+    {
+        $total = 0;
+        $total += $this->pecas_utilizadas->sum('valor_float');
+        $total += $this->servico_prestados->sum('valor_float');
+        $total += $this->kits_utilizados->sum('valor_float');
+
+        return $total;
+    }
+
     public function has_pecas_utilizadas()
     {
         return ($this->pecas_utilizadas()->count() > 0);
     }
 
     public function pecas_utilizadas()
+    {
+        return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
+    }
+
+    public function valor_pecas_utilizadas()
     {
         return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
     }

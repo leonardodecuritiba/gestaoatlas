@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class KitsUtilizados extends Model
 {
-    use SoftDeletes;
+//    use SoftDeletes;
     public $timestamps = true;
     protected $table = 'kits_utilizados';
     protected $primaryKey = 'id';
@@ -16,6 +16,7 @@ class KitsUtilizados extends Model
         'idaparelho_manutencao',
         'idkit',
         'valor',
+        'valor_float',
     ];
 
     // ******************** FUNCTIONS ******************************
@@ -38,10 +39,16 @@ class KitsUtilizados extends Model
 
     public function valor_float()
     {
+        return $this->getValorFloatAttribute();
+    }
+
+    public function getValorFloatAttribute()
+    {
         return $this->attributes['valor'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+
     public function aparelho_manutencao()
     {
         return $this->belongsTo('App\AparelhoManutencao', 'idaparelho_manutencao');
