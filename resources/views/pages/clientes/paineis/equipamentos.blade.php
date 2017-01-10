@@ -52,9 +52,11 @@
                 <div class="col-md-6 col-sm-6 col-xs-12 ">
                     <button type="reset" id="cancel-equipamento" class="btn btn-danger btn-lg btn-block">Cancelar</button>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-12 ">
-                    <button type="submit" class="btn btn-success btn-lg btn-block">Salvar</button>
-                </div>
+                @if(Auth::user()->hasRole('admin') || (!$Cliente->validado()))
+                    <div class="col-md-6 col-sm-6 col-xs-12 ">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Salvar</button>
+                    </div>
+                @endif
             </div>
         </section>
     {{ Form::close() }}
