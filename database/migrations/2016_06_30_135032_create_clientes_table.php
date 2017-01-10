@@ -47,7 +47,7 @@ class CreateClientesTable extends Migration
             $table->timestamp('validated_at')->nullable();
             $table->boolean('centro_custo')->default(0);
             $table->string('email_orcamento',60);
-            $table->string('email_nota',60);
+            $table->string('email_nota', 60)->nullable();
             $table->string('foto',60)->nullable();
             $table->decimal('limite_credito',11,2);
 
