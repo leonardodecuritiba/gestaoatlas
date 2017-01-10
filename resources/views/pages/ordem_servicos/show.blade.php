@@ -205,7 +205,7 @@
                     },
                     cache: true
                 },
-                minimumInputLength: 3,
+                minimumInputLength: 1,
                 language: "pt-BR"
 //                templateResult: formatState
             };
