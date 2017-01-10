@@ -4,12 +4,14 @@ namespace App;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Fornecedor extends Model
 {
+    use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'fornecedores';
     protected $primaryKey = 'idfornecedor';
-    public $timestamps = true;
     protected $fillable = [
         'idcontato',
         'idpjuridica',
@@ -32,6 +34,11 @@ class Fornecedor extends Model
         return $retorno;
     }
 
+    public function contato()
+    {
+        return $this->hasOne('App\Contato', 'idcontato', 'idcontato');
+    }
+
     public function getType()
     {
         if($this->idpjuridica != NULL){
@@ -52,25 +59,24 @@ class Fornecedor extends Model
         return $retorno;
     }
 
+    // ******************** RELASHIONSHIP ******************************
+    // ************************** HAS **********************************
+
+    public function pessoa_juridica()
+    {
+        return $this->hasOne('App\PessoaJuridica', 'idpjuridica', 'idpjuridica');
+    }
+
+    public function pessoa_fisica()
+    {
+        return $this->hasOne('App\PessoaFisica', 'idpfisica', 'idpfisica');
+    }
+
     public function has_peca()
     {
         return ($this->pecas()->count() > 0);
     }
 
-    // ******************** RELASHIONSHIP ******************************
-    // ************************** HAS **********************************
-    public function contato()
-    {
-        return $this->hasOne('App\Contato', 'idcontato', 'idcontato');
-    }
-    public function pessoa_juridica()
-    {
-        return $this->hasOne('App\PessoaJuridica', 'idpjuridica', 'idpjuridica');
-    }
-    public function pessoa_fisica()
-    {
-        return $this->hasOne('App\PessoaFisica', 'idpfisica', 'idpfisica');
-    }
     public function pecas()
     {
         return $this->hasMany('App\Peca', 'idfornecedor');
