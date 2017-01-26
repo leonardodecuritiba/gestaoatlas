@@ -137,23 +137,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     }
 
     /**
-     * Invoked just before a Transport is started.
-     *
-     * @param Swift_Events_TransportChangeEvent $evt
-     */
-    public function beforeTransportStarted(Swift_Events_TransportChangeEvent $evt)
-    {
-        if (isset($this->_transport)) {
-            if ($this->_transport !== $evt->getTransport()) {
-                return;
-            }
-        }
-
-        $this->connect();
-        $this->disconnect();
-    }
-
-    /**
      * Connect to the POP3 host and authenticate.
      *
      * @throws Swift_Plugins_Pop_Pop3Exception if connection fails
@@ -188,50 +171,6 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
         }
     }
 
-    private function _getHostString()
-    {
-        $host = $this->_host;
-        switch (strtolower($this->_crypto)) {
-            case 'ssl':
-                $host = 'ssl://' . $host;
-                break;
-
-            case 'tls':
-                $host = 'tls://' . $host;
-                break;
-        }
-
-        return $host;
-    }
-
-    private function _assertOk($response)
-    {
-        if (substr($response, 0, 3) != '+OK') {
-            throw new Swift_Plugins_Pop_Pop3Exception(
-                sprintf('POP3 command failed [%s]', trim($response))
-            );
-        }
-    }
-
-    private function _command($command)
-    {
-        if (!fwrite($this->_socket, $command)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(
-                sprintf('Failed to write command [%s] to POP3 host', trim($command))
-            );
-        }
-
-        if (false === $response = fgets($this->_socket)) {
-            throw new Swift_Plugins_Pop_Pop3Exception(
-                sprintf('Failed to read from POP3 host after command [%s]', trim($command))
-            );
-        }
-
-        $this->_assertOk($response);
-
-        return $response;
-    }
-
     /**
      * Disconnect from the POP3 host.
      */
@@ -248,6 +187,23 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
             }
             $this->_socket = null;
         }
+    }
+
+    /**
+     * Invoked just before a Transport is started.
+     *
+     * @param Swift_Events_TransportChangeEvent $evt
+     */
+    public function beforeTransportStarted(Swift_Events_TransportChangeEvent $evt)
+    {
+        if (isset($this->_transport)) {
+            if ($this->_transport !== $evt->getTransport()) {
+                return;
+            }
+        }
+
+        $this->connect();
+        $this->disconnect();
     }
 
     /**
@@ -269,5 +225,49 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function transportStopped(Swift_Events_TransportChangeEvent $evt)
     {
+    }
+
+    private function _command($command)
+    {
+        if (!fwrite($this->_socket, $command)) {
+            throw new Swift_Plugins_Pop_Pop3Exception(
+                sprintf('Failed to write command [%s] to POP3 host', trim($command))
+            );
+        }
+
+        if (false === $response = fgets($this->_socket)) {
+            throw new Swift_Plugins_Pop_Pop3Exception(
+                sprintf('Failed to read from POP3 host after command [%s]', trim($command))
+            );
+        }
+
+        $this->_assertOk($response);
+
+        return $response;
+    }
+
+    private function _assertOk($response)
+    {
+        if (substr($response, 0, 3) != '+OK') {
+            throw new Swift_Plugins_Pop_Pop3Exception(
+                sprintf('POP3 command failed [%s]', trim($response))
+            );
+        }
+    }
+
+    private function _getHostString()
+    {
+        $host = $this->_host;
+        switch (strtolower($this->_crypto)) {
+            case 'ssl':
+                $host = 'ssl://'.$host;
+                break;
+
+            case 'tls':
+                $host = 'tls://'.$host;
+                break;
+        }
+
+        return $host;
     }
 }

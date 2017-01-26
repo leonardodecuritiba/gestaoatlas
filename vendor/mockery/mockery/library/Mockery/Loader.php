@@ -39,16 +39,6 @@ class Loader
     }
 
     /**
-     * Gets the namespace seperator used by classes in the namespace of this class loader.
-     *
-     * @return void
-     */
-    public function getNamespaceSeparator()
-    {
-        return $this->_namespaceSeparator;
-    }
-
-    /**
      * Sets the namespace separator used by classes in the namespace of this class loader.
      *
      * @param string $sep The separator to use.
@@ -59,13 +49,13 @@ class Loader
     }
 
     /**
-     * Gets the base include path for all class files in the namespace of this class loader.
+     * Gets the namespace seperator used by classes in the namespace of this class loader.
      *
-     * @return string $includePath
+     * @return void
      */
-    public function getIncludePath()
+    public function getNamespaceSeparator()
     {
-        return $this->_includePath;
+        return $this->_namespaceSeparator;
     }
 
     /**
@@ -79,13 +69,13 @@ class Loader
     }
 
     /**
-     * Gets the file extension of class files in the namespace of this class loader.
+     * Gets the base include path for all class files in the namespace of this class loader.
      *
-     * @return string $fileExtension
+     * @return string $includePath
      */
-    public function getFileExtension()
+    public function getIncludePath()
     {
-        return $this->_fileExtension;
+        return $this->_includePath;
     }
 
     /**
@@ -96,6 +86,16 @@ class Loader
     public function setFileExtension($fileExtension)
     {
         $this->_fileExtension = $fileExtension;
+    }
+
+    /**
+     * Gets the file extension of class files in the namespace of this class loader.
+     *
+     * @return string $fileExtension
+     */
+    public function getFileExtension()
+    {
+        return $this->_fileExtension;
     }
 
     /**

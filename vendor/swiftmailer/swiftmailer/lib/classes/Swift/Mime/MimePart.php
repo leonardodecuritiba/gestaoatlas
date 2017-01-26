@@ -46,25 +46,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     }
 
     /**
-     * Set the character set of this entity.
-     *
-     * @param string $charset
-     *
-     * @return Swift_Mime_MimePart
-     */
-    public function setCharset($charset)
-    {
-        $this->_setHeaderParameter('Content-Type', 'charset', $charset);
-        if ($charset !== $this->_userCharset) {
-            $this->_clearCache();
-        }
-        $this->_userCharset = $charset;
-        parent::charsetChanged($charset);
-
-        return $this;
-    }
-
-    /**
      * Set the body of this entity, either as a string, or as an instance of
      * {@link Swift_OutputByteStream}.
      *
@@ -86,26 +67,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
         return $this;
     }
 
-    /** Encode charset when charset is not utf-8 */
-    protected function _convertString($string)
-    {
-        $charset = strtolower($this->getCharset());
-        if (!in_array($charset, array('utf-8', 'iso-8859-1', 'iso-8859-15', ''))) {
-            // mb_convert_encoding must be the first one to check, since iconv cannot convert some words.
-            if (function_exists('mb_convert_encoding')) {
-                $string = mb_convert_encoding($string, $charset, 'utf-8');
-            } elseif (function_exists('iconv')) {
-                $string = iconv('utf-8//TRANSLIT//IGNORE', $charset, $string);
-            } else {
-                throw new Swift_SwiftException('No suitable convert encoding function (use UTF-8 as your charset or install the mbstring or iconv extension).');
-            }
-
-            return $string;
-        }
-
-        return $string;
-    }
-
     /**
      * Get the character set of this entity.
      *
@@ -114,6 +75,25 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     public function getCharset()
     {
         return $this->_getHeaderParameter('Content-Type', 'charset');
+    }
+
+    /**
+     * Set the character set of this entity.
+     *
+     * @param string $charset
+     *
+     * @return Swift_Mime_MimePart
+     */
+    public function setCharset($charset)
+    {
+        $this->_setHeaderParameter('Content-Type', 'charset', $charset);
+        if ($charset !== $this->_userCharset) {
+            $this->_clearCache();
+        }
+        $this->_userCharset = $charset;
+        parent::charsetChanged($charset);
+
+        return $this;
     }
 
     /**
@@ -127,6 +107,21 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     }
 
     /**
+     * Set the format of this entity (flowed or fixed).
+     *
+     * @param string $format
+     *
+     * @return Swift_Mime_MimePart
+     */
+    public function setFormat($format)
+    {
+        $this->_setHeaderParameter('Content-Type', 'format', $format);
+        $this->_userFormat = $format;
+
+        return $this;
+    }
+
+    /**
      * Test if delsp is being used for this entity.
      *
      * @return bool
@@ -134,6 +129,21 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     public function getDelSp()
     {
         return 'yes' == $this->_getHeaderParameter('Content-Type', 'delsp') ? true : false;
+    }
+
+    /**
+     * Turn delsp on or off for this entity.
+     *
+     * @param bool $delsp
+     *
+     * @return Swift_Mime_MimePart
+     */
+    public function setDelSp($delsp = true)
+    {
+        $this->_setHeaderParameter('Content-Type', 'delsp', $delsp ? 'yes' : null);
+        $this->_userDelSp = $delsp;
+
+        return $this;
     }
 
     /**
@@ -146,12 +156,6 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
     public function getNestingLevel()
     {
         return $this->_nestingLevel;
-    }
-
-    /** Set the nesting level of this entity */
-    protected function _setNestingLevel($level)
-    {
-        $this->_nestingLevel = $level;
     }
 
     /**
@@ -180,33 +184,29 @@ class Swift_Mime_MimePart extends Swift_Mime_SimpleMimeEntity
         }
     }
 
-    /**
-     * Set the format of this entity (flowed or fixed).
-     *
-     * @param string $format
-     *
-     * @return Swift_Mime_MimePart
-     */
-    public function setFormat($format)
+    /** Set the nesting level of this entity */
+    protected function _setNestingLevel($level)
     {
-        $this->_setHeaderParameter('Content-Type', 'format', $format);
-        $this->_userFormat = $format;
-
-        return $this;
+        $this->_nestingLevel = $level;
     }
 
-    /**
-     * Turn delsp on or off for this entity.
-     *
-     * @param bool $delsp
-     *
-     * @return Swift_Mime_MimePart
-     */
-    public function setDelSp($delsp = true)
+    /** Encode charset when charset is not utf-8 */
+    protected function _convertString($string)
     {
-        $this->_setHeaderParameter('Content-Type', 'delsp', $delsp ? 'yes' : null);
-        $this->_userDelSp = $delsp;
+        $charset = strtolower($this->getCharset());
+        if (!in_array($charset, array('utf-8', 'iso-8859-1', 'iso-8859-15', ''))) {
+            // mb_convert_encoding must be the first one to check, since iconv cannot convert some words.
+            if (function_exists('mb_convert_encoding')) {
+                $string = mb_convert_encoding($string, $charset, 'utf-8');
+            } elseif (function_exists('iconv')) {
+                $string = iconv('utf-8//TRANSLIT//IGNORE', $charset, $string);
+            } else {
+                throw new Swift_SwiftException('No suitable convert encoding function (use UTF-8 as your charset or install the mbstring or iconv extension).');
+            }
 
-        return $this;
+            return $string;
+        }
+
+        return $string;
     }
 }

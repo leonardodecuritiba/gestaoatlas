@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Grupo;
 use App\Helpers\DataHelper;
 use App\Servico;
 use App\TabelaPreco;
 use App\TabelaPrecoServico;
+use App\Unidade;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -32,6 +34,7 @@ class ServicosController extends Controller
             'titulo_secundario' => "",
         ];
     }
+
     public function index(Request $request)
     {
         if(isset($request['busca'])){
@@ -52,81 +55,73 @@ class ServicosController extends Controller
         $this->Page->titulo_secundario  = "Dados do ".$this->Page->Target;
         $this->Page->extras = [
             'tabela_preco' => TabelaPreco::all(),
+            'unidades' => Unidade::all(),
+            'grupos' => Grupo::all(),
         ];
         return view('pages.'.$this->Page->link.'.master')
             ->with('Page', $this->Page);
     }
 
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nome'         => 'required|unique:'.$this->Page->table,
-        ]);
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $data = $request->all();
-            $Serviço = Servico::create($data);
-
-            $dados = [
-                'margens' => $request->get('margem'),
-                'margem_minimo' => $request->get('margem_minimo'),
-                'valor' => $request->get('valor'),
-            ];
-            $Tabelas_preco = TabelaPreco::all();
-            $id['idservico'] = $Serviço->idservico;
-
-            TabelaPrecoServico::insert(DataHelper::storePriceTable($id, $dados, $Tabelas_preco));
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->msg_add]);
-            return Redirect::route('servicos.show', $Serviço->idservico);
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        $Serviço = Servico::find($id);
-        $validator = Validator::make($request->all(), [
-            'nome' => 'unique:'.$this->Page->table.',nome,'.$id.','.$this->Page->primaryKey,
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $dataUpdate = $request->all();
-            $Serviço->update($dataUpdate);
-
-            //ATUALIZANDO OS PREÇOS E MARGENS
-            $dados = [
-                'margens' => $request->get('margem'),
-                'margem_minimo' => $request->get('margem_minimo'),
-                'valor' => $Serviço->valor_float(),
-            ];
-            $Tabelas_preco = $Serviço->tabela_preco;
-            DataHelper::updatePriceTable($request, $Tabelas_preco);
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->msg_upd]);
-            return $this->show($Serviço->idservico);
-        }
-    }
-
     public function show($id)
     {
         $this->Page->titulo_primario = "Visualização de ";
+        $this->Page->extras = [
+            'tabela_preco' => TabelaPreco::all(),
+            'unidades' => Unidade::all(),
+            'grupos' => Grupo::all(),
+        ];
         $Serviço = Servico::find($id);
         return view('pages.' . $this->Page->link . '.show')
             ->with('Servico', $Serviço)
             ->with('Page', $this->Page);
     }
 
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $Serviço = Servico::create($data);
+
+        $dados = [
+            'margens' => $request->get('margem'),
+            'margem_minimo' => $request->get('margem_minimo'),
+            'valor' => $request->get('valor'),
+        ];
+        $Tabelas_preco = TabelaPreco::all();
+        $id['idservico'] = $Serviço->idservico;
+
+        TabelaPrecoServico::insert(DataHelper::storePriceTable($id, $dados, $Tabelas_preco));
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_add]);
+        return Redirect::route($this->link . '.show', $Serviço->idservico);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $Serviço = Servico::find($id);
+
+        $dataUpdate = $request->all();
+        $Serviço->update($dataUpdate);
+
+        //ATUALIZANDO OS PREÇOS E MARGENS
+        $dados = [
+            'margens' => $request->get('margem'),
+            'margem_minimo' => $request->get('margem_minimo'),
+            'valor' => $Serviço->valor_float(),
+        ];
+        $Tabelas_preco = $Serviço->tabela_preco;
+        DataHelper::updatePriceTable($request, $Tabelas_preco);
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return Redirect::route($this->link . '.show', $Serviço->idservico);
+
+    }
+
     public function destroy($id)
     {
+        return response()->json(['status' => '0',
+            'response' => 'NÃO É POSSÍVEL REMOVER SERVIÇOS PELA ASSOCIAÇÃO COM OUTRAS TABELAS: CONTATE O ADMINISTRADOR!']);
         $data = Servico::find($id);
         $data->delete();
         return response()->json(['status' => '1',

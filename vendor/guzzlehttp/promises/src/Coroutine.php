@@ -68,17 +68,10 @@ final class Coroutine implements PromiseInterface
         $this->nextCoroutine($this->generator->current());
     }
 
-    private function nextCoroutine($yielded)
-    {
-        $this->currentPromise = promise_for($yielded)
-            ->then([$this, '_handleSuccess'], [$this, '_handleFailure']);
-    }
-
     public function then(
         callable $onFulfilled = null,
         callable $onRejected = null
-    )
-    {
+    ) {
         return $this->result->then($onFulfilled, $onRejected);
     }
 
@@ -111,6 +104,12 @@ final class Coroutine implements PromiseInterface
     {
         $this->currentPromise->cancel();
         $this->result->cancel();
+    }
+
+    private function nextCoroutine($yielded)
+    {
+        $this->currentPromise = promise_for($yielded)
+            ->then([$this, '_handleSuccess'], [$this, '_handleFailure']);
     }
 
     /**

@@ -79,10 +79,10 @@
 											   href="{{route($Page->link.'.show',$peca->idpeca)}}">
 												<i class="fa fa-edit"></i> Visualizar / Editar</a>
 											@role('admin')
-												<a class="btn btn-danger btn-xs"
-												   data-nome="{{$peca->descricao}}"
-												   data-href="{{route($Page->link.'.destroy',$peca->idpeca)}}"
-												   data-toggle="modal"
+                                            <a disabled class="btn btn-danger btn-xs"
+                                               data-nome="Peça: {{$peca->descricao}}"
+                                               {{--data-href="{{route($Page->link.'.destroy',$peca->idpeca)}}"--}}
+                                               {{--data-toggle="modal"--}}
 												   data-target="#modalRemocao">
 													<i class="fa fa-trash-o"></i> Excluir </a>
 											@endrole

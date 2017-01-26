@@ -51,11 +51,6 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         }
     }
 
-    private function _createCharStream()
-    {
-        return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
-    }
-
     public function testWhiteSpaceAtLineEndingIsEncoded()
     {
         /* -- RFC 2045, 6.7 --
@@ -377,8 +372,6 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
             );
     }
 
-    // -- Creation methods
-
     public function testTextIsPreWrapped()
     {
         $encoder = $this->createEncoder();
@@ -390,6 +383,13 @@ class Swift_Encoder_QpEncoderTest extends \SwiftMailerTestCase
         $this->assertEquals(
             $input, $encoder->encodeString($input)
             );
+    }
+
+    // -- Creation methods
+
+    private function _createCharStream()
+    {
+        return $this->getMockery('Swift_CharacterStream')->shouldIgnoreMissing();
     }
 
     private function createEncoder()

@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-//use App\CategoriaTributacao;
-//use App\CstIpi;
-//use App\Ncm;
-//use App\OrigemTributacao;
-//use App\Tributacao;
+use App\Cfop;
+use App\Cst;
 use App\Grupo;
 use App\Helpers\DataHelper;
 use App\Marca;
+use App\NaturezaOperacao;
+use App\Ncm;
 use App\Peca;
 use App\TabelaPreco;
 use App\TabelaPrecoPeca;
 use App\Unidade;
+use App\Http\Requests\PecasRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
@@ -36,7 +37,6 @@ class PecasController extends Controller
             $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
         }
         */
-        $this->idcolaborador = 1;
         $this->Page = (object)[
             'table'             => "pecas",
             'link'              => "pecas",
@@ -68,12 +68,6 @@ class PecasController extends Controller
             ->with('Buscas',$Buscas);
     }
 
-    public function importacao()
-    {
-
-        return 'ok';
-    }
-
     public function create()
     {
         $this->Page->titulo_primario    = "Cadastrar ";
@@ -83,63 +77,65 @@ class PecasController extends Controller
             'marcas'                => Marca::all(),
             'unidades'              => Unidade::all(),
             'grupos'                => Grupo::all(),
-//            'ncm'                   => Ncm::get()->take(100),
-//            'categoria_tributacao'  => CategoriaTributacao::all(),
-//            'origem_tributacao'     => OrigemTributacao::all(),
-//            'cst_ipi'               => CstIpi::all(),
+            'ncm' => Ncm::get()->take(100),
+            'cst' => Cst::all(),
             'tabela_preco'          => TabelaPreco::all(),
         ];
         return view('pages.'.$this->Page->link.'.master')
             ->with('Page', $this->Page);
     }
 
-    public function store(Request $request)
+    public function show($id)
     {
+        $this->Page->titulo_primario = "Visualização de ";
+        $Peca = Peca::find($id);
+        $this->Page->extras = [
+            'fornecedores' => Fornecedor::all(),
+            'marcas' => Marca::all(),
+            'unidades' => Unidade::all(),
+            'grupos' => Grupo::all(),
+            'ncm' => Ncm::get()->take(100),
+            'cst' => Cst::all(),
+            'cfop' => Cfop::all(),
+            'natureza_operacao' => NaturezaOperacao::all(),
+            'tabela_preco' => TabelaPreco::all(),
+        ];
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Peca', $Peca)
+            ->with('Page', $this->Page);
+    }
 
-        $validator = Validator::make($request->all(), [
-            'codigo'            => 'required',
-            'tipo'              => 'required',
-            'descricao'         => 'required',
-            'descricao_tecnico' => 'required',
-            'idmarca'           => 'required',
-            'idgrupo'           => 'required',
-            'idunidade'         => 'required',
-            'comissao_tecnico'  => 'required',
-            'comissao_vendedor' => 'required',
-            'custo_final'       => 'required',
-            /*
-            'custo_compra'      => 'required',
-            'custo_imposto'     => 'required',
-            'idncm'                     => 'required',
-            'idcategoria_tributacao'    => 'required',
-            'idorigem_tributacao'       => 'required',
-            'peso_liquido'              => 'required',
-            'peso_bruto'                => 'required',
-            'idcst_ipi'                 => 'required',
-            'ipi'                       => 'required',
-            'icms'                      => 'required',
-            'reducao_bc_icms'           => 'required',
-            'reducao_bc_icms_st'        => 'required',
-            'aliquota_icms'             => 'required'
-            */
-        ]);
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $data = $request->all();
-
-//            $campos = ['comissao_tecnico','comissao_vendedor','custo_compra','custo_frete','custo_imposto'];
-            $campos = ['comissao_tecnico','comissao_vendedor','custo_final'];
-            foreach($campos as $val){
-                if($data[$val] == ''){
-                    $data[$val] = NULL;
-                } else {
-                    $data[$val] = str_replace(',','.',str_replace('.','',$data[$val]));
-                }
+    public function store(PecasRequest $request)
+    {
+        $data = $request->all();
+        $campos = ['comissao_tecnico', 'comissao_vendedor', 'custo_final'];
+        foreach ($campos as $val) {
+            if ($data[$val] == '') {
+                $data[$val] = NULL;
+            } else {
+                $data[$val] = str_replace(',', '.', str_replace('.', '', $data[$val]));
             }
+        }
+        //store foto da peca
+        if ($request->hasfile('foto')) {
+            $img = new ImageController();
+            $data['foto'] = $img->store($request->file('foto'), $this->Page->table);
+        } else {
+            $data['foto'] = NULL;
+        }
 
+        $Peca = Peca::create($data);
+        $dados = [
+            'margens' => $request->get('margem'),
+            'margem_minimo' => $request->get('margem_minimo'),
+            'valor' => $request->get('valor'),
+        ];
+        $id['idpeca'] = $Peca->idpeca;
+        TabelaPrecoPeca::insert(DataHelper::storePriceTable($id, $dados, TabelaPreco::all()));
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_add]);
+        return Redirect::route('pecas.show', $Peca->idpeca);
             /*
             //Calcular custo_final
             $data['custo_final'] = $data['custo_compra'] + $data['custo_frete'] + $data['custo_imposto'];
@@ -185,121 +181,38 @@ class PecasController extends Controller
             $Tributacao = Tributacao::create($data);
             $data['idtributacao'] = $Tributacao->idtributacao;
             */
+    }
 
-            //store foto da peca
-            if($request->hasfile('foto')){
-                $img = new ImageController();
-                $data['foto'] = $img->store($request->file('foto'), $this->Page->table);
-            } else {
-                $data['foto'] = NULL;
+    public function update(PecasRequest $request, $id)
+    {
+        $Peca = Peca::find($id);
+        $dataUpdate = $request->all();
+        $campos = ['comissao_tecnico', 'comissao_vendedor', 'custo_final'];
+        foreach ($campos as $val) {
+            if ($dataUpdate[$val] == '') {
+                $dataUpdate[$val] = NULL;
             }
-
-            $Peca = Peca::create($data);
-
-            $dados = [
-                'margens' => $request->get('margem'),
-                'margem_minimo' => $request->get('margem_minimo'),
-                'valor' => $request->get('valor'),
-            ];
-            $Tabelas_preco = TabelaPreco::all();
-            $id['idpeca'] = $Peca->idpeca;
-
-            TabelaPrecoPeca::insert(DataHelper::storePriceTable($id, $dados, $Tabelas_preco));
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->msg_add]);
-            return Redirect::route('pecas.show', $Peca->idpeca);
         }
-    }
 
-    public function show($id)
-    {
-        $this->Page->titulo_primario = "Visualização de ";
-        $Peca = Peca::find($id);
-        $this->Page->extras = [
-            'fornecedores' => Fornecedor::all(),
-            'marcas' => Marca::all(),
-            'unidades' => Unidade::all(),
-            'grupos' => Grupo::all(),
-//            'ncm'                   => Ncm::get()->take(100),
-//            'categoria_tributacao'  => CategoriaTributacao::all(),
-//            'origem_tributacao'     => OrigemTributacao::all(),
-//            'cst_ipi'               => CstIpi::all(),
-//            'tabela_preco'          => TabelaPreco::all(),
+        //store da nova foto da peca
+        if ($request->hasfile('foto')) {
+            $img = new ImageController();
+            $dataUpdate['foto'] = $img->update($request->file('foto'), $this->Page->table, $Peca->foto);
+        }
+        $Peca->update($dataUpdate);
+
+        //ATUALIZANDO OS PREÇOS E MARGENS
+        $dados = [
+            'margens' => $request->get('margem'),
+            'margem_minimo' => $request->get('margem_minimo'),
+            'valor' => $Peca->custo_final_float(),
         ];
-        return view('pages.' . $this->Page->link . '.show')
-            ->with('Peca', $Peca)
-            ->with('Page', $this->Page);
-    }
+        $Tabelas_preco = $Peca->tabela_preco;
+        DataHelper::updatePriceTable($request, $Tabelas_preco);
 
-    public function update(Request $request, $id)
-    {
-//        return $request->all();
-        $Peca = Peca::find($id);
-        $validator = Validator::make($request->all(), [
-            'codigo'            => 'required',
-            'tipo'              => 'required',
-            'descricao'         => 'required',
-            'descricao_tecnico' => 'required',
-            'idmarca'           => 'required',
-            'idgrupo'           => 'required',
-            'idunidade'         => 'required',
-            'comissao_tecnico'  => 'required',
-            'comissao_vendedor' => 'required',
-            'custo_final'       => 'required',
-            /*
-            'custo_compra'      => 'required',
-            'custo_imposto'     => 'required',
-            'idncm'                     => 'required',
-            'idcategoria_tributacao'    => 'required',
-            'idorigem_tributacao'       => 'required',
-            'peso_liquido'              => 'required',
-            'peso_bruto'                => 'required',
-            'idcst_ipi'                 => 'required',
-            'ipi'                       => 'required',
-            'icms'                      => 'required',
-            'reducao_bc_icms'           => 'required',
-            'reducao_bc_icms_st'        => 'required',
-            'aliquota_icms'             => 'required'
-            */
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $dataUpdate = $request->all();
-
-//            $campos = ['comissao_tecnico','comissao_vendedor','custo_compra','custo_frete','custo_imposto'];
-            $campos = ['comissao_tecnico','comissao_vendedor','custo_final'];
-            foreach($campos as $val){
-                if($dataUpdate[$val] == ''){
-                    $dataUpdate[$val] = NULL;
-                }
-            }
-
-            //store da nova foto da peca
-            if ($request->hasfile('foto')) {
-                $img = new ImageController();
-                $dataUpdate['foto'] = $img->update($request->file('foto'), $this->Page->table, $Peca->foto);
-            }
-//            return $dataUpdate;
-
-            $Peca->update($dataUpdate);
-
-            //ATUALIZANDO OS PREÇOS E MARGENS
-            $dados = [
-                'margens' => $request->get('margem'),
-                'margem_minimo' => $request->get('margem_minimo'),
-                'valor' => $Peca->custo_final_float(),
-            ];
-            $Tabelas_preco = $Peca->tabela_preco;
-            DataHelper::updatePriceTable($request, $Tabelas_preco);
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->msg_upd]);
-            return Redirect::route('pecas.show', $Peca->idpeca);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return Redirect::route('pecas.show', $Peca->idpeca);
             /*
             //Calcular custo_final
             $dataUpdate['custo_final'] = $dataUpdate['custo_compra'] + $dataUpdate['custo_frete'] + $dataUpdate['custo_imposto'];
@@ -345,18 +258,22 @@ class PecasController extends Controller
                 }
             }
             $Peca->tributacao->update($dataUpdate);
-
             */
-
-        }
     }
 
     public function destroy($id)
     {
+        return response()->json(['status' => '0',
+            'response' => 'NÃO É POSSÍVEL REMOVER PEÇAS PELA ASSOCIAÇÃO COM OUTRAS TABELAS: CONTATE O ADMINISTRADOR!']);
         $data = Peca::find($id);
         $data->delete();
         return response()->json(['status' => '1',
             'response' => $this->Page->msg_rem]);
+    }
+
+    public function importacao()
+    {
+        return 'ok';
     }
 
     public function RedirectFornecedor($id,$tab='pecas')

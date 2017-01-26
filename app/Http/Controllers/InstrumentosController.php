@@ -23,7 +23,7 @@ class InstrumentosController extends Controller
             $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
         }
         */
-        $this->idcolaborador = 1;
+        $this->idcolaborador = Auth::user()->colaborador->idcolaborador;
         $this->Page = (object)[
             'link'              => "instrumentos",
             'Target'            => "Instrumento",

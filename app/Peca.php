@@ -10,26 +10,9 @@ class Peca extends Model
     public $timestamps = true;
     protected $table = 'pecas';
     protected $primaryKey = 'idpeca';
-    /*static public $required = [
-        'codigo',
-        'descricao',
-        'descricao_tecnico',
-        'marca',
-        'unidade',
-        'grupo',
-        'comissao_tecnico',
-        'comissao_vendedor',
-        'custo_compra',
-        'custo_imposto',
-        'custo_final',
-        'preco',
-        'preco_frete',
-        'preco_imposto',
-        'preco_final'
-    ];*/
     protected $fillable = [
-//        'idtributacao',
         'idfornecedor',
+        'idpeca_tributacao',
         'idmarca',
         'idgrupo',
         'idunidade',
@@ -44,22 +27,8 @@ class Peca extends Model
         'garantia',
         'comissao_tecnico',
         'comissao_vendedor',
-        'custo_final',
-        /*
-        'custo_compra',
-        'custo_frete',
-        'custo_imposto',
-        'custo_final',
-        'custo_dolar',
-        'custo_dolar_frete',
-        'custo_dolar_cambio',
-        'custo_dolar_imposto',
-        'preco',
-        'preco_frete',
-        'preco_imposto',
-        'preco_final'
-        */
-        ];
+    ];
+
     // ******************** FUNCTIONS ******************************
     public function has_insumos()
     {
@@ -111,82 +80,8 @@ class Peca extends Model
         return DataHelper::getFloat2Real($value);
     }
 
-    public function getCustoFinalAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-
-    public function setCustoFinalAttribute($value)
-    {
-        $this->attributes['custo_final'] = DataHelper::getReal2Float($value);
-    }
-    /*
-    public function getCustoCompraAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-    public function getCustoImpostoAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-    public function getCustoFinalAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-    public function getCustoFreteAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-    public function getCustoDolarAttribute($value)
-    {
-        return ($value==NULL)?$value:number_format($value,2,'.',',');
-    }
-    public function getCustoDolarFreteAttribute($value)
-    {
-        return ($value==NULL)?$value:number_format($value,2,'.',',');
-    }
-    public function getCustoDolarCambioAttribute($value)
-    {
-        return ($value==NULL)?$value:number_format($value,2,'.',',');
-    }
-    public function getCustoDolarImpostoAttribute($value)
-    {
-        return ($value==NULL)?$value:number_format($value,2,'.',',');
-    }
-
-    public function getPrecoAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-    public function getPrecoFreteAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-    public function getPrecoImpostoAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-    public function getPrecoFinalAttribute($value)
-    {
-        return number_format($value,2,',','.');
-    }
-
-    */
-
-    public function custo_final_float()
-    {
-        return $this->attributes['custo_final'];
-    }
-
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
-    /*
-    public function tributacao()
-    {
-        return $this->hasOne('App\Tributacao', 'idtributacao', 'idtributacao');
-    }
-    */
-
     public function has_fornecedor()
     {
         return $this->fornecedor()->count();
@@ -195,6 +90,11 @@ class Peca extends Model
     public function fornecedor()
     {
         return $this->belongsTo('App\Fornecedor', 'idfornecedor');
+    }
+
+    public function peca_tributacao()
+    {
+        return $this->belongsTo('App\PecaTributacao', 'idpeca_tributacao');
     }
 
     public function marca()
@@ -209,13 +109,13 @@ class Peca extends Model
         return $this->hasOne('App\Unidade', 'idunidade', 'idunidade');
     }
 
-    // ************************** HASMANY **********************************
 
     public function grupo()
     {
         return $this->hasOne('App\Grupo', 'idgrupo', 'idgrupo');
     }
 
+    // ************************** HASMANY **********************************
     public function tabela_preco()
     {
         return $this->hasMany('App\TabelaPrecoPeca', 'idpeca');

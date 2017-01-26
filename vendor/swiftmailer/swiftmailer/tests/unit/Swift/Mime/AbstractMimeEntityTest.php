@@ -13,47 +13,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $this->assertSame($headers, $entity->getHeaders());
     }
 
-    protected function _createHeaderSet($headers = array(), $stub = true)
-    {
-        $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
-        $set->shouldReceive('get')
-            ->zeroOrMoreTimes()
-            ->andReturnUsing(function ($key) use ($headers) {
-                return $headers[$key];
-            });
-        $set->shouldReceive('has')
-            ->zeroOrMoreTimes()
-            ->andReturnUsing(function ($key) use ($headers) {
-                return array_key_exists($key, $headers);
-            });
-
-        return $set;
-    }
-
-    abstract protected function _createEntity($headers, $encoder, $cache);
-
-    protected function _createEncoder($name = 'quoted-printable', $stub = true)
-    {
-        $encoder = $this->getMock('Swift_Mime_ContentEncoder');
-        $encoder->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($name));
-        $encoder->expects($this->any())
-            ->method('encodeString')
-            ->will($this->returnCallback(function () {
-                $args = func_get_args();
-
-                return array_shift($args);
-            }));
-
-        return $encoder;
-    }
-
-    protected function _createCache($stub = true)
-    {
-        return $this->getMockery('Swift_KeyCache')->shouldIgnoreMissing();
-    }
-
     public function testContentTypeIsReturnedFromHeader()
     {
         $ctype = $this->_createHeader('Content-Type', 'image/jpeg-test');
@@ -62,24 +21,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             $this->_createCache()
             );
         $this->assertEquals('image/jpeg-test', $entity->getContentType());
-    }
-
-    protected function _createHeader($name, $model = null, $params = array(), $stub = true)
-    {
-        $header = $this->getMockery('Swift_Mime_ParameterizedHeader')->shouldIgnoreMissing();
-        $header->shouldReceive('getFieldName')
-            ->zeroOrMoreTimes()
-            ->andReturn($name);
-        $header->shouldReceive('getFieldBodyModel')
-            ->zeroOrMoreTimes()
-            ->andReturn($model);
-        $header->shouldReceive('getParameter')
-            ->zeroOrMoreTimes()
-            ->andReturnUsing(function ($key) use ($params) {
-                return $params[$key];
-            });
-
-        return $header;
     }
 
     public function testContentTypeIsSetInHeader()
@@ -391,29 +332,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $this->assertEquals('byte stream string', $entity->getBody());
     }
 
-    protected function _createOutputStream($data = null, $stub = true)
-    {
-        $os = $this->getMockery('Swift_OutputByteStream');
-        if (isset($data)) {
-            $os->shouldReceive('read')
-                ->zeroOrMoreTimes()
-                ->andReturnUsing(function () use ($data) {
-                    static $first = true;
-                    if (!$first) {
-                        return false;
-                    }
-
-                    $first = false;
-
-                    return $data;
-                });
-            $os->shouldReceive('setReadPointer')
-                ->zeroOrMoreTimes();
-        }
-
-        return $os;
-    }
-
     public function testByteStreamBodyIsAppended()
     {
         $headers = $this->_createHeaderSet(array(), false);
@@ -491,21 +409,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             $this->_createEncoder(), $this->_createCache()
             );
         $entity->setChildren(array($child));
-    }
-
-    protected function _createChild($level = null, $string = '', $stub = true)
-    {
-        $child = $this->getMockery('Swift_Mime_MimeEntity')->shouldIgnoreMissing();
-        if (isset($level)) {
-            $child->shouldReceive('getNestingLevel')
-                ->zeroOrMoreTimes()
-                ->andReturn($level);
-        }
-        $child->shouldReceive('toString')
-            ->zeroOrMoreTimes()
-            ->andReturn($string);
-
-        return $child;
     }
 
     public function testChildrenOfLevelAttachmentAndLessCauseMultipartMixed()
@@ -783,11 +686,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $entity->toByteStream($is);
     }
 
-    protected function _createInputStream($stub = true)
-    {
-        return $this->getMock('Swift_InputByteStream');
-    }
-
     public function testEntityHeadersAreComittedToByteStream()
     {
         $entity = $this->_createEntity($this->_createHeaderSet(),
@@ -867,8 +765,6 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
         $entity->setChildren(array($child));
         $entity->setChildren(array());
     }
-
-    // -- Private helpers
 
     public function testBodyIsReadFromCacheWhenUsingToStringIfPresent()
     {
@@ -1050,5 +946,109 @@ abstract class Swift_Mime_AbstractMimeEntityTest extends \SwiftMailerTestCase
             ->setBoundary('xyz')
             ->setChildren(array())
             );
+    }
+
+    // -- Private helpers
+
+    abstract protected function _createEntity($headers, $encoder, $cache);
+
+    protected function _createChild($level = null, $string = '', $stub = true)
+    {
+        $child = $this->getMockery('Swift_Mime_MimeEntity')->shouldIgnoreMissing();
+        if (isset($level)) {
+            $child->shouldReceive('getNestingLevel')
+                  ->zeroOrMoreTimes()
+                  ->andReturn($level);
+        }
+        $child->shouldReceive('toString')
+              ->zeroOrMoreTimes()
+              ->andReturn($string);
+
+        return $child;
+    }
+
+    protected function _createEncoder($name = 'quoted-printable', $stub = true)
+    {
+        $encoder = $this->getMockBuilder('Swift_Mime_ContentEncoder')->getMock();
+        $encoder->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue($name));
+        $encoder->expects($this->any())
+                ->method('encodeString')
+                ->will($this->returnCallback(function () {
+                    $args = func_get_args();
+
+                    return array_shift($args);
+                }));
+
+        return $encoder;
+    }
+
+    protected function _createCache($stub = true)
+    {
+        return $this->getMockery('Swift_KeyCache')->shouldIgnoreMissing();
+    }
+
+    protected function _createHeaderSet($headers = array(), $stub = true)
+    {
+        $set = $this->getMockery('Swift_Mime_HeaderSet')->shouldIgnoreMissing();
+        $set->shouldReceive('get')
+            ->zeroOrMoreTimes()
+            ->andReturnUsing(function ($key) use ($headers) {
+                return $headers[$key];
+            });
+        $set->shouldReceive('has')
+            ->zeroOrMoreTimes()
+            ->andReturnUsing(function ($key) use ($headers) {
+                return array_key_exists($key, $headers);
+            });
+
+        return $set;
+    }
+
+    protected function _createHeader($name, $model = null, $params = array(), $stub = true)
+    {
+        $header = $this->getMockery('Swift_Mime_ParameterizedHeader')->shouldIgnoreMissing();
+        $header->shouldReceive('getFieldName')
+               ->zeroOrMoreTimes()
+               ->andReturn($name);
+        $header->shouldReceive('getFieldBodyModel')
+               ->zeroOrMoreTimes()
+               ->andReturn($model);
+        $header->shouldReceive('getParameter')
+               ->zeroOrMoreTimes()
+               ->andReturnUsing(function ($key) use ($params) {
+                   return $params[$key];
+               });
+
+        return $header;
+    }
+
+    protected function _createOutputStream($data = null, $stub = true)
+    {
+        $os = $this->getMockery('Swift_OutputByteStream');
+        if (isset($data)) {
+            $os->shouldReceive('read')
+               ->zeroOrMoreTimes()
+               ->andReturnUsing(function () use ($data) {
+                   static $first = true;
+                   if (!$first) {
+                       return false;
+                   }
+
+                   $first = false;
+
+                   return $data;
+               });
+            $os->shouldReceive('setReadPointer')
+              ->zeroOrMoreTimes();
+        }
+
+        return $os;
+    }
+
+    protected function _createInputStream($stub = true)
+    {
+        return $this->getMockBuilder('Swift_InputByteStream')->getMock();
     }
 }

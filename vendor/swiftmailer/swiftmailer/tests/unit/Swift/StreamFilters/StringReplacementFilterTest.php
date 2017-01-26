@@ -8,11 +8,6 @@ class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit_Framework
         $this->assertEquals('XbarYbarZ', $filter->filter('XfooYfooZ'));
     }
 
-    private function _createFilter($search, $replace)
-    {
-        return new Swift_StreamFilters_StringReplacementFilter($search, $replace);
-    }
-
     public function testShouldBufferReturnsTrueIfPartialMatchAtEndOfBuffer()
     {
         $filter = $this->_createFilter('foo', 'bar');
@@ -42,8 +37,6 @@ class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit_Framework
             );
     }
 
-    // -- Creation methods
-
     public function testShouldBufferReturnsTrueIfAnyOfMultipleMatchesAtEndOfString()
     {
         $filter = $this->_createFilter(array('foo', 'zip'), 'bar');
@@ -51,5 +44,12 @@ class Swift_StreamFilters_StringReplacementFilterTest extends \PHPUnit_Framework
             '%s: Filter should buffer since "zip" is a needle and the ending '.
             '"zi" could be from "zip"'
             );
+    }
+
+    // -- Creation methods
+
+    private function _createFilter($search, $replace)
+    {
+        return new Swift_StreamFilters_StringReplacementFilter($search, $replace);
     }
 }

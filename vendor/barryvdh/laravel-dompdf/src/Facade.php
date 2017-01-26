@@ -3,8 +3,14 @@ namespace Barryvdh\DomPDF;
 
 use Illuminate\Support\Facades\Facade as IlluminateFacade;
 
-class Facade extends IlluminateFacade
-{
+class Facade extends IlluminateFacade {
+
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
+    protected static function getFacadeAccessor() { return 'dompdf.wrapper'; }
 
     /**
      * Resolve a new instance
@@ -13,7 +19,8 @@ class Facade extends IlluminateFacade
     {
         $instance = static::$app->make(static::getFacadeAccessor());
 
-        switch (count($args)) {
+        switch (count($args))
+        {
             case 0:
                 return $instance->$method();
 
@@ -32,16 +39,6 @@ class Facade extends IlluminateFacade
             default:
                 return call_user_func_array(array($instance, $method), $args);
         }
-    }
-
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
-    {
-        return 'dompdf.wrapper';
     }
 
 

@@ -12,8 +12,8 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
@@ -110,6 +110,7 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         ),
         'C' => 
         array (
+            'Cron\\' => 5,
             'Collective\\Html\\' => 16,
             'Collective\\Bus\\' => 15,
             'ClassPreloader\\' => 15,
@@ -298,6 +299,10 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         array (
             0 => __DIR__ . '/..' . '/maximebf/debugbar/src/DebugBar',
         ),
+        'Cron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron',
+        ),
         'Collective\\Html\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravelcollective/html/src',
@@ -387,13 +392,6 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
                 0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
             ),
         ),
-        'C' => 
-        array (
-            'Cron' => 
-            array (
-                0 => __DIR__ . '/..' . '/mtdowling/cron-expression/src',
-            ),
-        ),
         'B' => 
         array (
             'Barryvdh' => 
@@ -409,11 +407,13 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         'Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
         'CreateAjustesTable' => __DIR__ . '/../..' . '/database/migrations/2016_11_07_204607_create_ajustes_table.php',
         'CreateAparelhoManutencaosTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110412_create_aparelho_manutencaos_table.php',
-        'CreateCategoriaTributacaoTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_16_191047_create_categoria_tributacao_table.php',
+        'CreateCategoriaTributacaoTable' => __DIR__ . '/../..' . '/database/migrations/cancelados/2016_08_16_191047_create_categoria_tributacao_table.php',
+        'CreateCfopsTable' => __DIR__ . '/../..' . '/database/migrations/2016_01_25_111921_create_cfops_table.php',
         'CreateClientesTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_30_135032_create_clientes_table.php',
         'CreateColaboradoresTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_30_135010_create_colaboradores_table.php',
         'CreateContatosTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_30_135003_create_contatos_table.php',
-        'CreateCstIpiTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_16_191111_create_cst_ipi_table.php',
+        'CreateCstIpiTable' => __DIR__ . '/../..' . '/database/migrations/cancelados/2016_08_16_191111_create_cst_ipi_table.php',
+        'CreateCstsTable' => __DIR__ . '/../..' . '/database/migrations/2016_01_25_111928_create_csts_table.php',
         'CreateEquipamentosTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_30_135039_create_equipamentos_table.php',
         'CreateFormasPagamentosTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_28_154238_create_formas_pagamentos_table.php',
         'CreateFornecedoresTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_30_135046_create_fornecedores_table.php',
@@ -424,11 +424,13 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         'CreateLacreInstrumentosTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_111948_create_lacre_instrumentos_table.php',
         'CreateLacresTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110446_create_lacres_table.php',
         'CreateMarcasTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_16_191034_create_marcas_table.php',
-        'CreateNcmTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_16_191034_create_ncm_table.php',
+        'CreateNaturezaOperacaosTable' => __DIR__ . '/../..' . '/database/migrations/2016_01_25_111932_create_natureza_operacaos_table.php',
+        'CreateNcmTable' => __DIR__ . '/../..' . '/database/migrations/2016_01_16_191034_create_ncm_table.php',
         'CreateOrdemServicosTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110358_create_ordem_servicos_table.php',
-        'CreateOrigemTributacaoTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_16_191057_create_origem_tributacao_table.php',
+        'CreateOrigemTributacaoTable' => __DIR__ . '/../..' . '/database/migrations/cancelados/2016_08_16_191057_create_origem_tributacao_table.php',
         'CreatePasswordResetsTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_100000_create_password_resets_table.php',
         'CreatePecaKitTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_19_144910_create_peca_kit_table.php',
+        'CreatePecaTributacaosTable' => __DIR__ . '/../..' . '/database/migrations/2016_01_25_112048_create_peca_tributacaos_table.php',
         'CreatePecasTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_17_135150_create_pecas_table.php',
         'CreatePecasUtilizadasTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110424_create_pecas_utilizadas_table.php',
         'CreatePfisicasTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_30_135023_create_pfisicas_table.php',
@@ -439,24 +441,24 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         'CreateSeloInstrumentosTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110453_create_selo_instrumentos_table.php',
         'CreateSelosTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110439_create_selos_table.php',
         'CreateServicoPrestadosTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110419_create_servico_prestados_table.php',
-        'CreateServicosTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_28_154238_create_servicos_table.php',
+        'CreateServicosTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_17_154238_create_servicos_table.php',
         'CreateSituacaoOrdemServicosTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_14_110357_create_situacao_ordem_servicos_table.php',
         'CreateTabelaPrecosKitTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_18_160913_create_tabela_precos_kit_table.php',
         'CreateTabelaPrecosPecaTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_18_160913_create_tabela_precos_peca_table.php',
         'CreateTabelaPrecosServicoTable' => __DIR__ . '/../..' . '/database/migrations/2016_09_18_160913_create_tabela_precos_servico_table.php',
         'CreateTabelaPrecosTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_28_154304_create_tabela_precos_table.php',
         'CreateTecnicosTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_30_135053_create_tecnicos_table.php',
-        'CreateTributacaoTable' => __DIR__ . '/../..' . '/database/migrations/2016_08_16_191120_create_tributacao_table.php',
+        'CreateTributacaoTable' => __DIR__ . '/../..' . '/database/migrations/cancelados/2016_08_16_191120_create_tributacao_table.php',
         'CreateUnidadesTable' => __DIR__ . '/../..' . '/database/migrations/2016_06_28_154238_create_unidades_table.php',
         'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2014_10_12_000000_create_users_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
+        'DatabaseSeederOld' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeederOld.php',
         'EntrustSetupTables' => __DIR__ . '/../..' . '/database/migrations/2016_11_07_201635_entrust_setup_tables.php',
         'ExtrasTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ExtrasTableSeeder.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
         'File_Iterator_Factory' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Factory.php',
         'FornecedorTableSeeder' => __DIR__ . '/../..' . '/database/seeds/FornecedorTableSeeder.php',
-        'GrupoLancamentoSeeder' => __DIR__ . '/../..' . '/database/seeds/GrupoLancamentoSeeder.php',
         'HTML5_Data' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Data.php',
         'HTML5_InputStream' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/InputStream.php',
         'HTML5_Parser' => __DIR__ . '/..' . '/dompdf/dompdf/lib/html5lib/Parser.php',
@@ -531,7 +533,9 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         'Hamcrest\\Util' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Util.php',
         'Hamcrest\\Xml\\HasXPath' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest/Xml/HasXPath.php',
         'IlluminateQueueClosure' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Queue/IlluminateQueueClosure.php',
+        'ImportProdutoSeeder' => __DIR__ . '/../..' . '/database/seeds/ImportProdutoSeeder.php',
         'ImportSeeder' => __DIR__ . '/../..' . '/database/seeds/ImportSeeder.php',
+        'ImportServicoSeeder' => __DIR__ . '/../..' . '/database/seeds/ImportServicoSeeder.php',
         'InstrumentosTableSeeder' => __DIR__ . '/../..' . '/database/seeds/InstrumentosTableSeeder.php',
         'KitsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/KitsTableSeeder.php',
         'Maatwebsite\\Excel\\Classes\\Cache' => __DIR__ . '/..' . '/maatwebsite/excel/src/Maatwebsite/Excel/Classes/Cache.php',
@@ -1004,8 +1008,6 @@ class ComposerStaticInitba3d1e2e8d681af22a4647326b72d6d3
         'TecnicosTableSeeder' => __DIR__ . '/../..' . '/database/seeds/TecnicosTableSeeder.php',
         'TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
-        'TipoInadimplenciaSeeder' => __DIR__ . '/../..' . '/database/seeds/TipoInadimplenciaSeeder.php',
-        'TipoLancamentoSeeder' => __DIR__ . '/../..' . '/database/seeds/TipoLancamentoSeeder.php',
         'TotalTesteTableSeeder' => __DIR__ . '/../..' . '/database/seeds/TotalTesteTableSeeder.php',
         'Zizaco\\Entrust\\MigrationCommand' => __DIR__ . '/..' . '/zizaco/entrust/src/commands/MigrationCommand.php',
     );

@@ -58,12 +58,14 @@ Route::group(['middleware' => ['auth']], function() {
 
             //Tributação
             Route::resource('formas_pagamentos', 'FormasPagamentosController');
-            Route::resource('categoria_tributacao', 'CategoriaTributacaoController');
-            Route::resource('cst_ipi',              'CstIpiController');
+//            Route::resource('categoria_tributacao', 'CategoriaTributacaoController');
+//              Route::resource('origem_tributacao',    'OrigemTributacaoController');
+    Route::resource('cst', 'CstController');
+    Route::resource('cfop', 'CfopController');
             Route::resource('ncm', 'NcmController');
+    Route::resource('natureza_operacao', 'NaturezaOperacaoController');
             Route::match(['get', 'post'], 'importar/ncm/', 'NcmController@importar')->name('ncm.importar');
             Route::post('importar/store/ncm/', 'NcmController@storeImportar')->name('ncm.storeImportar');
-            Route::resource('origem_tributacao',    'OrigemTributacaoController');
 
             //Ajustes
             Route::resource('ajustes','AjustesController');

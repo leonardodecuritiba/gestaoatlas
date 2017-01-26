@@ -10,9 +10,12 @@ class Swift_Events_TransportChangeEventTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($transport, $ref);
     }
 
-    private function _createTransport()
+    public function testSourceIsTransport()
     {
-        return $this->getMock('Swift_Transport');
+        $transport = $this->_createTransport();
+        $evt = $this->_createEvent($transport);
+        $ref = $evt->getSource();
+        $this->assertEquals($transport, $ref);
     }
 
     // -- Creation Methods
@@ -22,11 +25,8 @@ class Swift_Events_TransportChangeEventTest extends \PHPUnit_Framework_TestCase
         return new Swift_Events_TransportChangeEvent($source);
     }
 
-    public function testSourceIsTransport()
+    private function _createTransport()
     {
-        $transport = $this->_createTransport();
-        $evt = $this->_createEvent($transport);
-        $ref = $evt->getSource();
-        $this->assertEquals($transport, $ref);
+        return $this->getMockBuilder('Swift_Transport')->getMock();
     }
 }

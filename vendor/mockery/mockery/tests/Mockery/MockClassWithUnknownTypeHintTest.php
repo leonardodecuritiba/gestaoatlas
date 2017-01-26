@@ -20,12 +20,6 @@ use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 class MockClassWithUnknownTypeHintTest extends MockeryTestCase
 {
-    /** @test */
-    public function itShouldSuccessfullyBuildTheMock()
-    {
-        $this->container->mock("test\Mockery\HasUnknownClassAsTypeHintOnMethod");
-    }
-
     protected function setUp()
     {
         $this->container = new \Mockery\Container;
@@ -34,6 +28,12 @@ class MockClassWithUnknownTypeHintTest extends MockeryTestCase
     protected function tearDown()
     {
         $this->container->mockery_close();
+    }
+
+    /** @test */
+    public function itShouldSuccessfullyBuildTheMock()
+    {
+        $this->container->mock("test\Mockery\HasUnknownClassAsTypeHintOnMethod");
     }
 }
 

@@ -15,16 +15,6 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $cache->getString($this->_key1, 'foo'));
     }
 
-    private function _createKeyCacheInputStream()
-    {
-        return $this->getMock('Swift_KeyCache_KeyCacheInputStream');
-    }
-
-    private function _createCache($is)
-    {
-        return new Swift_KeyCache_ArrayKeyCache($is);
-    }
-
     public function testStringDataCanBeOverwritten()
     {
         $is = $this->_createKeyCacheInputStream();
@@ -115,11 +105,6 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('abcdef', $cache->getString($this->_key1, 'foo'));
     }
 
-    private function _createOutputStream()
-    {
-        return $this->getMock('Swift_OutputByteStream');
-    }
-
     public function testByteStreamCanBeAppended()
     {
         $os1 = $this->_createOutputStream();
@@ -184,8 +169,6 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('testabcdef', $cache->getString($this->_key1, 'foo'));
     }
 
-    // -- Creation methods
-
     public function testDataCanBeExportedToByteStream()
     {
         //See acceptance test for more detail
@@ -202,11 +185,6 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
             );
 
         $cache->exportToByteStream($this->_key1, 'foo', $is);
-    }
-
-    private function _createInputStream()
-    {
-        return $this->getMock('Swift_InputByteStream');
     }
 
     public function testKeyCanBeCleared()
@@ -238,5 +216,27 @@ class Swift_KeyCache_ArrayKeyCacheTest extends \PHPUnit_Framework_TestCase
         $cache->clearAll($this->_key1);
         $this->assertFalse($cache->hasKey($this->_key1, 'foo'));
         $this->assertFalse($cache->hasKey($this->_key1, 'bar'));
+    }
+
+    // -- Creation methods
+
+    private function _createCache($is)
+    {
+        return new Swift_KeyCache_ArrayKeyCache($is);
+    }
+
+    private function _createKeyCacheInputStream()
+    {
+        return $this->getMockBuilder('Swift_KeyCache_KeyCacheInputStream')->getMock();
+    }
+
+    private function _createOutputStream()
+    {
+        return $this->getMockBuilder('Swift_OutputByteStream')->getMock();
+    }
+
+    private function _createInputStream()
+    {
+        return $this->getMockBuilder('Swift_InputByteStream')->getMock();
     }
 }

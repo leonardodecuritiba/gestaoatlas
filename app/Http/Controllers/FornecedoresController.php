@@ -45,7 +45,7 @@ class FornecedoresController extends Controller
             $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
         }
         */
-        $this->idcolaborador = 1;
+        $this->idcolaborador = Auth::user()->colaborador->idcolaborador;
         $this->Page = (object)[
             'link'              => "fornecedores",
             'Target'            => "Fornecedor",
@@ -160,6 +160,24 @@ class FornecedoresController extends Controller
         }
     }
 
+    public function show($id, $tab = 'sobre')
+    {
+        $this->Page->extras = [
+            'segmentos_fornecedores' => SegmentoFornecedor::all(),
+            'ncm' => Ncm::all(),
+            'categoria_tributacao' => CategoriaTributacao::all(),
+            'origem_tributacao' => OrigemTributacao::all(),
+            'cst_ipi' => CstIpi::all(),
+        ];
+
+        $this->Page->titulo_primario = "Visualização de ";
+        $this->Page->tab = $tab;
+        $Fornecedor = Fornecedor::find($id);
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Fornecedor', $Fornecedor)
+            ->with('Page', $this->Page);
+    }
+
     public function update(Request $request, $id)
     {
 
@@ -225,24 +243,6 @@ class FornecedoresController extends Controller
             session(['mensagem' => $this->Page->Target.' atualizado com sucesso!']);
             return $this->show($Fornecedor->idfornecedor);
         }
-    }
-
-    public function show($id,$tab='sobre')
-    {
-        $this->Page->extras = [
-            'segmentos_fornecedores'=> SegmentoFornecedor::all(),
-            'ncm'                   => Ncm::all(),
-            'categoria_tributacao'  => CategoriaTributacao::all(),
-            'origem_tributacao'     => OrigemTributacao::all(),
-            'cst_ipi'               => CstIpi::all(),
-        ];
-
-        $this->Page->titulo_primario = "Visualização de ";
-        $this->Page->tab = $tab;
-        $Fornecedor = Fornecedor::find($id);
-        return view('pages.'.$this->Page->link.'.show')
-            ->with('Fornecedor', $Fornecedor)
-            ->with('Page', $this->Page);
     }
 
     public function destroy($id)

@@ -11,11 +11,6 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
         $this->assertEquals('8bit', $encoder->getName());
     }
 
-    private function _getEncoder($name, $canonical = false)
-    {
-        return new Swift_Mime_ContentEncoder_PlainContentEncoder($name, $canonical);
-    }
-
     public function testNoOctetsAreModifiedInString()
     {
         $encoder = $this->_getEncoder('7bit');
@@ -48,16 +43,6 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
             $encoder->encodeByteStream($os, $is);
             $this->assertIdenticalBinary($byte, $collection->content);
         }
-    }
-
-    private function _createOutputByteStream($stub = false)
-    {
-        return $this->getMockery('Swift_OutputByteStream')->shouldIgnoreMissing();
-    }
-
-    private function _createInputByteStream($stub = false)
-    {
-        return $this->getMockery('Swift_InputByteStream')->shouldIgnoreMissing();
     }
 
     public function testLineLengthCanBeSpecified()
@@ -106,8 +91,6 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
             $collection->content
             );
     }
-
-    // -- Private helpers
 
     public function testencodeStringGeneratesCorrectCrlf()
     {
@@ -169,5 +152,22 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 
         $encoder->encodeByteStream($os, $is);
         $this->assertEquals($expected, $collection->content);
+    }
+
+    // -- Private helpers
+
+    private function _getEncoder($name, $canonical = false)
+    {
+        return new Swift_Mime_ContentEncoder_PlainContentEncoder($name, $canonical);
+    }
+
+    private function _createOutputByteStream($stub = false)
+    {
+        return $this->getMockery('Swift_OutputByteStream')->shouldIgnoreMissing();
+    }
+
+    private function _createInputByteStream($stub = false)
+    {
+        return $this->getMockery('Swift_InputByteStream')->shouldIgnoreMissing();
     }
 }

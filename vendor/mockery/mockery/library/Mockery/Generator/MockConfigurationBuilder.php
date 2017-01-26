@@ -38,6 +38,13 @@ class MockConfigurationBuilder
 
     protected $targets = array();
 
+    public function addTarget($target)
+    {
+        $this->targets[] = $target;
+
+        return $this;
+    }
+
     public function addTargets($targets)
     {
         foreach ($targets as $target) {
@@ -47,16 +54,15 @@ class MockConfigurationBuilder
         return $this;
     }
 
-    public function addTarget($target)
-    {
-        $this->targets[] = $target;
-
-        return $this;
-    }
-
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function addBlackListedMethod($blackListedMethod)
+    {
+        $this->blackListedMethods[] = $blackListedMethod;
         return $this;
     }
 
@@ -68,15 +74,15 @@ class MockConfigurationBuilder
         return $this;
     }
 
-    public function addBlackListedMethod($blackListedMethod)
-    {
-        $this->blackListedMethods[] = $blackListedMethod;
-        return $this;
-    }
-
     public function setBlackListedMethods(array $blackListedMethods)
     {
         $this->blackListedMethods = $blackListedMethods;
+        return $this;
+    }
+
+    public function addWhiteListedMethod($whiteListedMethod)
+    {
+        $this->whiteListedMethods[] = $whiteListedMethod;
         return $this;
     }
 
@@ -85,12 +91,6 @@ class MockConfigurationBuilder
         foreach ($whiteListedMethods as $method) {
             $this->addWhiteListedMethod($method);
         }
-        return $this;
-    }
-
-    public function addWhiteListedMethod($whiteListedMethod)
-    {
-        $this->whiteListedMethods[] = $whiteListedMethod;
         return $this;
     }
 

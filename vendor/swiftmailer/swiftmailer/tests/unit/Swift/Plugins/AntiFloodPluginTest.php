@@ -34,28 +34,6 @@ class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private function _createTransport()
-    {
-        return $this->getMock('Swift_Transport');
-    }
-
-    private function _createSendEvent($transport)
-    {
-        $evt = $this->getMockBuilder('Swift_Events_SendEvent')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $evt->expects($this->any())
-            ->method('getSource')
-            ->will($this->returnValue($transport));
-        $evt->expects($this->any())
-            ->method('getTransport')
-            ->will($this->returnValue($transport));
-
-        return $evt;
-    }
-
-    // -- Creation Methods
-
     public function testPluginCanStopAndStartMultipleTimes()
     {
         $transport = $this->_createTransport();
@@ -74,7 +52,7 @@ class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit_Framework_TestCase
 
     public function testPluginCanSleepDuringRestart()
     {
-        $sleeper = $this->getMock('Swift_Plugins_Sleeper');
+        $sleeper = $this->getMockBuilder('Swift_Plugins_Sleeper')->getMock();
         $sleeper->expects($this->once())
                 ->method('sleep')
                 ->with(10);
@@ -91,5 +69,27 @@ class Swift_Plugins_AntiFloodPluginTest extends \PHPUnit_Framework_TestCase
         for ($i = 0; $i < 101; ++$i) {
             $plugin->sendPerformed($evt);
         }
+    }
+
+    // -- Creation Methods
+
+    private function _createTransport()
+    {
+        return $this->getMockBuilder('Swift_Transport')->getMock();
+    }
+
+    private function _createSendEvent($transport)
+    {
+        $evt = $this->getMockBuilder('Swift_Events_SendEvent')
+                    ->disableOriginalConstructor()
+                    ->getMock();
+        $evt->expects($this->any())
+            ->method('getSource')
+            ->will($this->returnValue($transport));
+        $evt->expects($this->any())
+            ->method('getTransport')
+            ->will($this->returnValue($transport));
+
+        return $evt;
     }
 }

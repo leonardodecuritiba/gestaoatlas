@@ -17,11 +17,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             );
     }
 
-    private function _createMessage($headers, $encoder, $cache)
-    {
-        return new Swift_Mime_SimpleMessage($headers, $encoder, $cache, new Swift_Mime_Grammar());
-    }
-
     public function testDateIsReturnedFromHeader()
     {
         $date = $this->_createHeader('Date', 123);
@@ -779,10 +774,6 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
         $this->assertEquals('cid:foo@bar', $message->embed($child));
     }
 
-    // -- Private helpers
-
-    //abstract
-
     public function testFluidInterface()
     {
         $child = $this->_createChild();
@@ -811,13 +802,16 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
             ->setTo(array('chris@site.tld', 'mark@site.tld'))
             ->setCc('john@somewhere.tld')
             ->setBcc(array('one@site', 'two@site' => 'Two'))
-                ->setPriority($message::PRIORITY_LOW)
+            ->setPriority($message::PRIORITY_LOW)
             ->setReadReceiptTo('a@b')
             ->attach($child)
             ->detach($child)
             );
     }
 
+    // -- Private helpers
+
+    //abstract
     protected function _createEntity($headers, $encoder, $cache)
     {
         return $this->_createMessage($headers, $encoder, $cache);
@@ -826,5 +820,10 @@ class Swift_Mime_SimpleMessageTest extends Swift_Mime_MimePartTest
     protected function _createMimePart($headers, $encoder, $cache)
     {
         return $this->_createMessage($headers, $encoder, $cache);
+    }
+
+    private function _createMessage($headers, $encoder, $cache)
+    {
+        return new Swift_Mime_SimpleMessage($headers, $encoder, $cache, new Swift_Mime_Grammar());
     }
 }

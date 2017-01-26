@@ -30,6 +30,20 @@ class Swift_Image extends Swift_EmbeddedFile
     }
 
     /**
+     * Create a new Image.
+     *
+     * @param string|Swift_OutputByteStream $data
+     * @param string                        $filename
+     * @param string                        $contentType
+     *
+     * @return Swift_Image
+     */
+    public static function newInstance($data = null, $filename = null, $contentType = null)
+    {
+        return new self($data, $filename, $contentType);
+    }
+
+    /**
      * Create a new Image from a filesystem path.
      *
      * @param string $path
@@ -43,19 +57,5 @@ class Swift_Image extends Swift_EmbeddedFile
             );
 
         return $image;
-    }
-
-    /**
-     * Create a new Image.
-     *
-     * @param string|Swift_OutputByteStream $data
-     * @param string $filename
-     * @param string $contentType
-     *
-     * @return Swift_Image
-     */
-    public static function newInstance($data = null, $filename = null, $contentType = null)
-    {
-        return new self($data, $filename, $contentType);
     }
 }

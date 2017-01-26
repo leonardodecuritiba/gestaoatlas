@@ -185,18 +185,18 @@ class Expectation implements ExpectationInterface
     }
 
     /**
-     * Verify call order
+     * Sets public properties with queued values to the mock object
      *
-     * @return void
+     * @param array $args
+     * @return mixed
      */
-    public function validateOrder()
+    protected function _setValues()
     {
-        if ($this->_orderNumber) {
-            $this->_mock->mockery_validateOrder((string)$this, $this->_orderNumber, $this->_mock);
-        }
-        if ($this->_globalOrderNumber) {
-            $this->_mock->mockery_getContainer()
-                ->mockery_validateOrder((string)$this, $this->_globalOrderNumber, $this->_mock);
+        foreach ($this->_setQueue as $name => &$values) {
+            if (count($values) > 0) {
+                $value = array_shift($values);
+                $this->_mock->{$name} = $value;
+            }
         }
     }
 
@@ -246,22 +246,6 @@ class Expectation implements ExpectationInterface
     }
 
     /**
-     * Sets public properties with queued values to the mock object
-     *
-     * @param array $args
-     * @return mixed
-     */
-    protected function _setValues()
-    {
-        foreach ($this->_setQueue as $name => &$values) {
-            if (count($values) > 0) {
-                $value = array_shift($values);
-                $this->_mock->{$name} = $value;
-            }
-        }
-    }
-
-    /**
      * Checks if this expectation is eligible for additional calls
      *
      * @return bool
@@ -284,6 +268,22 @@ class Expectation implements ExpectationInterface
     public function isCallCountConstrained()
     {
         return (count($this->_countValidators) > 0);
+    }
+
+    /**
+     * Verify call order
+     *
+     * @return void
+     */
+    public function validateOrder()
+    {
+        if ($this->_orderNumber) {
+            $this->_mock->mockery_validateOrder((string) $this, $this->_orderNumber, $this->_mock);
+        }
+        if ($this->_globalOrderNumber) {
+            $this->_mock->mockery_getContainer()
+                ->mockery_validateOrder((string) $this, $this->_globalOrderNumber, $this->_mock);
+        }
     }
 
     /**
@@ -413,6 +413,18 @@ class Expectation implements ExpectationInterface
     }
 
     /**
+     * Set a return value, or sequential queue of return values
+     *
+     * @param mixed ...
+     * @return self
+     */
+    public function andReturn()
+    {
+        $this->_returnQueue = func_get_args();
+        return $this;
+    }
+
+    /**
      * Return this mock, like a fluent interface
      *
      * @return self
@@ -423,14 +435,14 @@ class Expectation implements ExpectationInterface
     }
 
     /**
-     * Set a return value, or sequential queue of return values
+     * Set a sequential queue of return values with an array
      *
-     * @param mixed ...
+     * @param array $values
      * @return self
      */
-    public function andReturn()
+    public function andReturnValues(array $values)
     {
-        $this->_returnQueue = func_get_args();
+        call_user_func_array(array($this, 'andReturn'), $values);
         return $this;
     }
 
@@ -507,18 +519,6 @@ class Expectation implements ExpectationInterface
     }
 
     /**
-     * Set a sequential queue of return values with an array
-     *
-     * @param array $values
-     * @return self
-     */
-    public function andReturnValues(array $values)
-    {
-        call_user_func_array(array($this, 'andReturn'), $values);
-        return $this;
-    }
-
-    /**
      * Register values to be set to a public property each time this expectation occurs
      *
      * @param string $name
@@ -557,16 +557,6 @@ class Expectation implements ExpectationInterface
     }
 
     /**
-     * Indicates that this expectation is never expected to be called
-     *
-     * @return self
-     */
-    public function never()
-    {
-        return $this->times(0);
-    }
-
-    /**
      * Indicates the number of times this expectation should occur
      *
      * @param int $limit
@@ -583,14 +573,13 @@ class Expectation implements ExpectationInterface
     }
 
     /**
-     * Sets next count validator to the AtLeast instance
+     * Indicates that this expectation is never expected to be called
      *
      * @return self
      */
-    public function atLeast()
+    public function never()
     {
-        $this->_countValidatorClass = 'Mockery\CountValidator\AtLeast';
-        return $this;
+        return $this->times(0);
     }
 
     /**
@@ -614,14 +603,14 @@ class Expectation implements ExpectationInterface
     }
 
     /**
-     * Shorthand for setting minimum and maximum constraints on call counts
+     * Sets next count validator to the AtLeast instance
      *
-     * @param int $minimum
-     * @param int $maximum
+     * @return self
      */
-    public function between($minimum, $maximum)
+    public function atLeast()
     {
-        return $this->atLeast()->times($minimum)->atMost()->times($maximum);
+        $this->_countValidatorClass = 'Mockery\CountValidator\AtLeast';
+        return $this;
     }
 
     /**
@@ -633,6 +622,17 @@ class Expectation implements ExpectationInterface
     {
         $this->_countValidatorClass = 'Mockery\CountValidator\AtMost';
         return $this;
+    }
+
+    /**
+     * Shorthand for setting minimum and maximum constraints on call counts
+     *
+     * @param int $minimum
+     * @param int $maximum
+     */
+    public function between($minimum, $maximum)
+    {
+        return $this->atLeast()->times($minimum)->atMost()->times($maximum);
     }
 
     /**
@@ -649,6 +649,17 @@ class Expectation implements ExpectationInterface
             $this->_orderNumber = $this->_defineOrdered($group, $this->_mock);
         }
         $this->_globally = false;
+        return $this;
+    }
+
+    /**
+     * Indicates call order should apply globally
+     *
+     * @return self
+     */
+    public function globally()
+    {
+        $this->_globally = true;
         return $this;
     }
 
@@ -671,17 +682,6 @@ class Expectation implements ExpectationInterface
             $ordering->mockery_setGroup($group, $result);
         }
         return $result;
-    }
-
-    /**
-     * Indicates call order should apply globally
-     *
-     * @return self
-     */
-    public function globally()
-    {
-        $this->_globally = true;
-        return $this;
     }
 
     /**

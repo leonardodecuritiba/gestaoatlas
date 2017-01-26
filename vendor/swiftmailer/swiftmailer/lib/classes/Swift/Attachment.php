@@ -40,6 +40,20 @@ class Swift_Attachment extends Swift_Mime_Attachment
     }
 
     /**
+     * Create a new Attachment.
+     *
+     * @param string|Swift_OutputByteStream $data
+     * @param string                        $filename
+     * @param string                        $contentType
+     *
+     * @return Swift_Mime_Attachment
+     */
+    public static function newInstance($data = null, $filename = null, $contentType = null)
+    {
+        return new self($data, $filename, $contentType);
+    }
+
+    /**
      * Create a new Attachment from a filesystem path.
      *
      * @param string $path
@@ -53,19 +67,5 @@ class Swift_Attachment extends Swift_Mime_Attachment
             new Swift_ByteStream_FileByteStream($path),
             $contentType
             );
-    }
-
-    /**
-     * Create a new Attachment.
-     *
-     * @param string|Swift_OutputByteStream $data
-     * @param string $filename
-     * @param string $contentType
-     *
-     * @return Swift_Mime_Attachment
-     */
-    public static function newInstance($data = null, $filename = null, $contentType = null)
-    {
-        return new self($data, $filename, $contentType);
     }
 }

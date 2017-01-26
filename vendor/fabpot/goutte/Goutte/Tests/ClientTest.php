@@ -32,6 +32,20 @@ class ClientTest extends \PHPUnit_Framework_TestCase
     /** @var MockHandler */
     protected $mock;
 
+    protected function getGuzzle(array $responses = [])
+    {
+        if (empty($responses)) {
+            $responses = [new GuzzleResponse(200, [], '<html><body><p>Hi</p></body></html>')];
+        }
+        $this->mock = new MockHandler($responses);
+        $handlerStack = HandlerStack::create($this->mock);
+        $this->history = [];
+        $handlerStack->push(Middleware::history($this->history));
+        $guzzle = new GuzzleClient(array('redirect.disable' => true, 'base_uri' => '', 'handler' => $handlerStack));
+
+        return $guzzle;
+    }
+
     public function testCreatesDefaultClient()
     {
         $client = new Client();
@@ -54,20 +68,6 @@ class ClientTest extends \PHPUnit_Framework_TestCase
         $client->setHeader('X-Test', 'test');
         $client->request('GET', 'http://www.example.com/');
         $this->assertEquals('test', end($this->history)['request']->getHeaderLine('X-Test'));
-    }
-
-    protected function getGuzzle(array $responses = [])
-    {
-        if (empty($responses)) {
-            $responses = [new GuzzleResponse(200, [], '<html><body><p>Hi</p></body></html>')];
-        }
-        $this->mock = new MockHandler($responses);
-        $handlerStack = HandlerStack::create($this->mock);
-        $this->history = [];
-        $handlerStack->push(Middleware::history($this->history));
-        $guzzle = new GuzzleClient(array('redirect.disable' => true, 'base_uri' => '', 'handler' => $handlerStack));
-
-        return $guzzle;
     }
 
     public function testCustomUserAgent()
@@ -380,7 +380,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $reflectionProperty = new \ReflectionProperty('Goutte\Client', 'headers');
         $reflectionProperty->setAccessible(true);
-        $this->assertEquals(array('X-Test' => 'test'), $reflectionProperty->getValue($client));
+        $this->assertEquals(array('x-test' => 'test'), $reflectionProperty->getValue($client));
 
         $client->resetHeaders();
         $this->assertEquals([], $reflectionProperty->getValue($client));
@@ -394,7 +394,7 @@ class ClientTest extends \PHPUnit_Framework_TestCase
 
         $headersReflectionProperty = new \ReflectionProperty('Goutte\Client', 'headers');
         $headersReflectionProperty->setAccessible(true);
-        $this->assertEquals(array('X-Test' => 'test'), $headersReflectionProperty->getValue($client));
+        $this->assertEquals(array('x-test' => 'test'), $headersReflectionProperty->getValue($client));
 
         $authReflectionProperty = new \ReflectionProperty('Goutte\Client', 'auth');
         $authReflectionProperty->setAccessible(true);

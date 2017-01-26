@@ -30,22 +30,6 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         );
     }
 
-    private function _getReader()
-    {
-        return $this->getMockery('Swift_CharacterReader');
-    }
-
-    private function _getFactory($reader)
-    {
-        $factory = $this->getMockery('Swift_CharacterReaderFactory');
-        $factory->shouldReceive('getReaderFor')
-            ->zeroOrMoreTimes()
-            ->with('utf-8')
-            ->andReturn($reader);
-
-        return $factory;
-    }
-
     public function testCharactersWrittenUseValidator()
     {
         $reader = $this->_getReader();
@@ -119,7 +103,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
             );
         $this->assertIdenticalBinary(pack('C*', 0xD1, 0x85), $stream->read(1));
 
-        $this->assertSame(false, $stream->read(1));
+        $this->assertFalse($stream->read(1));
     }
 
     public function testCharactersCanBeReadAsByteArrays()
@@ -162,7 +146,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
             );
         $this->assertEquals(array(0xD1, 0x85), $stream->readBytes(1));
 
-        $this->assertSame(false, $stream->readBytes(1));
+        $this->assertFalse($stream->readBytes(1));
     }
 
     public function testRequestingLargeCharCountPastEndOfStream()
@@ -185,7 +169,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
             $stream->read(100)
             );
 
-        $this->assertSame(false, $stream->read(1));
+        $this->assertFalse($stream->read(1));
     }
 
     public function testRequestingByteArrayCountPastEndOfStream()
@@ -208,7 +192,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
             $stream->readBytes(100)
             );
 
-        $this->assertSame(false, $stream->readBytes(1));
+        $this->assertFalse($stream->readBytes(1));
     }
 
     public function testPointerOffsetCanBeSet()
@@ -256,7 +240,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
 
         $stream->flushContents();
 
-        $this->assertSame(false, $stream->read(1));
+        $this->assertFalse($stream->read(1));
     }
 
     public function testByteStreamCanBeImportingUsesValidator()
@@ -288,13 +272,6 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $reader->shouldReceive('validateByteSequence')->once()->with(array(0xD0), 1)->andReturn(1);
 
         $stream->importByteStream($os);
-    }
-
-    // -- Creation methods
-
-    private function _getByteStream()
-    {
-        return $this->getMockery('Swift_OutputByteStream');
     }
 
     public function testImportingStreamProducesCorrectCharArray()
@@ -331,7 +308,7 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $this->assertIdenticalBinary(pack('C*', 0xD0, 0xB6), $stream->read(1));
         $this->assertIdenticalBinary(pack('C*', 0xD0, 0xBE), $stream->read(1));
 
-        $this->assertSame(false, $stream->read(1));
+        $this->assertFalse($stream->read(1));
     }
 
     public function testAlgorithmWithFixedWidthCharsets()
@@ -355,6 +332,29 @@ class Swift_CharacterStream_ArrayCharacterStreamTest extends \SwiftMailerTestCas
         $this->assertIdenticalBinary(pack('C*', 0xD0, 0xBB), $stream->read(1));
         $this->assertIdenticalBinary(pack('C*', 0xD0, 0xB0), $stream->read(1));
 
-        $this->assertSame(false, $stream->read(1));
+        $this->assertFalse($stream->read(1));
+    }
+
+    // -- Creation methods
+
+    private function _getReader()
+    {
+        return $this->getMockery('Swift_CharacterReader');
+    }
+
+    private function _getFactory($reader)
+    {
+        $factory = $this->getMockery('Swift_CharacterReaderFactory');
+        $factory->shouldReceive('getReaderFor')
+                ->zeroOrMoreTimes()
+                ->with('utf-8')
+                ->andReturn($reader);
+
+        return $factory;
+    }
+
+    private function _getByteStream()
+    {
+        return $this->getMockery('Swift_OutputByteStream');
     }
 }

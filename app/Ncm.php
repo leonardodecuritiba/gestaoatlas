@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Ncm extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'ncm';
     protected $primaryKey = 'idncm';
-    public $timestamps = true;
     protected $fillable = [
         'codigo',
         'descricao',
@@ -71,9 +71,9 @@ class Ncm extends Model
 
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
-    public function tributacao()
+    public function produto_tributacaos()
     {
-        return $this->hasOne('App\Tributacao', 'idncm', 'idncm');
+        return $this->hasMany('App\PecaTributacao', 'idcfop');
     }
     // ********************** BELONGS ********************************
 }

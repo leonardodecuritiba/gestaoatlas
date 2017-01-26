@@ -18,6 +18,9 @@ class CreatePecasTable extends Migration
             $table->integer('idfornecedor')->unsigned()->nullable();
             $table->foreign('idfornecedor')->references('idfornecedor')->on('fornecedores')->onDelete('cascade');
 
+            $table->integer('idpeca_tributacao')->unsigned()->nullable();
+            $table->foreign('idpeca_tributacao')->references('id')->on('peca_tributacaos')->onDelete('cascade');
+
 //            $table->integer('idtributacao')->unsigned();
 //            $table->foreign('idtributacao')->references('idtributacao')->on('tributacao')->onDelete('cascade');
 
@@ -44,7 +47,7 @@ class CreatePecasTable extends Migration
             $table->decimal('comissao_vendedor',5,2);
 
             //CUSTO REAL
-            $table->decimal('custo_final',11,2);
+//            $table->decimal('custo_final',11,2);
             /*
             $table->decimal('custo_compra',11,2);
             $table->decimal('custo_frete',11,2);

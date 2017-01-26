@@ -68,14 +68,6 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         $this->assertEquals(1, $transport->send($message2));
     }
 
-    private function _getTransport(array $transports)
-    {
-        $transport = new Swift_Transport_LoadBalancedTransport();
-        $transport->setTransports($transports);
-
-        return $transport;
-    }
-
     public function testTransportsAreReusedInRotatingFashion()
     {
         $message1 = $this->getMockery('Swift_Mime_Message');
@@ -690,7 +682,7 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         $t1->shouldReceive('send')
            ->once()
            ->with($message, \Mockery::on(function (&$var) use (&$failures, $testCase) {
-                return $testCase->varsAreReferences($var, $failures);
+               return $testCase->varsAreReferences($var, $failures);
            }))
            ->andReturnUsing(function () use (&$connectionState) {
                if ($connectionState) {
@@ -701,6 +693,24 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
         $transport = $this->_getTransport(array($t1));
         $transport->start();
         $transport->send($message, $failures);
+    }
+
+    public function testRegisterPluginDelegatesToLoadedTransports()
+    {
+        $plugin = $this->_createPlugin();
+
+        $t1 = $this->getMockery('Swift_Transport');
+        $t2 = $this->getMockery('Swift_Transport');
+
+        $t1->shouldReceive('registerPlugin')
+           ->once()
+           ->with($plugin);
+        $t2->shouldReceive('registerPlugin')
+           ->once()
+           ->with($plugin);
+
+        $transport = $this->_getTransport(array($t1, $t2));
+        $transport->registerPlugin($plugin);
     }
 
     /**
@@ -726,22 +736,12 @@ class Swift_Transport_LoadBalancedTransportTest extends \SwiftMailerTestCase
 
     // -- Private helpers
 
-    public function testRegisterPluginDelegatesToLoadedTransports()
+    private function _getTransport(array $transports)
     {
-        $plugin = $this->_createPlugin();
+        $transport = new Swift_Transport_LoadBalancedTransport();
+        $transport->setTransports($transports);
 
-        $t1 = $this->getMockery('Swift_Transport');
-        $t2 = $this->getMockery('Swift_Transport');
-
-        $t1->shouldReceive('registerPlugin')
-            ->once()
-            ->with($plugin);
-        $t2->shouldReceive('registerPlugin')
-            ->once()
-            ->with($plugin);
-
-        $transport = $this->_getTransport(array($t1, $t2));
-        $transport->registerPlugin($plugin);
+        return $transport;
     }
 
     private function _createPlugin()

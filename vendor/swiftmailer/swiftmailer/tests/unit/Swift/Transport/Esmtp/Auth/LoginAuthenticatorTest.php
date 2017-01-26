@@ -15,11 +15,6 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
         $this->assertEquals('LOGIN', $login->getAuthKeyword());
     }
 
-    private function _getAuthenticator()
-    {
-        return new Swift_Transport_Esmtp_Auth_LoginAuthenticator();
-    }
-
     public function testSuccessfulAuthentication()
     {
         $login = $this->_getAuthenticator();
@@ -38,8 +33,6 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
             '%s: The buffer accepted all commands authentication should succeed'
             );
     }
-
-    // -- Private helpers
 
     public function testAuthenticationFailureSendRsetAndReturnFalse()
     {
@@ -62,5 +55,12 @@ class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTest
         $this->assertFalse($login->authenticate($this->_agent, 'jack', 'pass'),
             '%s: Authentication fails, so RSET should be sent'
             );
+    }
+
+    // -- Private helpers
+
+    private function _getAuthenticator()
+    {
+        return new Swift_Transport_Esmtp_Auth_LoginAuthenticator();
     }
 }

@@ -34,11 +34,6 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
         $this->assertEquals('abcdefghijklm', $str);
     }
 
-    private function _createFileStream($file, $writable = false)
-    {
-        return new Swift_ByteStream_FileByteStream($file, $writable);
-    }
-
     public function testFileDataCanBeReadSequentially()
     {
         $file = $this->_createFileStream($this->_testFile);
@@ -85,11 +80,6 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
         $this->assertEquals("foo\nbar\nzip\ntest\n", file_get_contents($this->_testFile));
     }
 
-    private function _createFilter($search, $replace)
-    {
-        return new Swift_StreamFilters_StringReplacementFilter($search, $replace);
-    }
-
     public function testBindingOtherStreamsMirrorsWriteOperations()
     {
         $file = $this->_createFileStream(
@@ -116,13 +106,6 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
 
         $file->write('x');
         $file->write('y');
-    }
-
-    // -- Creation methods
-
-    private function _createMockInputStream()
-    {
-        return $this->getMock('Swift_InputByteStream');
     }
 
     public function testBindingOtherStreamsMirrorsFlushOperations()
@@ -170,5 +153,22 @@ class Swift_ByteStream_FileByteStreamAcceptanceTest extends \PHPUnit_Framework_T
         $file->unbind($is2);
 
         $file->write('y');
+    }
+
+    // -- Creation methods
+
+    private function _createFilter($search, $replace)
+    {
+        return new Swift_StreamFilters_StringReplacementFilter($search, $replace);
+    }
+
+    private function _createMockInputStream()
+    {
+        return $this->getMockBuilder('Swift_InputByteStream')->getMock();
+    }
+
+    private function _createFileStream($file, $writable = false)
+    {
+        return new Swift_ByteStream_FileByteStream($file, $writable);
     }
 }

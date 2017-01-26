@@ -98,22 +98,47 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
         $duration = $time - $this->_start;
 
         switch ($this->_mode) {
-            case self::BYTES_PER_MINUTE :
+            case self::BYTES_PER_MINUTE:
                 $sleep = $this->_throttleBytesPerMinute($duration);
                 break;
-            case self::MESSAGES_PER_SECOND :
+            case self::MESSAGES_PER_SECOND:
                 $sleep = $this->_throttleMessagesPerSecond($duration);
                 break;
-            case self::MESSAGES_PER_MINUTE :
+            case self::MESSAGES_PER_MINUTE:
                 $sleep = $this->_throttleMessagesPerMinute($duration);
                 break;
-            default :
+            default:
                 $sleep = 0;
                 break;
         }
 
         if ($sleep > 0) {
             $this->sleep($sleep);
+        }
+    }
+
+    /**
+     * Invoked when a Message is sent.
+     *
+     * @param Swift_Events_SendEvent $evt
+     */
+    public function sendPerformed(Swift_Events_SendEvent $evt)
+    {
+        parent::sendPerformed($evt);
+        ++$this->_messages;
+    }
+
+    /**
+     * Sleep for $seconds.
+     *
+     * @param int $seconds
+     */
+    public function sleep($seconds)
+    {
+        if (isset($this->_sleeper)) {
+            $this->_sleeper->sleep($seconds);
+        } else {
+            sleep($seconds);
         }
     }
 
@@ -171,30 +196,5 @@ class Swift_Plugins_ThrottlerPlugin extends Swift_Plugins_BandwidthMonitorPlugin
         $expectedDuration = $this->_messages / ($this->_rate / 60);
 
         return (int) ceil($expectedDuration - $timePassed);
-    }
-
-    /**
-     * Sleep for $seconds.
-     *
-     * @param int $seconds
-     */
-    public function sleep($seconds)
-    {
-        if (isset($this->_sleeper)) {
-            $this->_sleeper->sleep($seconds);
-        } else {
-            sleep($seconds);
-        }
-    }
-
-    /**
-     * Invoked when a Message is sent.
-     *
-     * @param Swift_Events_SendEvent $evt
-     */
-    public function sendPerformed(Swift_Events_SendEvent $evt)
-    {
-        parent::sendPerformed($evt);
-        ++$this->_messages;
     }
 }

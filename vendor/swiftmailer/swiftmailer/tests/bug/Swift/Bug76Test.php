@@ -24,18 +24,11 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
         $this->_encoder = $this->_createEncoder();
     }
 
-    private function _createEncoder()
-    {
-        return new Swift_Mime_ContentEncoder_Base64ContentEncoder();
-    }
-
     public function tearDown()
     {
         unlink($this->_inputFile);
         unlink($this->_outputFile);
     }
-
-    // -- Custom Assertions
 
     public function testBase64EncodedLineLengthNeverExceeds76CharactersEvenIfArgsDo()
     {
@@ -49,6 +42,16 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
         $this->assertMaxLineLength(76, $this->_outputFile,
             '%s: Line length should not exceed 76 characters'
         );
+    }
+
+    // -- Custom Assertions
+
+    public function assertMaxLineLength($length, $filePath, $message = '%s')
+    {
+        $lines = file($filePath);
+        foreach ($lines as $line) {
+            $this->assertTrue((strlen(trim($line)) <= 76), $message);
+        }
     }
 
     // -- Creation Methods
@@ -67,16 +70,13 @@ class Swift_Bug76Test extends \PHPUnit_Framework_TestCase
         fclose($fp);
     }
 
+    private function _createEncoder()
+    {
+        return new Swift_Mime_ContentEncoder_Base64ContentEncoder();
+    }
+
     private function _createStream($file)
     {
         return new Swift_ByteStream_FileByteStream($file, true);
-    }
-
-    public function assertMaxLineLength($length, $filePath, $message = '%s')
-    {
-        $lines = file($filePath);
-        foreach ($lines as $line) {
-            $this->assertTrue((strlen(trim($line)) <= 76), $message);
-        }
     }
 }

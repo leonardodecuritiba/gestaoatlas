@@ -27,11 +27,6 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    protected function _createMessage()
-    {
-        return new Swift_Message();
-    }
-
     public function testSubjectIsDisplayedIfSet()
     {
         $message = $this->_createMessage();
@@ -657,11 +652,6 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    protected function _createMimePart()
-    {
-        return new Swift_MimePart();
-    }
-
     public function testAttachmentsBeingAttached()
     {
         $message = $this->_createMessage();
@@ -722,11 +712,6 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             '$~D',
             $message->toString()
             );
-    }
-
-    protected function _createAttachment()
-    {
-        return new Swift_Attachment();
     }
 
     public function testAttachmentsAndEmbeddedFilesBeingAttached()
@@ -813,11 +798,6 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             '$~D',
             $message->toString()
             );
-    }
-
-    protected function _createEmbeddedFile()
-    {
-        return new Swift_EmbeddedFile();
     }
 
     public function testComplexEmbeddingOfContent()
@@ -1071,8 +1051,6 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    // -- Private helpers
-
     public function testBodyCanBeSetWithAttachments()
     {
         $message = $this->_createMessage();
@@ -1247,5 +1225,27 @@ class Swift_Mime_SimpleMessageAcceptanceTest extends \PHPUnit_Framework_TestCase
             'with a new line',
             $message->toString()
             );
+    }
+
+    // -- Private helpers
+
+    protected function _createMessage()
+    {
+        return new Swift_Message();
+    }
+
+    protected function _createMimePart()
+    {
+        return new Swift_MimePart();
+    }
+
+    protected function _createAttachment()
+    {
+        return new Swift_Attachment();
+    }
+
+    protected function _createEmbeddedFile()
+    {
+        return new Swift_EmbeddedFile();
     }
 }

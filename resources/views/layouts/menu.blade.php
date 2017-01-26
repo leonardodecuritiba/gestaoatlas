@@ -65,20 +65,21 @@
                                         <li>
                                             <a>Tributação<span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
-                                                <li><a href="{{ route('categoria_tributacao.index') }}">Categoria Tributável</a></li>
-                                                <li><a href="{{ route('cst_ipi.index') }}">CST IPI</a></li>
+                                                <li><a href="{{ route('cst.index') }}">CST</a></li>
+                                                <li><a href="{{ route('cfop.index') }}">CFOP</a></li>
                                                 <li><a href="{{ route('ncm.index') }}">NCM</a></li>
-                                                <li><a href="{{ route('origem_tributacao.index') }}">Origem</a></li>
+                                                <li><a href="{{ route('natureza_operacao.index') }}">Nat. Operação</a>
+                                                </li>
                                             </ul>
                                         </li>
                                         <li><a href="{{ route('formas_pagamentos.index') }}">Formas de Pagamento</a></li>
                                     </ul>
                                 </li>
-                                <li><a>Atividades<span class="fa fa-chevron-down"></span></a>
-                                    <ul class="nav child_menu">
-                                        <li><a href="{{ route('servicos.index') }}">Serviços</a></li>
-                                    </ul>
-                                </li>
+                                {{--<li><a>Atividades<span class="fa fa-chevron-down"></span></a>--}}
+                                {{--<ul class="nav child_menu">--}}
+                                {{--<li><a href="{{ route('servicos.index') }}">Serviços</a></li>--}}
+                                {{--</ul>--}}
+                                {{--</li>--}}
                                 <li><a href="{{ route('ajustes.index') }}">Configurações</a></li>
                             </ul>
                         </li>
@@ -97,6 +98,7 @@
                             <ul class="nav child_menu">
                                 <li><a href="{{ route('pecas.index') }}">Peças/Produtos</a></li>
                                 <li><a href="{{ route('kits.index') }}">Kits</a></li>
+                                <li><a href="{{ route('servicos.index') }}">Serviços</a></li>
                             </ul>
                         </li>
                     @endrole

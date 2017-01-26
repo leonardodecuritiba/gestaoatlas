@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Equipamento;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Validator;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class EquipamentosController extends Controller
             $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
         }
         */
-        $this->idcolaborador = 1;
+        $this->idcolaborador = Auth::user()->colaborador->idcolaborador;
         $this->Page = (object)[
             'link'              => "equipamentos",
             'Target'            => "Equipamento",

@@ -14,6 +14,8 @@ class Servico extends Model
     protected $table = 'servicos';
     protected $primaryKey = 'idservico';
     protected $fillable = [
+        'idgrupo',
+        'idunidade',
         'nome',
         'descricao',
         'valor',
@@ -39,6 +41,17 @@ class Servico extends Model
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+    // ************************** hasOne **********************************
+    public function grupo()
+    {
+        return $this->hasOne('App\Grupo', 'idgrupo', 'idgrupo');
+    }
+
+    public function unidade()
+    {
+        return $this->hasOne('App\Unidade', 'idunidade', 'idunidade');
+    }
+
     // ************************** HASMANY **********************************
     public function servico_prestados()
     {

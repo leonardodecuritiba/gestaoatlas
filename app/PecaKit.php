@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PecaKit extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'peca_kit';
     protected $primaryKey = 'idpeca_kit';
-    public $timestamps = true;
     protected $fillable = [
         'idkit',
         'idpeca',
@@ -19,16 +19,6 @@ class PecaKit extends Model
         'valor_total',
         'descricao_adicional',
     ];
-
-
-
-
-
-//    public function valor_total()
-//    {
-//        $value = $this->attributes['quantidade'] * $this->attributes['valor_unidade'];
-//        return number_format($value,2,',','.');
-//    }
 
     public function getValorUnidadeAttribute($value)
     {

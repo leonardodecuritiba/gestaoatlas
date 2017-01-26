@@ -38,6 +38,11 @@ class Swift_Mime_Grammar
         $this->init();
     }
 
+    public function __wakeup()
+    {
+        $this->init();
+    }
+
     protected function init()
     {
         if (count(self::$_specials) > 0) {
@@ -111,11 +116,6 @@ class Swift_Mime_Grammar
                 self::$_grammar['domain-literal'].')';
         self::$_grammar['addr-spec'] = '(?:'.self::$_grammar['local-part'].'@'.
                 self::$_grammar['domain'].')';
-    }
-
-    public function __wakeup()
-    {
-        $this->init();
     }
 
     /**
