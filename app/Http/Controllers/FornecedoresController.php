@@ -2,11 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\CategoriaTributacao;
-use App\CstIpi;
-use App\Ncm;
-use App\OrigemTributacao;
-use App\Segmento;
 use App\SegmentoFornecedor;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -165,10 +160,6 @@ class FornecedoresController extends Controller
     {
         $this->Page->extras = [
             'segmentos_fornecedores' => SegmentoFornecedor::all(),
-            'ncm' => Ncm::all(),
-            'categoria_tributacao' => CategoriaTributacao::all(),
-            'origem_tributacao' => OrigemTributacao::all(),
-            'cst_ipi' => CstIpi::all(),
         ];
 
         $this->Page->titulo_primario = "Visualização de ";

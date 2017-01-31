@@ -71,16 +71,13 @@
     </script>
     @include('helpers.select2.get_ajax');
 
-    @if(isset($Peca))
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $(".select2_single-ajax").empty()
-                    .append('<option value="{{$Peca->peca_tributacao->idncm}}">{{$Peca->peca_tributacao->ncm->codigo}}</option>')
-                    .val('{{$Peca->peca_tributacao->idncm}}').trigger('change');
-            });
-        </script>
-    @endif
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single-ajax").empty()
+                .append('<option value="{{$Peca->peca_tributacao->idncm}}">{{$Peca->peca_tributacao->ncm->codigo}}</option>')
+                .val('{{$Peca->peca_tributacao->idncm}}').trigger('change');
+        });
+    </script>
     <script>
         var $container_form = $('section#peca');
 

@@ -28,8 +28,5 @@
         };
 
         $(".select2_single-ajax").select2(remoteDataConfig);
-
-        {{--{{$Peca->peca_tributacao->idncm}}--}}
-        {{--        {{$Peca->peca_tributacao->ncm->codigo}}--}}
     });
 </script>

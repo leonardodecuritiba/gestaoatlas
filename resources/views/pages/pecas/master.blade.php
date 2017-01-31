@@ -58,32 +58,19 @@
                 width: 'resolve'
             });
         });
-        $(document).ready(function(){
-            var remoteDataConfigNCM = {
-                width: 'resolve',
-                ajax: {
-                    url: "{{url('getNcm')}}",
-                    dataType: 'json',
-                    delay: 250,
-
-                    data: function (params) {
-                        return {
-                            value: params.term, // search term
-                        };
-                    },
-                    processResults: function (data) {
-                        console.log(data);
-                        return {
-                            results: data
-                        };
-                    },
-                    cache: true
-                },
-                minimumInputLength: 3,
-                language: "pt-BR"
-//                templateResult: formatState
-            };
-            $("select[name='idncm']").select2(remoteDataConfigNCM);
-        });
     </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+        var $_SELECT2_AJAX = [];
+        $_SELECT2_AJAX['url'] = "{{url('get_ajaxSelect2')}}";
+        $_SELECT2_AJAX['field'] = 'codigo';
+        $_SELECT2_AJAX['table'] = 'ncm';
+        $_SELECT2_AJAX['pk'] = 'idncm';
+        $_SELECT2_AJAX['action'] = 'busca_por_campo';
+    </script>
+    @include('helpers.select2.get_ajax');
 @endsection
