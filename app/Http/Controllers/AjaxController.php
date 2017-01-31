@@ -18,9 +18,12 @@ class AjaxController extends Controller
 {
     public function getNcm()
     {
-        $value = Input::has('value') ? Input::get('value') : '';
-        $data = Ncm::where('codigo', 'like', $value . "%")->get();
-        return $this->selectReturn('idncm', $data);
+        if (Input::has('value')) {
+            $value = Input::get('value');
+            return $value;
+            $data = Ncm::where('codigo', 'like', $value . "%")->get();
+            return $this->selectReturn('idncm', $data);
+        }
     }
 
     public function selectReturn($id, $data)

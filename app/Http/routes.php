@@ -132,22 +132,17 @@ Route::get('sendemail', function () {
 });
 
 
-
-
-
-/*
+/**/
 Route::get('ncm_ajax', function(){
 
-//    {results: [{"Code":"123360000"},{"Code":""},{"Code":""},{"Code":""}], more: false }
-
-// Make sure we have a result
-for ($i=0;$i<10;$i++) {
-    $data[] = array('id' => $i, 'text' => 'texto '.$i);
-}
-
-// return the result in json
-echo json_encode($data);
+    //    {results: [{"Code":"123360000"},{"Code":""},{"Code":""},{"Code":""}], more: false }
+    // Make sure we have a result
+    for ($i = 0; $i < 10; $i++) {
+        $data[] = array('id' => $i, 'text' => 'texto ' . $i);
+    }
+    // return the result in json
+    echo json_encode($data);
 })->name('ncm_ajax');
-*/
+
 
 

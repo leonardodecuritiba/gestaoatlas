@@ -61,107 +61,45 @@
             $(".select2_single").select2({
                 width: 'resolve'
             });
-
         });
+        var $_SELECT2_AJAX = [];
+        $_SELECT2_AJAX['url'] = "{{url('get_ajaxSelect2')}}";
+        $_SELECT2_AJAX['field'] = 'codigo';
+        $_SELECT2_AJAX['table'] = 'ncm';
+        $_SELECT2_AJAX['pk'] = 'idncm';
+        $_SELECT2_AJAX['action'] = 'busca_por_campo';
+    </script>
+    @include('helpers.select2.get_ajax');
 
-        //seleção do ncm
-        $(document).ready(function(){
-            $($container_form).find('div#tributacao select[name=idncm]').change(function(){
-//            $(this).find(':selected').data('id')
-                $select = $(this);
-                $parent = $($select).parents('div.form-group');
-                $data = $NCM_OPTION[0].data;
-
-                valor = parseFloat($data.aliquota_nacional);
-                $($parent).find('input[name=aliquota_nacional]').maskMoney('mask', valor*100);
-
-                valor = parseFloat($data.aliquota_importacao);
-                $($parent).find('input[name=aliquota_importacao]').maskMoney('mask', valor*100);
+    @if(isset($Peca))
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $(".select2_single-ajax").empty()
+                    .append('<option value="{{$Peca->peca_tributacao->idncm}}">{{$Peca->peca_tributacao->ncm->codigo}}</option>')
+                    .val('{{$Peca->peca_tributacao->idncm}}').trigger('change');
             });
-            @if(isset($Peca->tributacao->idncm))
+        </script>
+    @endif
 
-            //custo_reais
-            $parent = $($container_form).find('div#custo_reais');
-            valor = $($parent).find('input[name=custo_final]').val();
-            $($parent).find('input[name=custo_final]').maskMoney('mask', valor);
+    <script>
+        var $container_form = $('section#peca');
 
-            //custo_dolar
-            $parent = $($container_form).find('div#custo_dolar');
-            valor = $($parent).find('input[name=preco_final]').val();
-            $($parent).find('input[name=preco_final]').maskMoney('mask', valor);
+        var required_fields = ['codigo',
+            'descricao',
+            'descricao_tecnico',
+            'tipo',
+            'idmarca',
+            'idunidade',
+            'idgrupo',
+            'comissao_tecnico',
+            'comissao_vendedor',
+            'custo_final'
+        ];
 
-
-
-            {{--            $($parent).find('input[name=custo_final]').maskMoney('mask', '{{$Peca->tributacao->idncm}}');--}}
-
-
-                    idncm = "{{$Peca->tributacao->idncm}}";
-            $.ajax({
-                url: "{{route('getAjaxDataByID')}}",
-                type: 'GET',
-                data: {
-                    id      : idncm,
-                    table   : 'ncm',
-                    pk      : 'idncm',
-                    retorno : 'aliquota_nacional,aliquota_importacao'},
-                dataType: "json",
-                beforeSend: function (xhr, textStatus) {
-                    $('.loading').show();
-                },
-                error: function (xhr, textStatus) {
-                    console.log('xhr-error: ' + xhr.responseText);
-                    console.log('textStatus-error: ' + textStatus);
-                },
-                success: function (json) {
-                    $('.loading').hide();
-                    console.log(json);
-
-                    if(json.status==1) {
-                        $obj = json.response[0];
-                        $parent = $($container_form).find('div#tributacao');
-
-                        $($parent).find('input[name=aliquota_nacional]').maskMoney('mask', $obj.aliquota_nacional*100);
-                        $($parent).find('input[name=aliquota_importacao]').maskMoney('mask', $obj.aliquota_importacao*100);
-                    }
-                }
-            });
-            @endif
-        });
         $(document).ready(function(){
-            $NCM_OPTION = [];
-            var remoteDataConfig = {
-                width: 'resolve',
-                ajax: {
-                    url: "{{url('ncm_ajax')}}",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            value: params.term, // search term
-                            field: 'codigo',
-                            table: 'ncm',
-                            pk: 'idncm',
-                            action: 'busca_por_campo'
-                        };
-                    },
-                    processResults: function (data) {
-                        // parse the results into the format expected by Select2.
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data
-                        $NCM_OPTION = data;
-                        return {
-                            results: data
-                        };
-                    },
-                    cache: true
-                },
-                minimumInputLength: 3,
-                language: "pt-BR"
-//                templateResult: formatState
-            };
-
-            $(".select2_single-ajax").select2(remoteDataConfig);
-
+            $.each(required_fields, function (i, v) {
+                $($container_form).find('input[name="' + v + '"]').prop('required', true);
+            });
         });
     </script>
 @endsection
