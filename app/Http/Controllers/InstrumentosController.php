@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Instrumento;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 use Illuminate\Http\Request;
+
 
 use App\Http\Requests;
 

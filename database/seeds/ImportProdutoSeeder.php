@@ -16,6 +16,12 @@ class ImportProdutoSeeder extends Seeder
     public function run()
     {
 //    php artisan db:seed --class=ImportProdutoSeeder
+        //PROCEDIMENTOS
+        //1-zerar banco
+        //3-subir banco básico (gestaoatlas.sql)
+        //4-subir ncm
+        //5-php artisan db:seed --class=ImportServicoSeeder
+        //6-php artisan db:seed --class=ImportProdutoSeeder
         $start = microtime(true);
         echo "*** Iniciando o Upload (import_produtos_v3.xlsx) ***";
         $file = storage_path('uploads') . '\import\import_produtos_v3.xlsx';
@@ -31,7 +37,7 @@ class ImportProdutoSeeder extends Seeder
 
                 $data_col = ['idfornecedor', 'idmarca', 'idgrupo', 'idunidade',
                     'tipo', 'codigo', 'codigo_auxiliar', 'codigo_barras', 'descricao', 'descricao_tecnico', 'sub_grupo', 'garantia', 'comissao_vendedor', 'comissao_tecnico',
-                    'ncm', 'icms_base_calculo', 'icms_valor_total', 'icms_base_calculo_st', 'icms_valor_total_st', 'valor_ipi', 'valor_unitario_tributavel',
+                    'idncm', 'icms_base_calculo', 'icms_valor_total', 'icms_base_calculo_st', 'icms_valor_total_st', 'valor_ipi', 'valor_unitario_tributavel',
                     'icms_situacao_tributaria', 'icms_origem', 'pis_situacao_tributaria', 'valor_frete', 'valor_seguro', 'custo_final',
                     'cfop_venda', 'cst_venda', 'gricki', 'savegnago', 'geral', 'porcentagem'];
                 echo "****************** ('.$i.') ****************** \n";
@@ -218,7 +224,7 @@ class ImportProdutoSeeder extends Seeder
 
     public function insert_ncm($peca)
     {
-        $ncm = \App\Helpers\DataHelper::getOnlyNumbers($peca['ncm']);
+        $ncm = \App\Helpers\DataHelper::getOnlyNumbersLetters($peca['idncm']);
         $data = \App\Ncm::where('codigo', $ncm)->first();
         if (count($data) > 0) {
 //            echo "NCM existente: ".$ncm."\n";

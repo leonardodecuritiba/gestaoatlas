@@ -9,6 +9,7 @@ use App\OrigemTributacao;
 use App\Segmento;
 use App\SegmentoFornecedor;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Contato;
 use App\PessoaFisica;

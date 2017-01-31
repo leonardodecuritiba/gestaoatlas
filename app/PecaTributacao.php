@@ -98,12 +98,12 @@ class PecaTributacao extends Model
         return DataHelper::getFloat2Real($value);
     }
 
-    public function setIcmsValorIpiAttribute($value)
+    public function setValorIpiAttribute($value)
     {
         $this->attributes['valor_ipi'] = DataHelper::getPercent2Float($value);
     }
 
-    public function getIcmsValorIpiAttribute($value)
+    public function getValorIpiAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }

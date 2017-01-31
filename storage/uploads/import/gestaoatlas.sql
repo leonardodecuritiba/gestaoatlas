@@ -66,7 +66,7 @@ INSERT INTO `situacao_ordem_servicos` (`idsituacao_ordem_servico`, `descricao`, 
 (3, 'FINALIZADA', '2016-12-07 12:38:46', NULL, NULL),
 (4, 'FATURADA', '2016-12-07 12:38:46', NULL, NULL),
 (5, 'AGUARDANDO PEÇA', '2016-12-07 12:38:46', NULL, NULL),
-(6, 'EQUIPAMENTO NA OFICIONA', '2016-12-07 12:38:46', NULL, NULL);
+(6, 'EQUIPAMENTO NA OFICINA', '2016-12-07 12:38:46', NULL, NULL);
 
 -- --------------------------------------------------------
 --
@@ -876,9 +876,6 @@ INSERT INTO `selos` (`idselo`, `idtecnico`, `numeracao`, `numeracao_externa`, `e
 (11, 1, '20332999', NULL, 0, 0, '2016-12-07 12:38:58', '2016-12-11 11:27:54', NULL),
 (12, 1, '20333000', NULL, 0, 0, '2016-12-07 12:38:58', '2016-12-11 11:27:54', NULL);
 
-
-
-
 -- --------------------------------------------------------
 
 --
@@ -892,4 +889,3 @@ INSERT INTO `role_user` (`user_id`, `role_id`) VALUES
 (5, 5),
 (8, 4),
 (9, 1);
-

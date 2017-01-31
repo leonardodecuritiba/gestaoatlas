@@ -41,6 +41,11 @@ class DataHelper
         return ($value != NULL) ? preg_replace("/[^0-9]/", "", $value) : $value;
     }
 
+    static public function getOnlyNumbersLetters($value)
+    {
+        return ($value != NULL) ? preg_replace("/[^a-zA-Z0-9-]/", "", $value) : $value;
+    }
+
     static public function getShortName($value)
     {
         $value = explode(' ', $value);
