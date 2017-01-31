@@ -107,7 +107,8 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Região </label>
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Região Franquia /
+                                    Filial</label>
                                 <div class="col-md-10 col-sm-10 col-xs-12">
                                     <select name="idregiao" class="form-control" required>
                                         <option value="">Região</option>

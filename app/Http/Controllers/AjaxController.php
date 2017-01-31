@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Ncm;
 use App\Tecnico;
 use DB;
 use Illuminate\Http\Request;
@@ -15,11 +16,11 @@ use SintegraPHP\SP\SintegraSP;
 
 class AjaxController extends Controller
 {
-    public function getSelosDisponiveis()
+    public function getNcm()
     {
         $value = Input::has('value') ? Input::get('value') : '';
-        $data = Auth::user()->colaborador->tecnico->selos_disponiveis()->where('numeracao', 'like', $value . "%")->get();
-        return $this->selectReturn('idselo', $data);
+        $data = Ncm::where('codigo', 'like', $value . "%")->get();
+        return $this->selectReturn('idncm', $data);
     }
 
     public function selectReturn($id, $data)
@@ -33,12 +34,20 @@ class AjaxController extends Controller
         echo json_encode($retorno);
     }
 
+    public function getSelosDisponiveis()
+    {
+        $value = Input::has('value') ? Input::get('value') : '';
+        $data = Auth::user()->colaborador->tecnico->selos_disponiveis()->where('numeracao', 'like', $value . "%")->get();
+        return $this->selectReturn('idselo', $data);
+    }
+
     public function getLacresDisponiveis()
     {
         $value = Input::has('value') ? Input::get('value') : '';
         $data = Auth::user()->colaborador->tecnico->lacres_disponiveis()->where('numeracao', 'like', $value . "%")->get();
         return $this->selectReturn('idlacre', $data);
     }
+
     public function getAjaxDataByID()
     {
         $id      = Input::get('id');
@@ -54,6 +63,7 @@ class AjaxController extends Controller
             'response'  => $response
         ]);
     }
+
     public function ajax()
     {
         $id = Input::get('id');
@@ -80,6 +90,7 @@ class AjaxController extends Controller
                 ]);
         }
     }
+
     public function ajaxSelect2()
     {
         $id = Input::get('id');
@@ -120,6 +131,7 @@ class AjaxController extends Controller
 //        }
         echo json_encode($data);
     }
+
     public function consulta_cnpj(Request $request){
         try {
             if (!$request->has('cnpj') || !$request->has('captcha') || !$request->has('cookie'))
@@ -163,6 +175,7 @@ class AjaxController extends Controller
         header('Content-Type: application/json');
         echo json_encode($return);
     }
+
     public function consulta_params(){
         $params = SintegraSP::getParams();
         echo json_encode($params);

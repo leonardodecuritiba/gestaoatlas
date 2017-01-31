@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Peca;
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class PecasRequest extends Request
 {
@@ -50,19 +51,19 @@ class PecasRequest extends Request
                     'comissao_vendedor' => 'required',
 
                     //peca_tributacao
-                    'idcfop' => 'required|exists:cfops',
-                    'idcst' => 'required|exists:csts',
-                    'idnatureza_operacao' => 'required|exists:natureza_operacaos',
+                    'idcfop' => 'required|exists:cfops,id',
+                    'idcst' => 'required|exists:csts,id',
+                    'idnatureza_operacao' => 'required|exists:natureza_operacaos,id',
                     'idncm' => 'required|exists:ncm',
-                    'icms_base_calculo' => 'required',
-                    'icms_valor_total' => 'required',
-                    'icms_base_calculo_st' => 'required',
-                    'icms_valor_total_st' => 'required',
-                    'valor_ipi' => 'required',
-                    'valor_unitario_tributavel' => 'required',
-                    'icms_situacao_tributaria' => 'required',
-                    'icms_origem' => 'required',
-                    'pis_situacao_tributaria' => 'required',
+//                    'icms_base_calculo' => 'required',
+//                    'icms_valor_total' => 'required',
+//                    'icms_base_calculo_st' => 'required',
+//                    'icms_valor_total_st' => 'required',
+//                    'valor_ipi' => 'required',
+//                    'valor_unitario_tributavel' => 'required',
+//                    'icms_situacao_tributaria' => 'required',
+//                    'icms_origem' => 'required',
+//                    'pis_situacao_tributaria' => 'required',
                     'valor_frete' => 'required',
                     'valor_seguro' => 'required',
                     'custo_final' => 'required',

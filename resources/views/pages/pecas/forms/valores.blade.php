@@ -30,7 +30,7 @@
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Valor Seguro:</label>
         <div class="col-md-4 col-sm-4 col-xs-12">
             <input name="valor_seguro" type="text" class="form-control show-valor"
-                   placeholder="Valor Frete"
+                   placeholder="Valor Seguro"
                    value="{{(isset($Peca->peca_tributacao->valor_seguro))?$Peca->peca_tributacao->valor_seguro:old('valor_seguro')}}"
             >
         </div>

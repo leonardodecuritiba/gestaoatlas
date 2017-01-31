@@ -10,6 +10,7 @@ use App\Marca;
 use App\NaturezaOperacao;
 use App\Ncm;
 use App\Peca;
+use App\PecaTributacao;
 use App\TabelaPreco;
 use App\TabelaPrecoPeca;
 use App\Unidade;
@@ -79,6 +80,8 @@ class PecasController extends Controller
             'grupos'                => Grupo::all(),
             'ncm' => Ncm::get()->take(100),
             'cst' => Cst::all(),
+            'cfop' => Cfop::all(),
+            'natureza_operacao' => NaturezaOperacao::all(),
             'tabela_preco'          => TabelaPreco::all(),
         ];
         return view('pages.'.$this->Page->link.'.master')
@@ -108,6 +111,7 @@ class PecasController extends Controller
     public function store(PecasRequest $request)
     {
         $data = $request->all();
+//        return $data;
         $campos = ['comissao_tecnico', 'comissao_vendedor', 'custo_final'];
         foreach ($campos as $val) {
             if ($data[$val] == '') {
@@ -123,7 +127,8 @@ class PecasController extends Controller
         } else {
             $data['foto'] = NULL;
         }
-
+        $PecaTributacao = PecaTributacao::create($data);
+        $data['idpeca_tributacao'] = $PecaTributacao->id;
         $Peca = Peca::create($data);
         $dados = [
             'margens' => $request->get('margem'),

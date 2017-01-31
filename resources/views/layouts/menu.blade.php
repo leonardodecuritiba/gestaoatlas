@@ -37,7 +37,8 @@
                                         <li><a>Clientes<span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 <li><a href="{{ route('segmentos.index') }}">Segmentos</a></li>
-                                                <li><a href="{{ route('regioes.index') }}">Regiões</a></li>
+                                                <li><a href="{{ route('regioes.index') }}">Regiões Franquia / Filial</a>
+                                                </li>
                                             </ul>
                                         </li>
                                         <li><a>Colaboradores <span class="label label-danger pull-right">Incompleto</span></a>

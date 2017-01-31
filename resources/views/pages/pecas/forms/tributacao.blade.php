@@ -43,25 +43,25 @@
             <label class="control-label col-md-2 col-sm-2 col-xs-12">NCM: </label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <select name="idncm" class="select2_single form-control" tabindex="-1" required>
-                    <option value="">Código NCM</option>
-                    @foreach($Page->extras['ncm'] as $sel)
-                        <option value="{{$sel->idncm}}"
-                                @if(isset($Peca->peca_tributacao->idncm) && $Peca->peca_tributacao->idncm == $sel->idncm) selected @endif
-                        >{{$sel->codigo}}</option>
-                    @endforeach
+                    <option value="1">1</option>
+                    {{--@foreach($Page->extras['ncm'] as $sel)--}}
+                    {{--<option value="{{$sel->idncm}}"--}}
+                    {{--@if(isset($Peca->peca_tributacao->idncm) && $Peca->peca_tributacao->idncm == $sel->idncm) selected @endif--}}
+                    {{-->{{$sel->codigo}}</option>--}}
+                    {{--@endforeach--}}
                 </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">icms_base_calculo</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS BC.</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_base_calculo" type="text" class="form-control show-porcento"
                        placeholder="icms_base_calculo ICMS (%)"
                        value="{{(isset($Peca->peca_tributacao->icms_base_calculo))?$Peca->peca_tributacao->icms_base_calculo:old('icms_base_calculo')}}"
                 >
             </div>
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">icms_valor_total</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS Valor total</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_valor_total" type="text" class="form-control show-porcento"
                        placeholder="icms_valor_total (%)"
@@ -70,14 +70,14 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">icms_base_calculo_st</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS BC. ST</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_base_calculo_st" type="text" class="form-control show-porcento"
                        placeholder="icms_base_calculo_st (%)"
                        value="{{(isset($Peca->peca_tributacao->icms_base_calculo_st))?$Peca->peca_tributacao->icms_base_calculo_st:old('icms_base_calculo_st')}}"
                 >
             </div>
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">icms_valor_total_st</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS Valor total st</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_valor_total_st" type="text" class="form-control show-porcento"
                        placeholder="icms_valor_total_st (%)"
@@ -86,13 +86,13 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">valor_ipi</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">Valor IPI</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="valor_ipi" type="text" class="form-control show-porcento" placeholder="valor_ipi (%)"
                        value="{{(isset($Peca->peca_tributacao->valor_ipi))?$Peca->peca_tributacao->valor_ipi:old('valor_ipi')}}"
                 >
             </div>
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">valor_unitario_tributavel</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">Valor Uni. Tributável</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="valor_unitario_tributavel" type="text" class="form-control show-porcento"
                        placeholder="valor_unitario_tributavel (%)"
@@ -101,14 +101,14 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">icms_situacao_tributaria</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS Sit. Tributária</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_situacao_tributaria" type="text" class="form-control show-porcento"
                        placeholder="icms_situacao_tributaria (%)"
                        value="{{(isset($Peca->peca_tributacao->icms_situacao_tributaria))?$Peca->peca_tributacao->icms_situacao_tributaria:old('icms_situacao_tributaria')}}"
                 >
             </div>
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">icms_origem</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS Origem</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_origem" type="text" class="form-control show-porcento" placeholder="icms_origem (%)"
                        value="{{(isset($Peca->tributacao->icms_origem))?$Peca->tributacao->icms_origem:old('icms_origem')}}"
@@ -116,7 +116,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">pis_situacao_tributaria</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">PIS Sit. Tributária</label>
             <div class="col-md-10 col-sm-10 col-xs-12">
                 <input name="pis_situacao_tributaria" type="text" class="form-control show-porcento"
                        placeholder="pis_situacao_tributaria (%)"

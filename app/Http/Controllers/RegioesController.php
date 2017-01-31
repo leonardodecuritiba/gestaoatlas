@@ -14,20 +14,12 @@ class RegioesController extends Controller
 
     public function __construct()
     {
-        /*
-        $this->middleware('role:empresa');
-        if(Auth::check()){
-            $this->empresa_id = (Auth::user()->empresa == "")?'*':Auth::user()->empresa->EMP_ID;
-            $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
-        }
-        */
-        $this->idprofissional_criador = 1;
         $this->Page = (object)[
             'link'              => "regioes",
-            'Target'            => "Região",
-            'Targets'           => "Regiões",
-            'Titulo'            => "Regiões",
-            'search_no_results' => "Nenhuma região encontrada!",
+            'Target' => "Região Franquia / Filial",
+            'Targets' => "Regiões Franquia / Filial",
+            'Titulo' => "Regiões Franquia / Filial",
+            'search_no_results' => "Nenhuma Região Franquia / Filial encontrada!",
             'titulo_primario'   => "",
             'titulo_secundario' => "",
         ];
@@ -48,15 +40,6 @@ class RegioesController extends Controller
             ->with('Page', $this->Page);
     }
 
-    public function show($id)
-    {
-        $this->Page->titulo_primario = "Visualização de ";
-        $Regiao = Regiao::find($id);
-        return view('pages.'.$this->Page->link.'.show')
-            ->with('Regiao', $Regiao)
-            ->with('Page', $this->Page);
-    }
-
     public function store(Request $request)
     {
         //
@@ -71,9 +54,18 @@ class RegioesController extends Controller
             $data = $request->all();
             $Regiao = Regiao::create($data);
             session()->forget('mensagem');
-            session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
+            session(['mensagem' => $this->Page->Target . ' adicionada com sucesso!']);
             return $this->show($Regiao->idregiao);
         }
+    }
+
+    public function show($id)
+    {
+        $this->Page->titulo_primario = "Visualização de ";
+        $Regiao = Regiao::find($id);
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Regiao', $Regiao)
+            ->with('Page', $this->Page);
     }
 
     public function update(Request $request, $id)
@@ -92,7 +84,7 @@ class RegioesController extends Controller
             $Regiao->update($dataUpdate);
 
             session()->forget('mensagem');
-            session(['mensagem' => $this->Page->Target.' atualizado com sucesso!']);
+            session(['mensagem' => $this->Page->Target . ' atualizada com sucesso!']);
             return $this->show($Regiao->idregiao);
         }
     }
@@ -103,6 +95,6 @@ class RegioesController extends Controller
         $Regiao = Regiao::find($id);
         $Regiao->delete();
         return response()->json(['status' => '1',
-            'response' => $this->Page->Target.' removido com sucesso!']);
+            'response' => $this->Page->Target . ' removida com sucesso!']);
     }
 }
