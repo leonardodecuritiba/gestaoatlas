@@ -38,7 +38,6 @@
                         </button>
                     </li>
                     <li>
-                        {{$OrdemServico->getValores()}}
                         <button class="btn btn-default"
                                 data-ordem_servico="{{$OrdemServico}}"
                                 data-situacao="{{$OrdemServico->situacao}}"
@@ -243,7 +242,9 @@
                 $(this).find('div.perfil ul b#valor_total_pecas').html('R$ ' + valores_.valor_total_pecas);
                 $(this).find('div.perfil ul b#valor_total_kits').html('R$ ' + valores_.valor_total_kits);
                 $(this).find('div.perfil ul b#valor_deslocamento').html('R$ ' + valores_.valor_deslocamento);
-                $(this).find('div.perfil ul b#valor_total').html('R$ ' + valores_.valor_total);
+                $(this).find('div.perfil ul b#pedagios').html('R$ ' + valores_.pedagios);
+                $(this).find('div.perfil ul b#outros_custos').html('R$ ' + valores_.outros_custos);
+                $(this).find('div.perfil ul b#valor_final').html('R$ ' + valores_.valor_final);
 
             });
         });

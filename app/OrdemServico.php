@@ -32,6 +32,7 @@ class OrdemServico extends Model
     // ******************** FUNCTIONS ******************************
     public function getValores()
     {
+        $this->update_valores($this->attributes['valor_total']);
         $valor_total_servicos = 0;
         foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
             $valor_total_servicos += $instrumentos_manutencao->getTotalServicos();
@@ -50,7 +51,10 @@ class OrdemServico extends Model
         }
         $data['valor_total_kits'] = DataHelper::getFloat2Real($valor_total_kits);
         $data['valor_deslocamento'] = $this->custos_deslocamento;
+        $data['pedagios'] = $this->pedagios;
+        $data['outros_custos'] = $this->outros_custos;
         $data['valor_total'] = $this->valor_total;
+        $data['valor_final'] = $this->valor_final;
         return json_encode($data);
     }
     public function update_valores($valor_total)
@@ -64,31 +68,34 @@ class OrdemServico extends Model
     {
         return (($this->attributes['fechamento'] != NULL) && ($this->attributes['idsituacao_ordem_servico'] == 3)) ? 1 : 0;
     }
+
+    public function getCustosDeslocamentoAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
     public function setCustosDeslocamentoAttribute($value)
     {
         $this->attributes['custos_deslocamento'] = DataHelper::getReal2Float($value);
     }
+
+    public function getPedagiosAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
     public function setPedagiosAttribute($value)
     {
         $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getOutrosCustosAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
     }
     public function setOutrosCustosAttribute($value)
     {
         $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
     }
 
-    public function getCustosDeslocamentoAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-    public function getPedagiosAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-    public function getOutrosCustosAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
 
     public function getValorTotalAttribute($value)
     {

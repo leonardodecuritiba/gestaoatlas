@@ -21,13 +21,16 @@
                                 </li>
                                 <li><i class="fa fa-money"></i> Valor Kits: <b class="pull-right"
                                                                                id="valor_total_kits"></b></li>
-                                <li><i class="fa fa-money"></i> Valor Deslocamento: <b class="pull-right"
-                                                                                       id="valor_deslocamento"></b></li>
+                                <li><i class="fa fa-money"></i> Deslocamento: <b class="pull-right"
+                                                                                 id="valor_deslocamento"></b></li>
+                                <li><i class="fa fa-money"></i> Pedágios: <b class="pull-right" id="pedagios"></b></li>
+                                <li><i class="fa fa-money"></i> Outros Custos: <b class="pull-right"
+                                                                                  id="outros_custos"></b></li>
                                 <li>
                                     <div class="ln_solid"></div>
                                 </li>
-                                <li><i class="fa fa-money"></i> Valor Total: <b class="pull-right "
-                                                                                id="valor_total"></b></li>
+                                <li><i class="fa fa-money"></i> Valor Final: <b class="pull-right "
+                                                                                id="valor_final"></b></li>
                             </ul>
                         </div>
                     </div>
