@@ -147,9 +147,8 @@ class ClientesController extends Controller
 //                ->withInput();
         } else {
 
-            $data['idcolaborador_criador'] = $this->colaborador->idcolaborador;
-            if (!$this->colaborador->hasRole('tecnico')) {
-                $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
+            $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
+            if ($this->colaborador->hasRole('admin')) {
                 $data['validated_at'] = Carbon::now()->toDateTimeString();
             }
             //store CONTATO
