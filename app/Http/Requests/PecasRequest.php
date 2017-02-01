@@ -64,8 +64,8 @@ class PecasRequest extends Request
 //                    'icms_situacao_tributaria' => 'required',
 //                    'icms_origem' => 'required',
 //                    'pis_situacao_tributaria' => 'required',
-                    'valor_frete' => 'required',
-                    'valor_seguro' => 'required',
+//                    'valor_frete' => 'required',
+//                    'valor_seguro' => 'required',
                     'custo_final' => 'required',
 
                 ];

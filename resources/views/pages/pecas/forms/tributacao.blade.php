@@ -11,7 +11,7 @@
                     <option value="">Escolha a Categoria</option>
                     @foreach($Page->extras['cfop'] as $sel)
                         <option value="{{$sel->id}}"
-                                @if(isset($Peca->peca_tributacao->idcfop) && $Peca->peca_tributacao->idcfop == $sel->id) selected @endif
+                                @if((isset($Peca->peca_tributacao->idcfop) && $Peca->peca_tributacao->idcfop == $sel->id) || (old('idcfop') == $sel->id)) selected @endif
                         >{{$sel->numeracao}}</option>
                     @endforeach
                 </select>
@@ -22,7 +22,7 @@
                     <option value="">Escolha a Categoria</option>
                     @foreach($Page->extras['cst'] as $sel)
                         <option value="{{$sel->id}}"
-                                @if(isset($Peca->peca_tributacao->idcst) && $Peca->peca_tributacao->idcst == $sel->id) selected @endif
+                                @if((isset($Peca->peca_tributacao->idcst) && $Peca->peca_tributacao->idcst == $sel->id) || (old('idcst') == $sel->id)) selected @endif
                         >{{$sel->numeracao}}</option>
                     @endforeach
                 </select>
@@ -35,7 +35,7 @@
                     <option value="">Escolha a Natureza de Operação</option>
                     @foreach($Page->extras['natureza_operacao'] as $sel)
                         <option value="{{$sel->id}}"
-                                @if(isset($Peca->peca_tributacao->idnatureza_operacao) && $Peca->peca_tributacao->idnatureza_operacao == $sel->id) selected @endif
+                                @if((isset($Peca->peca_tributacao->idnatureza_operacao) && $Peca->peca_tributacao->idnatureza_operacao == $sel->id) || (old('idnatureza_operacao') == $sel->id)) selected @endif
                         >({{$sel->numero}}) {{$sel->descricao}}</option>
                     @endforeach
                 </select>
@@ -60,7 +60,7 @@
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_valor_total" type="text" class="form-control show-porcento"
                        placeholder="icms_valor_total (%)"
-                       value="{{(isset($Peca->tributacao->icms_valor_total))?$Peca->tributacao->icms_valor_total:old('icms_valor_total')}}"
+                       value="{{(isset($Peca->peca_tributacao->icms_valor_total))?$Peca->peca_tributacao->icms_valor_total:old('icms_valor_total')}}"
                 >
             </div>
         </div>
@@ -72,11 +72,11 @@
                        value="{{(isset($Peca->peca_tributacao->icms_base_calculo_st))?$Peca->peca_tributacao->icms_base_calculo_st:old('icms_base_calculo_st')}}"
                 >
             </div>
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS Valor total st</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS Valor Total ST</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_valor_total_st" type="text" class="form-control show-porcento"
                        placeholder="icms_valor_total_st (%)"
-                       value="{{(isset($Peca->tributacao->icms_valor_total_st))?$Peca->tributacao->icms_valor_total_st:old('icms_valor_total_st')}}"
+                       value="{{(isset($Peca->peca_tributacao->icms_valor_total_st))?$Peca->peca_tributacao->icms_valor_total_st:old('icms_valor_total_st')}}"
                 >
             </div>
         </div>
@@ -87,11 +87,11 @@
                        value="{{(isset($Peca->peca_tributacao->valor_ipi))?$Peca->peca_tributacao->valor_ipi:old('valor_ipi')}}"
                 >
             </div>
-            <label class="control-label col-md-2 col-sm-2 col-xs-12">Valor Uni. Tributável</label>
+            <label class="control-label col-md-2 col-sm-2 col-xs-12">Valor Un. Tributável</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="valor_unitario_tributavel" type="text" class="form-control show-porcento"
                        placeholder="valor_unitario_tributavel (%)"
-                       value="{{(isset($Peca->tributacao->valor_unitario_tributavel))?$Peca->tributacao->valor_unitario_tributavel:old('valor_unitario_tributavel')}}"
+                       value="{{(isset($Peca->peca_tributacao->valor_unitario_tributavel))?$Peca->peca_tributacao->valor_unitario_tributavel:old('valor_unitario_tributavel')}}"
                 >
             </div>
         </div>
@@ -106,7 +106,7 @@
             <label class="control-label col-md-2 col-sm-2 col-xs-12">ICMS Origem</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
                 <input name="icms_origem" type="text" class="form-control show-porcento" placeholder="icms_origem (%)"
-                       value="{{(isset($Peca->tributacao->icms_origem))?$Peca->tributacao->icms_origem:old('icms_origem')}}"
+                       value="{{(isset($Peca->peca_tributacao->icms_origem))?$Peca->peca_tributacao->icms_origem:old('icms_origem')}}"
                 >
             </div>
         </div>

@@ -8,12 +8,14 @@
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Comissão Téc.:</label>
         <div class="col-md-4 col-sm-4 col-xs-12">
             <input name="comissao_tecnico" type="text" class="form-control show-porcento" placeholder="Comissão Técnico"
+                   required
                    value="{{(isset($Peca->comissao_tecnico))?$Peca->comissao_tecnico:old('comissao_tecnico')}}"
             >
         </div>
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Comissão Vend.:</label>
         <div class="col-md-4 col-sm-4 col-xs-12">
-            <input name="comissao_vendedor" type="text" class="form-control show-porcento" placeholder="Comissão Vendedor"
+            <input name="comissao_vendedor" type="text" class="form-control show-porcento"
+                   placeholder="Comissão Vendedor" required
                    value="{{(isset($Peca->comissao_vendedor))?$Peca->comissao_vendedor:old('comissao_vendedor')}}"
             >
         </div>
@@ -40,7 +42,7 @@
     <div id="custo_reais">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Custo Final:</label>
         <div class="col-md-10 col-sm-10 col-xs-12">
-            <input name="custo_final" id="valor-ref" type="text" class="form-control show-valor"
+            <input name="custo_final" id="valor-ref" type="text" class="form-control show-valor" required
                    placeholder="Custo Final"
                    value="{{(isset($Peca->peca_tributacao->custo_final))?$Peca->peca_tributacao->custo_final:old('custo_final')}}"
             >

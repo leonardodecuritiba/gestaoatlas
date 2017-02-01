@@ -57,6 +57,10 @@ class PecaTributacao extends Model
         return $this->hasOne('App\Peca', 'idpeca_tributacao');
     }
 
+    public function custo_final_float()
+    {
+        return $this->attributes['custo_final'];
+    }
 
     public function setIcmsBaseCalculoAttribute($value)
     {
@@ -68,12 +72,12 @@ class PecaTributacao extends Model
         return DataHelper::getFloat2Real($value);
     }
 
-    public function setValorTotalAttribute($value)
+    public function setIcmsValorTotalAttribute($value)
     {
         $this->attributes['icms_valor_total'] = DataHelper::getPercent2Float($value);
     }
 
-    public function getValorTotalAttribute($value)
+    public function getIcmsValorTotalAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }
