@@ -205,7 +205,7 @@ class PecasController extends Controller
             $dataUpdate['foto'] = $img->update($request->file('foto'), $this->Page->table, $Peca->foto);
         }
         $Peca->update($dataUpdate);
-        
+
         //ATUALIZANDO OS PREÇOS E MARGENS
         $dados = [
             'margens' => $request->get('margem'),
@@ -213,7 +213,7 @@ class PecasController extends Controller
             'valor' => $Peca->peca_tributacao->custo_final_float(),
         ];
         $Tabelas_preco = $Peca->tabela_preco;
-        DataHelper::updatePriceTable($request, $Tabelas_preco);
+        DataHelper::updatePriceTable($dados, $Tabelas_preco);
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);

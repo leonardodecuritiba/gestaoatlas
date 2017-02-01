@@ -1,4 +1,43 @@
 <script type="text/javascript">
+    function converteFloatMoeda(valor) {
+        var inteiro = null, decimal = null, c = null, j = null;
+        var aux = new Array();
+        valor = "" + valor;
+        c = valor.indexOf(".", 0);
+        //encontrou o ponto na string
+        if (c > 0) {
+            //separa as partes em inteiro e decimal
+            inteiro = valor.substring(0, c);
+            decimal = valor.substring(c + 1, valor.length);
+        } else {
+            inteiro = valor;
+        }
+
+        //pega a parte inteiro de 3 em 3 partes
+        for (j = inteiro.length, c = 0; j > 0; j -= 3, c++) {
+            aux[c] = inteiro.substring(j - 3, j);
+        }
+
+        //percorre a string acrescentando os pontos
+        inteiro = "";
+        for (c = aux.length - 1; c >= 0; c--) {
+            inteiro += aux[c] + '.';
+        }
+        //retirando o ultimo ponto e finalizando a parte inteiro
+
+        inteiro = inteiro.substring(0, inteiro.length - 1);
+
+        decimal = parseInt(decimal);
+        if (isNaN(decimal)) {
+            decimal = "00";
+        } else {
+            decimal = "" + decimal;
+            if (decimal.length === 1) {
+                decimal = decimal + "0";
+            }
+        }
+        return inteiro + "," + decimal;
+    }
     $(document).ready(function () {
         //PREÇO
         $(".calc-tabela_preco").change(function () {
@@ -11,7 +50,7 @@
 
             //atualiza margem
             margem = (margem.toFixed(2));
-            $(this).parents('div.form-group').find('input#margem').val(margem);
+            $(this).parents('div.form-group').find('input#margem').val(converteFloatMoeda(margem));
         });
         //MARGEM
         $(".calc-tabela_margem").change(function () {
@@ -24,7 +63,8 @@
 
             //atualiza preco_min
             preco = (preco.toFixed(2));
-            $(this).parents('div.form-group').find('input#preco').val(preco);
+            $(this).parents('div.form-group').find('input#preco').val(converteFloatMoeda(preco));
+//            $(this).parents('div.form-group').find('input#preco').maskMoney('mask', 1999.99);
         });
     });
 
@@ -40,7 +80,7 @@
 
             //atualiza margem_minimo
             margem = (margem.toFixed(2));
-            $(this).parents('div.form-group').find('input#margem_minimo').val(margem);
+            $(this).parents('div.form-group').find('input#margem_minimo').val(converteFloatMoeda(margem));
         });
         //MARGEM MÍNIMO
         $(".calc-tabela_margem-min").change(function () {
@@ -53,7 +93,7 @@
 
             //atualiza preco_min
             preco = (preco.toFixed(2));
-            $(this).parents('div.form-group').find('input#preco_minimo').val(preco);
+            $(this).parents('div.form-group').find('input#preco_minimo').val(converteFloatMoeda(preco));
         });
     });
 

@@ -7,10 +7,6 @@ use Illuminate\Http\Request;
 class DataHelper
 {
     // ******************** FUNCTIONS ******************************
-    static public function getReal2Float($value)
-    {
-        return floatval(str_replace(',','.',str_replace('.','',$value)));
-    }
     static public function getFloat2Real($value)
     {
         return number_format($value,2,',','.');
@@ -91,13 +87,13 @@ class DataHelper
         return $data;
     }
 
-
-    // CRIAÇÃO/ATUALIZAÇÃO DAS TABELAS DE PREÇOS
-
     static public function getPercent2Float($value)
     {
         return floatval(str_replace(',', '.', $value));
     }
+
+
+    // CRIAÇÃO/ATUALIZAÇÃO DAS TABELAS DE PREÇOS
 
     static public function updatePriceTable($dados, $Tabelas_preco)
     {
@@ -106,8 +102,8 @@ class DataHelper
         $margem_minimos = $dados['margem_minimo'];
 
         foreach ($Tabelas_preco as $tabela_preco) {
-            $margem = DataHelper::getPercent2Float($margens[$tabela_preco->idtabela_preco]);
-            $margem_minimo = DataHelper::getPercent2Float($margem_minimos[$tabela_preco->idtabela_preco]);
+            $margem = DataHelper::getReal2Float($margens[$tabela_preco->idtabela_preco]);
+            $margem_minimo = DataHelper::getReal2Float($margem_minimos[$tabela_preco->idtabela_preco]);
 
             $dataUpd = [
                 'preco' => $valor + ($valor * $margem) / 100,
@@ -117,5 +113,10 @@ class DataHelper
             ];
             $tabela_preco->update($dataUpd);
         }
+    }
+
+    static public function getReal2Float($value)
+    {
+        return floatval(str_replace(',', '.', str_replace('.', '', $value)));
     }
 }
