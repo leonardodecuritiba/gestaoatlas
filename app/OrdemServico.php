@@ -30,7 +30,29 @@ class OrdemServico extends Model
 
 
     // ******************** FUNCTIONS ******************************
+    public function getValores()
+    {
+        $valor_total_servicos = 0;
+        foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
+            $valor_total_servicos += $instrumentos_manutencao->getTotalServicos();
+        }
+        $data['valor_total_servicos'] = DataHelper::getFloat2Real($valor_total_servicos);
 
+        $valor_total_pecas = 0;
+        foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
+            $valor_total_pecas += $instrumentos_manutencao->getTotalPecas();
+        }
+        $data['valor_total_pecas'] = DataHelper::getFloat2Real($valor_total_pecas);
+
+        $valor_total_kits = 0;
+        foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
+            $valor_total_kits += $instrumentos_manutencao->getTotalKits();
+        }
+        $data['valor_total_kits'] = DataHelper::getFloat2Real($valor_total_kits);
+        $data['valor_deslocamento'] = $this->custos_deslocamento;
+        $data['valor_total'] = $this->valor_total;
+        return json_encode($data);
+    }
     public function update_valores($valor_total)
     {
         $this->attributes['valor_total'] = $valor_total;

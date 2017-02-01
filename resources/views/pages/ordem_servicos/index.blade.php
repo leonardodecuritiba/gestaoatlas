@@ -20,6 +20,7 @@
 								<th>ID</th>
 								<th>Nº Chamado</th>
 								<th>Data de Abertura</th>
+								<th>Técnico</th>
 								<th>Cliente</th>
 								<th>Ações</th>
 							</tr>
@@ -47,6 +48,7 @@
 									<td>{{$selecao->idordem_servico}}</td>
 									<td>{{$selecao->numero_chamado}}</td>
 									<td>{{$selecao->created_at}}</td>
+									<td>{{$selecao->colaborador->nome}}</td>
 									<td>{{$selecao->cliente->getType()->nome_principal}}</td>
 									<td>
 										<a class="btn btn-success btn-xs"

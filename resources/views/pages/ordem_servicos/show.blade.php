@@ -38,12 +38,13 @@
                         </button>
                     </li>
                     <li>
+                        {{$OrdemServico->getValores()}}
                         <button class="btn btn-default"
                                 data-ordem_servico="{{$OrdemServico}}"
                                 data-situacao="{{$OrdemServico->situacao}}"
                                 data-cliente="{{$OrdemServico->cliente->getType()->nome_principal}}"
                                 data-colaborador="{{$OrdemServico->colaborador}}"
-                                data-valor_total="{{$OrdemServico->valor_total}}"
+                                data-valores="{{$OrdemServico->getValores()}}"
                                 data-toggle="modal"
                                 data-target="#modalPopup">
                             <i class="fa fa-eye fa-2"></i> Visualizar O.S.
@@ -222,7 +223,7 @@
                 cliente_ = $($origem).data('cliente');
                 situacao_ = $($origem).data('situacao');
                 colaborador_ = $($origem).data('colaborador');
-                valor_total_ = $($origem).data('valor_total');
+                valores_ = $($origem).data('valores');
 
                 idordem_servico = ordem_servico_.idordem_servico;
                 data_abertura = ordem_servico_.created_at;
@@ -237,7 +238,13 @@
                 $(this).find('div.perfil ul b#data_abertura').html(data_abertura);
                 $(this).find('div.perfil ul b#situacao').html(situacao);
                 $(this).find('div.perfil ul b#colaborador').html(colaborador);
-                $(this).find('div.perfil ul b#valor_total').html('R$ ' + valor_total_);
+
+                $(this).find('div.perfil ul b#valor_total_servicos').html('R$ ' + valores_.valor_total_servicos);
+                $(this).find('div.perfil ul b#valor_total_pecas').html('R$ ' + valores_.valor_total_pecas);
+                $(this).find('div.perfil ul b#valor_total_kits').html('R$ ' + valores_.valor_total_kits);
+                $(this).find('div.perfil ul b#valor_deslocamento').html('R$ ' + valores_.valor_deslocamento);
+                $(this).find('div.perfil ul b#valor_total').html('R$ ' + valores_.valor_total);
+
             });
         });
         //ABRE MODAL INSTRUMENTO.

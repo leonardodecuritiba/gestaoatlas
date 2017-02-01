@@ -36,6 +36,21 @@ class AparelhoManutencao extends Model
         return $this->hasMany('App\ServicoPrestado', 'idaparelho_manutencao');
     }
 
+    public function getTotalPecas()
+    {
+        return $this->pecas_utilizadas->sum('valor_float');
+    }
+
+    public function getTotalServicos()
+    {
+        return $this->servico_prestados->sum('valor_float');
+    }
+
+    public function getTotalKits()
+    {
+        return $this->kits_utilizados->sum('valor_float');
+    }
+
     public function get_total()
     {
         $total = 0;

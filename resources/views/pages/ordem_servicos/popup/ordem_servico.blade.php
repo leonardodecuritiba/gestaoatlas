@@ -1,7 +1,6 @@
 <div class="modal fade" id="modalPopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"></div>
             <div class="modal-body">
                 <div class="profile_details">
                     <div class="well">
@@ -13,7 +12,22 @@
                                 <li><i class="fa fa-calendar"></i> Data de Abertura: <b id="data_abertura"></b></li>
                                 <li><i class="fa fa-warning"></i> Situação: <b id="situacao"></b></li>
                                 <li><i class="fa fa-user"></i> Colaborador: <b id="colaborador"></b></li>
-                                <li><i class="fa fa-money"></i> Valor Total: <b id="valor_total"></b></li>
+                            </ul>
+                            <ul class="list-unstyled product_price">
+                                <li><i class="fa fa-money"></i> Valor Serviços: <b class="pull-right"
+                                                                                   id="valor_total_servicos"></b></li>
+                                <li><i class="fa fa-money"></i> Valor Peças/Produtos: <b class="pull-right"
+                                                                                         id="valor_total_pecas"></b>
+                                </li>
+                                <li><i class="fa fa-money"></i> Valor Kits: <b class="pull-right"
+                                                                               id="valor_total_kits"></b></li>
+                                <li><i class="fa fa-money"></i> Valor Deslocamento: <b class="pull-right"
+                                                                                       id="valor_deslocamento"></b></li>
+                                <li>
+                                    <div class="ln_solid"></div>
+                                </li>
+                                <li><i class="fa fa-money"></i> Valor Total: <b class="pull-right "
+                                                                                id="valor_total"></b></li>
                             </ul>
                         </div>
                     </div>
