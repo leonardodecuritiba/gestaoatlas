@@ -7,11 +7,12 @@ var list_required_pjuridica = [
     'ativ_economica',
     'sit_cad_vigente',
     'sit_cad_status',
-    'data_sit_cad',
+    // 'data_sit_cad',
     'reg_apuracao',
-    'data_credenciamento',
+    // 'data_credenciamento',
     'ind_obrigatoriedade',
-    'data_ini_obrigatoriedade'];
+    // 'data_ini_obrigatoriedade'
+];
 
 $(document).ready(function(){
 
