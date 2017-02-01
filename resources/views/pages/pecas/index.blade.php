@@ -49,6 +49,7 @@
 						<table border="0" class="table table-hover">
 							<thead>
 								<tr>
+									<th>#</th>
 									<th>Imagem</th>
 									<th>Tipo</th>
 									<th>Descrição</th>
@@ -60,6 +61,7 @@
 							<tbody>
 								@foreach($Buscas as $peca)
 									<tr>
+										<td>{{$peca->idpeca}}</td>
 										<td>
 											<img src="{{$peca->getFotoThumb()}}" class="avatar" alt="Avatar">
 										</td>

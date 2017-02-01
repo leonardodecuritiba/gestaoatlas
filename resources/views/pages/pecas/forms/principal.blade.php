@@ -15,21 +15,8 @@
     @endif
     <div class="form-group">
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Foto:</label>
-        <div class="col-md-10 col-sm-10 col-xs-12">
+        <div class="col-md-4 col-sm-4 col-xs-12 form-group">
             <input name="foto" type="file" class="form-control">
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Tipo:</label>
-        <div class="col-md-4 col-sm-4 col-xs-12">
-            <select name="tipo" class="select2_single form-control" tabindex="-1" required>
-                <option value="peca"
-                        @if((isset($Peca->tipo) && $Peca->tipo=='peca') || (old('tipo') == 'peca')) selected @endif
-                >Peça</option>
-                <option value="produto"
-                        @if((isset($Peca->tipo) && $Peca->tipo=='produto') || (old('tipo') == 'produto')) selected @endif
-                >Produto</option>
-            </select>
         </div>
         <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Fornecedor:</label>
         <div class="col-md-4 col-sm-4 col-xs-12 form-group">
@@ -44,16 +31,23 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Código:</label>
-        <div class="col-md-4 col-sm-4 col-xs-12 form-group">
-            <input name="codigo" type="text" class="form-control" placeholder="Código" required
-                   value="{{(isset($Peca->codigo))?$Peca->codigo:old('codigo')}}"
-            >
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Tipo:</label>
+        <div class="col-md-4 col-sm-4 col-xs-12">
+            <select name="tipo" class="select2_single form-control" tabindex="-1" required>
+                <option value="peca"
+                        @if((isset($Peca->tipo) && $Peca->tipo=='peca') || (old('tipo') == 'peca')) selected @endif
+                >Peça
+                </option>
+                <option value="produto"
+                        @if((isset($Peca->tipo) && $Peca->tipo=='produto') || (old('tipo') == 'produto')) selected @endif
+                >Produto
+                </option>
+            </select>
         </div>
-        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Cód. Auxiliar:</label>
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Garantia (meses):</label>
         <div class="col-md-4 col-sm-4 col-xs-12 form-group">
-            <input name="codigo_auxiliar" type="text" class="form-control" placeholder="Código Auxiliar"
-                   value="{{(isset($Peca->codigo_auxiliar))?$Peca->codigo_auxiliar:old('codigo_auxiliar')}}"
+            <input name="garantia" type="text" class="form-control show-meses" placeholder="Garantia" required
+                   value="{{(isset($Peca->garantia))?$Peca->garantia:old('garantia')}}"
             >
         </div>
     </div>
@@ -64,10 +58,10 @@
                    value="{{(isset($Peca->codigo_barras))?$Peca->codigo_barras:old('codigo_barras')}}"
             >
         </div>
-        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Garantia (meses):</label>
+        <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Cód. Auxiliar:</label>
         <div class="col-md-4 col-sm-4 col-xs-12 form-group">
-            <input name="garantia" type="text" class="form-control show-meses" placeholder="Garantia" required
-                   value="{{(isset($Peca->garantia))?$Peca->garantia:old('garantia')}}"
+            <input name="codigo_auxiliar" type="text" class="form-control" placeholder="Código Auxiliar"
+                   value="{{(isset($Peca->codigo_auxiliar))?$Peca->codigo_auxiliar:old('codigo_auxiliar')}}"
             >
         </div>
     </div>

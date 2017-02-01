@@ -18,7 +18,6 @@ $factory->define(App\Peca::class, function (Faker\Generator $faker) {
         'idunidade'         => $faker->numberBetween($min = 1, $max = 5),
         'idgrupo'           => $faker->numberBetween($min = 1, $max = 2),
         'tipo'              => $faker->randomElement($array = array ('peca','produto')),
-        'codigo'            => $faker->randomNumber($nbDigits = 5),
         'codigo_auxiliar'   => $faker->randomNumber($nbDigits = 3),
         'codigo_barras'     => $faker->ean13,
         'descricao'         => $faker->sentence($nbWords = 6, $variableNbWords = true),

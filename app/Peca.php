@@ -17,7 +17,6 @@ class Peca extends Model
         'idgrupo',
         'idunidade',
         'tipo',
-        'codigo',
         'codigo_auxiliar',
         'codigo_barras',
         'descricao',

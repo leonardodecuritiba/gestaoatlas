@@ -35,7 +35,6 @@ class CreatePecasTable extends Migration
 
             $table->enum('tipo', array('peca', 'produto'));
 
-            $table->string('codigo',50);
             $table->string('codigo_auxiliar',50)->nullable();
             $table->string('codigo_barras',50)->nullable();
             $table->string('descricao',100);
