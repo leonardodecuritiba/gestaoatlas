@@ -43,7 +43,6 @@ class PecasRequest extends Request
                     'idgrupo' => 'required|exists:grupos',
                     'idunidade' => 'required|exists:unidades',
                     'tipo' => 'required',
-                    'codigo' => 'required',
                     'descricao' => 'required',
                     'descricao_tecnico' => 'required',
                     'garantia' => 'required',
