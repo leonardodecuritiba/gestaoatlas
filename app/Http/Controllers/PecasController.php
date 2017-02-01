@@ -205,6 +205,7 @@ class PecasController extends Controller
             $dataUpdate['foto'] = $img->update($request->file('foto'), $this->Page->table, $Peca->foto);
         }
         $Peca->update($dataUpdate);
+        $Peca->peca_tributacao->update($dataUpdate);
 
         //ATUALIZANDO OS PREÇOS E MARGENS
         $dados = [

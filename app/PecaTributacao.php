@@ -64,7 +64,7 @@ class PecaTributacao extends Model
 
     public function setIcmsBaseCalculoAttribute($value)
     {
-        $this->attributes['icms_base_calculo'] = DataHelper::getPercent2Float($value);
+        $this->attributes['icms_base_calculo'] = DataHelper::getReal2Float($value);
     }
 
     public function getIcmsBaseCalculoAttribute($value)
@@ -74,7 +74,7 @@ class PecaTributacao extends Model
 
     public function setIcmsValorTotalAttribute($value)
     {
-        $this->attributes['icms_valor_total'] = DataHelper::getPercent2Float($value);
+        $this->attributes['icms_valor_total'] = DataHelper::getReal2Float($value);
     }
 
     public function getIcmsValorTotalAttribute($value)
@@ -84,7 +84,7 @@ class PecaTributacao extends Model
 
     public function setIcmsBaseCalculoStAttribute($value)
     {
-        $this->attributes['icms_base_calculo_st'] = DataHelper::getPercent2Float($value);
+        $this->attributes['icms_base_calculo_st'] = DataHelper::getReal2Float($value);
     }
 
     public function getIcmsBaseCalculoStAttribute($value)
@@ -94,7 +94,7 @@ class PecaTributacao extends Model
 
     public function setIcmsValorTotalStAttribute($value)
     {
-        $this->attributes['icms_valor_total_st'] = DataHelper::getPercent2Float($value);
+        $this->attributes['icms_valor_total_st'] = DataHelper::getReal2Float($value);
     }
 
     public function getIcmsValorTotalStAttribute($value)
@@ -104,7 +104,7 @@ class PecaTributacao extends Model
 
     public function setValorIpiAttribute($value)
     {
-        $this->attributes['valor_ipi'] = DataHelper::getPercent2Float($value);
+        $this->attributes['valor_ipi'] = DataHelper::getReal2Float($value);
     }
 
     public function getValorIpiAttribute($value)
@@ -114,7 +114,7 @@ class PecaTributacao extends Model
 
     public function setValorUnitarioTributavelAttribute($value)
     {
-        $this->attributes['valor_unitario_tributavel'] = DataHelper::getPercent2Float($value);
+        $this->attributes['valor_unitario_tributavel'] = DataHelper::getReal2Float($value);
     }
 
     public function getValorUnitarioTributavelAttribute($value)
@@ -124,7 +124,7 @@ class PecaTributacao extends Model
 
     public function setIcmsSituacaoTributariaAttribute($value)
     {
-        $this->attributes['icms_situacao_tributaria'] = DataHelper::getPercent2Float($value);
+        $this->attributes['icms_situacao_tributaria'] = DataHelper::getReal2Float($value);
     }
 
     public function getIcmsSituacaoTributariaAttribute($value)
@@ -134,7 +134,7 @@ class PecaTributacao extends Model
 
     public function setIcmsOrigemAttribute($value)
     {
-        $this->attributes['icms_origem'] = DataHelper::getPercent2Float($value);
+        $this->attributes['icms_origem'] = DataHelper::getReal2Float($value);
     }
 
     public function getIcmsOrigemAttribute($value)
@@ -144,7 +144,7 @@ class PecaTributacao extends Model
 
     public function setPisSituacaoTributariaAttribute($value)
     {
-        $this->attributes['pis_situacao_tributaria'] = DataHelper::getPercent2Float($value);
+        $this->attributes['pis_situacao_tributaria'] = DataHelper::getReal2Float($value);
     }
 
     public function getPisSituacaoTributariaAttribute($value)
@@ -154,7 +154,7 @@ class PecaTributacao extends Model
 
     public function setValorFreteAttribute($value)
     {
-        $this->attributes['valor_frete'] = DataHelper::getPercent2Float($value);
+        $this->attributes['valor_frete'] = DataHelper::getReal2Float($value);
     }
 
     public function getValorFreteAttribute($value)
@@ -164,7 +164,7 @@ class PecaTributacao extends Model
 
     public function setValorSeguroAttribute($value)
     {
-        $this->attributes['valor_seguro'] = DataHelper::getPercent2Float($value);
+        $this->attributes['valor_seguro'] = DataHelper::getReal2Float($value);
     }
 
     public function getValorSeguroAttribute($value)
@@ -174,7 +174,7 @@ class PecaTributacao extends Model
 
     public function setCustoFinalAttribute($value)
     {
-        $this->attributes['custo_final'] = DataHelper::getPercent2Float($value);
+        $this->attributes['custo_final'] = DataHelper::getReal2Float($value);
     }
 
     public function getCustoFinalAttribute($value)

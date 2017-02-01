@@ -6,6 +6,7 @@
     <div class="form-horizontal form-label-left">
         <?php $Tabelas_precos = isset($Peca) ? $Peca->tabela_preco : $Page->extras['tabela_preco'];?>
         @foreach($Tabelas_precos as $tabela_preco)
+            {{$tabela_preco->margem}}
             <div class="x_title">
                 <h4>{{isset($Peca)?$tabela_preco->tabela_preco->descricao:$tabela_preco->descricao}}</h4>
                 <div class="clearfix"></div>
@@ -17,11 +18,11 @@
                            value="{{$tabela_preco->margem}}"
                            class="form-control show-porcento calc-tabela_margem" placeholder="Margem">
                 </div>
-                <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Preço:</label>
+                <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Preço Venda :</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <input type="text" id="preco" name="preco[{{$tabela_preco->idtabela_preco}}]"
                            value="{{$tabela_preco->preco}}"
-                           class="form-control show-valor calc-tabela_preco" placeholder="Preço">
+                           class="form-control show-valor calc-tabela_preco" placeholder="Preço Venda ">
                 </div>
             </div>
             <div class="form-group">
@@ -31,11 +32,11 @@
                            value="{{$tabela_preco->margem_minimo}}"
                            class="form-control show-porcento calc-tabela_margem-min" placeholder="Margem Mínima">
                 </div>
-                <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Preço Mínimo:</label>
+                <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Preço Venda Mínimo:</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <input type="text" id="preco_minimo" name="preco_minimo[{{$tabela_preco->idtabela_preco}}]"
                            value="{{$tabela_preco->preco_minimo}}"
-                           class="form-control show-valor calc-tabela_preco-min" placeholder="Preço Mínimo">
+                           class="form-control show-valor calc-tabela_preco-min" placeholder="Preço Venda  Mínimo">
                 </div>
             </div>
         @endforeach
