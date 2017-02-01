@@ -6,7 +6,7 @@
                             class="sr-only">Close</span></button>
                 <h4 class="modal-title">Atualizar Senha</h4>
             </div>
-            {!! Form::open(['route' => ['colaboradores.upd_pass',$Colaborador->user->iduser],
+            {!! Form::open(['route' => ['colaboradores.upd_pass',$Colaborador->idcolaborador],
                     'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
             <div class="modal-body">
                 <div class="form-group">
