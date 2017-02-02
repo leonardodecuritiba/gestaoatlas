@@ -28,10 +28,23 @@ class Selo extends Model
         $Selo->used = 1;
         return $Selo->save();
     }
+
     static public function selo_exists($numeracao)
     {
         return (self::where('numeracao', $numeracao)->count() > 0);
     }
+
+    public function extorna()
+    {
+        if ($this->externo == 1) {
+            $this->forceDelete();
+        } else {
+            $this->used = 0;
+            $this->save();
+        }
+        return;
+    }
+
     public function has_selo_instrumento()
     {
         return ($this->selo_instrumento()->count() > 0);

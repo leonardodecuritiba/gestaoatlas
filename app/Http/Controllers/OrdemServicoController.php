@@ -57,12 +57,13 @@ class OrdemServicoController extends Controller
 
     public function index(Request $request)
     {
-        if (isset($request['busca'])) {
-            $busca = $request['busca'];
-            $Buscas = OrdemServico::paginate(10);
-        } else {
-            $Buscas = OrdemServico::paginate(10);
-        }
+//        if (isset($request['busca'])) {
+//            $busca = $request['busca'];
+//            $Buscas = OrdemServico::paginate(10)->orderBy('created_at','asc');
+//        } else {
+//            $Buscas = OrdemServico::paginate(10);
+//        }
+        $Buscas = OrdemServico::orderBy('created_at', 'desc')->paginate(10);
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
@@ -70,6 +71,9 @@ class OrdemServicoController extends Controller
 
     public function show(Request $request, $idordem_servico)
     {
+        //atualizando o valor total da OS
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $OrdemServico->update_valores();
         return $this->buscaInstrumentos($request, $idordem_servico);
     }
 
@@ -144,7 +148,6 @@ class OrdemServicoController extends Controller
             'outros_custos'             => $Cliente->outros_custos,
             'idsituacao_ordem_servico'  => 1
         ];
-
         $OrdemServico = OrdemServico::create($data);
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_abr]);
@@ -164,6 +167,17 @@ class OrdemServicoController extends Controller
             'idordem_servico' => $idordem_servico,
             'idinstrumento' => $idinstrumento
         ]);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return redirect()->route('ordem_servicos.show', $idordem_servico);
+    }
+
+    public function removeInstrumento($idaparelho_manutencao)
+    {
+        $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
+        $idordem_servico = $AparelhoManutencao->idordem_servico;
+        $AparelhoManutencao->remover();
+
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
         return redirect()->route('ordem_servicos.show', $idordem_servico);
@@ -330,9 +344,6 @@ class OrdemServicoController extends Controller
 //                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
-        //atualizando o valor total da OS
-        $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->update_valores();
         return redirect()->route('ordem_servicos.show', $idordem_servico);
     }
 

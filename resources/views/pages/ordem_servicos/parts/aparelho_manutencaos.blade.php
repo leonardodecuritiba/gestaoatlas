@@ -19,7 +19,12 @@ if($Instrumento->has_lacres_instrumentos()){
         <h2>
             Instrumento
             <small>#{{$Instrumento->idinstrumento}}</small>
-            <button class="btn btn-danger btn-xs pull-left"><i class="fa fa-times fa-xs"></i> Cancelar</button>
+            <a class="btn btn-danger btn-xs"
+               data-nome="Instrumento: #{{$Instrumento->idinstrumento}}"
+               data-href="{{route('ordem_servicos.instrumentos.remove',$AparelhoManutencao->idaparelho_manutencao)}}"
+               data-toggle="modal"
+               data-target="#modalDelecao">
+                <i class="fa fa-times fa-xs"></i> Cancelar</a>
         </h2>
         <ul class="nav navbar-right panel_toolbox">
             <li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a></li>
@@ -44,13 +49,13 @@ if($Instrumento->has_lacres_instrumentos()){
                 <h2>Defeito:</h2>
                 <p>{{$AparelhoManutencao->defeito}}</p>
                 <h2>Selo Afixado:</h2>
-                <p class="green">{{$AparelhoManutencao->instrumento->selo_afixado_numeracao() }}</p>
+                <p class="green">{{$Instrumento->selo_afixado_numeracao() }}</p>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <h2>Solução:</h2>
                 <p>{{$AparelhoManutencao->solucao}}</p>
                 <h2>Lacres Afixados:</h2>
-                <p class="green">{{$AparelhoManutencao->instrumento->lacres_afixados_valores()}}</p>
+                <p class="green">{{$Instrumento->lacres_afixados_valores()}}</p>
             </div>
         </section>
         <div class="ln_solid"></div>

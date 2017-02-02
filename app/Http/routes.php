@@ -92,6 +92,7 @@ Route::group(['middleware' => ['auth']], function() {
 
         Route::get('busca/ordem_servicos/{idordem_servico}/instrumentos', 'OrdemServicoController@buscaInstrumentos')->name('ordem_servicos.instrumentos.busca');
         Route::get('adiciona/ordem_servicos/{idordem_servico}/{idinstrumento}/instrumentos', 'OrdemServicoController@adicionaInstrumento')->name('ordem_servicos.instrumentos.adiciona');
+    Route::get('remove/ordem_servicos/{idaparelho_manutencao}', 'OrdemServicoController@removeInstrumento')->name('ordem_servicos.instrumentos.remove');
 
         Route::post('aparelho_manutencao/{idaparelho_manutencao}/update', 'OrdemServicoController@updateAparelhoManutencao')->name('aparelho_manutencao.update');
 

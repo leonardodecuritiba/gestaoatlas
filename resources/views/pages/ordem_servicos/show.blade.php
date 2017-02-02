@@ -18,6 +18,7 @@
 @endsection
 @section('page_content')
     <?php $Colaborador = \App\Colaborador::find(2); ?>
+    @include('layouts.modals.delete')
     @include('pages.ordem_servicos.popup.ordem_servico')
     @include('pages.ordem_servicos.popup.instrumento')
     <div class="page-title">
@@ -90,7 +91,22 @@
     {!! Html::script('js/parsley/parsley.min.js') !!}
     {!! Html::script('vendors/jquery.tagsinput/src/jquery.tagsinput.js') !!}
 
+    <script>
+        <!-- script deleção -->
+        $(document).ready(function () {
 
+            $('div#modalDelecao').on('show.bs.modal', function (e) {
+                $origem = $(e.relatedTarget);
+                nome_ = $($origem).data('nome');
+                href_ = $($origem).data('href');
+                $el = $($origem).data('elemento');
+                $(this).find('.modal-body').html('Você realmente deseja remover <strong>' + nome_ + '</strong> e suas relações? Esta ação é irreversível!');
+                $(this).find('.btn-ok').click(function () {
+                    window.location.replace(href_);
+                });
+            });
+        });
+    </script>
     <!-- jQuery Tags Input -->
     <script>
         $(document).ready(function() {

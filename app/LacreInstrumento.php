@@ -5,11 +5,9 @@ namespace App;
 use App\Helpers\DataHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LacreInstrumento extends Model
 {
-    use SoftDeletes;
     public $timestamps = true;
     protected $table = 'lacre_instrumentos';
     protected $primaryKey = 'idlacre_instrumento';
