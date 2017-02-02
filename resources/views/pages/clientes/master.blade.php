@@ -2,6 +2,8 @@
 @section('style_content')
     <!-- icheck -->
     {!! Html::style('css/icheck/flat/green.css') !!}
+    <!-- Select2 -->
+    @include('helpers.select2.head')
 @endsection
 @section('page_content')
     @include('layouts.modals.sintegra')
@@ -29,8 +31,11 @@
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Tipo de Cliente <span class="required">*</span></label>
                                 <div class="col-md-3 col-sm-3 col-xs-12">
                                     <select class="select2_single form-control" name="tipo_cliente" tabindex="-1">
-                                        <option value="0">Pessoa Física</option>
-                                        <option value="1">Pessoa Jurídica</option>
+                                        <option value="0" @if(old("tipo_cliente") == 0) selected @endif>Pessoa Física
+                                        </option>
+                                        <option value="1" @if(old("tipo_cliente") == 1) selected @endif>Pessoa
+                                            Jurídica
+                                        </option>
                                     </select>
                                 </div>
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Centro de Custo <span class="required">*</span></label>
@@ -43,10 +48,11 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12" style="display:none;">
-                                    <select name="idcliente_centro_custo" class="form-control" >
+                                    <select name="idcliente_centro_custo" class="select2_single form-control">
                                         <option value="">Centro de Custo</option>
-                                        @foreach($Page->extras['centro_custo'] as $centro_custo)
-                                            <option value="{{$centro_custo->idcliente}}">{{$centro_custo->getType()->nome_principal}}</option>
+                                        @foreach($Page->extras['centro_custo'] as $sel)
+                                            <option value="{{$sel->idcliente}}"
+                                                    @if(old("idcliente") == $sel->idcliente) selected @endif>{{$sel->getType()->nome_principal}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -61,10 +67,11 @@
                                 </div>
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Segmento<span class="required">*</span></label>
                                 <div class="col-md-3 col-sm-3 col-xs-12">
-                                    <select name="idsegmento" class="form-control" required>
+                                    <select name="idsegmento" class="select2_single form-control" required>
                                         <option value="">Escolha o Segmento</option>
-                                        @foreach($Page->extras['segmentos'] as $segmento)
-                                            <option value="{{$segmento->idsegmento}}">{{$segmento->descricao}}</option>
+                                        @foreach($Page->extras['segmentos'] as $sel)
+                                            <option value="{{$sel->idsegmento}}"
+                                                    @if(old("idsegmento") == $sel->idsegmento) selected @endif>{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -82,20 +89,21 @@
                             <div class="form-group">
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Tabela de Preço<span class="required">*</span></label>
                                 <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <select name="idtabela_preco" class="form-control" required>
+                                    <select name="idtabela_preco" class="select2_single form-control" required>
                                         <option value="">Escolha a Tabela</option>
-                                        @foreach($Page->extras['tabela_precos'] as $tabela_preco)
-                                            <option value="{{$tabela_preco->idtabela_preco}}">{{$tabela_preco->descricao}}</option>
+                                        @foreach($Page->extras['tabela_precos'] as $sel)
+                                            <option value="{{$sel->idtabela_preco}}"
+                                                    @if(old("idtabela_preco") == $sel->idtabela_preco) selected @endif>{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Forma de Pagamento<span class="required">*</span></label>
                                 <div class="col-md-4 col-sm-4 col-xs-12">
-
-                                    <select name="idforma_pagamento" class="form-control" required>
+                                    <select name="idforma_pagamento" class="select2_single form-control" required>
                                         <option value="">Escolha a Forma</option>
                                         @foreach($Page->extras['formas_pagamentos'] as $sel)
-                                            <option value="{{$sel->idforma_pagamento}}">{{$sel->descricao}}</option>
+                                            <option value="{{$sel->idforma_pagamento}}"
+                                                    @if(old("idforma_pagamento") == $sel->idforma_pagamento) selected @endif>{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -110,10 +118,11 @@
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Região Franquia /
                                     Filial</label>
                                 <div class="col-md-10 col-sm-10 col-xs-12">
-                                    <select name="idregiao" class="form-control" required>
+                                    <select name="idregiao" class="select2_single form-control" required>
                                         <option value="">Região</option>
                                         @foreach($Page->extras['regioes'] as $sel)
-                                            <option value="{{$sel->idregiao}}">{{$sel->descricao}}</option>
+                                            <option value="{{$sel->idregiao}}"
+                                                    @if(old("idregiao") == $sel->idregiao) selected @endif>{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -182,6 +191,17 @@
     <!-- form validation -->
     {!! Html::script('js/parsley/parsley.min.js') !!}
     {!! Html::script('build/js/script_pjuridica.js') !!}
+
+    <!-- Select2 -->
+    @include('helpers.select2.foot')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+    </script>
+
     <script>
 
         //AJUSTA LAYOUT CENTRO CUSTO
@@ -220,6 +240,9 @@
                     })
                 }
             });
+            @if(old("tipo_cliente")==1)
+                $("select[name=tipo_cliente]").val(1).trigger("change");
+            @endif
         });
 
         //CONSULTA CNPJ

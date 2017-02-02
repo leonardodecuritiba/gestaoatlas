@@ -106,7 +106,6 @@ class ClientesController extends Controller
             'idregiao'          => 'required',
             'distancia'         => 'required',
             'pedagios'          => 'required',
-            'outros_custos'     => 'required',
         ];
         if($request->get('centro_custo')=='0'){
             $validacao = array_merge($validacao,[
@@ -147,8 +146,9 @@ class ClientesController extends Controller
 //                ->withInput();
         } else {
 
-            $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
+            $data['idcolaborador_criador'] = $this->colaborador->idcolaborador;
             if ($this->colaborador->hasRole('admin')) {
+                $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
                 $data['validated_at'] = Carbon::now()->toDateTimeString();
             }
             //store CONTATO
@@ -203,7 +203,6 @@ class ClientesController extends Controller
             'idregiao'          => 'required',
             'distancia'         => 'required',
             'pedagios'          => 'required',
-            'outros_custos'     => 'required',
         ];
 
         if($request->get('centro_custo')=='0'){

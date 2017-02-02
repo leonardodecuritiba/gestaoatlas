@@ -12,6 +12,8 @@
             color: #26B99A;
         }
     </style>
+<!-- Select2 -->
+@include('helpers.select2.head')
 @endsection
 @section('page_content')
     @include('layouts.modals.sintegra')
@@ -67,6 +69,17 @@
 @section('scripts_content')
     <!-- form validation -->
     {!! Html::script('js/parsley/parsley.min.js') !!}
+
+    <!-- Select2 -->
+    @include('helpers.select2.foot')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+    </script>
+
     {!! Html::script('build/js/script_pjuridica.js') !!}
     <script>
         //AJUSTA LAYOUT CENTRO CUSTO
