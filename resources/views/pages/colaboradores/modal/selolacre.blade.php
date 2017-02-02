@@ -41,7 +41,7 @@
                             class="sr-only">Close</span></button>
                 <h4 class="modal-title">Remanejar</h4>
             </div>
-            {!! Form::open(['route' => ['selolacre.store',$Colaborador->tecnico->idtecnico],
+            {!! Form::open(['route' => ['selolacre.remanejar',$Colaborador->tecnico->idtecnico],
                     'id'    => 'form-selolacre',
                     'method' => 'POST',
                     'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
@@ -67,7 +67,7 @@
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Técnico: <span
                                 class="required">*</span></label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                        <select class="select2_single form-control" name="tipo_fornecedor" tabindex="-1">
+                        <select class="select2_single form-control" name="idtecnico" tabindex="-1">
                             @foreach($Page->extras['tecnicos'] as $tecnico)
                                 <option value="{{$tecnico->idtecnico}}">{{$tecnico->colaborador->nome}}</option>
                             @endforeach

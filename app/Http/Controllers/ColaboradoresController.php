@@ -165,6 +165,51 @@ class ColaboradoresController extends Controller
             ->with('Page', $this->Page);
     }
 
+    public function selolacre_remanejar(Request $request)
+    {
+        return 'AINDA NÃO ESTÁ FUNCIONAL';
+        return $request->all();
+        $ini = $request->get('numeracao_inicial');
+        $end = $request->get('numeracao_final');
+        $qtd = $end - $ini;
+        if ($request->get('opcao') == 'selo') {
+            if (Selo::where('numeracao', $ini)->count() > 0) {
+                $erros = 'Já existem Selos com essa numeração';
+            } else {
+                for ($i = $ini; $i <= $end; $i++) {
+                    $data[] = [
+                        'idtecnico' => $idtecnico,
+                        'numeracao' => $i,
+                    ];
+                }
+                Selo::insert($data);
+            }
+        } else {
+            if (Lacre::where('numeracao', $ini)->count() > 0) {
+                $erros = 'Já existem Lacres com essa numeração';
+            } else {
+                for ($i = $ini; $i <= $end; $i++) {
+                    $data[] = [
+                        'idtecnico' => $idtecnico,
+                        'numeracao' => $i,
+                    ];
+                }
+                Lacre::insert($data);
+            }
+        }
+
+        if (isset($erros)) {
+            return redirect()->back()
+                ->withErrors($erros)
+                ->withInput($request->all());
+        }
+
+        $msg = 'Foram adicionados ' . $qtd . ' ' . $request->get('opcao') . 's!';
+        session()->forget('mensagem');
+        session(['mensagem' => $msg]);
+        return redirect()->route('colaboradores.show', ['idcolaborador' => Tecnico::find($idtecnico)->idcolaborador]);
+
+    }
     public function selolacre_store(Request $request, $idtecnico)
     {
         $ini = $request->get('numeracao_inicial');

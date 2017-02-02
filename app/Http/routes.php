@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('colaboradores', 'ColaboradoresController');
     Route::post('pwd/{colaborador}/colaboradores', 'ColaboradoresController@upd_pass')->name('colaboradores.upd_pass');
         Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
 
     //    Route::get('/', 'AdminController@welcome');
     //    Route::get('/manage', ['middleware' => ['permission:manage-admins'], 'uses' => 'AdminController@manageAdmins']);
