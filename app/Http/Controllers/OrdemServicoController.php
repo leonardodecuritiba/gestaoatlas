@@ -351,35 +351,28 @@ class OrdemServicoController extends Controller
 
     public function imprimir(Request $request, $idordem_servico)
     {
+
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $Cliente = $OrdemServico->cliente;
         $atlas = array(
             'endereco' => 'Rua Triunfo, 400',
             'bairro' => 'Santa Cruz',
             'cidade' => 'Ribeirão Preto',
             'cep' => '14020-670',
             'cnpj' => '10.555.180/0001-21',
+            'razao_social' => 'MACEDO AUTOMAÇAO COMERCIAL LTDA',
             'ie' => '797.146.934.117',
             'n_autorizacao' => '10002180',
             'fone' => '(16)3011-8448',
-            'email' => 'comercial@hotmail.com.br');
-
+            'email' => 'os@atlastecnologia.com.br');
         $empresa = array(
-            'nome' => 'Grupo Atlas Tecnologia',
+            'nome' => 'ORDEM DE SERVIÇO - #' . $OrdemServico->idordem_servico,
             'descricao' => 'Manutenção e venda de equipamentos de automação comercial',
-            'dados_texto' =>
-                $atlas['endereco'] . ' - ' . $atlas['bairro'] . '\n' .
-                $atlas['cidade'] . ' - CEP ' . $atlas['cep'] . '\n' .
-                'CNPJ: ' . $atlas['cnpj'] . '\n' .
-                'I.E: ' . $atlas['ie'] . '\n' .
-                'N° de Autorização: ' . $atlas['n_autorizacao'] . '\n' .
-                'Fone: ' . $atlas['fone'] . '\n' .
-                'E-mail: ' . $atlas['email'] . '\n',
             'dados' => $atlas,
             'logo' => public_path('uploads/institucional/logo_atlas.png'),
         );
         $aviso_txt = ['ASSINATURA: CLIENTE CONFIRMA A EXECUÇÃO DOS SERVIÇOS E TROCA DE PEÇAS ACIMA SITADOS, E TAMBEM APROVA OS PREÇOS COBRADOS. INSTRUMENTOS - EQUIPAMANTOS DEIXADOS POR CLIENTES NA EMPRESA: O CLIENTE AUTORIZA PREVIA E EXPRESSAMANTE UMA VEZ QUE ORÇAMANTOS NÃO FOREM APROVADOS A NÃO RETIRADA DOS INSTRUMENTOS - EQUIPAMANTOS NO PRAZO DE 90 DIAS DA ASSINATURA DESSA ORDEM OS MESMOS SERÃO DESCARTADOS PARA LIXO OU SUCATA.'];
 
-        $OrdemServico = OrdemServico::find($idordem_servico);
-        $Cliente = $OrdemServico->cliente;
         if ($Cliente->is_pjuridica()) {
             //empresa
             $Pessoa_juridica = $Cliente->pessoa_juridica;
@@ -438,7 +431,7 @@ class OrdemServicoController extends Controller
         $font = [
             'nome' => array(
                 'family' => 'Bookman Old Style',
-                'size' => '24',
+                'size' => '20',
             ),
             'descricao' => array(
                 'size' => '12',
@@ -486,10 +479,10 @@ class OrdemServicoController extends Controller
                 });
 
                 $sheet->rows(array(
-                    array($cabecalho['endereco'] . ' - ' . $cabecalho['bairro']),
-                    array('CNPJ: ' . $cabecalho['cnpj']),
+                    array($cabecalho['razao_social'] . ' / CNPJ: ' . $cabecalho['cnpj']),
                     array('I.E: ' . $cabecalho['ie']),
                     array('N° de Autorização: ' . $cabecalho['n_autorizacao']),
+                    array($cabecalho['endereco'] . ' - ' . $cabecalho['bairro'] . ' - CEP: ' . $cabecalho['bairro']),
                     array('Fone: ' . $cabecalho['fone']),
                     array('E-mail: ' . $cabecalho['email']),
                 ));
