@@ -16,6 +16,10 @@ class Tecnico extends Model
     ];
 
     // ************************ FUNCTIONS ******************************
+    static public function outros($idtecnico)
+    {
+        return self::where('idtecnico', '<>', $idtecnico)->get();
+    }
     public function getDocumentos()
     {
         return json_encode([

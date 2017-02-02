@@ -13,6 +13,8 @@
         }
     </style>
 
+<!-- Select2 -->
+@include('helpers.select2.head')
     @if($Colaborador->hasRole('tecnico'))
         <!-- Datatables -->
         @include('helpers.datatables.head')
@@ -69,6 +71,15 @@
     <!-- form validation -->
     {!! Html::script('js/parsley/parsley.min.js') !!}
     <!-- textarea resize -->
+    <!-- Select2 -->
+    @include('helpers.select2.foot')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+    </script>
     <script>
         list_required_tecnico = [
             'carteira_imetro',

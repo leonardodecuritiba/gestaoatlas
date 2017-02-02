@@ -157,6 +157,9 @@ class ColaboradoresController extends Controller
         $this->Page->titulo_primario = "Visualização de ";
         $this->Page->tab = $tab;
         $Colaborador = Colaborador::find($id);
+        if ($Colaborador->hasRole('tecnico')) {
+            $this->Page->extras['tecnicos'] = Tecnico::outros($Colaborador->tecnico->idtecnico);
+        }
         return view('pages.' . $this->Page->link . '.show')
             ->with('Colaborador', $Colaborador)
             ->with('Page', $this->Page);

@@ -24,7 +24,6 @@ class Colaborador extends Model
         'carteira_trabalho'
     ];
 
-
     public function setDataNascimentoAttribute($value)
     {
         $this->attributes['data_nascimento'] = DataHelper::setDate($value);

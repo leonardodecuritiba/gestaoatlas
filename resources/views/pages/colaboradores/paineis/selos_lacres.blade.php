@@ -10,8 +10,15 @@
                     <button class="btn btn-primary add"
                             data-option="{{$l}}"
                             data-toggle="modal"
-                            data-target="#modalSeloLacre">
+                            data-target="#modalAdicionarSeloLacre">
                         <i class="fa fa-plus-circle fa-2"></i> Lançar {{ucfirst($l).'s'}}</button>
+                </li>
+                <li>
+                    <button class="btn btn-warning add"
+                            data-option="{{$l}}"
+                            data-toggle="modal"
+                            data-target="#modalRepassarSeloLacre">
+                        <i class="fa fa-minus-circle fa-2"></i> Repassar {{ucfirst($l).'s'}}</button>
                 </li>
             </ul>
             @endrole
@@ -27,8 +34,9 @@
                             <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Numeracao</th>
-                                <th>Uso</th>
+                                <th>Numeração</th>
+                                <th>Numeração (externa)</th>
+                                <th>Status</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -36,7 +44,13 @@
                                 <tr>
                                     <td>{{$sel->{'id'.$l} }}</td>
                                     <td>{{$sel->numeracao}}</td>
-                                    <td>{{($sel->used)?'Usado':'Disponível'}}</td>
+                                    <td>{{$sel->numeracao_externa}}</td>
+                                    <td>@if($sel->used)
+                                            <button class="btn btn-danger btn-xs">Usado</button>
+                                        @else
+                                            <button class="btn btn-success btn-xs">Disponível</button>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -71,10 +85,10 @@
             }
         });
 
-        $('div#modalSeloLacre').on('hide.bs.modal', function (e) {
+        $('div#modalAdicionarSeloLacre').on('hide.bs.modal', function (e) {
             $(this).find('div.modal-content form').parsley().reset();
         });
-        $('div#modalSeloLacre').on('show.bs.modal', function (e) {
+        $('div#modalAdicionarSeloLacre').on('show.bs.modal', function (e) {
             var $origem = $(e.relatedTarget);
             var opcao = $($origem).data('option');
             $(this).find('div.modal-header h4.modal-title').html('Lançar ' + opcao + 's');
@@ -91,6 +105,29 @@
             $($input_numeracao_inicial).val(last);
             $($input_numeracao_final).attr('min',last+1);
             $($input_numeracao_final).val(last+1);
+        });
+        $('div#modalRepassarSeloLacre').on('hide.bs.modal', function (e) {
+            $(this).find('div.modal-content form').parsley().reset();
+        });
+        $('div#modalRepassarSeloLacre').on('show.bs.modal', function (e) {
+            var $origem = $(e.relatedTarget);
+            var opcao = $($origem).data('option');
+            $(this).find('div.modal-header h4.modal-title').html('Repassar ' + opcao + 's');
+            $(this).find('input[name=opcao]').val(opcao);
+            $(this).find('p.obs').html('Obs: Somente serão repassados os ' + opcao + 's' + ' disponíveis.');
+
+            //
+//            var $input_numeracao_inicial = $(this).find('input[name=numeracao_inicial]');
+//            var $input_numeracao_final = $(this).find('input[name=numeracao_final]');
+//            if(opcao=='selo'){
+//                var last = last_selo;
+//            } else {
+//                var last = last_lacre;
+//            }
+//            $($input_numeracao_inicial).attr('min',last);
+//            $($input_numeracao_inicial).val(last);
+//            $($input_numeracao_final).attr('min',last+1);
+//            $($input_numeracao_final).val(last+1);
         });
     });
 
