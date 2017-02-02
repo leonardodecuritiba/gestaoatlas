@@ -67,7 +67,7 @@
 										</td>
 										<td>{{$peca->tipo}}</td>
 										<td>{{$peca->descricao}}</td>
-										<td>{{$peca->marca->descricao}}</td>
+                                        <td>{{$peca->nome_marca()}}</td>
 										<td>
 											@if($peca->has_fornecedor())
 												<a target="_blank" class="btn btn-xs btn-primary"
@@ -83,9 +83,9 @@
 											@role('admin')
                                             <a disabled class="btn btn-danger btn-xs"
                                                data-nome="Peça: {{$peca->descricao}}"
-                                               {{--data-href="{{route($Page->link.'.destroy',$peca->idpeca)}}"--}}
-                                               {{--data-toggle="modal"--}}
-												   data-target="#modalRemocao">
+                                               data-href="{{route($Page->link.'.destroy',$peca->idpeca)}}"
+                                               data-toggle="modal"
+                                               data-target="#modalRemocao">
 													<i class="fa fa-trash-o"></i> Excluir </a>
 											@endrole
 										</td>

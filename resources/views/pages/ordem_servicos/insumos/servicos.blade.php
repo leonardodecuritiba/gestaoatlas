@@ -35,6 +35,13 @@
                             </td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <td colspan="3">
+                        </td>
+                        <td>
+                            <p class="green">R$ {{$AparelhoManutencao->getTotalServicosReal()}}</p>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             @else

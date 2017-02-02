@@ -29,7 +29,7 @@
                                 <li>
                                     <div class="ln_solid"></div>
                                 </li>
-                                <li><i class="fa fa-money"></i> Valor Final: <b class="pull-right "
+                                <li><i class="fa fa-money"></i> Valor Final: <b class="pull-right green"
                                                                                 id="valor_final"></b></li>
                             </ul>
                         </div>

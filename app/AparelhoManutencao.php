@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\DataHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,12 +21,13 @@ class AparelhoManutencao extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
-    static public function check_equip_duplo($idordem_servico,$idinstrumento)
+    static public function check_equip_duplo($idordem_servico, $idinstrumento)
     {
         return parent::where('idordem_servico', $idordem_servico)
             ->where('idinstrumento', $idinstrumento)->count();
 //        return $this->belongsTo('App\OrdemServico', 'idordem_servico');
     }
+
     public function has_servico_prestados()
     {
         return ($this->servico_prestados()->count() > 0);
@@ -36,14 +38,29 @@ class AparelhoManutencao extends Model
         return $this->hasMany('App\ServicoPrestado', 'idaparelho_manutencao');
     }
 
+    public function getTotalPecasReal()
+    {
+        return DataHelper::getFloat2Real($this->getTotalPecas());
+    }
+
     public function getTotalPecas()
     {
         return $this->pecas_utilizadas->sum('valor_float');
     }
 
+    public function getTotalServicosReal()
+    {
+        return DataHelper::getFloat2Real($this->getTotalServicos());
+    }
+
     public function getTotalServicos()
     {
         return $this->servico_prestados->sum('valor_float');
+    }
+
+    public function getTotalKitsReal()
+    {
+        return DataHelper::getFloat2Real($this->getTotalKits());
     }
 
     public function getTotalKits()
@@ -57,7 +74,6 @@ class AparelhoManutencao extends Model
         $total += $this->pecas_utilizadas->sum('valor_float');
         $total += $this->servico_prestados->sum('valor_float');
         $total += $this->kits_utilizados->sum('valor_float');
-
         return $total;
     }
 

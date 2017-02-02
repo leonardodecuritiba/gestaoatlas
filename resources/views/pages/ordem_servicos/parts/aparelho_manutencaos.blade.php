@@ -19,6 +19,7 @@ if($Instrumento->has_lacres_instrumentos()){
         <h2>
             Instrumento
             <small>#{{$Instrumento->idinstrumento}}</small>
+            <button class="btn btn-danger btn-xs pull-left"><i class="fa fa-times fa-xs"></i> Cancelar</button>
         </h2>
         <ul class="nav navbar-right panel_toolbox">
             <li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a></li>
@@ -34,27 +35,22 @@ if($Instrumento->has_lacres_instrumentos()){
                 </div>
             </div>
             <div class="col-md-9 col-sm-9 col-xs-12">
-                <h3>{{$Instrumento->descricao}}</h3>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <ul class="list-unstyled user_data">
-                        <li><i class="fa fa-info"></i> Marca:<b> {{$Instrumento->marca->descricao}}</b></li>
-                        <li><i class="fa fa-info"></i> Nº de Série:<b> {{$Instrumento->numero_serie}}</b></li>
-                        <li><i class="fa fa-info"></i> Modelo:<b> {{$Instrumento->patrimonio}}</b></li>
-                        <li><i class="fa fa-info"></i> Patrimônio:<b> {{$Instrumento->patrimonio}}</b></li>
-                        <li><i class="fa fa-info"></i> Inventário:<b> {{$Instrumento->inventario}}</b></li>
-                        <li><i class="fa fa-info"></i> Ano:<b> {{$Instrumento->ano}}</b></li>
-                    </ul>
-                </div>
-                <div class="col-md-6 col-sm-6 col-xs-12">
-                    <ul class="list-unstyled user_data">
-                        <li><i class="fa fa-info"></i> Portaria:<b> {{$Instrumento->portaria}}</b></li>
-                        <li><i class="fa fa-info"></i> Divisão:<b> {{$Instrumento->divisao}}</b></li>
-                        <li><i class="fa fa-info"></i> Capacidade:<b> {{$Instrumento->capacidade}}</b></li>
-                        <li><i class="fa fa-info"></i> IP:<b> {{$Instrumento->ip}}</b></li>
-                        <li><i class="fa fa-info"></i> Endereço:<b> {{$Instrumento->endereco}}</b></li>
-                        <li><i class="fa fa-info"></i> Setor:<b> {{$Instrumento->setor}}</b></li>
-                    </ul>
-                </div>
+                @include('pages.ordem_servicos.parts.instrumento_descricao')
+            </div>
+        </section>
+        <div class="ln_solid"></div>
+        <section class="row animated fadeInDown">
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <h2>Defeito:</h2>
+                <p>{{$AparelhoManutencao->defeito}}</p>
+                <h2>Selo Afixado:</h2>
+                <p class="green">{{$AparelhoManutencao->instrumento->selo_afixado_numeracao() }}</p>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <h2>Solução:</h2>
+                <p>{{$AparelhoManutencao->solucao}}</p>
+                <h2>Lacres Afixados:</h2>
+                <p class="green">{{$AparelhoManutencao->instrumento->lacres_afixados_valores()}}</p>
             </div>
         </section>
         <div class="ln_solid"></div>
@@ -489,39 +485,5 @@ if($Instrumento->has_lacres_instrumentos()){
 
         @endif
 
-        <script>
-            function removeEl($this) {
-                var $parent = $($this).parents('tr');
-                $($parent).remove();
-            }
-            $(document).ready(function () {
-                var x = 0;
-                $('a.add').click(function () {
-                    var data = {};
-                    var $parent = $(this).parents('tr');
-                    var id_select = $($parent).find('select').attr('id');
-                    data.text = $($parent).find('select#' + id_select).find(":selected").html();
-//                    data.valor_original = $($parent).find('select#' + id_select).find(":selected").data('valor');
-                    data.preco = $($parent).find('select#' + id_select).find(":selected").data('preco');
-                    data.preco_minimo = $($parent).find('select#' + id_select).find(":selected").data('preco_minimo');
-                    data.id = $($parent).find('select#' + id_select).find(":selected").val();
-                    data.valor = $($parent).find('input#valor').val();
-                    x++;
-                    var campo = '<tr>' +
-                            '<input name="' + id_select + '_valor[' + (x) + ']" type="hidden" value="' + data.valor + '" required>' +
-                            '<input name="' + id_select + '_id[' + (x) + ']" type="hidden" value="' + data.id + '" required>' +
-                            '<td>' + data.text + '</td>' +
-                            '<td>R$ ' + data.preco + '</td>' +
-                            '<td>R$ ' + data.preco_minimo + ' </td>' +
-                            '<td>R$ ' + data.valor + ' </td>' +
-                            '<td>' +
-                            '<a class="btn btn-danger" onclick="removeEl(this)" title="Excluir">' +
-                            '<i class="fa fa-trash fa-lg"></i></a>' +
-                            '</td>' +
-                            '</tr>';
-                    $(campo).insertBefore($parent);
-                });
-            });
-        </script>
     </div>
 </div>

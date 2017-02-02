@@ -32,7 +32,7 @@ class OrdemServico extends Model
     // ******************** FUNCTIONS ******************************
     public function getValores()
     {
-        $this->update_valores($this->attributes['valor_total']);
+        $this->update_valores();
         $valor_total_servicos = 0;
         foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
             $valor_total_servicos += $instrumentos_manutencao->getTotalServicos();
@@ -57,9 +57,13 @@ class OrdemServico extends Model
         $data['valor_final'] = $this->valor_final;
         return json_encode($data);
     }
-    public function update_valores($valor_total)
+
+    public function update_valores()
     {
-        $this->attributes['valor_total'] = $valor_total;
+        $this->attributes['valor_total'] = 0;
+        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+            $this->attributes['valor_total'] += $aparelho_manutencao->get_total();
+        }
         $this->attributes['valor_final'] = $this->attributes['valor_total'] + $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
         $this->save();
         return 1;

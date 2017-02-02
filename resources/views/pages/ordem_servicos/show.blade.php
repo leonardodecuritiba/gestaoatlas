@@ -140,6 +140,39 @@
             });
         });
         //SELECTS ADICIONADOS AO INSTRUMENTO
+
+        function removeEl($this) {
+            var $parent = $($this).parents('tr');
+            $($parent).remove();
+        }
+        $(document).ready(function () {
+            var x = 0;
+            $('a.add').click(function () {
+                var data = {};
+                var $parent = $(this).parents('tr');
+                var id_select = $($parent).find('select').attr('id');
+                data.text = $($parent).find('select#' + id_select).find(":selected").html();
+//                    data.valor_original = $($parent).find('select#' + id_select).find(":selected").data('valor');
+                data.preco = $($parent).find('select#' + id_select).find(":selected").data('preco');
+                data.preco_minimo = $($parent).find('select#' + id_select).find(":selected").data('preco_minimo');
+                data.id = $($parent).find('select#' + id_select).find(":selected").val();
+                data.valor = $($parent).find('input#valor').val();
+                x++;
+                var campo = '<tr>' +
+                    '<input name="' + id_select + '_valor[' + (x) + ']" type="hidden" value="' + data.valor + '" required>' +
+                    '<input name="' + id_select + '_id[' + (x) + ']" type="hidden" value="' + data.id + '" required>' +
+                    '<td>' + data.text + '</td>' +
+                    '<td>R$ ' + data.preco + '</td>' +
+                    '<td>R$ ' + data.preco_minimo + ' </td>' +
+                    '<td>R$ ' + data.valor + ' </td>' +
+                    '<td>' +
+                    '<a class="btn btn-danger" onclick="removeEl(this)" title="Excluir">' +
+                    '<i class="fa fa-trash fa-lg"></i></a>' +
+                    '</td>' +
+                    '</tr>';
+                $(campo).insertBefore($parent);
+            });
+        });
         $(document).ready(function () {
             //Select
             $(".select2_single").on("select2:select", function() {
@@ -276,7 +309,7 @@
 
     <!-- Lacres/Selos rompidos -->
     <script>
-        var lista_selolacre = ['selo_retirado','selo_afixado','lacre_retirado[]','lacre_afixado[]'];
+        var lista_selolacre = ['selo_retirado', 'selo_afixado', "lacre_retirado_livre", 'lacre_retirado[]', 'lacre_afixado[]'];
         $().ready(function(){
 
             $('input[name=selo_outro]').on('ifChecked', function(){
@@ -323,6 +356,7 @@
             });
             $('input[name=lacre_rompido]').on('ifUnchecked', function(){
                 var $parent = $(this).parents('div.form-group').next();
+                console.log($parent);
                 $($($parent).find(':input')).each(function(i,v){
                     if($.inArray(v.name,lista_selolacre)>=0){
                         console.log(v.name);

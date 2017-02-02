@@ -38,7 +38,7 @@
 											case '2':
 												echo 'btn-warning';
 												break;
-											case '1':
+                                            case '3':
 												echo 'btn-danger';
 												break;
 										}
@@ -51,8 +51,8 @@
 									<td>{{$selecao->colaborador->nome}}</td>
 									<td>{{$selecao->cliente->getType()->nome_principal}}</td>
 									<td>
-										<a class="btn btn-success btn-xs"
-												href="{{route('ordem_servicos.show',$selecao->idordem_servico)}}">
+										<a class="btn btn-primary btn-xs"
+										   href="{{route('ordem_servicos.show',$selecao->idordem_servico)}}">
 											<i class="fa fa-eye"></i> Abrir</a>
 									</td>
 								</tr>

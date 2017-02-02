@@ -11,11 +11,21 @@
 	<section class="row">
 		<div class="x_panel">
 			<div class="x_content">
-                @if($OrdemServico->status())
-                    <div class="alert alert-danger fade in" role="alert">
-                        Status da Ordem de Serviço: {{$OrdemServico->situacao->descricao}}
-                    </div>
-                @endif
+				<div class="alert fade in <?php
+                switch ($OrdemServico->idsituacao_ordem_servico) {
+                    case '1':
+                        echo 'alert-success';
+                        break;
+                    case '2':
+                        echo 'alert-warning';
+                        break;
+                    case '3':
+                        echo 'alert-danger';
+                        break;
+                }
+                ?>" role="alert">
+					Status da Ordem de Serviço: {{$OrdemServico->situacao->descricao}}
+				</div>
                 <div class="profile_details">
                     <div class="well">
                         <div class="perfil">
@@ -115,12 +125,7 @@
 							</div>
 						</div>
 						<div class="col-md-9 col-sm-9 col-xs-12">
-							<h3>{{$Instrumento->descricao}}</h3>
-							<ul class="list-unstyled user_data">
-								<li><i class="fa fa-info user-info-icon"></i> Nome:<b> {{$Instrumento->descricao}}</b></li>
-								<li><i class="fa fa-info user-profile-icon"></i> Nº de Série:<b> {{$Instrumento->numero_serie}}</b></li>
-								<li><i class="fa fa-info user-profile-icon"></i> Patrimônio:<b> {{$Instrumento->patrimonio}}</b></li>
-							</ul>
+							@include('pages.ordem_servicos.parts.instrumento_descricao')
 						</div>
 					</div>
 					<div class="ln_solid"></div>
@@ -132,14 +137,17 @@
 								<div class="clearfix"></div>
 							</div>
 							<div class="x_content">
-								<div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-									Defeito: <b>{{$AparelhoManutencao->defeito}}</b>
-									<br>
-									Solução: <b>{{$AparelhoManutencao->solucao}}</b>
-									<br>
-									Selo Afixado: <b>{{$AparelhoManutencao->instrumento->selo_afixado()->numeracao}}</b>
-									<br>
-									Lacres Afixados: <b>{{$AparelhoManutencao->instrumento->lacres_afixados_valores()}}</b>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<h2>Defeito:</h2>
+									<p>{{$AparelhoManutencao->defeito}}</p>
+									<h2>Selo Afixado:</h2>
+									<p class="green">{{$AparelhoManutencao->instrumento->selo_afixado_numeracao() }}</p>
+								</div>
+								<div class="col-md-6 col-sm-6 col-xs-12">
+									<h2>Solução:</h2>
+									<p>{{$AparelhoManutencao->solucao}}</p>
+									<h2>Lacres Afixados:</h2>
+									<p class="green">{{$AparelhoManutencao->instrumento->lacres_afixados_valores()}}</p>
 								</div>
 							</div>
 						</div>

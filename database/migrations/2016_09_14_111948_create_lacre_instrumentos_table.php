@@ -17,6 +17,9 @@ class CreateLacreInstrumentosTable extends Migration
             $table->integer('idinstrumento')->unsigned();
             $table->foreign('idinstrumento')->references('idinstrumento')->on('instrumentos')->onDelete('cascade');
 
+            $table->integer('idaparelho_manutencao')->unsigned();
+            $table->foreign('idaparelho_manutencao')->references('idaparelho_manutencao')->on('aparelho_manutencaos')->onDelete('cascade');
+
             $table->integer('idlacre')->unsigned();
             $table->foreign('idlacre')->references('idlacre')->on('lacres')->onDelete('cascade');
 

@@ -10,10 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class LacreInstrumento extends Model
 {
     use SoftDeletes;
+    public $timestamps = true;
     protected $table = 'lacre_instrumentos';
     protected $primaryKey = 'idlacre_instrumento';
-    public $timestamps = true;
     protected $fillable = [
+        'idaparelho_manutencao',
         'idinstrumento',
         'idlacre',
         'afixado_em',
@@ -23,14 +24,7 @@ class LacreInstrumento extends Model
 
 
     // ******************** FUNCTIONS ******************************
-    public function getAfixadoEmAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
-    }
-    public function getRetiradoEmAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
-    }
+
     static public function retirar($idslacres)
     {
         foreach($idslacres as $lacre){
@@ -41,8 +35,23 @@ class LacreInstrumento extends Model
         }
         return 1;
     }
+
+    public function getAfixadoEmAttribute($value)
+    {
+        return DataHelper::getPrettyDateTime($value);
+    }
+
+    public function getRetiradoEmAttribute($value)
+    {
+        return DataHelper::getPrettyDateTime($value);
+    }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+
+    public function aparelho_manutencao()
+    {
+        return $this->belongsTo('App\AparelhoManutencao', 'idaparelho_manutencao');
+    }
     public function instrumento()
     {
         return $this->belongsTo('App\Instrumento', 'idinstrumento');

@@ -68,6 +68,40 @@ class OrdemServicoController extends Controller
             ->with('Buscas', $Buscas);
     }
 
+    public function show(Request $request, $idordem_servico)
+    {
+        return $this->buscaInstrumentos($request, $idordem_servico);
+    }
+
+    public function buscaInstrumentos(Request $request, $idordem_servico)
+    {
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $this->Page->search_no_results = "Nenhum Instrumento encontrado!";
+        if ($OrdemServico->idsituacao_ordem_servico <= 2) {
+            $Servicos = Servico::all();
+            $Pecas = Peca::all();
+            $Kits = Kit::all();
+            if (isset($request['busca'])) {
+                $busca = $request['busca'];
+                $documento = preg_replace('#[^0-9]#', '', $busca);
+                $Buscas = $OrdemServico->cliente->instrumentos()
+                    ->where('idmarca', 'like', '%' . $busca . '%')
+                    ->orwhere('numero_serie', 'like', '%' . $documento . '%')
+                    ->orwhere('descricao', 'like', '%' . $busca . '%')->get();
+            } else {
+                $Buscas = $OrdemServico->cliente->instrumentos;
+            }
+            return view('pages.' . $this->Page->link . '.show')
+                ->with('Page', $this->Page)
+                ->with('OrdemServico', $OrdemServico)
+                ->with('Servicos', $Servicos)
+                ->with('Pecas', $Pecas)
+                ->with('Kits', $Kits)
+                ->with('Buscas', $Buscas);
+        }
+        return redirect()->route('ordem_servicos.resumo', $idordem_servico);
+    }
+
     public function buscaClientes(Request $request)
     {
         $this->Page->Targets = "Clientes";
@@ -119,7 +153,7 @@ class OrdemServicoController extends Controller
 
     public function adicionaInstrumento(Request $request, $idordem_servico, $idinstrumento)
     {
-        //teste se já
+        //teste se já foi adicionado
         if (AparelhoManutencao::check_equip_duplo($idordem_servico, $idinstrumento)) {
             $erro = 'Esse instrumento já está incluído nesta ordem de serviço!';
             return redirect()->route('ordem_servicos.show', $idordem_servico)
@@ -140,11 +174,14 @@ class OrdemServicoController extends Controller
         $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
         $AparelhoManutencao->update([
             'defeito' => $request->get('defeito'),
-            'solucao' => $request->get('solucao'),
+            'solucao' => $request->get('solucao')
+        ]);
+        //atualiza o status da O.S.
+        $AparelhoManutencao->ordem_servico->update([
             'idsituacao_ordem_servico' => 2
         ]);
         if ($AparelhoManutencao->has_instrumento()) {
-            $this->updateInstrumento($request, $AparelhoManutencao->idinstrumento);
+            $this->updateInstrumento($request, $AparelhoManutencao);
         }
 
         session()->forget('mensagem');
@@ -152,7 +189,7 @@ class OrdemServicoController extends Controller
         return redirect()->route('ordem_servicos.show', $AparelhoManutencao->idordem_servico);
     }
 
-    public function updateInstrumento(Request $request, $idinstrumento)
+    public function updateInstrumento(Request $request, AparelhoManutencao $AparelhoManutencao)
     {
         //UPDATE DOS LACRES E SELOS
         //caso não tenha lacre rompido, só atualizar defeito/manutenção
@@ -186,7 +223,8 @@ class OrdemServicoController extends Controller
                     //Retirar o selo na tabela SeloInstrumento
                     LacreInstrumento::create([
                         'idlacre' => $lacre->idlacre,
-                        'idinstrumento' => $idinstrumento,
+                        'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
+                        'idinstrumento' => $AparelhoManutencao->idinstrumento,
                         'afixado_em' => $now,
                         'retirado_em' => $now,
                     ]);
@@ -200,7 +238,8 @@ class OrdemServicoController extends Controller
             foreach ($idlacres_afixado as $idlacre_afixado) {
                 LacreInstrumento::create([
                     'idlacre' => $idlacre_afixado,
-                    'idinstrumento' => $idinstrumento,
+                    'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
+                    'idinstrumento' => $AparelhoManutencao->idinstrumento,
                     'afixado_em' => $now,
                 ]);
                 Lacre::set_used($idlacre_afixado);
@@ -229,7 +268,8 @@ class OrdemServicoController extends Controller
                 //Retirar o selo na tabela SeloInstrumento
                 SeloInstrumento::create([
                     'idselo' => $selo->idselo,
-                    'idinstrumento' => $idinstrumento,
+                    'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
+                    'idinstrumento' => $AparelhoManutencao->idinstrumento,
                     'afixado_em' => $now,
                     'retirado_em' => $now,
                 ]);
@@ -240,46 +280,60 @@ class OrdemServicoController extends Controller
             Selo::set_used($idselo_afixado);
             SeloInstrumento::create([
                 'idselo' => $idselo_afixado,
-                'idinstrumento' => $idinstrumento,
+                'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
+                'idinstrumento' => $AparelhoManutencao->idinstrumento,
                 'afixado_em' => $now,
             ]);
-
         }
         return;
     }
 
-    public function show(Request $request, $idordem_servico)
+    public function add_insumos(Request $request, $idordem_servico)
     {
-        return $this->buscaInstrumentos($request, $idordem_servico);
-    }
-
-    public function buscaInstrumentos(Request $request, $idordem_servico)
-    {
-        $OrdemServico = OrdemServico::find($idordem_servico);
-        $this->Page->search_no_results = "Nenhum Instrumento encontrado!";
-        if ($OrdemServico->idsituacao_ordem_servico == 1) {
-            $Servicos = Servico::all();
-            $Pecas = Peca::all();
-            $Kits = Kit::all();
-            if (isset($request['busca'])) {
-                $busca = $request['busca'];
-                $documento = preg_replace('#[^0-9]#', '', $busca);
-                $Buscas = $OrdemServico->cliente->instrumentos()
-                    ->where('idmarca', 'like', '%' . $busca . '%')
-                    ->orwhere('numero_serie', 'like', '%' . $documento . '%')
-                    ->orwhere('descricao', 'like', '%' . $busca . '%')->get();
-            } else {
-                $Buscas = $OrdemServico->cliente->instrumentos;
+        $idaparelho_manutencao = $request->get('idaparelho_manutencao');
+        if ($request->has('idservico_id')) {
+            $id = $request->get('idservico_id');
+            $valor = $request->get('idservico_valor');
+            foreach ($id as $i => $v) {
+                $data = [
+                    'idaparelho_manutencao' => $idaparelho_manutencao,
+                    'idservico' => $id[$i],
+                    'valor' => $valor[$i],
+                ];
+                ServicoPrestado::create($data);
+//                $total += DataHelper::getReal2Float($valor[$i]);
             }
-            return view('pages.' . $this->Page->link . '.show')
-                ->with('Page', $this->Page)
-                ->with('OrdemServico', $OrdemServico)
-                ->with('Servicos', $Servicos)
-                ->with('Pecas', $Pecas)
-                ->with('Kits', $Kits)
-                ->with('Buscas', $Buscas);
         }
-        return redirect()->route('ordem_servicos.resumo', $idordem_servico);
+        if ($request->has('idpeca_id')) {
+            $id = $request->get('idpeca_id');
+            $valor = $request->get('idpeca_valor');
+            foreach ($id as $i => $v) {
+                $data = [
+                    'idaparelho_manutencao' => $idaparelho_manutencao,
+                    'idpeca' => $id[$i],
+                    'valor' => $valor[$i],
+                ];
+                PecasUtilizadas::create($data);
+//                $total += DataHelper::getReal2Float($valor[$i]);
+            }
+        }
+        if ($request->has('idkit_id')) {
+            $id = $request->get('idkit_id');
+            $valor = $request->get('idkit_valor');
+            foreach ($id as $i => $v) {
+                $data = [
+                    'idaparelho_manutencao' => $idaparelho_manutencao,
+                    'idkit' => $id[$i],
+                    'valor' => $valor[$i],
+                ];
+                KitsUtilizados::create($data);
+//                $total += DataHelper::getReal2Float($valor[$i]);
+            }
+        }
+        //atualizando o valor total da OS
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $OrdemServico->update_valores();
+        return redirect()->route('ordem_servicos.show', $idordem_servico);
     }
 
     public function fechar(Request $request, $idordem_servico)
@@ -809,57 +863,6 @@ class OrdemServicoController extends Controller
         return view('pages.' . $this->Page->link . '.resumo')
             ->with('Page', $this->Page)
             ->with('OrdemServico', OrdemServico::find($idordem_servico));
-    }
-
-    public function add_insumos(Request $request, $idordem_servico)
-    {
-        $idaparelho_manutencao = $request->get('idaparelho_manutencao');
-        if ($request->has('idservico_id')) {
-            $id = $request->get('idservico_id');
-            $valor = $request->get('idservico_valor');
-            foreach ($id as $i => $v) {
-                $data = [
-                    'idaparelho_manutencao' => $idaparelho_manutencao,
-                    'idservico' => $id[$i],
-                    'valor' => $valor[$i],
-                ];
-                ServicoPrestado::create($data);
-//                $total += DataHelper::getReal2Float($valor[$i]);
-            }
-        }
-        if ($request->has('idpeca_id')) {
-            $id = $request->get('idpeca_id');
-            $valor = $request->get('idpeca_valor');
-            foreach ($id as $i => $v) {
-                $data = [
-                    'idaparelho_manutencao' => $idaparelho_manutencao,
-                    'idpeca' => $id[$i],
-                    'valor' => $valor[$i],
-                ];
-                PecasUtilizadas::create($data);
-//                $total += DataHelper::getReal2Float($valor[$i]);
-            }
-        }
-        if ($request->has('idkit_id')) {
-            $id = $request->get('idkit_id');
-            $valor = $request->get('idkit_valor');
-            foreach ($id as $i => $v) {
-                $data = [
-                    'idaparelho_manutencao' => $idaparelho_manutencao,
-                    'idkit' => $id[$i],
-                    'valor' => $valor[$i],
-                ];
-                KitsUtilizados::create($data);
-//                $total += DataHelper::getReal2Float($valor[$i]);
-            }
-        }
-        $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
-        $total = $AparelhoManutencao->get_total();
-
-        //atualizando o valor total da OS
-        $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->update_valores($total);
-        return redirect()->route('ordem_servicos.show', $idordem_servico);
     }
 
     public function get_ordem_servicos_cliente(Request $request, $idcliente)

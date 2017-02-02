@@ -113,7 +113,7 @@ class Instrumento extends Model
         foreach($this->lacres_afixados as $lacre){
             $retorno[]=$lacre->lacre->numeracao;
         }
-        return implode('; ',$retorno);
+        return (count($retorno) > 1) ? implode('; ', $retorno) : $retorno[0];
     }
 
     public function selo_instrumento_cliente()

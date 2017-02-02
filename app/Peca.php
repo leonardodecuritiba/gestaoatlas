@@ -96,6 +96,11 @@ class Peca extends Model
         return $this->belongsTo('App\PecaTributacao', 'idpeca_tributacao');
     }
 
+    public function nome_marca()
+    {
+        $marca = $this->hasOne('App\Marca', 'idmarca', 'idmarca')->first();
+        return ($marca != NULL) ? $marca->descricao : 'Sem Marca';
+    }
     public function marca()
     {
         return $this->hasOne('App\Marca', 'idmarca', 'idmarca');
