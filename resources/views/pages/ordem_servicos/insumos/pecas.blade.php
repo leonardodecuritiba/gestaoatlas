@@ -46,7 +46,7 @@
                 </table>
             @else
                 <div class="jumbotron">
-                    <h2>Nenhuma peça/produto utilizado</h2>
+                    <h2>Nenhuma peça/produto utilizada</h2>
                 </div>
             @endif
         </div>

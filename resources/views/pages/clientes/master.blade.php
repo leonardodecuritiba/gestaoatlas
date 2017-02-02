@@ -127,9 +127,11 @@
                                 <div class="col-md-2 col-sm-2 col-xs-12">
                                     <input value="{{old('pedagios')}}" type="text" class="form-control show-dinheiro" name="pedagios" placeholder="Custo Pedágios" required>
                                 </div>
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Outros Custos (R$)<span class="required">*</span></label>
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Outros Custos (R$)</label>
                                 <div class="col-md-2 col-sm-2 col-xs-12">
-                                    <input value="{{old('outros_custos')}}" type="text" class="form-control show-dinheiro" name="outros_custos" placeholder="Outros Custos" required>
+                                    <input value="{{old('outros_custos')}}" type="text"
+                                           class="form-control show-dinheiro" name="outros_custos"
+                                           placeholder="Outros Custos">
                                 </div>
                             </div>
                         </div>
