@@ -41,6 +41,8 @@
                     href="{{route('ordem_servicos.resumo',$OrdemServico->idordem_servico)}}">
                     <i class="fa fa-check fa-2"></i> Fechar O.S.
                 </a>
+                <a class="btn btn-warning pull-left" target="_blank"
+                   href="{{route('clientes.show',$OrdemServico->idcliente)}}"> Consultar Cliente</a>
                 <button class="btn btn-default pull-rigth" data-dismiss="modal">Fechar</button>
             </div>
         </div>

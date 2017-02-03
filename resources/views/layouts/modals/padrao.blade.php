@@ -4,8 +4,10 @@
             <div class="modal-header panel-heading"></div>
             <div class="modal-body"></div>
             <div class="modal-footer">
-                <button class="btn btn-ok"></button>
-                <button class="btn btn-default" data-token="{{ csrf_token() }}" data-dismiss="modal">Cancelar</button>
+                <button class="btn pull-right btn-ok"></button>
+                <button class="btn btn-default pull-left" data-token="{{ csrf_token() }}" data-dismiss="modal">
+                    Cancelar
+                </button>
             </div>
         </div>
     </div>

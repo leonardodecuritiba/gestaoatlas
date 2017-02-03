@@ -19,8 +19,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal">Fechar</button>
-                <button class="btn btn-success" id="consultarCNPJ">Consultar</button>
+                <button class="btn btn-default pull-left" data-dismiss="modal">Fechar</button>
+                <button class="btn btn-success pull-right" id="consultarCNPJ">Consultar</button>
             </div>
         </div>
     </div>

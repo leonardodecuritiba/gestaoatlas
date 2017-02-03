@@ -4,8 +4,8 @@
             <div class="modal-header modal-header"></div>
             <div class="modal-body"></div>
             <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button class="btn btn-success btn-ok">Salvar</button>
+                <button class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success pull-left btn-ok">Salvar</button>
             </div>
         </div>
     </div>

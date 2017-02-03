@@ -14,8 +14,10 @@
             <div class="modal-header modal-header-danger">Confirmar exclusão</div>
             <div class="modal-body"></div>
             <div class="modal-footer">
-                <a class="btn btn-danger btn-ok">Remover</a>
-                <button type="button" class="btn btn-default" data-token="{{ csrf_token() }}" data-dismiss="modal">Cancelar</button>
+                <a class="btn btn-danger pull-left btn-ok">Remover</a>
+                <button type="button" class="btn btn-default pull-right" data-token="{{ csrf_token() }}"
+                        data-dismiss="modal">Cancelar
+                </button>
             </div>
         </div>
     </div>
