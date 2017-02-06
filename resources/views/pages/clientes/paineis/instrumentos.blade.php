@@ -215,7 +215,7 @@
 <script>
     var $novo_instrumento_container      = $('section#novo-instrumento');
     $ACTION_NEW_INSTRUMENTO = "{{route('instrumentos.store')}}";
-    $CAMINHO_FOTO_INSTRUMENTO = "{{asset('../storage/uploads/instrumentos/X')}}";
+    $CAMINHO_FOTO_INSTRUMENTO = "{{asset('/uploads/instrumentos/X')}}";
     function instrumento_toggle(){
         $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').addClass('hide');
         $($novo_instrumento_container).find('div#campo-fotos').empty();
@@ -281,6 +281,7 @@
                 if(v!='' && v!=null){
                     $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').removeClass('hide');
                     foto = $CAMINHO_FOTO_INSTRUMENTO.replace('X',v);
+                    console.log(foto);
                     html_foto = '<div class="form-group">'+
                             '<div class="peca_image">' +
                             '<img src="' + foto + '" />' +
