@@ -172,6 +172,16 @@ class OrdemServicoController extends Controller
         return redirect()->route('ordem_servicos.show', $idordem_servico);
     }
 
+    public function destroy($id)
+    {
+        $OrdemServico = OrdemServico::find($id);
+        $OrdemServico->remover();
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_rem]);
+        return redirect()->route('ordem_servicos.index');
+    }
+
     public function removeInstrumento($idaparelho_manutencao)
     {
         $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
@@ -925,12 +935,5 @@ class OrdemServicoController extends Controller
    }
    */
 
-    public function destroy($id)
-    {
-        $data = OrdemServico::find($id);
-        $data->delete();
-        return response()->json(['status' => '1',
-            'response' => $this->Page->msg_rem]);
-    }
 
 }

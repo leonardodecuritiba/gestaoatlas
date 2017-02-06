@@ -1,4 +1,7 @@
 @extends('layouts.template')
+@section('modals_content')
+	@include('layouts.modals.delete')
+@endsection
 @section('page_content')
 	@include('pages.ordem_servicos.popup.cliente')
 	<!-- Seach form -->
@@ -54,6 +57,13 @@
 										<a class="btn btn-primary btn-xs"
 										   href="{{route('ordem_servicos.show',$selecao->idordem_servico)}}">
 											<i class="fa fa-eye"></i> Abrir</a>
+										@role('admin')
+										<a class="btn btn-danger btn-xs"
+										   data-nome="Ordem de Serviço #{{$selecao->idordem_servico}}"
+										   data-href="{{route('ordem_servicos.destroy',$selecao->idordem_servico)}}"
+										   data-toggle="modal"
+										   data-target="#modalDelecao"><i class="fa fa-trash-o"></i> Remover</a>
+										@endrole
 									</td>
 								</tr>
 							@endforeach
@@ -72,4 +82,20 @@
 	<!-- /page content -->
 @endsection
 @section('scripts_content')
+	<script>
+        <!-- script deleção -->
+        $(document).ready(function () {
+
+            $('div#modalDelecao').on('show.bs.modal', function (e) {
+                $origem = $(e.relatedTarget);
+                nome_ = $($origem).data('nome');
+                href_ = $($origem).data('href');
+                $el = $($origem).data('elemento');
+                $(this).find('.modal-body').html('Você realmente deseja remover <strong>' + nome_ + '</strong> e suas relações? Esta ação é irreversível!');
+                $(this).find('.btn-ok').click(function () {
+                    window.location.replace(href_);
+                });
+            });
+        });
+	</script>
 @endsection

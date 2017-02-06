@@ -16,11 +16,13 @@
         }
     </style>
 @endsection
-@section('page_content')
+@section('modals_content')
     <?php $Colaborador = \App\Colaborador::find(2); ?>
-    @include('layouts.modals.delete')
     @include('pages.ordem_servicos.popup.ordem_servico')
     @include('pages.ordem_servicos.popup.instrumento')
+    @include('layouts.modals.delete')
+@endsection
+@section('page_content')
     <div class="page-title">
         <div class="title_left">
             <h3>{{$Page->titulo_primario.$Page->Target}}
@@ -106,8 +108,7 @@
                 });
             });
         });
-    </script>
-    <!-- jQuery Tags Input -->
+    </script>    <!-- jQuery Tags Input -->
     <script>
         $(document).ready(function() {
             $('.tags').tagsInput({

@@ -1,4 +1,4 @@
-<div class="modal fade" id="modalPopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalPopup" tabindex="-2" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-body">
@@ -43,6 +43,12 @@
                 </a>
                 <a class="btn btn-warning pull-left" target="_blank"
                    href="{{route('clientes.show',$OrdemServico->idcliente)}}"> Consultar Cliente</a>
+                <a class="btn btn-danger pull-left"
+                   data-nome="Ordem de Serviço #{{$OrdemServico->idordem_servico}}"
+                   data-href="{{route('ordem_servicos.destroy',$OrdemServico->idordem_servico)}}"
+                   data-toggle="modal"
+                   data-target="#modalDelecao">
+                    <i class="fa fa-trash-o"></i> Remover O.S.</a>
                 <button class="btn btn-default pull-rigth" data-dismiss="modal">Fechar</button>
             </div>
         </div>

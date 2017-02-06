@@ -55,6 +55,7 @@
 								<tr>
 									<th>Status</th>
 									<th>Fantasia</th>
+                                    <th>Razão Social</th>
 									<th>Documento</th>
 									<th>Responsável</th>
 									<th>Fone</th>
@@ -71,6 +72,7 @@
 											<td><span class="btn btn-danger btn-xs"> Não Validado</span></td>
 										@endif
 										<td>{{$tipo_cliente->nome_principal}}</td>
+                                        <td>{{$tipo_cliente->razao_social}}</td>
 										<td>{{$tipo_cliente->entidade}}</td>
 										<td>{{$cliente->nome_responsavel}}</td>
 										<td>{{$cliente->contato->telefone}}</td>

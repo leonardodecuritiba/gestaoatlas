@@ -32,19 +32,19 @@ class AparelhoManutencao extends Model
     {
         foreach ($this->lacre_instrumentos as $lacre_instrumento) {
             //atualizar used
-            echo "Removendo lacre: " . $lacre_instrumento->lacre->idlacre . "\n";
+//            echo "Removendo lacre: " . $lacre_instrumento->lacre->idlacre . "\n";
             $lacre_instrumento->lacre->extorna();
             //remover lacre_instrumento
-            echo "Removendo lacre_instrumento: " . $lacre_instrumento->idlacre_instrumento . "\n";
+//            echo "Removendo lacre_instrumento: " . $lacre_instrumento->idlacre_instrumento . "\n";
             $lacre_instrumento->delete();
         }
         //Remover os selos
         foreach ($this->selo_instrumentos as $selo_instrumento) {
             //atualizar used
-            echo "Removendo selo: " . $selo_instrumento->selo->idselo . "\n";
+//            echo "Removendo selo: " . $selo_instrumento->selo->idselo . "\n";
             $selo_instrumento->selo->extorna();
             //remover selo_instrumento
-            echo "Removendo selo_instrumento: " . $selo_instrumento->idselo_instrumento . "\n";
+//            echo "Removendo selo_instrumento: " . $selo_instrumento->idselo_instrumento . "\n";
             $selo_instrumento->delete();
         }
 

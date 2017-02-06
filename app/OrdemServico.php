@@ -123,12 +123,20 @@ class OrdemServico extends Model
     {
         return ($this->aparelho_manutencaos()->count() > 0);
     }
-    // ******************** RELASHIONSHIP ******************************
-    // ********************** BELONGS ********************************
 
     public function aparelho_manutencaos()
     {
         return $this->hasMany('App\AparelhoManutencao', 'idordem_servico');
+    }
+    // ******************** RELASHIONSHIP ******************************
+    // ********************** BELONGS ********************************
+
+    public function remover()
+    {
+        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+            $aparelho_manutencao->remover();
+        }
+        $this->delete();
     }
 
     public function instrumentos_manutencao()

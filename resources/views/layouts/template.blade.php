@@ -27,9 +27,9 @@
 		{{--		@include('layouts.alerts.popup')--}}
 		{{--@include('layouts.alerts.notifications')--}}
 		{{--@include('layouts.modals.notifications')--}}
+		@yield('modals_content')
 		@include('layouts.modals.remove')
 		@include('layouts.modals.add')
-		@yield('modals_content')
 
 		<div class="container body">
 			<div class="main_container">
