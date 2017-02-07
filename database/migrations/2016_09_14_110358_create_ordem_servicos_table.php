@@ -24,6 +24,9 @@ class CreateOrdemServicosTable extends Migration
             $table->integer('idsituacao_ordem_servico')->unsigned()->nullable();
             $table->foreign('idsituacao_ordem_servico')->references('idsituacao_ordem_servico')->on('situacao_ordem_servicos')->onDelete('SET NULL');
 
+            $table->integer('idcentro_custo')->unsigned()->nullable();
+            $table->foreign('idcentro_custo')->references('idcliente')->on('clientes')->onDelete('SET NULL');
+
             $table->dateTime('fechamento')->nullable();
             $table->string('numero_chamado',50)->nullable();
             $table->decimal('valor_total',11,2);

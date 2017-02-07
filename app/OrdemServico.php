@@ -17,7 +17,7 @@ class OrdemServico extends Model
         'idcliente',
         'idcolaborador',
         'idsituacao_ordem_servico',
-        'fechamento',
+        'idcentro_custo',
         'numero_chamado',
         'valor_total',
         'desconto',
@@ -136,7 +136,7 @@ class OrdemServico extends Model
         foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
             $aparelho_manutencao->remover();
         }
-        $this->delete();
+        $this->forceDelete();
     }
 
     public function instrumentos_manutencao()
@@ -147,6 +147,11 @@ class OrdemServico extends Model
     public function cliente()
     {
         return $this->belongsTo('App\Cliente', 'idcliente');
+    }
+
+    public function centro_custo()
+    {
+        return $this->belongsTo('App\Cliente', 'idcentro_custo');
     }
 
     public function colaborador()

@@ -143,6 +143,7 @@ class OrdemServicoController extends Controller
         $data = [
             'idcliente'                 => $clienteid,
             'idcolaborador' => $this->colaborador->idcolaborador,
+            'idcentro_custo' => $Cliente->idcliente_centro_custo,
             'custos_deslocamento'       => $Cliente->custo_deslocamento(),
             'pedagios'                  => $Cliente->pedagios,
             'outros_custos'             => $Cliente->outros_custos,
