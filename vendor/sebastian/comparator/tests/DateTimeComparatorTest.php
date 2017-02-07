@@ -22,6 +22,11 @@ class DateTimeComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
+    protected function setUp()
+    {
+        $this->comparator = new DateTimeComparator;
+    }
+
     public function acceptsFailsProvider()
     {
         $datetime = new DateTime;
@@ -207,10 +212,5 @@ class DateTimeComparatorTest extends \PHPUnit_Framework_TestCase
           new DateTime('2013-03-29 04:13:35', new DateTimeZone('America/New_York')),
           new DateTimeImmutable('2013-03-29 04:13:35', new DateTimeZone('America/New_York'))
         );
-    }
-
-    protected function setUp()
-    {
-        $this->comparator = new DateTimeComparator;
     }
 }

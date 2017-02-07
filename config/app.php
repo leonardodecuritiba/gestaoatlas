@@ -172,11 +172,10 @@ return [
         Collective\Html\HtmlServiceProvider::class,
 
         Zizaco\Entrust\EntrustServiceProvider::class,
-        Collective\Bus\BusServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
         Zizaco\Entrust\EntrustServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
+//        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 
     /*
@@ -229,7 +228,7 @@ return [
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'SintegraSP' => SintegraPHP\SP\SintegraSP::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+//        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

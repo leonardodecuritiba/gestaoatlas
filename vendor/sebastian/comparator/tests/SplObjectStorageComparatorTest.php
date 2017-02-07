@@ -21,6 +21,11 @@ class SplObjectStorageComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
+    protected function setUp()
+    {
+        $this->comparator = new SplObjectStorageComparator;
+    }
+
     public function acceptsFailsProvider()
     {
         return array(
@@ -128,10 +133,5 @@ class SplObjectStorageComparatorTest extends \PHPUnit_Framework_TestCase
           'Failed asserting that two objects are equal.'
         );
         $this->comparator->assertEquals($expected, $actual);
-    }
-
-    protected function setUp()
-    {
-        $this->comparator = new SplObjectStorageComparator;
     }
 }

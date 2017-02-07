@@ -107,7 +107,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('ordem_servicos/add_insumos/{idordem_servico}', 'OrdemServicoController@add_insumos')->name('ordem_servicos.add_insumos');
 
 
-    Route::get('teste', 'OrdemServicoController@teste')->name('teste');
 
 
     Route::resource('frotas', 'FrotasController');
@@ -117,8 +116,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('get_sintegra_params', 'AjaxController@consulta_params')->name('get_sintegra_params');
     Route::get('getAjaxDataByID', 'AjaxController@getAjaxDataByID')->name('getAjaxDataByID');
 
+
+    Route::get('teste', 'OrdemServicoController@teste')->name('teste');
+
 });
 
+Route::group(['prefix' => 'teste'], function () {
+    Route::get('boleto', function () {
+        $OrdemServico = \App\OrdemServico::find(1);
+        $Boleto = new \App\Helpers\BoletoHelper($OrdemServico);
+        return $Boleto->gerar_PDF(true);
+    });
+});
 //Testando o envio de email
 Route::get('sendemail', function () {
     $user = array(

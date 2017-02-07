@@ -18,6 +18,11 @@ class ScalarComparatorTest extends \PHPUnit_Framework_TestCase
 {
     private $comparator;
 
+    protected function setUp()
+    {
+        $this->comparator = new ScalarComparator;
+    }
+
     public function acceptsSucceedsProvider()
     {
         return array(
@@ -149,10 +154,5 @@ class ScalarComparatorTest extends \PHPUnit_Framework_TestCase
           'SebastianBergmann\\Comparator\\ComparisonFailure', $message
         );
         $this->comparator->assertEquals($expected, $actual);
-    }
-
-    protected function setUp()
-    {
-        $this->comparator = new ScalarComparator;
     }
 }
