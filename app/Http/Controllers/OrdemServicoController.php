@@ -55,17 +55,42 @@ class OrdemServicoController extends Controller
         ];
     }
 
-    public function index(Request $request)
+
+    public function index(Request $request, $situacao_ordem_servico)
     {
+
 //        if (isset($request['busca'])) {
 //            $busca = $request['busca'];
 //            $Buscas = OrdemServico::paginate(10)->orderBy('created_at','asc');
 //        } else {
 //            $Buscas = OrdemServico::paginate(10);
 //        }
-        $Buscas = OrdemServico::orderBy('created_at', 'desc')->paginate(10);
+        $Buscas = OrdemServico::filter_situacao($situacao_ordem_servico)->paginate(10);
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
+            ->with('Buscas', $Buscas);
+    }
+
+    public function index_centro_custo(Request $request, $situacao_ordem_servico)
+    {
+        $ids = OrdemServico::filter_situacao($situacao_ordem_servico)
+            ->whereNotNull('idcentro_custo')
+            ->groupBy('idcentro_custo')
+            ->pluck('idcentro_custo');
+        $Buscas = Cliente::whereIn('idcliente', $ids)->paginate(10);
+        return view('pages.' . $this->Page->link . '.index_centro_custo')
+            ->with('Page', $this->Page)
+            ->with('Buscas', $Buscas);
+    }
+
+    public function show_centro_custo(Request $request, $situacao_ordem_servico, $idcentro_custo)
+    {
+        //atualizando o valor total da OS
+        $Buscas = OrdemServico::centro_custo_os($idcentro_custo, $situacao_ordem_servico)->paginate(10);
+        $CentroCusto = Cliente::find($idcentro_custo);
+        return view('pages.' . $this->Page->link . '.show_centro_custo')
+            ->with('Page', $this->Page)
+            ->with('CentroCusto', $CentroCusto)
             ->with('Buscas', $Buscas);
     }
 
@@ -76,6 +101,7 @@ class OrdemServicoController extends Controller
         $OrdemServico->update_valores();
         return $this->buscaInstrumentos($request, $idordem_servico);
     }
+
 
     public function buscaInstrumentos(Request $request, $idordem_servico)
     {

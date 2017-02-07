@@ -106,10 +106,33 @@
                     <li><a><i class="fa fa-cogs"></i> Atividades<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="#"> Orçamentos</a></li>
-                            <li><a href="{{ route('ordem_servicos.index') }}"> Buscar Ordem de Serviços</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-handshake-o"></i> Ordens de Serviços<span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
                             @role('tecnico')
-                                <li><a href="{{ route('ordem_servicos.busca') }}"> Nova Ordem de Serviços</a></li>
+                            <li><a href="{{ route('ordem_servicos.busca') }}"> Nova Ordem de Serviços</a></li>
                             @endrole
+                            <li><a href="{{ route('ordem_servicos.index','todas') }}">Todas</a></li>
+                            <li><a href="{{ route('ordem_servicos.index','a-faturar') }}">A faturar</a></li>
+                            <li><a href="{{ route('ordem_servicos.index','faturadas') }}">Faturadas</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-money"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li>
+                                <a>O.S. Centro de Custo<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('ordem_servicos.index_centro_custo','todas') }}">Todas</a>
+                                    </li>
+                                    <li><a href="{{ route('ordem_servicos.index_centro_custo','a-faturar') }}">A
+                                            faturar</a></li>
+                                    <li>
+                                        <a href="{{ route('ordem_servicos.index_centro_custo','faturadas') }}">Faturadas</a>
+                                    </li>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                     <li><a><i class="fa fa-car"></i> Frotas <span class="label label-danger pull-right">Incompleto</span><span class="fa fa-chevron-down"></span></a>

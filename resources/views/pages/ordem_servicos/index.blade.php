@@ -5,7 +5,7 @@
 @section('page_content')
 	@include('pages.ordem_servicos.popup.cliente')
 	<!-- Seach form -->
-	@include('layouts.search.form')
+	{{--@include('layouts.search.form')--}}
 	<!-- Upmenu form -->
 	@if(count($Buscas) > 0)
 		<div class="x_panel">
@@ -34,18 +34,18 @@
 									<td>
 										<button class="btn btn-xs
 										<?php
-										switch ($selecao->idsituacao_ordem_servico) {
-											case '1':
-												echo 'btn-success';
-												break;
-											case '2':
-												echo 'btn-warning';
-												break;
+                                        switch ($selecao->idsituacao_ordem_servico) {
+                                            case '1':
+                                                echo 'btn-success';
+                                                break;
+                                            case '2':
+                                                echo 'btn-warning';
+                                                break;
                                             case '3':
-												echo 'btn-danger';
-												break;
-										}
-										?>"
+                                                echo 'btn-danger';
+                                                break;
+                                        }
+                                        ?>"
 										>{{$selecao->situacao->descricao}}</button>
 									</td>
 									<td>{{$selecao->idordem_servico}}</td>

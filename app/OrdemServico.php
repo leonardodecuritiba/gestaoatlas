@@ -30,6 +30,27 @@ class OrdemServico extends Model
 
 
     // ******************** FUNCTIONS ******************************
+
+    static public function centro_custo_os($idcentro_custo, $situacao_ordem_servico)
+    {
+        $query = self::filter_situacao($situacao_ordem_servico);
+        return $query->where('idcentro_custo', $idcentro_custo);
+    }
+
+    static public function filter_situacao($situacao_ordem_servico)
+    {
+        $query = OrdemServico::orderBy('created_at', 'desc');
+        switch ($situacao_ordem_servico) {
+            case 'a-faturar':
+                $query->where('idsituacao_ordem_servico', '<', 6);
+                break;
+            case 'faturadas':
+                $query->where('idsituacao_ordem_servico', 6);
+                break;
+        }
+        return $query;
+    }
+
     public function getValores()
     {
         $this->update_valores();
