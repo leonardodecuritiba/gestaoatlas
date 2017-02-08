@@ -13,13 +13,13 @@
 			<div class="x_content">
 				<div class="alert fade in <?php
                 switch ($OrdemServico->idsituacao_ordem_servico) {
-                    case '1':
+                    case config('situacao_os.ABERTA'):
                         echo 'alert-success';
                         break;
-                    case '2':
+                    case config('situacao_os.ATENDIMENTO EM ANDAMENTO'):
                         echo 'alert-warning';
                         break;
-                    case '3':
+                    case config('situacao_os.FINALIZADA'):
                         echo 'alert-danger';
                         break;
                 }
@@ -29,6 +29,7 @@
                 <div class="profile_details">
                     <div class="well">
                         <div class="perfil">
+							{{$OrdemServico->status()}}
                             <h4>Cliente: <i>{{$OrdemServico->cliente->getType()->nome_principal}}</i></h4>
 							<ul class="list-unstyled">
 								<li><i class="fa fa-info"></i> Nº da O.S.: <b>{{$OrdemServico->idordem_servico}}</b>

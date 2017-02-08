@@ -51,6 +51,14 @@ class OrdemServico extends Model
         return $query;
     }
 
+    public function fechar($numero_chamado)
+    {
+        $this->attributes['numero_chamado'] = $numero_chamado;
+        $this->attributes['fechamento'] = Carbon::now()->toDateTimeString();
+        $this->attributes['idsituacao_ordem_servico'] = 3;
+        return $this->save();
+    }
+
     public function getValores()
     {
         $this->update_valores();
@@ -91,7 +99,7 @@ class OrdemServico extends Model
     }
     public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
     {
-        return (($this->attributes['fechamento'] != NULL) && ($this->attributes['idsituacao_ordem_servico'] == 3)) ? 1 : 0;
+        return (($this->attributes['fechamento'] != NULL) && ($this->attributes['idsituacao_ordem_servico'] == config('situacao_os.FINALIZADA'))) ? 1 : 0;
     }
 
     public function getCustosDeslocamentoAttribute($value)

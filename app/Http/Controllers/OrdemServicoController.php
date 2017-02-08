@@ -387,11 +387,7 @@ class OrdemServicoController extends Controller
     public function fechar(Request $request, $idordem_servico)
     {
         $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->update([
-            'numero_chamado'            => $request->get('numero_chamado'),
-            'fechamento' => Carbon::now()->toDateTimeString(),
-            'idsituacao_ordem_servico' => 3,
-        ]);
+        $OrdemServico->fechar($request->get('numero_chamado'));
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
         return redirect()->route('ordem_servicos.resumo', $OrdemServico->idordem_servico);
