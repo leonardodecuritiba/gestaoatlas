@@ -8,6 +8,7 @@ use App\Servico;
 use App\TabelaPreco;
 use App\TabelaPrecoServico;
 use App\Unidade;
+use Illuminate\Support\Facades\Redirect;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -86,14 +87,12 @@ class ServicosController extends Controller
             'margem_minimo' => $request->get('margem_minimo'),
             'valor' => $request->get('valor'),
         ];
-        $Tabelas_preco = TabelaPreco::all();
         $id['idservico'] = $Serviço->idservico;
-
-        TabelaPrecoServico::insert(DataHelper::storePriceTable($id, $dados, $Tabelas_preco));
+        TabelaPrecoServico::insert(DataHelper::storePriceTable($id, $dados, TabelaPreco::all()));
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_add]);
-        return Redirect::route($this->link . '.show', $Serviço->idservico);
+        return Redirect::route($this->Page->link . '.show', $Serviço->idservico);
     }
 
     public function update(Request $request, $id)
@@ -110,11 +109,11 @@ class ServicosController extends Controller
             'valor' => $Serviço->valor_float(),
         ];
         $Tabelas_preco = $Serviço->tabela_preco;
-        DataHelper::updatePriceTable($request, $Tabelas_preco);
+        DataHelper::updatePriceTable($dados, $Tabelas_preco);
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
-        return Redirect::route($this->link . '.show', $Serviço->idservico);
+        return Redirect::route($this->Page->link . '.show', $Serviço->idservico);
 
     }
 

@@ -19,6 +19,7 @@ use App\Servico;
 use App\ServicoPrestado;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use Illuminate\Http\Request;
@@ -129,7 +130,7 @@ class OrdemServicoController extends Controller
                 ->with('Kits', $Kits)
                 ->with('Buscas', $Buscas);
         }
-        return redirect()->route('ordem_servicos.resumo', $idordem_servico);
+        return Redirect::route('ordem_servicos.resumo', $idordem_servico);
     }
 
     public function buscaClientes(Request $request)
@@ -178,7 +179,7 @@ class OrdemServicoController extends Controller
         $OrdemServico = OrdemServico::create($data);
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_abr]);
-        return redirect()->route('ordem_servicos.show', $OrdemServico->idordem_servico);
+        return Redirect::route('ordem_servicos.show', $OrdemServico->idordem_servico);
     }
 
     public function adicionaInstrumento(Request $request, $idordem_servico, $idinstrumento)
@@ -186,7 +187,7 @@ class OrdemServicoController extends Controller
         //teste se já foi adicionado
         if (AparelhoManutencao::check_equip_duplo($idordem_servico, $idinstrumento)) {
             $erro = 'Esse instrumento já está incluído nesta ordem de serviço!';
-            return redirect()->route('ordem_servicos.show', $idordem_servico)
+            return Redirect::route('ordem_servicos.show', $idordem_servico)
                 ->withErrors($erro)
                 ->withInput($request->all());
         }
@@ -196,7 +197,7 @@ class OrdemServicoController extends Controller
         ]);
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
-        return redirect()->route('ordem_servicos.show', $idordem_servico);
+        return Redirect::route('ordem_servicos.show', $idordem_servico);
     }
 
     public function destroy($id)
@@ -206,7 +207,7 @@ class OrdemServicoController extends Controller
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_rem]);
-        return redirect()->route('ordem_servicos.index');
+        return Redirect::route('ordem_servicos.index');
     }
 
     public function removeInstrumento($idaparelho_manutencao)
@@ -217,7 +218,7 @@ class OrdemServicoController extends Controller
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
-        return redirect()->route('ordem_servicos.show', $idordem_servico);
+        return Redirect::route('ordem_servicos.show', $idordem_servico);
     }
 
     public function updateAparelhoManutencao(Request $request, $idaparelho_manutencao)
@@ -237,7 +238,7 @@ class OrdemServicoController extends Controller
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
-        return redirect()->route('ordem_servicos.show', $AparelhoManutencao->idordem_servico);
+        return Redirect::route('ordem_servicos.show', $AparelhoManutencao->idordem_servico);
     }
 
     public function updateInstrumento(Request $request, AparelhoManutencao $AparelhoManutencao)
@@ -381,7 +382,7 @@ class OrdemServicoController extends Controller
 //                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
-        return redirect()->route('ordem_servicos.show', $idordem_servico);
+        return Redirect::route('ordem_servicos.show', $idordem_servico);
     }
 
     public function fechar(Request $request, $idordem_servico)
@@ -390,7 +391,7 @@ class OrdemServicoController extends Controller
         $OrdemServico->fechar($request->get('numero_chamado'));
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
-        return redirect()->route('ordem_servicos.resumo', $OrdemServico->idordem_servico);
+        return Redirect::route('ordem_servicos.resumo', $OrdemServico->idordem_servico);
     }
 
     public function imprimir(Request $request, $idordem_servico)
@@ -812,7 +813,7 @@ class OrdemServicoController extends Controller
         ]);
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
-        return redirect()->route('ordem_servicos.resumo', $idordem_servico);
+        return Redirect::route('ordem_servicos.resumo', $idordem_servico);
     }
 
 //    static public function setLinhaVazia($sheet, $texto)
