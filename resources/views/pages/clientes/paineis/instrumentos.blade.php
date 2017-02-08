@@ -5,10 +5,12 @@
     </div>
     {!! Form::open(['route' => 'instrumentos.store', 'method' => 'POST', 'files' => true,
         'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
-        <div class="x_panel">
+    <div class="x_panel instrumento">
             <input type="hidden" name="idcliente" value="{{$Cliente->idcliente}}">
             <div class="x_title">
-                <h2>Dados do Instrumento</h2>
+                <h2>Dados do Instrumento
+                    <small></small>
+                </h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content" id="instrumento-container">
@@ -91,7 +93,7 @@
                 </div>
             </div>
         </div>
-        <div class="x_panel lacres-selos hide">
+    <div class="x_panel lacres-selos">
             <div class="x_title">
                 <h2>Selo e lacres do Instrumento</h2>
                 <div class="clearfix"></div>
@@ -168,6 +170,7 @@
                     <table border="0" class="table table-hover">
                         <thead>
                             <tr>
+                                <th>ID</th>
                                 <th>Imagem</th>
                                 <th>Modelo</th>
                                 <th>Série</th>
@@ -179,6 +182,7 @@
                         <tbody>
                             @foreach($Cliente->instrumentos as $instrumento)
                                 <tr>
+                                    <td>{{$instrumento->idinstrumento}}</td>
                                     <td><img src="{{$instrumento->getFotoThumb()}}" class="avatar" alt="Avatar"></td>
                                     <td>{{$instrumento->modelo}}</td>
                                     <td>{{$instrumento->numero_serie}}</td>
@@ -216,28 +220,31 @@
     var $novo_instrumento_container      = $('section#novo-instrumento');
     $ACTION_NEW_INSTRUMENTO = "{{route('instrumentos.store')}}";
     $CAMINHO_FOTO_INSTRUMENTO = "{{asset('/uploads/instrumentos/X')}}";
+    $($novo_instrumento_container).find('div.lacres-selos').hide();
     function instrumento_toggle(){
         $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').addClass('hide');
         $($novo_instrumento_container).find('div#campo-fotos').empty();
         $($novo_instrumento_container).toggle('fast');
         $('section#resultados-instrumento').toggle('fast');
+        $($novo_instrumento_container).find('div.lacres-selos').hide();
     }
 
     $('button#add-instrumento, button#cancel-instrumento').click(function() {
-        $($novo_instrumento_container).find('div.lacres-selos').addClass('hide');
         $($novo_instrumento_container).find('form').get(0).setAttribute('action', $ACTION_NEW_INSTRUMENTO);
+        $($novo_instrumento_container).find('div.instrumento div.x_title small').empty();
         instrumento_toggle();
         $($novo_instrumento_container).find('form').find('input[name="_method"]').remove();
     });
 
     $('button.edit-instrumento').click(function(){
-        $($novo_instrumento_container).find('div.lacres-selos').removeClass('hide');
         instrumento_toggle();
         $dados = $(this).data('dados');
         console.log($dados);
+        var ver_selo_lacre = 0;
 
         $selo = $(this).data('selo-afixado');
         if (($selo != null) && ($selo != "")) {
+            ver_selo_lacre = 1;
             console.log($selo);
             $($novo_instrumento_container).find('div#selos-container').find('tbody').empty();
             $($novo_instrumento_container).find('div#selos-container').find('tbody').append(
@@ -251,6 +258,7 @@
 
         $lacres = $(this).data('lacres-afixados');
         if (($lacres != null) && ($lacres != "")) {
+            ver_selo_lacre = 1;
             console.log($lacres);
             $($novo_instrumento_container).find('div#lacres-container').find('tbody').empty();
             $.each($lacres, function (i, lacre) {
@@ -263,12 +271,13 @@
                 );
             });
         }
-
+        if (ver_selo_lacre) $($novo_instrumento_container).find('div.lacres-selos').show();
 
         $ACTION_EDIT = "{{route('instrumentos.update',0)}}";
         console.log($ACTION_EDIT.replace('/0', '/' + $dados.idinstrumento));
         $($novo_instrumento_container).find('form').get(0).setAttribute('action', $ACTION_EDIT.replace('/0', '/' + $dados.idinstrumento));
         $($novo_instrumento_container).find('form').append('<input name="_method" type="hidden" value="PATCH">');
+        $($novo_instrumento_container).find('div.instrumento div.x_title small').html('#' + $dados.idinstrumento);
         html_foto = '';
 
         $.each($dados, function(i,v){
