@@ -9,7 +9,6 @@
         @include('pages.pecas.forms.valores')
     </div>
     <div class="x_panel" id="tabela_preco">
-        <?php $Tabela = $Peca; ?>
         @include('pages.forms.tabela_preco')
     </div>
 </section>
