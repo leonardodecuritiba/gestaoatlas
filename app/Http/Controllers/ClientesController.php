@@ -9,6 +9,7 @@ use App\Segmento;
 use App\TabelaPreco;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use Validator;
 use App\Cliente;
@@ -185,7 +186,7 @@ class ClientesController extends Controller
 
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
-            return redirect()->route('clientes.show', $Cliente->idcliente);
+            return Redirect::route('clientes.show', $Cliente->idcliente);
         }
     }
 
@@ -272,7 +273,7 @@ class ClientesController extends Controller
 
             session()->forget('mensagem');
             session(['mensagem' => ($this->Page->Target.' atualizado com sucesso!')]);
-            return redirect()->route('clientes.show', $Cliente->idcliente);
+            return Redirect::route('clientes.show', $Cliente->idcliente);
         }
     }
 
@@ -294,6 +295,6 @@ class ClientesController extends Controller
             session()->forget('mensagem');
             session(['mensagem' => ($this->Page->Target . ' atualizado com sucesso!')]);
         }
-        return redirect()->route('clientes.show', $id);
+        return Redirect::route('clientes.show', $id);
     }
 }

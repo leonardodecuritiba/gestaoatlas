@@ -14,6 +14,7 @@ use Validator;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\ColaboradoresRequest;
 
 class ColaboradoresController extends Controller
 {
@@ -80,76 +81,83 @@ class ColaboradoresController extends Controller
             ->with('Page', $this->Page);
     }
 
-    public function store(Request $request)
+    public function store(ColaboradoresRequest $request)
     {
         //colaborador
-//        return $request->all();
-        $role = Role::find($request->get('tipo_cadastro'));
-        $validacao = [
-            'email'             => 'email',
-            'nome'              => 'required',
-            'cpf'               => 'unique:colaboradores',
-            'rg'                => 'unique:colaboradores',
-            'data_nascimento'   => 'required',
-            'cnh'               => 'image',
-            'carteira_trabalho' => 'image',
-        ];
-        if($role->name == 'tecnico'){
-            $validacao = array_merge($validacao,[
-                'carteira_imetro' => 'image',
-                'carteira_ipem'   => 'image',
-            ]);
+        $data = $request->all();
+
+        //store CONTATO
+        $Contato = Contato::create($data);
+        $data['idcontato'] = $Contato->idcontato;
+
+        //store USER
+        $role = Role::find($data['tipo_cadastro']);
+        $data['remember_token'] = str_random(60);
+        $data['password'] = bcrypt('123');
+        $User = User::create($data);
+        $User->attachRole($role);
+        $data['iduser'] = $User->iduser;
+
+        foreach (['cnh', 'carteira_trabalho'] as $doc) {
+            if ($request->hasfile($doc)) {
+                $img = new ImageController();
+                $data[$doc] = $img->store($request->file($doc), $this->Page->link);
+            } else {
+                $data[$doc] = NULL;
+            }
         }
 
-        $validator = Validator::make($request->all(), $validacao);
+        $Colaborador = Colaborador::create($data);
 
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-//                ->withInput();
-        } else {
-            $data = $request->all();
-
-            //store CONTATO
-            $Contato = Contato::create($data);
-            $data['idcontato'] = $Contato->idcontato;
-
-            //store USER
-            $data['remember_token'] = str_random(60);
-            $data['password'] = bcrypt('123');
-            $User = User::create($data);
-            $User->attachRole($role);
-            $data['iduser'] = $User->iduser;
-
-            foreach(['cnh','carteira_trabalho'] as $doc){
-                if($request->hasfile($doc)){
+        if ($role->name == 'tecnico') {
+            $data['idcolaborador'] = $Colaborador->idcolaborador;
+            foreach (['carteira_imetro', 'carteira_ipem'] as $doc) {
+                if ($request->hasfile($doc)) {
                     $img = new ImageController();
-                    $data[$doc] = $img->store($request->file($doc), $this->Page->link);
+                    $data[$doc] = $img->store($request->file($doc), 'tecnicos');
                 } else {
                     $data[$doc] = NULL;
                 }
             }
-
-            $Colaborador = Colaborador::create($data);
-
-            if($role->name == 'tecnico'){
-                $data['idcolaborador'] = $Colaborador->idcolaborador;
-                foreach(['carteira_imetro','carteira_ipem'] as $doc){
-                    if($request->hasfile($doc)){
-                        $img = new ImageController();
-                        $data[$doc] = $img->store($request->file($doc), 'tecnicos');
-                    } else {
-                        $data[$doc] = NULL;
-                    }
-                }
-                $Tecnico = Tecnico::create($data);
-            }
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
-            return $this->show($Colaborador->idcolaborador);
+            $Tecnico = Tecnico::create($data);
         }
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->Target . ' adicionado com sucesso!']);
+        return Redirect::route('colaboradores.show', $Colaborador->idcolaborador);
+    }
+
+    public function update(ColaboradoresRequest $request, $id)
+    {
+        $Colaborador = Colaborador::find($id);
+        $dataUpdate = $request->all();
+        //update CONTATO
+        $Colaborador->contato->update($dataUpdate);
+        //store USER
+        $Colaborador->user->update($dataUpdate);
+
+        foreach (['cnh', 'carteira_trabalho'] as $doc) {
+            if ($request->hasfile($doc)) {
+                $img = new ImageController();
+                $dataUpdate[$doc] = $img->store($request->file($doc), $this->Page->link);
+            }
+        }
+        $Colaborador->update($dataUpdate);
+        if ($Colaborador->hasRole('tecnico')) {
+            foreach (['carteira_imetro', 'carteira_ipem'] as $doc) {
+                if ($request->hasfile($doc)) {
+                    $img = new ImageController();
+                    $dataUpdate[$doc] = $img->store($request->file($doc), 'tecnicos');
+                } else {
+                    $dataUpdate[$doc] = NULL;
+                }
+            }
+            $Colaborador->tecnico->update($dataUpdate);
+        }
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->Target . ' adicionado com sucesso!']);
+        return Redirect::route('colaboradores.show', $Colaborador->idcolaborador);
     }
 
     public function show($id, $tab = 'sobre')
@@ -210,6 +218,7 @@ class ColaboradoresController extends Controller
         return redirect()->route('colaboradores.show', ['idcolaborador' => Tecnico::find($idtecnico)->idcolaborador]);
 
     }
+
     public function selolacre_store(Request $request, $idtecnico)
     {
         $ini = $request->get('numeracao_inicial');
@@ -269,70 +278,6 @@ class ColaboradoresController extends Controller
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->Target . ' atualizado com sucesso!']);
             return redirect()->route('colaboradores.show', ['idcolaborador' => $Colaborador->idcolaborador]);
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        //colaborador
-//        return $request->all();
-        $Colaborador = Colaborador::find($id);
-        $validacao = [
-            'email'             => 'email',
-            'nome'              => 'required',
-            'cpf'               => 'unique:colaboradores,cpf,'.$id.',idcolaborador',
-            'rg'                => 'unique:colaboradores,rg,'.$id.',idcolaborador',
-            'data_nascimento'   => 'required',
-            'cnh'               => 'image',
-            'carteira_trabalho' => 'image',
-        ];
-        if ($Colaborador->hasRole('tecnico')) {
-            $validacao = array_merge($validacao,[
-                'carteira_imetro' => 'image',
-                'carteira_ipem'   => 'image',
-            ]);
-        }
-
-        $validator = Validator::make($request->all(), $validacao);
-
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $dataUpdate = $request->all();
-
-//            return $Colaborador;
-            //update CONTATO
-            $Colaborador->contato->update($dataUpdate);
-
-            //store USER
-            $Colaborador->user->update($dataUpdate);
-
-            foreach(['cnh','carteira_trabalho'] as $doc){
-                if ($request->hasfile($doc)) {
-                    $img = new ImageController();
-                    $dataUpdate[$doc] = $img->store($request->file($doc), $this->Page->link);
-                }
-            }
-            $Colaborador->update($dataUpdate);
-
-//            return $Colaborador;
-            if ($Colaborador->hasRole('tecnico')) {
-                foreach(['carteira_imetro','carteira_ipem'] as $doc){
-                    if($request->hasfile($doc)){
-                        $img = new ImageController();
-                        $dataUpdate[$doc] = $img->store($request->file($doc), 'tecnicos');
-                    } else {
-                        $dataUpdate[$doc] = NULL;
-                    }
-                }
-                $Colaborador->tecnico->update($dataUpdate);
-            }
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
-            return Redirect::route('colaboradores.show', $Colaborador->idcolaborador);
         }
     }
 

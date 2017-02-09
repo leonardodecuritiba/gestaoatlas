@@ -39,42 +39,42 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::resource('colaboradores', 'ColaboradoresController');
     Route::post('pwd/{colaborador}/colaboradores', 'ColaboradoresController@upd_pass')->name('colaboradores.upd_pass');
-        Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
     Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
 
     //    Route::get('/', 'AdminController@welcome');
     //    Route::get('/manage', ['middleware' => ['permission:manage-admins'], 'uses' => 'AdminController@manageAdmins']);
-        //Ajustes
-            //Clientes
-            Route::resource('segmentos', 'SegmentosController');
-            Route::resource('equipamentos', 'EquipamentosController');
-            Route::resource('regioes', 'RegioesController');
-            Route::resource('segmentos_fornecedores', 'SegmentosFornecedoresController');
+    //Ajustes
+    //Clientes
+    Route::resource('segmentos', 'SegmentosController');
+    Route::resource('equipamentos', 'EquipamentosController');
+    Route::resource('regioes', 'RegioesController');
+    Route::resource('segmentos_fornecedores', 'SegmentosFornecedoresController');
 
-            //Peças/Produtos
-            Route::resource('grupos', 'GruposController');
-            Route::resource('marcas', 'MarcasController');
-            Route::resource('unidades', 'UnidadesController');
-            Route::resource('tabela_precos','TabelaPrecosController');
+    //Peças/Produtos
+    Route::resource('grupos', 'GruposController');
+    Route::resource('marcas', 'MarcasController');
+    Route::resource('unidades', 'UnidadesController');
+    Route::resource('tabela_precos', 'TabelaPrecosController');
 
-            //Tributação
-            Route::resource('formas_pagamentos', 'FormasPagamentosController');
+    //Tributação
+    Route::resource('formas_pagamentos', 'FormasPagamentosController');
 //            Route::resource('categoria_tributacao', 'CategoriaTributacaoController');
 //              Route::resource('origem_tributacao',    'OrigemTributacaoController');
     Route::resource('cst', 'CstController');
     Route::resource('cfop', 'CfopController');
-            Route::resource('ncm', 'NcmController');
+    Route::resource('ncm', 'NcmController');
     Route::resource('natureza_operacao', 'NaturezaOperacaoController');
-            Route::match(['get', 'post'], 'importar/ncm/', 'NcmController@importar')->name('ncm.importar');
-            Route::post('importar/store/ncm/', 'NcmController@storeImportar')->name('ncm.storeImportar');
+    Route::match(['get', 'post'], 'importar/ncm/', 'NcmController@importar')->name('ncm.importar');
+    Route::post('importar/store/ncm/', 'NcmController@storeImportar')->name('ncm.storeImportar');
 
-            //Ajustes
-            Route::resource('ajustes','AjustesController');
+    //Ajustes
+    Route::resource('ajustes', 'AjustesController');
 
 
     //Kits
-        Route::resource('kits', 'KitsController');
-            Route::post('pecakit_remover/kits/{id}', 'KitsController@pecaKitDestroy')->name('kits.pecakit.destroy');
+    Route::resource('kits', 'KitsController');
+    Route::post('pecakit_remover/kits/{id}', 'KitsController@pecaKitDestroy')->name('kits.pecakit.destroy');
 
 
     Route::get('getNcm', 'AjaxController@getNcm')->name('getNcm');
@@ -87,19 +87,19 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('ordem_servicos/listar/{situacao_ordem_servico}', 'OrdemServicoController@index')->name('ordem_servicos.index');
     Route::get('ordem-servicos-centro-custo/listar/{situacao_ordem_servico}', 'OrdemServicoController@index_centro_custo')->name('ordem_servicos.index_centro_custo');
     Route::get('ordem-servicos-centro-custo/show/{situacao_ordem_servico}/{idcentro_custo}', 'OrdemServicoController@show_centro_custo')->name('ordem_servicos.show_centro_custo');
-        Route::get('ordem_servicos/abrir/{clienteid}', 'OrdemServicoController@abrir')->name('ordem_servicos.abrir'); //Abrir O.S
-        Route::get('ordem_servicos/resumo/{idordem_servico}', 'OrdemServicoController@resumo')->name('ordem_servicos.resumo'); //Fechar (RESUMO) O.S
-        Route::post('ordem_servicos/fechar/{idordem_servico}', 'OrdemServicoController@fechar')->name('ordem_servicos.fechar'); //Fechar O.S
-        Route::get('ordem_servicos/imprimir/{idordem_servico}', 'OrdemServicoController@imprimir')->name('ordem_servicos.imprimir'); //Imprimir O.S
-        Route::get('ordem_servicos/encaminhar/{idordem_servico}', 'OrdemServicoController@encaminhar')->name('ordem_servicos.encaminhar'); //Imprimir O.S
+    Route::get('ordem_servicos/abrir/{clienteid}', 'OrdemServicoController@abrir')->name('ordem_servicos.abrir'); //Abrir O.S
+    Route::get('ordem_servicos/resumo/{idordem_servico}', 'OrdemServicoController@resumo')->name('ordem_servicos.resumo'); //Fechar (RESUMO) O.S
+    Route::post('ordem_servicos/fechar/{idordem_servico}', 'OrdemServicoController@fechar')->name('ordem_servicos.fechar'); //Fechar O.S
+    Route::get('ordem_servicos/imprimir/{idordem_servico}', 'OrdemServicoController@imprimir')->name('ordem_servicos.imprimir'); //Imprimir O.S
+    Route::get('ordem_servicos/encaminhar/{idordem_servico}', 'OrdemServicoController@encaminhar')->name('ordem_servicos.encaminhar'); //Imprimir O.S
     Route::get('ordem_servicos/destroy/{idordem_servico}', 'OrdemServicoController@destroy')->name('ordem_servicos.destroy'); //Imprimir O.S
     Route::get('ordem_servicos/cliente/{idcliente}', 'OrdemServicoController@get_ordem_servicos_cliente')->name('ordem_servicos.cliente');
 
-        Route::get('busca/ordem_servicos/{idordem_servico}/instrumentos', 'OrdemServicoController@buscaInstrumentos')->name('ordem_servicos.instrumentos.busca');
-        Route::get('adiciona/ordem_servicos/{idordem_servico}/{idinstrumento}/instrumentos', 'OrdemServicoController@adicionaInstrumento')->name('ordem_servicos.instrumentos.adiciona');
+    Route::get('busca/ordem_servicos/{idordem_servico}/instrumentos', 'OrdemServicoController@buscaInstrumentos')->name('ordem_servicos.instrumentos.busca');
+    Route::get('adiciona/ordem_servicos/{idordem_servico}/{idinstrumento}/instrumentos', 'OrdemServicoController@adicionaInstrumento')->name('ordem_servicos.instrumentos.adiciona');
     Route::get('remove/ordem_servicos/{idaparelho_manutencao}', 'OrdemServicoController@removeInstrumento')->name('ordem_servicos.instrumentos.remove');
 
-        Route::post('aparelho_manutencao/{idaparelho_manutencao}/update', 'OrdemServicoController@updateAparelhoManutencao')->name('aparelho_manutencao.update');
+    Route::post('aparelho_manutencao/{idaparelho_manutencao}/update', 'OrdemServicoController@updateAparelhoManutencao')->name('aparelho_manutencao.update');
 
 
     // REMOVER AQUI
@@ -118,9 +118,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('consulta_sintegra_sp', 'AjaxController@consulta_sintegra_sp')->name('consulta_sintegra_sp');
     Route::get('get_sintegra_params', 'AjaxController@consulta_params')->name('get_sintegra_params');
     Route::get('getAjaxDataByID', 'AjaxController@getAjaxDataByID')->name('getAjaxDataByID');
-
-
-    Route::get('teste', 'OrdemServicoController@teste')->name('teste');
 
 });
 
