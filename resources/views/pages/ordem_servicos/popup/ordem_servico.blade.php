@@ -8,21 +8,21 @@
                         <div class="perfil">
                             <h4>Cliente: <i></i></h4>
                             <ul class="list-unstyled">
-                                <li><i class="fa fa-info"></i> Número: <b id="idordem_servico"></b></li>
+                                <li><i class="fa fa-info"></i> Nº da O.S.: <b id="idordem_servico"></b></li>
                                 <li><i class="fa fa-calendar"></i> Data de Abertura: <b id="data_abertura"></b></li>
                                 <li><i class="fa fa-warning"></i> Situação: <b id="situacao"></b></li>
                                 <li><i class="fa fa-user"></i> Colaborador: <b id="colaborador"></b></li>
                             </ul>
                             <ul class="list-unstyled product_price">
-                                <li><i class="fa fa-money"></i> Valor Serviços: <b class="pull-right"
-                                                                                   id="valor_total_servicos"></b></li>
-                                <li><i class="fa fa-money"></i> Valor Peças/Produtos: <b class="pull-right"
-                                                                                         id="valor_total_pecas"></b>
+                                <li><i class="fa fa-money"></i> Total em Serviços: <b class="pull-right"
+                                                                                      id="valor_total_servicos"></b></li>
+                                <li><i class="fa fa-money"></i> Total em Peças/Produtos: <b class="pull-right"
+                                                                                            id="valor_total_pecas"></b>
                                 </li>
-                                <li><i class="fa fa-money"></i> Valor Kits: <b class="pull-right"
-                                                                               id="valor_total_kits"></b></li>
-                                <li><i class="fa fa-money"></i> Deslocamento: <b class="pull-right"
-                                                                                 id="valor_deslocamento"></b></li>
+                                <li><i class="fa fa-money"></i> Total em Kits: <b class="pull-right"
+                                                                                  id="valor_total_kits"></b></li>
+                                <li><i class="fa fa-money"></i> Deslocamentos: <b class="pull-right"
+                                                                                  id="valor_deslocamento"></b></li>
                                 <li><i class="fa fa-money"></i> Pedágios: <b class="pull-right" id="pedagios"></b></li>
                                 <li><i class="fa fa-money"></i> Outros Custos: <b class="pull-right"
                                                                                   id="outros_custos"></b></li>

@@ -127,6 +127,12 @@ Route::group(['prefix' => 'teste'], function () {
         $Boleto = new \App\Helpers\BoletoHelper($OrdemServico);
         return $Boleto->gerar_PDF(true);
     });
+    Route::get('nfe', function () {
+        $NFE = new \App\Models\Nfe(0);
+        $NFE->setParams();
+        $NFE->send();
+
+    });
 });
 //Testando o envio de email
 Route::get('sendemail', function () {

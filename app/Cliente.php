@@ -109,8 +109,8 @@ class Cliente extends Model
                 'tipo_cliente'   => 0,
                 'tipo'           => 'CPF',
                 'entidade'       => $this->pessoa_fisica()->first()->cpf,
-                'nome_principal' => '-',
-                'razao_social' => '-',
+                'nome_principal' => $this->attributes['nome_responsavel'],
+                'razao_social' => $this->attributes['nome_responsavel'],
             ];
         }
         return $retorno;

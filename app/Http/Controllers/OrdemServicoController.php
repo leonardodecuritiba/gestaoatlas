@@ -399,6 +399,8 @@ class OrdemServicoController extends Controller
 
         $OrdemServico = OrdemServico::find($idordem_servico);
         $Cliente = $OrdemServico->cliente;
+        $filename = 'OrdemServico_' . $OrdemServico->idordem_servico . '_' . Carbon::now()->format('H-i_d-m-Y');
+
         $atlas = array(
             'endereco' => 'Rua Triunfo, 400',
             'bairro' => 'Santa Cruz',
@@ -449,25 +451,32 @@ class OrdemServicoController extends Controller
                 ),
             ];
         } else {
+            $PessoaFisica = $Cliente->pessoa_fisica;
+            $Contato = $Cliente->contato;
+
             $dados_cliente = [
-                array('Cliente / Razão Social:', 'Cliente sem CNPJ',
-                    'Fantasia:', 'Cliente sem CNPJ',
-                    'DATA / HR I', '31/10/2016 - 10:00'
+                array(
+                    'Cliente / Razão Social:', $Cliente->nome_responsavel,
+                    'Fantasia:', '-',
+                    'HR / DATA I', $OrdemServico->created_at
                 ),
-                array('CNPJ:', '10.555.180/0001-21',
-                    'I.E:', '222.222.222.222',
-                    'DATA / HR F', '31/10/2016 - 13:00'
+                array(
+                    'CPF:', $PessoaFisica->cpf,
+                    'I.E:', '-',
+                    'DATA / HR F', $OrdemServico->fechamento
                 ),
-                array('Endereço:', 'Rua Platina, 121',
-                    'CEP: 14020-670', 'UF: SP',
-                    'Cidade: Ribeirão Preto'
+                array(
+                    'Endereço:', $Contato->getRua(),
+                    'CEP: ' . $Contato->cep, 'UF: ' . $Contato->estado,
+                    'Cidade: ' . $Contato->cidade
                 ),
-                array('Telefone:', '(16)3329-4365'
+                array(
+                    'Telefone:', $Contato->telefone,
+                    'Contato:', $Cliente->nome_responsavel
                 ),
-                array('Contato:', 'Willian/ Daniela'
-                ),
-                array('Email:', 'financeiro@atlastecnologia.com.br',
-                    'Nº Chamado Sist. Cliente:', '12 -13 -14 -15'
+                array(
+                    'Email:', $Cliente->email_nota,
+                    'Nº Chamado Sist. Cliente:', $OrdemServico->numero_chamado
                 ),
             ];
         }
@@ -499,8 +508,7 @@ class OrdemServicoController extends Controller
             'fonts' => $font
         ];
 
-        $now = Carbon::now()->format('H-i_d-m-Y');
-        Excel::create('OrdemServico_' . $now, function ($excel) use ($data) {
+        Excel::create($filename, function ($excel) use ($data) {
 
 //            dd($data['empresa']['cabecalho']);
             $excel->sheet('Sheetname', function ($sheet) use ($data) {
@@ -508,8 +516,8 @@ class OrdemServicoController extends Controller
 
                 $cabecalho = $data['empresa']['dados'];
 
-                $sheet->mergeCells('A1:B1');
-                $sheet->mergeCells('A2:B2');
+                $sheet->mergeCells('A1:C1');
+                $sheet->mergeCells('A2:C2');
 
                 $sheet->cell('A1', function ($cell) use ($data) {
                     // manipulate the cell
@@ -531,21 +539,21 @@ class OrdemServicoController extends Controller
                     array('Fone: ' . $cabecalho['fone']),
                     array('E-mail: ' . $cabecalho['email']),
                 ));
-                $sheet->mergeCells('A3:B3');
-                $sheet->mergeCells('A4:B4');
-                $sheet->mergeCells('A5:B5');
-                $sheet->mergeCells('A6:B6');
-                $sheet->mergeCells('A7:B7');
-                $sheet->mergeCells('A8:B8');
+                $sheet->mergeCells('A3:C3');
+                $sheet->mergeCells('A4:C4');
+                $sheet->mergeCells('A5:C5');
+                $sheet->mergeCells('A6:C6');
+                $sheet->mergeCells('A7:C7');
+                $sheet->mergeCells('A8:C8');
                 $sheet->cells('A3:B8', function ($cells) use ($data) {
                     // manipulate the range of cells
                     $cells->setFont($data['fonts']['endereco']);
                 });
 
-                $sheet->mergeCells('C1:G8');
+                $sheet->mergeCells('D1:G8');
                 $objDrawing = new \PHPExcel_Worksheet_Drawing();
                 $objDrawing->setPath($data['empresa']['logo']); //your image path
-                $objDrawing->setCoordinates('C1');
+                $objDrawing->setCoordinates('D1');
                 $objDrawing->setWorksheet($sheet);
 
 
