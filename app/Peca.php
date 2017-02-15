@@ -54,9 +54,9 @@ class Peca extends Model
         $this->attributes['tipo'] = ($value == 'Peça' || $value == 'peca') ? 'peca' : 'produto';
     }
 
-    public function getTipoAttribute($value)
+    public function getTipo()
     {
-        return ($value == 'peca')?'Peça':'Produto';
+        return ($this->attributes['tipo'] == 'peca') ? 'Peça' : 'Produto';
     }
 
     public function setComissaoTecnicoAttribute($value)
