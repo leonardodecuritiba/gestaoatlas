@@ -1,6 +1,6 @@
-<section id="novo-equipamento" style="display: none" >
+<section id="novo-equipamento" style="display: none;">
     <div class="x_panel hide">
-        <div class="x_content" id="campo-fotos">
+        <div class="x_content text-center" id="campo-fotos">
         </div>
     </div>
     {!! Form::open(['route' => 'equipamentos.store', 'method' => 'POST', 'files' => true,
@@ -52,7 +52,7 @@
                 <div class="col-md-6 col-sm-6 col-xs-12 ">
                     <button type="reset" id="cancel-equipamento" class="btn btn-danger btn-lg btn-block">Cancelar</button>
                 </div>
-                @if(Auth::user()->hasRole('admin') || (!$Cliente->validado()))
+                @if(Auth::user()->hasRole(['admin', 'tecnico']) || (!$Cliente->validado()))
                     <div class="col-md-6 col-sm-6 col-xs-12 ">
                         <button type="submit" class="btn btn-success btn-lg btn-block">Salvar</button>
                     </div>
@@ -113,18 +113,6 @@
                     </table>
                 </div>
                 <div class="clearfix"></div>
-                <ul class="pagination">
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">6</a></li>
-                    <li><a href="#">7</a></li>
-                    <li><a href="#">8</a></li>
-                    <li><a href="#">9</a></li>
-                    <li><a href="#">10</a></li>
-                </ul>
             @else
                 <div class="jumbotron">
                     <p>Este cliente não possui nenhum equipamento cadastrado.</p>
@@ -137,7 +125,7 @@
     var $novo_equipamento_container      = $('section#novo-equipamento');
     $ACTION_NEW_EQUIPAMENTO = "{{route('equipamentos.store')}}";
     $ACTION_EDIT = "{{route('equipamentos.update',0)}}";
-    $CAMINHO_FOTO_EQUIPAMENTO = "{{asset('../storage/uploads/equipamentos/X')}}";
+    $CAMINHO_FOTO_EQUIPAMENTO = "{{asset('/uploads/equipamentos/X')}}";
     function equipamento_toggle(){
         $($novo_equipamento_container).find('div#campo-fotos').parent('div.x_panel').addClass('hide');
         $($novo_equipamento_container).find('div#campo-fotos').empty();
@@ -172,7 +160,7 @@
                     var foto = $CAMINHO_FOTO_EQUIPAMENTO.replace('X', v);
                     html_foto = '<div class="form-group">'+
                             '<div class="peca_image">' +
-                            '<img src="' + foto + '" />' +
+                        '<img width="70%" src="' + foto + '" />' +
                             '</div>' +
                             '</div>';
                     $($novo_equipamento_container).find('div#campo-fotos').append(html_foto);

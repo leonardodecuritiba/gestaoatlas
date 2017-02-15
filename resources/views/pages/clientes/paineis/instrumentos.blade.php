@@ -1,6 +1,6 @@
 <section id="novo-instrumento" style="display: none" >
     <div class="x_panel hide">
-        <div class="x_content" id="campo-fotos">
+        <div class="x_content text-center" id="campo-fotos">
         </div>
     </div>
     {!! Form::open(['route' => 'instrumentos.store', 'method' => 'POST', 'files' => true,
@@ -292,10 +292,10 @@
                     foto = $CAMINHO_FOTO_INSTRUMENTO.replace('X',v);
                     console.log(foto);
                     html_foto = '<div class="form-group">'+
-                            '<div class="peca_image">' +
-                            '<img src="' + foto + '" />' +
-                            '</div>' +
-                            '</div>';
+                        '<div class="peca_image">' +
+                        '<img width="70%" src="' + foto + '" />' +
+                        '</div>' +
+                        '</div>';
                     $($novo_instrumento_container).find('div#campo-fotos').append(html_foto);
 
                 }
