@@ -122,6 +122,10 @@ class DataHelper
 
     static public function calculateModulo11($value)
     {
-        //
+        $value = '20007206';
+        $sz = count($value);
+        foreach (range(1, $sz) as $number) {
+            echo $number;
+        }
     }
 }

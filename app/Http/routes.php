@@ -135,8 +135,26 @@ Route::group(['prefix' => 'teste'], function () {
     Route::get('get_cest2', function () {
         return \App\Models\Nfe::consulta2();
     });
-    Route::get('get_cest', function () {
-        return \App\Models\Nfe::consulta1();
+    Route::get('modulo11/{valor}', function (\Illuminate\Http\Request $request) {
+        $value = $request->valor;
+        $sz = strlen($value);
+        $sum = 0;
+        foreach (range($sz + 1, 2) as $i => $number) {
+            $calc = ($value[$i] * $number);
+            $sum += $calc;
+//            echo '('.$i.') '.($value[$i]).'x'.$number.' = '.$calc.'<br>';
+        }
+//        echo '------<br>';
+        $res = ($sum / 11);
+        $mod = ($sum % 11);
+        $final = $value . $mod;
+        $DATA_HELPER = new \App\Helpers\DataHelper();
+//        echo $sum.'/11 = '. $res.'<br>';
+//        echo 'INT = '. intval($res).'<br>';
+//        echo 'DIV = '. $mod.'<br>';
+        echo 'Numeração: ' . $DATA_HELPER->mask($value, '##.###.###') . '<br>';
+        echo 'Dígito: ' . $mod . '<br>';
+        echo 'Numeração (mod11): ' . $DATA_HELPER->mask($final, '##.###.###-#') . '<br>';
     });
 });
 //Testando o envio de email
