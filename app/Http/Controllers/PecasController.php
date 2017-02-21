@@ -298,7 +298,7 @@ class PecasController extends Controller
                 'garantia',
                 'comissao_tecnico',
                 'comissao_vendedor',
-                'idncm',
+                'ncm',
                 'cest',
                 'icms_base_calculo',
                 'icms_valor_total',
