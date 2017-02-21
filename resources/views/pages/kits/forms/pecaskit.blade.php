@@ -6,8 +6,8 @@
         </div>
         <div class="x_content">
             <div class="form-horizontal form-label-left">
-                @foreach($Kit->pecas_kit as $ind => $peca_kit)
-                    <div id="kit_peca">
+                <div id="kit_peca">
+                    @foreach($Kit->pecas_kit as $ind => $peca_kit)
                         <input name="idpecas_kit[{{$ind}}]" type="hidden" class="form-control"
                                value="{{$peca_kit->idpeca_kit}}">
                         <div class="form-group">
@@ -64,8 +64,8 @@
                             </div>
                         </div>
                         <div class="ln_solid"></div>
-                    </div>
-                @endforeach
+                    @endforeach
+                </div>
                 <div id="pecas_add"></div>
                 <div class="form-group">
                     <div class="col-md-offset-8 col-md-4 col-sm-offset-8 col-sm-4 col-xs-12">

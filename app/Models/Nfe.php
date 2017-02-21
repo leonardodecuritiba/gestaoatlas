@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\OrdemServico;
+use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * LaravelFocusnfe
@@ -18,38 +21,745 @@ class Nfe
     CONST _URL_HOMOLOGACAO_ = 'http://homologacao.acrasnfe.acras.com.br/nfe2';
     CONST _URL_PRODUCAO_ = 'http://homologacao.acrasnfe.acras.com.br/nfe2';
 //    CONST _URL_PRODUCAO_ = 'https://api.focusnfe.com.br';
+
     CONST _TOKEN_HOMOLOGACAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
     CONST _TOKEN_PRODUCAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
 //    CONST _TOKEN_PRODUCAO_ = 'QmPEhv5PrVGmkXpUtZIw7nvx0ZUOrDos';
+
+    CONST _CEST_DEFAULT_ = '0106400';
     public $params;
     public $debug;
     private $SERVER;
     private $TOKEN;
+    private $now;
+    private $ref = 1;
 
-    function __construct($debug)
+    private $_EMPRESA_;
+    private $_ORDEM_DE_SERVICO_;
+    private $nfe_cabecalho;
+    private $nfe_emitente;
+    private $nfe_destinatario;
+    private $nfe_transportadora;
+    private $nfe_tributacao;
+    private $nfe_itens;
+
+    function __construct($debug, OrdemServico $ordemServico)
     {
         $this->debug = $debug;
         if ($this->debug) {
             $this->SERVER = self::_URL_HOMOLOGACAO_;
             $this->TOKEN = self::_TOKEN_HOMOLOGACAO_;
-            echo 'estamos em homologação<br><br>';
         } else {
             $this->SERVER = self::_URL_PRODUCAO_;
             $this->TOKEN = self::_TOKEN_PRODUCAO_;
-            echo 'estamos em produção<br><br>';
         }
+        $this->now = Carbon::now();
+        $this->_ORDEM_DE_SERVICO_ = $ordemServico;
+        $this->_EMPRESA_ = new Empresa();
+        $this->setParams();
+
     }
 
-    /**
-     * Metodo para capturar o captcha e viewstate para enviar no metodo
-     * de consulta
-     *
-     * @param  string $cnpj CNPJ
-     * @throws Exception
-     * @return array Link para ver o Captcha e Cookie
-     */
+    public function setParams()
+    {
+        //Configurando o cabeçalho
+        $this->setCabecalho();
+
+        //Configurando o emitente
+        $this->setEmitente();
+
+        //Configurando o destinatário
+        $this->setDestinatario();
+        if ($this->debug) {
+            $this->nfe_destinatario["nome_destinatario"] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+        }
+
+        //Configurando a tributação
+        $this->setTributacao();
+
+        //Configurando o transportadora
+        $this->setTransportadora();
+
+        //Configurando itens
+        $this->setItens();
+
+        $this->params = array_merge(
+            $this->nfe_cabecalho,
+            $this->nfe_emitente,
+            $this->nfe_destinatario,
+            $this->nfe_tributacao,
+            $this->nfe_transportadora,
+            ["items" => $this->nfe_itens]
+        );
+        $fp = fopen('results.json', 'w');
+        fwrite($fp, json_encode($this->params));
+        fclose($fp);
+        dd($this->params);
+    }
+
+    public function setCabecalho()
+    {
+        $this->nfe_cabecalho = [
+            "natureza_operacao" => 'Venda c/ ST VENDA', //Descrição da natureza de operação. (obrigatório) String[1-60] Tag XML natOp
+            "forma_pagamento" => 1, //Forma de pagamento. Valores permitidos 0: a vista. 1: a prazo. 2: outros. (obrigatório) Tag XML indPag
+            "local_destino" => 1, //Identificador de local de destino da operação. (obrigatório) Tag XML idDest
+            // Valores permitidos:
+            // 1: Operação interna
+            // 2: Operação interestadual
+            // 3: Operação com exterior
+            "data_emissao" => $this->now->toW3cString(),//Data e hora de emissão. (obrigatório) Tag XML dhEmi
+            "data_entrada_saida" => $this->now->toW3cString(),//Data e hora de entrada (em notas de entrada) ou saída (em notas de saída). Tag XML dhSaiEnt
+            "tipo_documento" => 1, //Tipo da nota fiscal. (obrigatório) Tag XML tpNF
+            // Valores permitidos:
+            // 0: Nota de entrada.
+            // 1: Nota de saída.
+            "finalidade_emissao" => 1, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
+            // Valores permitidos 1:
+            // Nota normal. 2:
+            // Nota complementar. 3:
+            // Nota de ajuste. 4:
+            // Devolução de mercadoria.
+            "consumidor_final" => 1, //Indica operação com consumidor (obrigatório) Tag XML indFinal  final
+            // Valores permitidos:
+            // 0: Normal
+            // 1: Consumidor final
+            "presenca_comprador" => 0, //Indicador de presença do comprador no estabelecimento comercial no momento da operação. (obrigatório) Tag XML indPres
+            // Valores permitidos:
+            // 0: Não se aplica (por exemplo, para a Nota Fiscal complementar ou de ajuste);
+            // 1: Operação presencial
+            // 2: Operação não presencial, pela Internet
+            // 3: Operação não presencial, Teleatendimento
+            // 4: NFC-e em operação com entrega em domicílio
+            // 9: Operação não presencial, outros
+        ];
+    }
+
+    public function setEmitente()
+    {
+        $this->nfe_emitente = [
+            "cnpj_emitente" => $this->_EMPRESA_->cnpj,
+            "inscricao_estadual_emitente" => $this->_EMPRESA_->ie,
+            "inscricao_municipal_emitente" => $this->_EMPRESA_->im,
+            "cnae_fiscal_emitente" => $this->_EMPRESA_->cnae_fiscal,
+            "regime_tributario_emitente" => $this->_EMPRESA_->regime_tributario,
+            "nome_emitente" => $this->_EMPRESA_->razao_social,
+            "nome_fantasia_emitente" => $this->_EMPRESA_->nome_fantasia,
+
+            "logradouro_emitente" => $this->_EMPRESA_->logradouro,
+            "numero_emitente" => $this->_EMPRESA_->numero,
+            "bairro_emitente" => $this->_EMPRESA_->bairro,
+            "municipio_emitente" => $this->_EMPRESA_->cidade,
+            "uf_emitente" => $this->_EMPRESA_->estado,
+            "cep_emitente" => $this->_EMPRESA_->cep,
+            "telefone_emitente" => $this->_EMPRESA_->telefone,
+        ];
+    }
+
+    public function setDestinatario()
+    {
+        $Cliente = $this->_ORDEM_DE_SERVICO_->cliente;
+
+        if ($Cliente->idpjuridica != NULL) { //1:PJ, 0: PF
+            $PessoaJuridica = $Cliente->pessoa_juridica;
+            $this->nfe_destinatario["nome_destinatario"] = $PessoaJuridica->razao_social;
+            $this->nfe_destinatario["cnpj_destinatario"] = $PessoaJuridica->getCnpj();
+            if ($PessoaJuridica->isencao_ie) {
+                $this->nfe_destinatario["indicador_inscricao_estadual_destinatario"] = '9';
+                $this->nfe_destinatario["inscricao_estadual_destinatario"] = $PessoaJuridica->isencao_ie;
+            } else {
+                $this->nfe_destinatario["inscricao_estadual_destinatario"] = 'ISENTO';
+            }
+        } else {
+            $PessoaFisica = $Cliente->pessoa_fisica;
+            $this->nfe_destinatario["nome_destinatario"] = $Cliente->nome_responsavel;
+            $this->nfe_destinatario["cpf_destinatario"] = $PessoaFisica->getCpf();
+            $this->nfe_destinatario["inscricao_estadual_destinatario"] = 'ISENTO';
+        }
+        $Contato = $Cliente->contato;
+        if (($Cliente->email_nota != NULL) && ($Cliente->email_nota != "")) {
+            $this->nfe_destinatario["email_destinatario"] = $Cliente->email_nota;
+        }
+        $this->nfe_destinatario["telefone_destinatario"] = $Contato->getTelefone();
+        $this->nfe_destinatario["logradouro_destinatario"] = $Contato->logradouro;
+        $this->nfe_destinatario["numero_destinatario"] = $Contato->numero;
+        $this->nfe_destinatario["bairro_destinatario"] = $Contato->bairro;
+        $this->nfe_destinatario["municipio_destinatario"] = $Contato->cidade;
+        $this->nfe_destinatario["uf_destinatario"] = $Contato->estado;
+//        $this->nfe_destinatario["pais_destinatario"]                = 'Brasil';
+        $this->nfe_destinatario["cep_destinatario"] = $Contato->getCep();
+
+        if ($this->debug) {
+            $this->nfe_destinatario["nome_destinatario"] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+        }
+        return true;
+        $this->nfe_destinatario = [
+            "nome_destinatario" => 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL', //Nome ou razão social do destinatário. (obrigatório) String[2-60] Tag XML xNome
+            "cnpj_destinatario" => '71322150003932', //CNPJ do destinatário. Se este campo for informado não deve ser informado o CPF. Integer[14] Tag XML CNPJ
+//            "cpf_destinatario"                              => '10812933000137', //CPF do destinatário. Se este campo for informado não deve ser informado o CNPJ. Integer[11] Tag XML CPF
+            "indicador_inscricao_estadual_destinatario " => '9', // Inscrição Estadual do destinatário. (obrigatório) Tag XML indIEDest
+            // Valores permitidos
+            // 1: Contribuinte ICMS (informar a IE do destinatário).
+            // 2: Contribuinte isento de Inscrição no cadastro de Contribuintes do ICMS
+            // 9: Não Contribuinte, que pode ou não possuir Inscrição Estadual no Cadastro de Contribuintes do ICMS.
+            "inscricao_estadual_destinatario" => '664199114114', //Inscrição Estadual do destinatário.  Integer[2-14] Tag XML IE
+            "email_destinatario" => 'sonia.felicio@savegnago.com', // E-mail do destinatário. String[1-60] Tag XML email
+            // O destinatário receberá um e-mail com o XML e a DANFE gerados,
+            // adicione mais de um email separando por vírgulas.
+            // Será informado apenas o primeiro email no XML da NFe mas todos os emails informados receberão os arquivos.
+
+            "telefone_destinatario" => '1639462088',
+            "logradouro_destinatario" => 'AV. NOSSA SENHORA APARECIDA',
+            "numero_destinatario" => '2021',
+            "bairro_destinatario" => 'SAO JOAO',
+            "municipio_destinatario" => 'Sertaozinho',
+            "uf_destinatario" => 'SP',
+//            "pais_destinatario"                             => 'Brasil', //Nome do país do destinatário. (Apenas se diferente de Brasil). Integer[2-4] Tag XML xPais
+            "cep_destinatario" => '14170150',
+        ];
+    }
+
+    public function setTributacao()
+    {
+        $this->nfe_tributacao = [
+            "icms_base_calculo" => "0.00", //Valor total da base de cálculo do ICMS. (obrigatório) Decimal[13.2] Tag XML vBC
+            "icms_valor_total" => "0.00", //Valor total do ICMS. (obrigatório) Decimal[13.2] Tag XML vICMS
+            "icms_valor_total_desonerado" => "0.00", //Valor total do ICMS.Desonerado. (obrigatório) Decimal[13.2] Tag XML vICMSDeson
+            "icms_base_calculo_st" => "0.00", //Valor total da base de cálculo do ICMS do substituto tributário. (obrigatório) Decimal[13.2] Tag XML vBCST
+            "icms_valor_total_st" => "0.00", //Valor total do ICMS do substituto tributário. (obrigatório) Decimal[13.2] Tag XML vST
+
+            "valor_produtos" => "17482.73", //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
+            "valor_seguro" => "0.00", //Valor total do seguro. (obrigatório) Decimal[13.2] Tag XML vSeg
+            "valor_desconto" => "77.76", //Valor total do desconto. (obrigatório) Decimal[13.2] Tag XML vDesc
+            "valor_total_ii" => "0.00", //Valor total do imposto de importação. (obrigatório) Decimal[13.2] Tag XML vII
+            "valor_ipi" => "0.00", //Valor total do IPI. (obrigatório) Decimal[13.2] Tag XML vIPI
+            "valor_pis" => "0.00", //Valor do PIS. (obrigatório) Decimal[13.2] Tag XML vPIS
+            "valor_cofins" => "0.00", //Valor do COFINS. (obrigatório) Decimal[13.2] Tag XML vCOFINS
+            "valor_outras_despesas" => "0.00", //Valor das despesas acessórias. (obrigatório) Decimal[13.2] Tag XML vOutro
+            "valor_total" => "17404.97", //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
+        ];
+    }
+
+    public function setTransportadora()
+    {
+        $this->nfe_transportadora = [
+            "modalidade_frete" => $this->_EMPRESA_->modalidade_frete, // Modalidade do frete.(obrigatório) Tag XML modFrete.
+            // Valores permitidos
+            // 0: por conta do emitente
+            // 1: por conta do destinatário
+            // 2: por conta de terceiros
+            // 9: sem frete
+            "nome_transportador" => $this->_EMPRESA_->razao_social, //Nome ou razão social do transportador. String[2-60] Tag XML xNome
+            "cnpj_transportador" => $this->_EMPRESA_->cnpj, //CNPJ do transportador. Se este campo for informado não deverá ser informado o CPF. Integer[14] Tag XML CNPJ
+            "inscricao_estadual_transportador" => $this->_EMPRESA_->ie, //Inscrição Estadual do transportador. String[2-14] Tag XML IE
+//            "cpf_transportador "                    => '48740351000165', //CPF do transportador. Se este campo for informado não deverá ser informado o CNPJ. Integer[11] Tag XML CNPJ
+            "endereco_transportador" => $this->_EMPRESA_->logradouro, //Endereço (logradouro, número, complemento e bairro) do transportador. String[1-60] Tag XML xEnder
+            "municipio_transportador" => $this->_EMPRESA_->cidade, //Município do transportador. String[1-60] Tag XML xMun
+            "uf_transportador" => $this->_EMPRESA_->estado, //UF do transportador. String[2] Tag XML UF
+
+            "transporte_icms_servico" => $this->_EMPRESA_->icms_servico, //Valor do serviço de transporte. Decimal[13.2] Tag XML vServ
+            "transporte_icms_base_calculo" => $this->_EMPRESA_->icms_base_calculo, //Base de cálculo da retenção do ICMS de transporte. Decimal[13.2] Tag XML vBCRet
+            "transporte_icms_aliquota" => $this->_EMPRESA_->icms_aliquota, //Alíquota da retenção do ICMS de transporte. Decimal[3.2-4] Tag XML pICMSRet
+            "transporte_icms_valor" => $this->_EMPRESA_->icms_valor, //Valor retido do ICMS de transporte. Decimal[13.2] Tag XML vICMSRet
+            "transporte_icms_cfop" => $this->_EMPRESA_->icms_cfop, //CFOP do serviço de transporte. Integer[4] Tag XML CFOP
+            // (Valores aceitos: 5351, 5352, 5353, 5354, 5355, 5356, 5357,
+            // 5359, 5360, 5931, 5932, 6351, 6352, 6353, 6354,
+            // 6355, 6356, 6357, 6359, 6360, 6931, 6932, 7358)
+            "transporte_icms_codigo_municipio" => $this->_EMPRESA_->icms_codigo_municipio, //Código do município de ocorrência do fato gerador. Integer[7] Tag XML cMunFG
+
+            // "informacoes_adicionais_contribuinte" => 'Não Incidência ICMS conforme Decisão...', //Informações adicionais de interesse do contribuinte. String[1-5000] Tag XML infCpl
+
+        ];
+    }
+
+    public function setItens()
+    {
+        $this->nfe_itens = array(
+            [
+                "numero_item" => "1",
+                "codigo_produto" => "15",
+                "descricao" => "Bateria 6.0V, 4.5Ah IND- 9098C -CT",
+                "codigo_ncm" => "85078000",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "2.0000",
+                "valor_unitario_comercial" => "92.0000000000",
+                "valor_bruto" => "184.00",
+                "unidade_tributavel" => "92.00",
+                "quantidade_tributavel" => "2.0000",
+                "valor_unitario_tributavel" => "92.0000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "2",
+                "codigo_produto" => "05",
+                "descricao" => "Cabe\u00e7ote Termico Prix 5 - 4 - due",
+                "codigo_ncm" => "84439942",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "8.0000",
+                "valor_unitario_comercial" => "390.1000000000",
+                "valor_bruto" => "3120.80",
+                "unidade_tributavel" => "390.10",
+                "quantidade_tributavel" => "8.0000",
+                "valor_unitario_tributavel" => "390.1000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "3",
+                "codigo_produto" => "01",
+                "descricao" => "Teclado Elgim",
+                "codigo_ncm" => "84239029",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "2.0000",
+                "valor_unitario_comercial" => "127.4000000000",
+                "valor_bruto" => "254.80",
+                "unidade_tributavel" => "127.40",
+                "quantidade_tributavel" => "2.0000",
+                "valor_unitario_tributavel" => "127.4000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "4",
+                "codigo_produto" => "02",
+                "descricao" => "Placa Fonte Elgim",
+                "codigo_ncm" => "85340019",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "339.2900000000",
+                "valor_bruto" => "339.29",
+                "unidade_tributavel" => "339.29",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "339.2900000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "5",
+                "codigo_produto" => "03",
+                "descricao" => "Teclado Prix 5 Toledo",
+                "codigo_ncm" => "84239029",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "12.0000",
+                "valor_unitario_comercial" => "182.2400000000",
+                "valor_bruto" => "2186.88",
+                "unidade_tributavel" => "182.24",
+                "quantidade_tributavel" => "12.0000",
+                "valor_unitario_tributavel" => "182.2400000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "6",
+                "codigo_produto" => "04",
+                "descricao" => "CABO FOR\u00c7A PRIX 5",
+                "codigo_ncm" => "85444200",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "4.0000",
+                "valor_unitario_comercial" => "33.5000000000",
+                "valor_bruto" => "134.00",
+                "unidade_tributavel" => "35.50",
+                "quantidade_tributavel" => "4.0000",
+                "valor_unitario_tributavel" => "33.5000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "7",
+                "codigo_produto" => "24",
+                "descricao" => "SENSOR PRIX 5 - 6 - DUE, UNO",
+                "codigo_ncm" => "84239029",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "5.0000",
+                "valor_unitario_comercial" => "182.5000000000",
+                "valor_bruto" => "912.50",
+                "unidade_tributavel" => "182.50",
+                "quantidade_tributavel" => "5.0000",
+                "valor_unitario_tributavel" => "182.5000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "8",
+                "codigo_produto" => "08",
+                "descricao" => "PCI PRINCIPAL PRIX 5 PLUS - 5 - ETHERNET REV",
+                "codigo_ncm" => "84239029",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "625.4100000000",
+                "valor_bruto" => "625.41",
+                "unidade_tributavel" => "625.41",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "625.4100000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "9",
+                "codigo_produto" => "09",
+                "descricao" => "Teclado IDM",
+                "codigo_ncm" => "84239029",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "65.0000000000",
+                "valor_bruto" => "65.00",
+                "unidade_tributavel" => "65.00",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "65.0000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "10",
+                "codigo_produto" => "10",
+                "descricao" => "CELULA S CURIO 500KG",
+                "codigo_ncm" => "90318060",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "801.0000000000",
+                "valor_bruto" => "801.00",
+                "unidade_tributavel" => "801.00",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "801.0000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "11",
+                "codigo_produto" => "11",
+                "descricao" => "PCI PRINCIPAL PLATINA UNIFIC",
+                "codigo_ncm" => "84239029",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "3.0000",
+                "valor_unitario_comercial" => "522.5900000000",
+                "valor_bruto" => "1567.77",
+                "unidade_tributavel" => "522.59",
+                "quantidade_tributavel" => "3.0000",
+                "valor_unitario_tributavel" => "522.5900000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "12",
+                "codigo_produto" => "12",
+                "descricao" => "TECLADO PLATINA CUSTOM",
+                "codigo_ncm" => "84239029",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "127.4000000000",
+                "valor_bruto" => "127.40",
+                "unidade_tributavel" => "127.40",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "127.4000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "13",
+                "codigo_produto" => "13",
+                "descricao" => "Cabo Interl Filtro Linha/PCI Fonte",
+                "codigo_ncm" => "85363000",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "55.0000000000",
+                "valor_bruto" => "55.00",
+                "unidade_tributavel" => "55.00",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "55.0000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "14",
+                "codigo_produto" => "14",
+                "descricao" => "FONTE FULL RANGE BALN\u00c7AS MF-8217-IDM-9098-BP",
+                "codigo_ncm" => "85299040",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "8.0000",
+                "valor_unitario_comercial" => "75.0000000000",
+                "valor_bruto" => "600.00",
+                "unidade_tributavel" => "75.00",
+                "quantidade_tributavel" => "8.0000",
+                "valor_unitario_tributavel" => "75.0000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "15",
+                "codigo_produto" => "16",
+                "descricao" => "PCI de Juncao Montada",
+                "codigo_ncm" => "85340019",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "582.8500000000",
+                "valor_bruto" => "582.85",
+                "unidade_tributavel" => "582.85",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "582.8500000000",
+                "valor_desconto" => "77.76",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "16",
+                "codigo_produto" => "20",
+                "descricao" => "Cel Carga 1100kg \"Carcara\"",
+                "codigo_ncm" => "90318060",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "2.0000",
+                "valor_unitario_comercial" => "1886.1800000000",
+                "valor_bruto" => "3772.36",
+                "unidade_tributavel" => "188618",
+                "quantidade_tributavel" => "2.0000",
+                "valor_unitario_tributavel" => "1886.1800000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "17",
+                "codigo_produto" => "18",
+                "descricao" => "TECLADO 9091 INOX AZUL",
+                "codigo_ncm" => "84733099",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "159.0000000000",
+                "valor_bruto" => "159.00",
+                "unidade_tributavel" => "159.00",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "159.0000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "18",
+                "codigo_produto" => "06",
+                "descricao" => "CABO INTERL. PCI FONTE FILTRO PRIX 5 - 4 - DUE - UNO",
+                "codigo_ncm" => "85363000",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "502.5400000000",
+                "valor_bruto" => "502.54",
+                "unidade_tributavel" => "502.54",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "502.5400000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "19",
+                "codigo_produto" => "21",
+                "descricao" => "Placa principal com entrada bateria - 9098C REV",
+                "codigo_ncm" => "85340019",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "920.0000000000",
+                "valor_bruto" => "920.00",
+                "unidade_tributavel" => "920.00",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "920.0000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "20",
+                "codigo_produto" => "07",
+                "descricao" => "TRANSFORMADOR PRIX3-BP-MF-DP",
+                "codigo_ncm" => "85043199",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "1.0000",
+                "valor_unitario_comercial" => "127.5300000000",
+                "valor_bruto" => "127.53",
+                "unidade_tributavel" => "127.53",
+                "quantidade_tributavel" => "1.0000",
+                "valor_unitario_tributavel" => "127.5300000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ], [
+                "numero_item" => "21",
+                "codigo_produto" => "23",
+                "descricao" => "Cabo Int. PCI Principal com cabe\u00e7ote PRIX5 PRIX6 PRIX DUE",
+                "codigo_ncm" => "85444200",
+                "codigo_cest" => "0106400",
+                "cfop" => "5405",
+                "unidade_comercial" => "und",
+                "quantidade_comercial" => "2.0000",
+                "valor_unitario_comercial" => "222.3000000000",
+                "valor_bruto" => "444.60",
+                "unidade_tributavel" => "222.30",
+                "quantidade_tributavel" => "2.0000",
+                "valor_unitario_tributavel" => "222.3000000000",
+                "inclui_no_total" => "1",
+                "icms_origem" => "0",
+                "icms_situacao_tributaria" => "500",
+                "pis_situacao_tributaria" => "07",
+                "cofins_situacao_tributaria" => "07"
+            ]);
+        return true;
+    }
+
+    public static function consulta1()
+    {
+        //extract data from the post
+        //set POST variables
+        $url = 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm';
+        $fields = array(
+            'ncmsh' => '8507.80.00',
+        );
+
+        $fields_string = '';
+        //url-ify the data for the POST
+        foreach ($fields as $key => $value) {
+            $fields_string .= $key . '=' . $value . '&';
+        }
+        rtrim($fields_string, '&');
+
+        //open connection
+        $ch = curl_init();
+
+        //set the url, number of POST vars, POST data
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, count($fields));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+
+        //execute post
+        $html = curl_exec($ch);
+        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        //as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
+        //interpretar e lidar com o retorno
+        print("STATUS: " . $result . "<br>");
+        print("BODY <br><br>");
+//        print($html);
+//        exit;
+
+        $crawler = new Crawler($html);
+
+        //or something like this
+        $body = $crawler->filter('body')->text();
+        dd($body);
+    }
+
+    public static function consulta2()
+    {
+
+
+        $client = new Client();//(['base_uri' => 'https://www.codigocest.com.br/', 'timeout'  => 2.0]);
+//        $client->setHeader('Host', 'codigocest.com.br');
+//        $client->setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0');
+//        $client->setHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9, */* ;q=0.8');
+//        $client->setHeader('Accept-Language', 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3');
+//        $client->setHeader('Accept-Encoding', 'gzip, deflate');
+////        $client->setHeader('Referer', 'http://www.codigocest.com.br');
+//        $client->setHeader('Connection', 'keep-alive');
+        $param = array(
+            'ncmsh' => '8507.80.00',
+        );
+        try {
+            $response = $client->request('POST', 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm', $param);
+            dd($response);
+            echo $client->getResponse();
+            echo $client->getStatusCode(); // "200"
+            echo $client->getHeader('content-type'); // 'application/json; charset=utf8'
+            echo $client->getBody();
+            exit;
+        } catch (RequestException $e) {
+            echo "RequestException: <br><br>";
+            if ($e->hasResponse()) {
+                echo Psr7\str($e->getResponse());
+            }
+        } catch (ClientException $e) {
+            echo ">ClientException: <br><br>";
+            echo Psr7\str($e->getRequest());
+            echo Psr7\str($e->getResponse());
+        }
+        exit;
+    }
+
     public static function getParams()
     {
+
         $client = new Client();
         //https://www.cadesp.fazenda.sp.gov.br/Pages/Cadastro/Consultas/ConsultaPublica/ConsultaPublica.aspx
         $crawler = $client->request('GET', 'http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/consultaSintegraServlet');
@@ -91,51 +801,30 @@ class Nfe
         );
     }
 
-    /**
-     * Metodo para realizar a consulta
-     *
-     * @param  string $cnpj CNPJ
-     * @param  string $ie IE - Não Testado
-     * @param  string $paramBot ParamBot parametro enviado para validação do captcha
-     * @param  string $captcha CAPTCHA
-     * @param  string $stringCookie COOKIE
-     * @throws Exception
-     * @return array  Dados da empresa
-     */
-    public static function consulta($cnpj, $ie, $paramBot, $captcha, $stringCookie)
+    public static function consulta()
     {
-        $arrayCookie = explode(';', $stringCookie);
-        if (!Utils::isCnpj($cnpj)) {
-            $erro_msg = 'O CNPJ informado não é válido.';
-            return (['status' => 0, 'response' => $erro_msg]);
-//            throw new Exception('O CNPJ informado não é válido.');
-        }
+
         $client = new Client();
         #$client->getClient()->setDefaultOption('timeout', 120);
 //        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_TIMEOUT, 0);
 //        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_TIMEOUT_MS, 0);
 //        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_CONNECTTIMEOUT, 0);
 //        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_RETURNTRANSFER, true);
-        $client->setHeader('Host', 'pfeserv1.fazenda.sp.gov.br');
-        $client->setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0');
-        $client->setHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9, */* ;q=0.8');
-        $client->setHeader('Accept-Language', 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3');
-        $client->setHeader('Accept-Encoding', 'gzip, deflate');
-        $client->setHeader('Referer', 'http://www.sintegra.gov.br/new_bv.html');
-        $client->setHeader('Cookie', $arrayCookie[0]);
-        $client->setHeader('Connection', 'keep-alive');
-        $servico = strlen($cnpj) > 0 ? 'cnpj' : 'ie';
-        $consultaPor = strlen($cnpj) > 0 ? 'Consulta por CNPJ' : 'Consulta por IE';
+//        $client->setHeader('Host', 'codigocest.com.br');
+//        $client->setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0');
+//        $client->setHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9, */* ;q=0.8');
+//        $client->setHeader('Accept-Language', 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3');
+//        $client->setHeader('Accept-Encoding', 'gzip, deflate');
+//        $client->setHeader('Referer', 'http://www.codigocest.com.br');
+//        $client->setHeader('Connection', 'keep-alive');
         $param = array(
-            'hidFlag' => '0',
-            'cnpj' => Utils::unmask($cnpj),
-            'ie' => Utils::unmask($ie),
-            'paramBot' => $paramBot,
-            'Key' => $captcha,
-            'servico' => $servico,
-            'botao' => $consultaPor
+            'ncmsh' => '8507.80.00',
         );
-        $crawler = $client->request('POST', 'http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/sintegra', $param);
+        $crawler = $client->request('POST', 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm', $param);
+
+        return $crawler;
+
+
         $imageError = 'O valor da imagem esta incorreto ou expirou. Verifique novamente a imagem e digite exatamente os 5 caracteres exibidos.';
         $checkError = $crawler->filter('body > center')->eq(1)->count();
         if ($checkError && $imageError == trim($crawler->filter('body > center')->eq(1)->text())) {
@@ -328,11 +1017,9 @@ class Nfe
 
     public function send()
     {
-        return self::send_teste();
         $client = new Client(['base_uri' => $this->SERVER]);
-        $ref = 1;
         try {
-            $response = $client->request('POST', $this->SERVER . "/autorizar.json?token=" . $this->TOKEN . "&ref=" . $ref, ['json' => $this->params]);
+            $response = $client->request('POST', $this->SERVER . "/autorizar.json?token=" . $this->TOKEN . "&ref=" . $this->ref, ['json' => $this->params]);
             echo $client->getResponse();
             echo $client->getStatusCode(); // "200"
             echo $client->getHeader('content-type'); // 'application/json; charset=utf8'
@@ -353,14 +1040,12 @@ class Nfe
 
     public function send_teste()
     {
-
         $ch = curl_init();
         // Substituir pela sua identificação interna da nota
-        $ref = 1;
         // caso queira enviar usando o formato YAML, use a linha abaixo
         // curl_setopt($ch, CURLOPT_URL, $SERVER."/nfe2/autorizar?ref=" . $ref . "&token=" . $TOKEN);
         // formato JSON
-        curl_setopt($ch, CURLOPT_URL, $this->SERVER . "/autorizar.json?ref=" . $ref . "&token=" . $this->TOKEN);
+        curl_setopt($ch, CURLOPT_URL, $this->SERVER . "/autorizar.json?ref=" . $this->ref . "&token=" . $this->TOKEN);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
         // caso queira enviar usando o formato YAML, use a linha abaixo (necessário biblioteca PECL yaml)
@@ -382,98 +1067,5 @@ class Nfe
 
     }
 
-    public function setParams()
-    {
-        $this->params = array(
-            "natureza_operacao" => 'Remessa de Produtos',
-            "forma_pagamento" => 0,
-            "data_emissao" => '2017-02-09T12:00:00-03:00',
-            "tipo_documento" => 1,
-            "finalidade_emissao" => 1,
 
-            "cnpj_emitente" => '10555180000121',
-            "nome_emitente" => 'MACEDO AUTOMAÇAO COMERCIAL LTDA',
-            "nome_fantasia_emitente" => 'MACEDO AUTOMAÇAO COMERCIAL LTDA',
-            "logradouro_emitente" => 'Rua Triunfo',
-            "numero_emitente" => '400',
-            "bairro_emitente" => 'Santa Cruz',
-            "municipio_emitente" => 'Ribeirão Preto',
-            "uf_emitente" => 'SP',
-            "cep_emitente" => '14020670',
-            "telefone_emitente" => '016 3011-8448',
-            "inscricao_estadual_emitente" => '797146934117',
-//            'n_autorizacao' => '10002180',
-
-            "nome_destinatario" => 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL',
-            "cnpj_destinatario" => '10812933000137',
-            "indicador_inscricao_estadual_destinatario" => 2,
-//            "inscricao_estadual_destinatario" => 2,
-            "telefone_destinatario" => '6132332933',
-            "logradouro_destinatario" => 'SMAS 6580 PARKSHOPPING',
-            "numero_destinatario" => '134',
-            "bairro_destinatario" => 'Zona Industrial (Guará)',
-            "municipio_destinatario" => 'Brasilia',
-            "uf_destinatario" => 'DF',
-
-            "pais_destinatario" => 'Brasil',
-            "cep_destinatario" => '71219900',
-            "icms_base_calculo" => '0',
-            "icms_valor_total" => '0',
-            "icms_base_calculo_st" => '0',
-            "icms_valor_total_st" => '0',
-            "icms_modalidade_base_calculo" => '0',
-            "icms_valor" => '0',
-            "valor_frete" => '0.0000',
-            "valor_seguro" => '0',
-            "valor_total" => '2241.66',
-            "valor_produtos" => '2241.66',
-            "valor_ipi" => '0',
-            "modalidade_frete" => '0',
-            "informacoes_adicionais_contribuinte" => 'Não Incidência ICMS conforme Decisão...',
-            "nome_transportador" => 'BRASPRESS TRANSPORTES URGENTES LTDA SP',
-            "cnpj_transportador" => '48740351000165',
-            "endereco_transportador" => 'RUA CORONEL MARQUES RIBEIRO, 225',
-            "municipio_transportador" => 'SÃO PAULO',
-            "uf_transportador" => 'SP',
-            "inscricao_estadual_transportador" => '116945108113',
-            "items" => array(
-                array(
-                    "numero_item" => '1',
-                    "codigo_produto" => '9999999',
-                    "descricao" => 'Perfume Polo Black',
-                    "cfop" => '6949',
-                    "unidade_comercial" => 'un',
-                    "quantidade_comercial" => '5000',
-                    "valor_unitario_comercial" => '0.448332',
-                    "valor_unitario_tributavel" => '0.448332',
-                    "unidade_tributavel" => 'un',
-                    "codigo_ncm" => '49111090',
-                    "quantidade_tributavel" => '5000',
-                    "valor_bruto" => '2241.66',
-                    "icms_situacao_tributaria" => '41',
-                    "icms_origem" => '0',
-                    "pis_situacao_tributaria" => '07',
-                    "cofins_situacao_tributaria" => '07',
-                    "ipi_situacao_tributaria" => '53',
-                    "ipi_codigo_enquadramento_legal" => '999'
-                )
-            ),
-            "volumes" => array(
-                array(
-                    "quantidade" => '2',
-                    "especie" => 'Volumes',
-                    "marca" => '',
-                    "numero" => '',
-                    "peso_bruto" => '36',
-                    "peso_liquido" => '36'
-                )
-            ),
-            "duplicatas" => array(
-                array(
-                    "numero" => 'Pagamento a vista',
-                    "valor" => '2241.66'
-                )
-            )
-        );
-    }
 }

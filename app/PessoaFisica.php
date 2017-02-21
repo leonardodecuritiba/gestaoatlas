@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class PessoaFisica extends Model
 {
+    public $timestamps = true;
     protected $table = 'pfisicas';
     protected $primaryKey = 'idpfisica';
-    public $timestamps = true;
     protected $fillable = [
         'cpf',
     ];
@@ -18,6 +18,11 @@ class PessoaFisica extends Model
     public function getCpfAttribute($value)
     {
         return Controller::mask($value, '###.###.###-##');
+    }
+
+    public function getCpf()
+    {
+        return $this->attributes['cpf'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************

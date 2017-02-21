@@ -20,12 +20,14 @@
 				</a>
 			</div>
 			<div class="animated flipInY col-lg-4 col-md-4 col-sm-6 col-xs-12">
-				<div class="tile-stats">
-					<div class="icon"><i class="fa fa-upload"></i>
+				<a href="{{ route($Page->link.'.exportar') }}">
+					<div class="tile-stats">
+						<div class="icon"><i class="fa fa-upload"></i>
+						</div>
+						<div class="count">Exportar</div>
+						<h3>Lista de {{$Page->Targets}}</h3>
 					</div>
-					<div class="count">Exportar</div>
-					<h3>Lista de {{$Page->Targets}}</h3>
-				</div>
+				</a>
 			</div>
 			<div class="animated flipInY col-lg-4 col-md-4 col-sm-6 col-xs-12">
 				<div class="tile-stats">

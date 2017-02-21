@@ -50,7 +50,8 @@
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Preço Total: <span
                                             class="required">*</span></label>
                                 <div class="col-md-10 col-sm-10 col-xs-12">
-                                    <input name="valor" id="valor-ref" type="text" maxlength="100" class="form-control"
+                                    <input name="valor" id="valor-ref" type="text" maxlength="100"
+                                           class="form-control show-valor"
                                            disabled
                                            value="{{(isset($Kit->nome))?$Kit->valor_total():''}}">
                                     </div>
@@ -172,12 +173,23 @@
             $parent = $($this).parents('div.form-group');
             $valor_total = $($parent).find('input#vlr_total');
             qtd = $($parent).find('input#qtd').val();
-            vlr = $($parent).find('input#vlr').maskMoney('unmasked');
-            custo_final = qtd * vlr[0];
+            vlr = $($parent).find('input#vlr').maskMoney('unmasked')[0];
+            custo_final = qtd * vlr;
             $($valor_total).maskMoney('mask', custo_final);
+            soma_tudo();
+        }
+        function soma_tudo() {
+            $parent = $('div#kit_peca');
+            $inputs_valor = $($parent).find('input[name^=valor_total]');
+            var valor = 0;
+            $($inputs_valor).each(function (i, v) {
+                valor += $(v).maskMoney('unmasked')[0];
+            })
+            $('input#valor-ref').maskMoney('mask', custo_final);
         }
 
         $(document).ready(function(){
+            $('input#valor-ref').maskMoney('mask');
             $("section#pecas").find('button#add').click(function(){
                 console.log(ind_peca_kit);
                 $parent = $(this).parents('div.form-group').siblings('div#pecas_add');

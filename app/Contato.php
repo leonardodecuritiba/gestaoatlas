@@ -33,6 +33,11 @@ class Contato extends Model
     {
         return DataHelper::mask($value, '(##) ####-####');
     }
+
+    public function getTelefone()
+    {
+        return $this->attributes['telefone'];
+    }
     public function getCelularAttribute($value)
     {
         return DataHelper::mask($value, '(##) #####-####');
@@ -40,6 +45,11 @@ class Contato extends Model
     public function getCepAttribute($value)
     {
         return DataHelper::mask($value, '#####-###');
+    }
+
+    public function getCep()
+    {
+        return $this->attributes['cep'];
     }
 
     public function setTelefoneAttribute($value)

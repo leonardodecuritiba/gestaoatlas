@@ -43,7 +43,7 @@
                                     <select name="idpeca[0]" onchange="get_data(this)" class="form-control" required>
                                         <option value="">Selecione a Peça</option>
                                         @foreach($Page->extras['pecas'] as $sel)
-                                            <option data-valor="{{$sel->custo_final_float()}}"
+                                            <option data-valor="{{$sel->peca_tributacao->custo_final}}"
                                                     data-unidade="{{$sel->unidade}}"
                                                     value="{{$sel->idpeca}}">{{$sel->descricao}}</option>
                                         @endforeach
@@ -128,7 +128,7 @@
         }
 
         function calc_total($this){
-            $parent = $($this).parents('div.form-group');
+            $parent = $('section#pecas').parents('div.form-group');
             $valor_total = $($parent).find('input#vlr_total');
             qtd = $($parent).find('input#qtd').val();
             vlr = $($parent).find('input#vlr').maskMoney('unmasked');
@@ -147,7 +147,7 @@
                     '<select name="idpeca[' + ind_peca_kit + ']" onchange="get_data(this)" class="form-control" required>' +
                                         '<option value="">Selecione a Peça</option>';
                 @foreach($Page->extras['pecas'] as $sel)
-                    html += '<option data-valor="{{$sel->custo_final_float()}}"  data-unidade="{{$sel->unidade}}" value="{{$sel->idpeca}}">{{$sel->descricao}}</option>';
+                    html += '<option data-valor="{{$sel->peca_tributacao->custo_final}}"  data-unidade="{{$sel->unidade}}" value="{{$sel->idpeca}}">{{$sel->descricao}}</option>';
                 @endforeach
                 html += '</select>' +
                                 '</div>' +

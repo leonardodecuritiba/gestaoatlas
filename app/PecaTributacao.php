@@ -15,6 +15,7 @@ class PecaTributacao extends Model
         'idcst',
         'idnatureza_operacao',
         'idncm',
+        'cest',
         'icms_base_calculo',
         'icms_valor_total',
         'icms_base_calculo_st',

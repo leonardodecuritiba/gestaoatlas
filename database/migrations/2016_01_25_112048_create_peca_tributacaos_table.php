@@ -26,7 +26,9 @@ class CreatePecaTributacaosTable extends Migration
 
             $table->integer('idncm')->unsigned();
             $table->foreign('idncm')->references('idncm')->on('ncm')->onDelete('cascade');
+            $table->foreign('idncm')->references('idncm')->on('ncm')->onDelete('cascade');
 
+            $table->integer('cest')->unsigned();
             $table->decimal('icms_base_calculo', 5, 2)->default(0);
             $table->decimal('icms_valor_total', 5, 2)->default(0);
             $table->decimal('icms_base_calculo_st', 5, 2)->default(0);

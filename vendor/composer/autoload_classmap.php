@@ -80,6 +80,7 @@ return array(
     'App\\Lacre' => $baseDir . '/app/Lacre.php',
     'App\\LacreInstrumento' => $baseDir . '/app/LacreInstrumento.php',
     'App\\Marca' => $baseDir . '/app/Marca.php',
+    'App\\Models\\Empresa' => $baseDir . '/app/Models/Empresa.php',
     'App\\Models\\Nfe' => $baseDir . '/app/Models/Nfe.php',
     'App\\NaturezaOperacao' => $baseDir . '/app/NaturezaOperacao.php',
     'App\\Ncm' => $baseDir . '/app/Ncm.php',

@@ -7,6 +7,7 @@ use App\Cst;
 use App\Grupo;
 use App\Helpers\DataHelper;
 use App\Marca;
+use App\Models\ExcelFile;
 use App\NaturezaOperacao;
 use App\Ncm;
 use App\Peca;
@@ -277,9 +278,93 @@ class PecasController extends Controller
             'response' => $this->Page->msg_rem]);
     }
 
-    public function importacao()
+    public function exportar(ExcelFile $export)
     {
-        return 'ok';
+        $Pecas = Peca::all();
+        return $export->sheet('sheetName', function ($sheet) use ($Pecas) {
+
+            $data_peca = array(
+                'idpeca',
+                'idfornecedor',
+                'idmarca',
+                'idgrupo',
+                'idunidade',
+                'tipo',
+                'codigo_auxiliar',
+                'codigo_barras',
+                'descricao',
+                'descricao_tecnico',
+                'sub_grupo',
+                'garantia',
+                'comissao_tecnico',
+                'comissao_vendedor',
+                'idncm',
+                'cest',
+                'icms_base_calculo',
+                'icms_valor_total',
+                'icms_base_calculo_st',
+                'icms_valor_total_st',
+                'valor_ipi',
+                'valor_unitario_tributavel',
+                'icms_situacao_tributaria',
+                'icms_origem',
+                'pis_situacao_tributaria',
+                'valor_frete',
+                'valor_seguro',
+                'custo_final',
+                'idnatureza_operacao',
+                'idcfop_venda',
+                'idcst_venda',
+                'gricki',
+                'savegnago',
+                'geral',
+            ); //porcentagem
+
+            $sheet->row(1, $data_peca);
+            //'idpeca_tributacao',
+//            dd($data_peca);
+
+            $i = 2;
+            foreach ($Pecas as $peca) {
+                $sheet->row($i, array(
+                    $peca->idpeca,
+                    $peca->idfornecedor,
+                    $peca->idmarca,
+                    $peca->idgrupo,
+                    $peca->idunidade,
+                    $peca->tipo,
+                    $peca->codigo_auxiliar,
+                    $peca->codigo_barras,
+                    $peca->descricao,
+                    $peca->descricao_tecnico,
+                    $peca->sub_grupo,
+                    $peca->garantia,
+                    $peca->comissao_tecnico,
+                    $peca->comissao_vendedor,
+                    $peca->peca_tributacao->idncm,
+                    '',
+                    $peca->peca_tributacao->icms_base_calculo,
+                    $peca->peca_tributacao->icms_valor_total,
+                    $peca->peca_tributacao->icms_base_calculo_st,
+                    $peca->peca_tributacao->icms_valor_total_st,
+                    $peca->peca_tributacao->valor_ipi,
+                    $peca->peca_tributacao->valor_unitario_tributavel,
+                    $peca->peca_tributacao->icms_situacao_tributaria,
+                    $peca->peca_tributacao->idncicms_origemm,
+                    $peca->peca_tributacao->pis_situacao_tributaria,
+                    $peca->peca_tributacao->valor_frete,
+                    $peca->peca_tributacao->valor_seguro,
+                    $peca->peca_tributacao->custo_final,
+                    $peca->peca_tributacao->idnatureza_operacao,
+                    $peca->peca_tributacao->idcfop,
+                    $peca->peca_tributacao->idcst,
+                    $peca->tabela_preco_by_name('TABELA GRICKI')->preco,
+                    $peca->tabela_preco_by_name('TABELA SAVEGNAGO')->preco,
+                    $peca->tabela_preco_by_name('TABELA GERAL')->preco
+                ));
+                $i++;
+            }
+        })->export('xls');
     }
 
     public function RedirectFornecedor($id,$tab='pecas')

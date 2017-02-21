@@ -120,6 +120,14 @@ class Peca extends Model
     }
 
     // ************************** HASMANY **********************************
+    public function tabela_preco_by_name($value)
+    {
+        $id = TabelaPreco::where('descricao', $value)->pluck('idtabela_preco');
+        return $this->hasMany('App\TabelaPrecoPeca', 'idpeca')
+            ->where('idtabela_preco', $id)
+            ->first();
+    }
+
     public function tabela_preco()
     {
         return $this->hasMany('App\TabelaPrecoPeca', 'idpeca');

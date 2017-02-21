@@ -36,6 +36,7 @@ class Cliente extends Model
 
     // ************************ FUNCTIONS ******************************
 
+
     static public function getInvalidos()
     {
         return self::whereNull('idcolaborador_validador')->whereNull('validated_at')->get();

@@ -92,9 +92,6 @@ class DataHelper
         return floatval(str_replace(',', '.', $value));
     }
 
-
-    // CRIAÇÃO/ATUALIZAÇÃO DAS TABELAS DE PREÇOS
-
     static public function updatePriceTable($dados, $Tabelas_preco)
     {
         $valor = $dados['valor'];
@@ -115,8 +112,16 @@ class DataHelper
         }
     }
 
+
+    // CRIAÇÃO/ATUALIZAÇÃO DAS TABELAS DE PREÇOS
+
     static public function getReal2Float($value)
     {
         return floatval(str_replace(',', '.', str_replace('.', '', $value)));
+    }
+
+    static public function calculateModulo11($value)
+    {
+        //
     }
 }

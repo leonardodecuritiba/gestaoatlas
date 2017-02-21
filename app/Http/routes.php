@@ -33,6 +33,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('instrumentos', 'InstrumentosController');
     Route::resource('fornecedores', 'FornecedoresController');
     Route::resource('pecas', 'PecasController');
+    Route::get('exportar/pecas', 'PecasController@exportar')->name('pecas.exportar');
 
     //Serviços
     Route::resource('servicos', 'ServicosController');
@@ -128,10 +129,14 @@ Route::group(['prefix' => 'teste'], function () {
         return $Boleto->gerar_PDF(true);
     });
     Route::get('nfe', function () {
-        $NFE = new \App\Models\Nfe(0);
-        $NFE->setParams();
-        $NFE->send();
-
+        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find(1));
+        $NFE->send_teste();
+    });
+    Route::get('get_cest2', function () {
+        return \App\Models\Nfe::consulta2();
+    });
+    Route::get('get_cest', function () {
+        return \App\Models\Nfe::consulta1();
     });
 });
 //Testando o envio de email
