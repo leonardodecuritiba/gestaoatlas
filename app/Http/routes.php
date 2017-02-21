@@ -135,6 +135,15 @@ Route::group(['prefix' => 'teste'], function () {
     Route::get('get_cest2', function () {
         return \App\Models\Nfe::consulta2();
     });
+    Route::get('modulo11_v1/{valor}', function (\Illuminate\Http\Request $request) {
+        $DATA_HELPER = new \App\Helpers\DataHelper();
+        $valor = $request->valor;
+        $dv = $DATA_HELPER::calculateModulo11($valor);
+        $final = $request->valor . $dv;
+        echo 'Numeração: ' . $DATA_HELPER->mask($request->valor, '##.###.###') . '<br>';
+        echo 'Dígito: ' . $dv . '<br>';
+        echo 'Numeração (com DV): ' . $DATA_HELPER->mask($final, '##.###.###-#') . '<br>';
+    });
     Route::get('modulo11/{valor}', function (\Illuminate\Http\Request $request) {
         $value = $request->valor;
         $sz = strlen($value);
