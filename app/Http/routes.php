@@ -154,7 +154,7 @@ Route::group(['prefix' => 'teste'], function () {
 //        echo 'DIV = '. $mod.'<br>';
         echo 'Numeração: ' . $DATA_HELPER->mask($value, '##.###.###') . '<br>';
         echo 'Dígito: ' . $mod . '<br>';
-        echo 'Numeração (mod11): ' . $DATA_HELPER->mask($final, '##.###.###-#') . '<br>';
+        echo 'Numeração (com DV): ' . $DATA_HELPER->mask($final, '##.###.###-#') . '<br>';
     });
 });
 //Testando o envio de email
