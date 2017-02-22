@@ -1,4 +1,3 @@
-
 <?php $lista = ['selo', 'lacre'];?>
 @foreach($lista as $l)
     <section class="x_panel">
@@ -35,6 +34,9 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Numeração</th>
+                                @if(strcmp($l, 'selo')==0)
+                                    <td>DV</td>
+                                @endif
                                 <th>Numeração (externa)</th>
                                 <th>Status</th>
                             </tr>
@@ -43,7 +45,12 @@
                             @foreach($Colaborador->tecnico->{$l.'s'} as $sel)
                                 <tr>
                                     <td>{{$sel->{'id'.$l} }}</td>
-                                    <td>{{$sel->numeracao}}</td>
+                                    @if(strcmp($l, 'selo')==0)
+                                        <td>{{$sel->getFormatedSelo()}}</td>
+                                        <td>{{$sel->getDV()}}</td>
+                                    @else
+                                        <td>{{$sel->numeracao}}</td>
+                                    @endif
                                     <td>{{$sel->numeracao_externa}}</td>
                                     <td>@if($sel->used)
                                             <button class="btn btn-danger btn-xs">Usado</button>

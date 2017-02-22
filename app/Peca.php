@@ -26,6 +26,7 @@ class Peca extends Model
         'garantia',
         'comissao_tecnico',
         'comissao_vendedor',
+        'cest',
     ];
 
     // ******************** FUNCTIONS ******************************

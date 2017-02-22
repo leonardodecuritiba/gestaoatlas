@@ -79,7 +79,7 @@ class Instrumento extends Model
     public function selo_afixado_numeracao()
     {
         $selo = $this->selo_afixado();
-        return ($selo != NULL) ? $selo->numeracao : $selo;
+        return ($selo != NULL) ? $selo->getFormatedSeloDV() : $selo;
     }
 
     public function selo_afixado()
@@ -123,6 +123,7 @@ class Instrumento extends Model
 
             $selo = json_encode([
                 'numeracao'     => $selo->numeracao,
+                'numeracao_dv' => $selo->getFormatedSeloDV(),
                 'tecnico'       => $selo->tecnico->colaborador->nome,
                 'afixado_em'    => $selo->selo_instrumento->afixado_em
             ]);

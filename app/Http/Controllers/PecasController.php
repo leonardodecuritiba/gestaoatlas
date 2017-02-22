@@ -342,7 +342,7 @@ class PecasController extends Controller
                     $peca->comissao_tecnico,
                     $peca->comissao_vendedor,
                     $peca->peca_tributacao->ncm->codigo,
-                    '',
+                    $peca->peca_tributacao->cest,
                     $peca->peca_tributacao->icms_base_calculo,
                     $peca->peca_tributacao->icms_valor_total,
                     $peca->peca_tributacao->icms_base_calculo_st,

@@ -66,6 +66,7 @@ class PecasRequest extends Request
 //                    'valor_frete' => 'required',
 //                    'valor_seguro' => 'required',
                     'custo_final' => 'required',
+                    'cest' => 'required',
 
                 ];
             }

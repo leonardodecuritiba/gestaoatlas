@@ -105,11 +105,14 @@
                                class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
                                width="100%">
                             <thead>
-                            <tr><th colspan="3">Selo</th></tr>
+                            <tr>
+                                <th colspan="4">Selo</th>
+                            </tr>
                             <tr>
                                 <th>Afixado em</th>
                                 <th>Técnico</th>
-                                <th>Número</th>
+                                <th>Númeração</th>
+                                <th>Númeração (DV)</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -129,7 +132,7 @@
                             <tr>
                                 <th>Afixado em</th>
                                 <th>Técnico</th>
-                                <th>Número</th>
+                                <th>Númeração</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -252,6 +255,7 @@
                 '<td>' + $selo.afixado_em + '</td>' +
                 '<td>' + $selo.tecnico + '</td>' +
                 '<td>' + $selo.numeracao + '</td>' +
+                '<td>' + $selo.numeracao_dv + '</td>' +
                 '</tr>'
             );
         }

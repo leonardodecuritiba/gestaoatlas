@@ -122,13 +122,19 @@ class DataHelper
 
     static public function calculateModulo11($value)
     {
-        $sz = strlen($value);
-        $sum = 0;
-        foreach (range($sz + 1, 2) as $i => $number) {
-            $calc = ($value[$i] * $number);
-            $sum += $calc;
+        $dv = NULL;
+        if ($value != NULL) {
+            $sz = strlen($value);
+            if ($sz > 0) {
+                $sum = 0;
+                foreach (range($sz + 1, 2) as $i => $number) {
+                    $calc = ($value[$i] * $number);
+                    $sum += $calc;
+                }
+                $dv = ($sum % 11); //dígito verificador
+            }
         }
-        $dv = ($sum % 11); //dígito verificador
         return $dv;
+
     }
 }
