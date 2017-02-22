@@ -18,7 +18,8 @@ class ImportProdutoSeeder extends Seeder
 //    php artisan db:seed --class=ImportProdutoSeeder
         $start = microtime(true);
         echo "*** Iniciando o Upload (export_21_02_2017-16_19.xls) ***";
-        $file = storage_path('uploads') . '\import\export_21_02_2017-16_19.xls';
+        $file = 'storage/uploads/import/export_21_02_2017-16_19.xls'; //servidor
+//        $file = storage_path('uploads') . '\import\export_21_02_2017-16_19.xls';
         echo "\n*** Upload completo em " . round((microtime(true) - $start), 3) . "s ***";
         set_time_limit(3600);
 

@@ -57,7 +57,7 @@
             </div>
             <label class="control-label col-md-2 col-sm-2 col-xs-12">CEST</label>
             <div class="col-md-4 col-sm-4 col-xs-12">
-                <input name="valor_ipi" type="text" class="form-control" placeholder="Código CEST"
+                <input name="cest" type="text" class="form-control" placeholder="Código CEST"
                        value="{{(isset($Peca->peca_tributacao->cest))?$Peca->peca_tributacao->cest:old('cest')}}"
                 >
             </div>
