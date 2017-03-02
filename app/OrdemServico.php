@@ -6,6 +6,7 @@ use App\Helpers\DataHelper;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class OrdemServico extends Model
 {
@@ -25,6 +26,9 @@ class OrdemServico extends Model
         'idsituacao_ordem_servico',
         'idcentro_custo',
         'numero_chamado',
+        'responsavel',
+        'responsavel_cpf',
+        'responsavel_cargo',
         'valor_total',
         'desconto',
         'valor_final',
@@ -45,6 +49,7 @@ class OrdemServico extends Model
 
     static public function filter_situacao($situacao_ordem_servico)
     {
+
         $query = OrdemServico::orderBy('created_at', 'desc');
         switch ($situacao_ordem_servico) {
             case 'a-faturar':
@@ -54,7 +59,17 @@ class OrdemServico extends Model
                 $query->where('idsituacao_ordem_servico', 6);
                 break;
         }
+        $User = Auth::user();
+        if ($User->hasRole('tecnico')) {
+            $query->where('idcolaborador', $User->colaborador->idcolaborador);
+        }
+//        dd($query);
         return $query;
+    }
+
+    public function getResponsavelCpfAttribute($value)
+    {
+        return DataHelper::mask($value, '###.###.###-##');
     }
 
     public function getStatus()
@@ -81,9 +96,12 @@ class OrdemServico extends Model
         }
     }
 
-    public function fechar($numero_chamado)
+    public function fechar($request)
     {
-        $this->attributes['numero_chamado'] = $numero_chamado;
+        $this->attributes['numero_chamado'] = $request['numero_chamado'];
+        $this->attributes['responsavel'] = $request['responsavel'];
+        $this->attributes['responsavel_cpf'] = $request['responsavel_cpf'];
+        $this->attributes['responsavel_cargo'] = $request['responsavel_cargo'];
         $this->attributes['fechamento'] = Carbon::now()->toDateTimeString();
         $this->attributes['idsituacao_ordem_servico'] = 3;
         return $this->save();
@@ -93,27 +111,29 @@ class OrdemServico extends Model
     {
         $this->update_valores();
         $valor_total_servicos = 0;
-        foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
-            $valor_total_servicos += $instrumentos_manutencao->getTotalServicos();
-        }
-        $data['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($valor_total_servicos);
-
         $valor_total_pecas = 0;
-        foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
-            $valor_total_pecas += $instrumentos_manutencao->getTotalPecas();
-        }
-        $data['valor_total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($valor_total_pecas);
-
         $valor_total_kits = 0;
         foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
+            $valor_total_servicos += $instrumentos_manutencao->getTotalServicos();
+            $valor_total_pecas += $instrumentos_manutencao->getTotalPecas();
             $valor_total_kits += $instrumentos_manutencao->getTotalKits();
         }
+        $data['valor_total_servicos_float'] = $valor_total_servicos;
+        $data['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($valor_total_servicos);
+        $data['valor_total_pecas_float'] = $valor_total_pecas;
+        $data['valor_total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($valor_total_pecas);
+        $data['valor_total_kits_float'] = $valor_total_kits;
         $data['valor_total_kits'] = 'R$ ' . DataHelper::getFloat2Real($valor_total_kits);
+
         $data['valor_deslocamento'] = 'R$ ' . $this->custos_deslocamento;
         $data['pedagios'] = 'R$ ' . $this->pedagios;
         $data['outros_custos'] = 'R$ ' . $this->outros_custos;
+        $data['valor_outras_despesas_float'] = $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
+
         $data['valor_total'] = 'R$ ' . $this->valor_total;
         $data['valor_final'] = 'R$ ' . $this->valor_final;
+        $data['valor_total_float'] = $this->attributes['valor_total'];
+        $data['valor_final_float'] = $this->attributes['valor_final'];
         return json_encode($data);
     }
 

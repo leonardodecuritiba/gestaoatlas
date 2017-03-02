@@ -49,12 +49,12 @@ class Colaborador extends Model
 
     public function getCpfAttribute($value)
     {
-        return Controller::mask($value, '###.###.###-##');
+        return DataHelper::mask($value, '###.###.###-##');
     }
 
     public function getRgAttribute($value)
     {
-        return Controller::mask($value, '##.###.###-#');
+        return DataHelper::mask($value, '##.###.###-#');
     }
 
     public function getDocumentos()

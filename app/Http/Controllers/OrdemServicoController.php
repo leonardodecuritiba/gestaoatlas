@@ -56,7 +56,6 @@ class OrdemServicoController extends Controller
         ];
     }
 
-
     public function index(Request $request, $situacao_ordem_servico)
     {
 
@@ -102,7 +101,6 @@ class OrdemServicoController extends Controller
         $OrdemServico->update_valores();
         return $this->buscaInstrumentos($request, $idordem_servico);
     }
-
 
     public function buscaInstrumentos(Request $request, $idordem_servico)
     {
@@ -388,7 +386,7 @@ class OrdemServicoController extends Controller
     public function fechar(Request $request, $idordem_servico)
     {
         $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->fechar($request->get('numero_chamado'));
+        $OrdemServico->fechar($request->all());
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
         return Redirect::route('ordem_servicos.resumo', $OrdemServico->idordem_servico);
@@ -397,6 +395,7 @@ class OrdemServicoController extends Controller
     public function imprimir(Request $request, $idordem_servico)
     {
 
+//        incluir no cabeçalho ou rodapé seguinte observaçao: .
         $OrdemServico = OrdemServico::find($idordem_servico);
         $Cliente = $OrdemServico->cliente;
         $filename = 'OrdemServico_' . $OrdemServico->idordem_servico . '_' . Carbon::now()->format('H-i_d-m-Y');
@@ -418,7 +417,21 @@ class OrdemServicoController extends Controller
             'dados' => $atlas,
             'logo' => public_path('uploads/institucional/logo_atlas.png'),
         );
-        $aviso_txt = ['ASSINATURA: CLIENTE CONFIRMA A EXECUÇÃO DOS SERVIÇOS E TROCA DE PEÇAS ACIMA SITADOS, E TAMBEM APROVA OS PREÇOS COBRADOS. INSTRUMENTOS - EQUIPAMANTOS DEIXADOS POR CLIENTES NA EMPRESA: O CLIENTE AUTORIZA PREVIA E EXPRESSAMANTE UMA VEZ QUE ORÇAMANTOS NÃO FOREM APROVADOS A NÃO RETIRADA DOS INSTRUMENTOS - EQUIPAMANTOS NO PRAZO DE 90 DIAS DA ASSINATURA DESSA ORDEM OS MESMOS SERÃO DESCARTADOS PARA LIXO OU SUCATA.'];
+
+        $aviso_txt = [
+            [
+                'ASSINATURA:',
+                'O CLIENTE CONFIRMA A EXECUÇÃO DOS SERVIÇOS E TROCA DE PEÇAS ACIMA CITADOS, E TAMBÉM APROVA OS PREÇOS COBRADOS.'],
+            [
+                'EQUIPAMENTOS DEIXADOS POR CLIENTES NA EMPRESA:',
+                'O CLIENTE AUTORIZA PRÉVIA E EXPRESSAMANTE UMA VEZ QUE ORÇAMENTOS NÃO FOREM APROVADOS QUE INSTRUMENTOS OU EQUIPAMANTOS NÃO ',
+                'RETIRADOS DAS DEPENDÊCIAS DA EMPRESA NO PRAZO DE 90 DIAS DA ASSINATURA DESSA ORDEM SERVIÇO SEJAM DESCARTADOS PARA O LIXO OU SUCATA.'
+            ]
+        ];
+
+        if ($OrdemServico->status() == 0) {
+            $aviso_txt[] = ['Ordem serviço não finalizada'];
+        }
 
         if ($Cliente->is_pjuridica()) {
             //empresa
@@ -481,7 +494,6 @@ class OrdemServicoController extends Controller
             ];
         }
 
-
         $font = [
             'nome' => array(
                 'family' => 'Bookman Old Style',
@@ -497,6 +509,13 @@ class OrdemServicoController extends Controller
             'quebra' => array(
                 'size' => '12',
                 'bold' => true
+            ),
+            'negrito' => array(
+                'size' => '12',
+                'bold' => true
+            ),
+            'normal' => array(
+                'size' => '12',
             )
         ];
 
@@ -800,12 +819,44 @@ class OrdemServicoController extends Controller
                     $row->setFontWeight(true);
                 });
                 $sheet->row($this->linha_xls, ['TOTAL  DA ORDEM SERVIÇO', '', '', '', 'R$ ' . $OrdemServico->valor_final]);
-                $this->linha_xls++;
-                $sheet->row($this->linha_xls, ['TÉCNICO', '', '', '', $OrdemServico->colaborador->nome]);
                 $this->linha_xls += 2;
 
-                $sheet->mergeCells('A' . $this->linha_xls . ':G' . $this->linha_xls);
-                $sheet->row($this->linha_xls, $data['aviso_txt']);
+                $sheet->mergeCells('B' . $this->linha_xls . ':G' . $this->linha_xls);
+                $sheet->row($this->linha_xls, $data['aviso_txt'][0]);
+                $this->linha_xls++;
+
+                $sheet->mergeCells('B' . $this->linha_xls . ':G' . ($this->linha_xls));
+                $sheet->row($this->linha_xls, [$data['aviso_txt'][1][0], $data['aviso_txt'][1][1]]);
+                $this->linha_xls++;
+
+                $sheet->mergeCells('B' . $this->linha_xls . ':G' . ($this->linha_xls));
+                $sheet->row($this->linha_xls, ['', $data['aviso_txt'][1][2]]);
+                $this->linha_xls += 2;
+
+                $sheet->row($this->linha_xls, [
+                    'TÉCNICO:', $OrdemServico->colaborador->nome,
+                    'CPF:', $OrdemServico->colaborador->cpf,
+                    'ASS. TÉCNICO:', '________________________________________']);
+                $this->linha_xls++;
+                $sheet->row($this->linha_xls, [
+                    'RESPONSÁVEL ESTABELECIMENTO:', $OrdemServico->responsavel,
+                    'CPF:', $OrdemServico->responsavel_cpf,
+                    'ASS. RESPONSÁVEL:', '________________________________________']);
+
+                if (isset($data['aviso_txt'][2])) {
+                    $this->linha_xls++;
+                    $sheet->mergeCells('A' . $this->linha_xls . ':G' . ($this->linha_xls));
+                    $sheet->row($this->linha_xls, function ($row) use ($data) {
+                        // call cell manipulation methods
+                        $row->setBackground('#d9d9d9');
+                        $row->setAlignment('center');
+                        $row->setFont($data['fonts']['quebra']);
+                    });
+                    $sheet->row($this->linha_xls, $data['aviso_txt'][2]);
+
+                }
+
+
 //:	RONI CAMARGO RG:26148976
 //RESPONSAVEL PELO ESTABELECIMENTO:	WILLIAN T MACEDO RG: 14079508 	ASSINATURA - CARIMBO - FOTO
 

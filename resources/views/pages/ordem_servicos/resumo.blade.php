@@ -80,8 +80,33 @@
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">Nº do Chamado: <span class="required">*</span></label>
 							<div class="col-md-9 col-sm-9 col-xs-12">
-								<input name="numero_chamado" type="text" maxlength="100" class="form-control col-md-7 col-xs-12"
+								<input name="numero_chamado" type="text" maxlength="100" class="form-control"
 									   value="{{(isset($OrdemServico))?$OrdemServico->numero_chamado:old('numero_chamado')}}" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12">Nome Responsável: <span
+										class="required">*</span></label>
+							<div class="col-md-9 col-sm-9 col-xs-12">
+								<input name="responsavel" type="text" maxlength="100" class="form-control"
+									   value="{{(isset($OrdemServico))?$OrdemServico->responsavel:old('responsavel')}}"
+									   required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12">CPF: <span
+										class="required">*</span></label>
+							<div class="col-md-3 col-sm-3 col-xs-12">
+								<input name="responsavel_cpf" type="text" maxlength="16" class="form-control show-cpf"
+									   value="{{(isset($OrdemServico))?$OrdemServico->responsavel_cpf:old('responsavel_cpf')}}"
+									   required>
+							</div>
+							<label class="control-label col-md-3 col-sm-3 col-xs-12">Cargo: <span
+										class="required">*</span></label>
+							<div class="col-md-3 col-sm-3 col-xs-12">
+								<input name="responsavel_cargo" type="text" maxlength="50" class="form-control"
+									   value="{{(isset($OrdemServico))?$OrdemServico->responsavel_cargo:old('responsavel_cargo')}}"
+									   required>
 							</div>
 						</div>
 					@endif
@@ -100,11 +125,17 @@
 										Encaminhar</a>
 								</div>
 							@else
-								<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="col-md-4 col-sm-4 col-xs-12">
+									<a target="_blank"
+									   href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
+									   class="btn btn-default btn-lg btn-block"><i class="fa fa-print fa-2"></i>
+										Imprimir</a>
+								</div>
+								<div class="col-md-4 col-sm-4 col-xs-12">
                                     <a href="{{route('ordem_servicos.show',$OrdemServico->idordem_servico)}}"
                                        class="btn btn-primary btn-lg btn-block"><i class="fa fa-arrow-circle-left fa-2"></i> Editar</a>
                                 </div>
-								<div class="col-md-6 col-sm-6 col-xs-12 ">
+								<div class="col-md-4 col-sm-4 col-xs-12 ">
                                     <button class="btn btn-success btn-lg btn-block"><i class="fa fa-sign-out fa-2"></i> Fechar</button>
                                 </div>
                             @endif

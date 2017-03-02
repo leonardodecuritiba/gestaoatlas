@@ -29,6 +29,9 @@ class CreateOrdemServicosTable extends Migration
 
             $table->dateTime('fechamento')->nullable();
             $table->string('numero_chamado',50)->nullable();
+            $table->string('responsavel', 100);
+            $table->string('responsavel_cpf', 16);
+            $table->string('responsavel_cargo', 50);
             $table->decimal('valor_total',11,2);
             $table->decimal('desconto',11,2);
             $table->decimal('valor_final',11,2);
