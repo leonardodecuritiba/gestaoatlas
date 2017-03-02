@@ -620,12 +620,19 @@ class OrdemServicoController extends Controller
                             'Endereço: ' . $Instrumento->endereco
                         )
                     ];
+                    if ($Instrumento->has_selo_instrumentos()) {
+                        $selo = $Instrumento->selo_afixado()->numeracao;
+                    }
+                    if ($Instrumento->has_lacres_instrumentos()) {
+                        $lacre = $Instrumento->lacres_afixados_valores();
+                    }
+
                     $selo_lacre = [
                         array(
 //                            'Selo retirado: '.$Instrumento->selo_afixado()->numeracao,
-                            'Selo Afixado: ' . $Instrumento->selo_afixado()->numeracao,
+                            'Selo Afixado: ', isset($selo) ? $selo : '-',
 //                            'Lacres Retirados: '.$Instrumento->selo_afixado()->numeracao,
-                            'Lacres Afixados: ' . $Instrumento->lacres_afixados_valores()
+                            'Lacres Afixados: ', isset($lacre) ? $lacre : '-'
                         )
                     ];
                     $defeitos_solucao = [
@@ -642,6 +649,7 @@ class OrdemServicoController extends Controller
                         'selo_lacre' => $selo_lacre,
                         'defeito_solucao' => $defeitos_solucao,
                     ];
+//                    dd($instrumento);
                     $this->linha_xls += 5;
                     $sheet = self::setInstrumento($sheet, $data, $instrumento);
 
