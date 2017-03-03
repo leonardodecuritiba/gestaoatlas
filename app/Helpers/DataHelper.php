@@ -132,9 +132,10 @@ class DataHelper
                     $sum += $calc;
                 }
                 $dv = ($sum % 11); //dígito verificador
+                if ($dv > 10) $dv = 0;
             }
         }
-        return $dv;
+        return ($dv >= 10) ? 0 : $dv;
 
     }
 }
