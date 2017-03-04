@@ -29,7 +29,7 @@ class PecasUtilizadas extends Model
         return $this->peca->custo_final;
     }
 
-    public function valor_total_float()
+    public function valor_total_real()
     {
         return DataHelper::getFloat2Real($this->valor_total());
     }

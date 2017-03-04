@@ -39,9 +39,9 @@ class ServicoPrestado extends Model
         return $this->attributes['valor'];
     }
 
-    public function valor_total_float()
+    public function valor_total_real()
     {
-        return DataHelper::getFloat2Real($this->valor_total());
+        return 'R$ ' . DataHelper::getFloat2Real($this->valor_total());
     }
 
     public function valor_total()

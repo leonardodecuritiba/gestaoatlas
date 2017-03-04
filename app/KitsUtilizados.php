@@ -33,9 +33,9 @@ class KitsUtilizados extends Model
         return $this->kit->valor_total();
     }
 
-    public function valor_total_float()
+    public function valor_total_real()
     {
-        return DataHelper::getFloat2Real($this->valor_total());
+        return 'R$ ' . DataHelper::getFloat2Real($this->valor_total());
     }
 
     public function valor_total()

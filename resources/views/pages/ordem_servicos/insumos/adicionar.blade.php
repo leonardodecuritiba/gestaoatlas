@@ -40,7 +40,7 @@
                                     {{$servico_prestado->quantidade}}
                                 </td>
                                 <td>
-                                    R$ {{$servico_prestado->valor_total_float()}}
+                                    {{$servico_prestado->valor_total_real()}}
                                 </td>
                                 <td>
                                     <a class="btn btn-danger"
@@ -136,7 +136,7 @@
                                     {{$peca_utilizada->quantidade}}
                                 </td>
                                 <td>
-                                    R$ {{$peca_utilizada->valor_total_float()}}
+                                    {{$peca_utilizada->valor_total_real()}}
                                 </td>
                                 <td>
                                     <a class="btn btn-danger"
@@ -230,7 +230,7 @@
                                     {{$kit_utilizado->quantidade}}
                                 </td>
                                 <td>
-                                    R$ {{$kit_utilizado->valor_total_float()}}
+                                    {{$kit_utilizado->valor_total_real()}}
                                 </td>
                                 <td>
                                     {{--<a class="btn btn-default"--}}

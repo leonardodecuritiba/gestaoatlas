@@ -102,7 +102,7 @@ class AparelhoManutencao extends Model
 
     public function getTotalServicosReal()
     {
-        return DataHelper::getFloat2Real($this->getTotalServicos());
+        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalServicos());
     }
 
     public function getTotalServicos()
@@ -130,7 +130,7 @@ class AparelhoManutencao extends Model
 
     public function getTotalPecasReal()
     {
-        return DataHelper::getFloat2Real($this->getTotalPecas());
+        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalPecas());
     }
 
     public function getTotalPecas()
@@ -157,7 +157,7 @@ class AparelhoManutencao extends Model
 
     public function getTotalKitsReal()
     {
-        return DataHelper::getFloat2Real($this->getTotalKits());
+        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalKits());
     }
 
     public function getTotalKits()

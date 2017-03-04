@@ -411,26 +411,24 @@ class PrintHelper
     private function setPeca($sheet, $aparelho)
     {
         if ($aparelho->has_pecas_utilizadas()) {
-            $total = 0;
             foreach ($aparelho->pecas_utilizadas as $Peca_utilizada) {
                 $Peca = $Peca_utilizada->peca;
 //                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
                 $this->insumos['pecas'][] = [
                     $Peca->idpeca,
                     $Peca->descricao,
-                    '1',
                     'R$ ' . $Peca_utilizada->valor,
-                    'R$ ' . $Peca_utilizada->valor,
+                    $Peca_utilizada->quantidade,
+                    $Peca_utilizada->valor_total_real(),
                     '-',
                     '-'
                 ];
-                $total += $Peca_utilizada->valor_float();
             }
-            $this->insumos['total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($total);
+            $this->insumos['total_pecas'] = $aparelho->getTotalPecasReal();
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Peças'],
-                'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
                 'values' => $this->insumos['pecas'],
             ];
             $sheet = self::setData($sheet, $cabecalho);
@@ -459,26 +457,24 @@ class PrintHelper
     private function setKit($sheet, $aparelho)
     {
         if ($aparelho->has_kits_utilizados()) {
-            $total = 0;
             foreach ($aparelho->kits_utilizados as $Kit_utilizado) {
                 $Kit = $Kit_utilizado->kit;
 //                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
                 $this->insumos['kits'][] = [
                     $Kit->idkit,
                     $Kit->descricao,
-                    '1',
                     'R$ ' . $Kit_utilizado->valor,
-                    'R$ ' . $Kit_utilizado->valor,
+                    $Kit_utilizado->quantidade,
+                    $Kit_utilizado->valor_total_real(),
                     '-',
                     '-'
                 ];
-                $total += $Kit_utilizado->valor_float();
             }
-            $this->insumos['total_kits'] = 'R$ ' . DataHelper::getFloat2Real($total);;
+            $this->insumos['total_kits'] = $aparelho->getTotalKitsReal();
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Kits'],
-                'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
                 'values' => $this->insumos['kits'],
             ];
             $sheet = self::setData($sheet, $cabecalho);
@@ -491,24 +487,22 @@ class PrintHelper
     private function setServico($sheet, $aparelho)
     {
         if ($aparelho->has_servico_prestados()) {
-            $total = 0;
             foreach ($aparelho->servico_prestados as $Servico_prestados) {
                 $Servico = $Servico_prestados->servico;
 //                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
                 $this->insumos['servicos'][] = [
                     $Servico->idservico,
                     $Servico->descricao,
-                    '1',
                     'R$ ' . $Servico_prestados->valor,
-                    'R$ ' . $Servico_prestados->valor
+                    $Servico_prestados->quantidade,
+                    $Servico_prestados->valor_total_real()
                 ];
-                $total += $Servico_prestados->valor_float();
             }
-            $this->insumos['total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($total);;
+            $this->insumos['total_servicos'] = $aparelho->getTotalServicosReal();
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Serviços'],
-                'cabecalho' => ['Codigo', 'Kit', 'Qtde', 'V. un', 'V. Total'],
+                'cabecalho' => ['Codigo', 'Kit', 'V. un', 'Qtde', 'V. Total'],
                 'values' => $this->insumos['servicos'],
             ];
             $sheet = self::setData($sheet, $cabecalho);
@@ -533,7 +527,7 @@ class PrintHelper
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Peças'],
-                'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
                 'values' => $this->insumos['pecas'],
             ];
             $sheet = self::setData($sheet, $cabecalho);
@@ -551,7 +545,7 @@ class PrintHelper
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Kits'],
-                'cabecalho' => ['Codigo', 'Peça', 'Qtde', 'V. un', 'V. Total', 'Garantia', 'Garantia Negada'],
+                'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
                 'values' => $this->insumos['kits'],
             ];
             $sheet = self::setData($sheet, $cabecalho);
@@ -569,7 +563,7 @@ class PrintHelper
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Serviços'],
-                'cabecalho' => ['Codigo', 'Kit', 'Qtde', 'V. un', 'V. Total'],
+                'cabecalho' => ['Codigo', 'Kit', 'V. un', 'Qtde', 'V. Total'],
                 'values' => $this->insumos['servicos'],
             ];
             $sheet = self::setData($sheet, $cabecalho);
