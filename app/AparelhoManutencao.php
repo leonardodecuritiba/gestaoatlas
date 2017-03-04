@@ -162,7 +162,6 @@ class AparelhoManutencao extends Model
 
     public function getTotalKits()
     {
-        return $this->kits_utilizados->sum('valor_float');
         $total = 0;
         foreach ($this->kits_utilizados as $kits_utilizado) {
             $total += $kits_utilizado->valor_total();

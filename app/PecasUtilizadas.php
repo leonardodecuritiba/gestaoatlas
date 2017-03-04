@@ -31,7 +31,7 @@ class PecasUtilizadas extends Model
 
     public function valor_total_real()
     {
-        return DataHelper::getFloat2Real($this->valor_total());
+        return 'R$ ' . DataHelper::getFloat2Real($this->valor_total());
     }
 
     public function valor_total()
