@@ -30,11 +30,27 @@
                 <div class="x_content">
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <h2>Defeito:</h2>
-                        <p>{{$AparelhoManutencao->defeito}}</p>
+                        <p>
+                        @if($AparelhoManutencao->defeito != '')
+                            {{$AparelhoManutencao->defeito}}
+                        @else
+                            <div class="alert alert-danger fade in" role="alert">
+                                <strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Alerta!</strong>
+                                Nenhum defeito cadastrado.
+                            </div>
+                            @endif
+                            </p>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12">
                         <h2>Solução:</h2>
-                        <p>{{$AparelhoManutencao->solucao}}</p>
+                        @if($AparelhoManutencao->solucao != '')
+                            {{$AparelhoManutencao->solucao}}
+                        @else
+                            <div class="alert alert-danger fade in" role="alert">
+                                <strong><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Alerta!</strong>
+                                Nenhuma solução cadastrada.
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

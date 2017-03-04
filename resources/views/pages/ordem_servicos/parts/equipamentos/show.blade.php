@@ -8,7 +8,7 @@
                data-href="{{route('ordem_servicos.equipamentos.remove',$AparelhoManutencao->idaparelho_manutencao)}}"
                data-toggle="modal"
                data-target="#modalDelecao">
-                <i class="fa fa-times fa-xs"></i> Cancelar</a>
+                <i class="fa fa-times fa-xs"></i> Remover</a>
         </h2>
         <ul class="nav navbar-right panel_toolbox">
             <li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a></li>
