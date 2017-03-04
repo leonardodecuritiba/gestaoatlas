@@ -113,10 +113,10 @@ class OrdemServico extends Model
         $valor_total_servicos = 0;
         $valor_total_pecas = 0;
         $valor_total_kits = 0;
-        foreach ($this->instrumentos_manutencao as $instrumentos_manutencao) {
-            $valor_total_servicos += $instrumentos_manutencao->getTotalServicos();
-            $valor_total_pecas += $instrumentos_manutencao->getTotalPecas();
-            $valor_total_kits += $instrumentos_manutencao->getTotalKits();
+        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+            $valor_total_servicos += $aparelho_manutencao->getTotalServicos();
+            $valor_total_pecas += $aparelho_manutencao->getTotalPecas();
+            $valor_total_kits += $aparelho_manutencao->getTotalKits();
         }
         $data['valor_total_servicos_float'] = $valor_total_servicos;
         $data['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($valor_total_servicos);
@@ -203,6 +203,16 @@ class OrdemServico extends Model
     {
         return $this->hasMany('App\AparelhoManutencao', 'idordem_servico');
     }
+
+    public function aparelho_instrumentos()
+    {
+        return $this->hasMany('App\AparelhoManutencao', 'idordem_servico')->whereNotNull('idinstrumento');
+    }
+
+    public function aparelho_equipamentos()
+    {
+        return $this->hasMany('App\AparelhoManutencao', 'idordem_servico')->whereNotNull('idequipamento');
+    }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
 
@@ -212,11 +222,6 @@ class OrdemServico extends Model
             $aparelho_manutencao->remover();
         }
         $this->forceDelete();
-    }
-
-    public function instrumentos_manutencao()
-    {
-        return $this->hasMany('App\AparelhoManutencao', 'idordem_servico')->whereNotNull('idinstrumento');
     }
 
     public function cliente()

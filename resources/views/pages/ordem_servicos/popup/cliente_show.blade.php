@@ -1,7 +1,7 @@
 <div class="modal fade" id="modalPopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header"></div>
+            <div class="modal-header"><H2>Abrir O.S.</H2></div>
             <div class="modal-body">
                 <div class="profile_details">
                     <div class="well profile_view">
@@ -25,10 +25,10 @@
             </div>
             <div class="modal-footer">
                 <div class="col-xs-12">
-                    <a class="btn btn-warning btn-os">Consulta O.S.</a>
-                    <a class="btn btn-default btn-cli">Consultar Cliente</a>
-                    <button class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-success btn-ok">Salvar</a>
+                    <a class="btn btn-success btn-ok pull-right">Salvar</a>
+                    <a class="btn btn-warning btn-os pull-right">Consulta O.S.</a>
+                    <a class="btn btn-default btn-cli pull-right">Consultar Cliente</a>
+                    <button class="btn btn-danger pull-right" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>

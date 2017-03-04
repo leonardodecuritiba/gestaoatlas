@@ -1,6 +1,6 @@
 @extends('layouts.template')
 @section('page_content')
-	@include('pages.ordem_servicos.popup.cliente_os')
+	@include('pages.ordem_servicos.popup.cliente_show')
 	<!-- Seach form -->
 	<div id="search" class="x_panel animated flipInX">
 		<div class="x_content">

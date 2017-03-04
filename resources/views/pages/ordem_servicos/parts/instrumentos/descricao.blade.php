@@ -3,7 +3,7 @@
     <ul class="list-unstyled user_data">
         <li><i class="fa fa-info"></i> Marca:<b> {{$Instrumento->marca->descricao}}</b></li>
         <li><i class="fa fa-info"></i> Nº de Série:<b> {{$Instrumento->numero_serie}}</b></li>
-        <li><i class="fa fa-info"></i> Modelo:<b> {{$Instrumento->patrimonio}}</b></li>
+        <li><i class="fa fa-info"></i> Modelo:<b> {{$Instrumento->modelo}}</b></li>
         <li><i class="fa fa-info"></i> Patrimônio:<b> {{$Instrumento->patrimonio}}</b></li>
         <li><i class="fa fa-info"></i> Inventário:<b> {{$Instrumento->inventario}}</b></li>
         <li><i class="fa fa-info"></i> Ano:<b> {{$Instrumento->ano}}</b></li>

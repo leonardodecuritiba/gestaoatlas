@@ -110,23 +110,26 @@ class OrdemServicoController extends Controller
             $Servicos = Servico::all();
             $Pecas = Peca::all();
             $Kits = Kit::all();
-            if (isset($request['busca'])) {
-                $busca = $request['busca'];
-                $documento = preg_replace('#[^0-9]#', '', $busca);
-                $Buscas = $OrdemServico->cliente->instrumentos()
-                    ->where('idmarca', 'like', '%' . $busca . '%')
-                    ->orwhere('numero_serie', 'like', '%' . $documento . '%')
-                    ->orwhere('descricao', 'like', '%' . $busca . '%')->get();
-            } else {
-                $Buscas = $OrdemServico->cliente->instrumentos;
-            }
+            $Instrumentos = $OrdemServico->cliente->instrumentos;
+            $Equipamentos = $OrdemServico->cliente->equipamentos;
+//            if (isset($request['busca'])) {
+//                $busca = $request['busca'];
+//                $documento = preg_replace('#[^0-9]#', '', $busca);
+//                $Buscas = $OrdemServico->cliente->instrumentos()
+//                    ->where('idmarca', 'like', '%' . $busca . '%')
+//                    ->orwhere('numero_serie', 'like', '%' . $documento . '%')
+//                    ->orwhere('descricao', 'like', '%' . $busca . '%')->get();
+//            } else {
+//                $Buscas = $OrdemServico->cliente->instrumentos;
+//            }
             return view('pages.' . $this->Page->link . '.show')
                 ->with('Page', $this->Page)
                 ->with('OrdemServico', $OrdemServico)
                 ->with('Servicos', $Servicos)
                 ->with('Pecas', $Pecas)
                 ->with('Kits', $Kits)
-                ->with('Buscas', $Buscas);
+                ->with('Instrumentos', $Instrumentos)
+                ->with('Equipamentos', $Equipamentos);
         }
         return Redirect::route('ordem_servicos.resumo', $idordem_servico);
     }
@@ -183,7 +186,7 @@ class OrdemServicoController extends Controller
     public function adicionaInstrumento(Request $request, $idordem_servico, $idinstrumento)
     {
         //teste se já foi adicionado
-        if (AparelhoManutencao::check_equip_duplo($idordem_servico, $idinstrumento)) {
+        if (AparelhoManutencao::check_instrumento_duplo($idordem_servico, $idinstrumento)) {
             $erro = 'Esse instrumento já está incluído nesta ordem de serviço!';
             return Redirect::route('ordem_servicos.show', $idordem_servico)
                 ->withErrors($erro)
@@ -198,6 +201,24 @@ class OrdemServicoController extends Controller
         return Redirect::route('ordem_servicos.show', $idordem_servico);
     }
 
+    public function adicionaEquipamento(Request $request, $idordem_servico, $idequipamento)
+    {
+        //teste se já foi adicionado
+        if (AparelhoManutencao::check_equipamento_duplo($idordem_servico, $idequipamento)) {
+            $erro = 'Esse equipamento já está incluído nesta ordem de serviço!';
+            return Redirect::route('ordem_servicos.show', $idordem_servico)
+                ->withErrors($erro)
+                ->withInput($request->all());
+        }
+        AparelhoManutencao::create([
+            'idordem_servico' => $idordem_servico,
+            'idequipamento' => $idequipamento
+        ]);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return Redirect::route('ordem_servicos.show', $idordem_servico);
+    }
+
     public function destroy($id)
     {
         $OrdemServico = OrdemServico::find($id);
@@ -205,11 +226,23 @@ class OrdemServicoController extends Controller
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_rem]);
-        return Redirect::route('ordem_servicos.index');
+        return Redirect::route('ordem_servicos.index', ['1']);
     }
 
     public function removeInstrumento($idaparelho_manutencao)
     {
+        $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
+        $idordem_servico = $AparelhoManutencao->idordem_servico;
+        $AparelhoManutencao->remover();
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return Redirect::route('ordem_servicos.show', $idordem_servico);
+    }
+
+    public function removeEquipamento($idaparelho_manutencao)
+    {
+        return $idaparelho_manutencao;
         $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
         $idordem_servico = $AparelhoManutencao->idordem_servico;
         $AparelhoManutencao->remover();
@@ -883,28 +916,6 @@ class OrdemServicoController extends Controller
         return Redirect::route('ordem_servicos.resumo', $idordem_servico);
     }
 
-//    static public function setLinhaVazia($sheet, $texto)
-//    {
-//        $linha = $dados['line'];
-//        $sheet->mergeCells('A' . $linha . ':G' . $linha);
-//        $sheet->row($linha, function ($row) use ($data) {
-//            // call cell manipulation methods
-//            $row->setBackground('#d9d9d9');
-//            $row->setAlignment('center');
-//            $row->setFont($data['fonts']['quebra']);
-//        });
-//        $sheet->row($linha, $dados['info']);
-//
-//        $sheet->rows($dados['dados_instrumentos']);
-//        $sheet->rows($dados['selo_lacre']);
-//        $sheet->rows($dados['defeito_solucao']);
-//
-//        $linha += 4;
-//        $sheet->mergeCells('B' . $linha . ':C' . $linha);
-//        $sheet->mergeCells('E' . $linha . ':G' . $linha);
-//        return $sheet;
-//    }
-
     static public function setInstrumento($sheet, $data, $dados)
     {
         //LINHA ------------------------------------------
@@ -982,49 +993,5 @@ class OrdemServicoController extends Controller
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
-
-    /*
-   public function store(Request $request)
-   {
-       $validator = Validator::make($request->all(), [
-           'descricao'         => 'required|unique:'.$this->Page->table,
-       ]);
-       if ($validator->fails()) {
-           return redirect()->to($this->getRedirectUrl())
-               ->withErrors($validator)
-               ->withInput($request->all());
-       } else {
-           $data = $request->all();
-           $OrdemServico = OrdemServico::create($data);
-           session()->forget('mensagem');
-           session(['mensagem' => $this->Page->msg_abr]);
-           return view('pages.'.$this->Page->link.'.master')
-               ->with('OrdemServico', $OrdemServico)
-               ->with('Page', $this->Page);
-       }
-   }
-
-   public function update(Request $request, $id)
-   {
-       $OrdemServico = OrdemServico::find($id);
-       $validator = Validator::make($request->all(), [
-           'descricao' => 'unique:'.$this->Page->table.',descricao,'.$id.','.$this->Page->primaryKey,
-       ]);
-
-       if ($validator->fails()) {
-           return redirect()->to($this->getRedirectUrl())
-               ->withErrors($validator)
-               ->withInput($request->all());
-       } else {
-           $dataUpdate = $request->all();
-           $OrdemServico->update($dataUpdate);
-
-           session()->forget('mensagem');
-           session(['mensagem' => $this->Page->msg_upd]);
-           return $this->show($OrdemServico->idordem_servico);
-       }
-   }
-   */
-
 
 }

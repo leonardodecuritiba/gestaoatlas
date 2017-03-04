@@ -135,6 +135,7 @@ class DataHelper
                 if ($dv > 10) $dv = 0;
             }
         }
+//        dd($dv);
         return ($dv >= 10) ? 0 : $dv;
 
     }

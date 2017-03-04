@@ -34,11 +34,17 @@ class CreatePecaTributacaosTable extends Migration
             $table->decimal('icms_base_calculo_st', 5, 2)->default(0);
             $table->decimal('icms_valor_total_st', 5, 2)->default(0);
 
-            $table->decimal('valor_ipi', 5, 2)->default(0);
+            $table->string('icms_origem', 1)->default(0);
+            $table->string('icms_situacao_tributaria', 3)->default('500');
+            $table->string('pis_situacao_tributaria', 2)->default('07');
+            $table->string('cofins_situacao_tributaria', 2)->default('07');
+
+            $table->decimal('valor_unitario_comercial', 20, 10)->default(0);
+            $table->decimal('unidade_tributavel', 6, 2)->default(0);
             $table->decimal('valor_unitario_tributavel', 5, 2)->default(0);
-            $table->decimal('icms_situacao_tributaria', 5, 2)->default(0);
-            $table->decimal('icms_origem', 5, 2)->default(0);
+
             $table->decimal('pis_situacao_tributaria', 5, 2)->default(0);
+            $table->decimal('valor_ipi', 5, 2)->default(0);
 
             $table->decimal('valor_frete', 11, 2)->default(0);
             $table->decimal('valor_seguro', 11, 2)->default(0);

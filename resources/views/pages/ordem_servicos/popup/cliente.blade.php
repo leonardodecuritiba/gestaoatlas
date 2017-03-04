@@ -24,8 +24,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <a class="btn btn-success btn-ok">Salvar</a>
+                <button class="btn btn-danger pull-left" data-dismiss="modal">Cancelar</button>
+                <a class="btn btn-success btn-ok pull-right">Salvar</a>
             </div>
         </div>
     </div>

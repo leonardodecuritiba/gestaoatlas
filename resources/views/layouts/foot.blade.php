@@ -35,6 +35,12 @@
     $(document).ready(function () {
         initMaskMoney($(".show-valor"));
     });
+    function initMaskMoney(selector) {
+        $(selector).maskMoney({allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
+    }
+    $(document).ready(function () {
+        initMaskMoney($(".show-valor-noreal"));
+    });
     function initMaskMoneyDolar(selector) {
         $(selector).maskMoney({prefix:'$ ', allowNegative: false, thousands:',', decimal:'.', affixesStay: false});
     }

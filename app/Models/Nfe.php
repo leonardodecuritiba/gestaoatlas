@@ -27,13 +27,12 @@ class Nfe
 //    CONST _TOKEN_PRODUCAO_ = 'QmPEhv5PrVGmkXpUtZIw7nvx0ZUOrDos';
 
     CONST _CEST_DEFAULT_ = '0106400';
-    public $params;
     public $debug;
+    public $NFe_params;
     private $SERVER;
     private $TOKEN;
     private $now;
-    private $ref = 1;
-
+    private $ref = 3;
     private $_EMPRESA_;
     private $_ORDEM_DE_SERVICO_;
     private $nfe_cabecalho;
@@ -57,7 +56,7 @@ class Nfe
         $this->_ORDEM_DE_SERVICO_ = $ordemServico;
         $this->_EMPRESA_ = new Empresa();
         $this->setParams();
-
+        dd($this->NFe_params);
     }
 
     public function setParams()
@@ -83,7 +82,7 @@ class Nfe
         //Configurando itens
         $this->setItens();
 
-        $this->params = array_merge(
+        $this->NFe_params = array_merge(
             $this->nfe_cabecalho,
             $this->nfe_emitente,
             $this->nfe_destinatario,
@@ -92,9 +91,8 @@ class Nfe
             ["items" => $this->nfe_itens]
         );
         $fp = fopen('results.json', 'w');
-        fwrite($fp, json_encode($this->params));
+        fwrite($fp, json_encode($this->NFe_params));
         fclose($fp);
-        dd($this->params);
     }
 
     public function setCabecalho()
@@ -220,6 +218,7 @@ class Nfe
 
     public function setTributacao()
     {
+        $valores = json_decode($this->_ORDEM_DE_SERVICO_->getValores());
         $this->nfe_tributacao = [
             "icms_base_calculo" => "0.00", //Valor total da base de cálculo do ICMS. (obrigatório) Decimal[13.2] Tag XML vBC
             "icms_valor_total" => "0.00", //Valor total do ICMS. (obrigatório) Decimal[13.2] Tag XML vICMS
@@ -227,15 +226,15 @@ class Nfe
             "icms_base_calculo_st" => "0.00", //Valor total da base de cálculo do ICMS do substituto tributário. (obrigatório) Decimal[13.2] Tag XML vBCST
             "icms_valor_total_st" => "0.00", //Valor total do ICMS do substituto tributário. (obrigatório) Decimal[13.2] Tag XML vST
 
-            "valor_produtos" => "17482.73", //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
+            "valor_produtos" => $valores->valor_total_pecas_float, //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
+            "valor_desconto" => "0.00", //Valor total do desconto. (obrigatório) Decimal[13.2] Tag XML vDesc
             "valor_seguro" => "0.00", //Valor total do seguro. (obrigatório) Decimal[13.2] Tag XML vSeg
-            "valor_desconto" => "77.76", //Valor total do desconto. (obrigatório) Decimal[13.2] Tag XML vDesc
             "valor_total_ii" => "0.00", //Valor total do imposto de importação. (obrigatório) Decimal[13.2] Tag XML vII
             "valor_ipi" => "0.00", //Valor total do IPI. (obrigatório) Decimal[13.2] Tag XML vIPI
             "valor_pis" => "0.00", //Valor do PIS. (obrigatório) Decimal[13.2] Tag XML vPIS
             "valor_cofins" => "0.00", //Valor do COFINS. (obrigatório) Decimal[13.2] Tag XML vCOFINS
             "valor_outras_despesas" => "0.00", //Valor das despesas acessórias. (obrigatório) Decimal[13.2] Tag XML vOutro
-            "valor_total" => "17404.97", //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
+            "valor_total" => $valores->valor_final_float, //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
         ];
     }
 
@@ -273,6 +272,152 @@ class Nfe
 
     public function setItens()
     {
+        $item_n = 1;
+        $qtd = 1;
+        foreach ($this->_ORDEM_DE_SERVICO_->aparelho_manutencaos as $aparelho_manutencao) {
+            foreach ($aparelho_manutencao->pecas_utilizadas as $pecas_utilizada) {
+                $NfeItens[] = [
+                    "numero_item" => $item_n, //Número (índice) do item na nota fiscal, começando por 1. (obrigatório) Integer[1-3] Tag XML nItem
+                    "codigo_produto" => $pecas_utilizada->peca->idpeca, //Código interno do produto. Se não existir deve ser usado o CFOP no formato CFOP9999. (obrigatório) String[1-60] Tag XML cProd
+//                    "codigo_barras_comercial" => $pecas_utilizada->peca->codigo_barras, //Código GTIN/EAN do produto. Integer[0,8,12,13,14] Tag XML cEAN
+                    "descricao" => $pecas_utilizada->peca->descricao, //Descrição do produto. (obrigatório) String[1-120] Tag XML xProd
+                    "codigo_ncm" => $pecas_utilizada->peca->peca_tributacao->ncm->codigo, //Código NCM do produto. Integer[2,8] Tag XML NCM
+                    "codigo_cest" => $pecas_utilizada->peca->peca_tributacao->cest, //Código Especificador da Substituição Tributária. Integer[7] Tag XML CEST
+//                    "codigo_ex_tipi " => **, //Código EX TIPI do produto. Integer[2-3] Tag XML EXTIPI
+                    "cfop" => $pecas_utilizada->peca->peca_tributacao->cfop->numeracao, //CFOP do produto. (obrigatório) Integer[4] Tag XML CFOP
+                    "unidade_comercial" => $pecas_utilizada->peca->unidade->codigo, //Unidade comercial. (obrigatório) String[1-6] Tag XML uCom
+                    "quantidade_comercial" => $qtd, //Quantidade comercial. (obrigatório) Decimal[11.0-4] Tag XML qCom
+                    "valor_unitario_comercial" => $pecas_utilizada->peca->peca_tributacao->valor_unitario_comercial_float(), //Valor unitário comercial. (obrigatório) Decimal[11.0-10] Tag XML vUnCom
+                    "valor_bruto" => $pecas_utilizada->peca->peca_tributacao->valor_bruto_float($qtd), //Valor bruto. Deve ser igual ao produto de Valor unitário comercial com quantidade comercial. Decimal[13.2] Tag XML vProd
+//                    "codigo_barras_tributavel" => "**", //Código GTIN/EAN tributável. Integer[0,8,12,13,14] Tag XML cEANTrib
+                    "unidade_tributavel" => $pecas_utilizada->peca->peca_tributacao->unidade_tributavel_float(), //Unidade tributável. (obrigatório) String[1-6] Tag XML uTrib
+                    "quantidade_tributavel" => $qtd, //Quantidade tributável. (obrigatório) Decimal[11.0-4] Tag XML qTrib
+                    "valor_unitario_tributavel" => $pecas_utilizada->peca->peca_tributacao->valor_unitario_tributavel_float(), //Valor unitário tributável. (obrigatório) Decimal[11.0-10] Tag XML vUnTrib
+
+                    //O valor do frete vai ser incluído dentro do produto mesmo (compo é hoje) ou vai depender da O.S?
+                    "valor_frete" => $pecas_utilizada->peca->peca_tributacao->valor_frete_float(), //Valor do frete. Decimal[13.2] Tag XML vFrete
+                    "valor_seguro" => $pecas_utilizada->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
+//                    "valor_desconto" =>  ***, //Valor do desconto. Decimal[13.2] Tag XML vSeg
+//                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
+                    "inclui_no_total" => "1", //Valor do item (valor_bruto) compõe valor total da NFe (valor_produtos)? (obrigatório) Tag XML indTot
+                    //Valores permitidos:
+                    // 0: não
+                    // 1: sim
+                    "icms_origem" => $pecas_utilizada->peca->peca_tributacao->icms_origem, //Origem da mercadoria. (obrigatório)
+                    //Valores permitidos:
+                    //0: nacional
+                    //1: estrangeira (importação direta)
+                    //2: estrangeira (adquirida no mercado interno)
+                    //3: nacional com mais de 40% de conteúdo estrangeiro
+                    //4: nacional produzida através de processos produtivos básicos
+                    //5: nacional com menos de 40% de conteúdo estrangeiro
+                    //6: estrangeira (importação direta) sem produto nacional similar
+                    //7: estrangeira (adquirida no mercado interno) sem produto nacional similar
+                    "icms_situacao_tributaria" => $pecas_utilizada->peca->peca_tributacao->icms_situacao_tributaria,
+//                    "icms_situacao_tributaria" => $pecas_utilizada->peca->peca_tributacao->icms_situacao_tributaria, //Situação tributária do ICMS. (obrigatório)
+                    //Valores permitidos
+                    //00: tributada integralmente
+                    //10: tributada e com cobrança do ICMS por substituição tributária
+                    //20: tributada com redução de base de cálculo
+                    //30: isenta ou não tributada e com cobrança do ICMS por substituição tributária
+                    //40: isenta
+                    //41: não tributada
+                    //50: suspensão
+                    //51: diferimento (a exigência do preenchimento das informações do ICMS diferido fica a critério de cada UF)
+                    //60: cobrado anteriormente por substituição tributária
+                    //70: tributada com redução de base de cálculo e com cobrança do ICMS por substituição tributária
+                    //90: outras (regime Normal)
+                    //101: tributada pelo Simples Nacional com permissão de crédito
+                    //102: tributada pelo Simples Nacional sem permissão de crédito
+                    //103: isenção do ICMS no Simples Nacional para faixa de receita bruta
+                    //201: tributada pelo Simples Nacional com permissão de crédito e com cobrança do ICMS por substituição tributária
+                    //202: tributada pelo Simples Nacional sem permissão de crédito e com cobrança do ICMS por substituição tributária
+                    //203: isenção do ICMS nos Simples Nacional para faixa de receita bruta e com cobrança do ICMS por substituição tributária
+                    //300: imune
+                    //400: não tributada pelo Simples Nacional
+                    //500: ICMS cobrado anteriormente por substituição tributária (substituído) ou por antecipação
+                    //900: outras (regime Simples Nacional)
+                    "pis_situacao_tributaria" => $pecas_utilizada->peca->peca_tributacao->pis_situacao_tributaria,
+//                    "pis_situacao_tributaria" => $pecas_utilizada->peca->peca_tributacao->pis_situacao_tributaria, //Situação tributária do PIS.(obrigatório)
+                    //Valores permitidos
+                    //01: operação tributável: base de cálculo = valor da operação (alíquota normal - cumulativo/não cumulativo)
+                    //02: operação tributável: base de cálculo = valor da operação (alíquota diferenciada)
+                    //03: operação tributável: base de cálculo = quantidade vendida × alíquota por unidade de produto
+                    //04: operação tributável: tributação monofásica (alíquota zero)
+                    //05: operação tributável: substituição tributária
+                    //06: operação tributável: alíquota zero
+                    //07: operação isenta da contribuição
+                    //08: operação sem incidência da contribuição
+                    //09: operação com suspensão da contribuição
+                    //49: outras operações de saída
+                    //50: operação com direito a crédito: vinculada exclusivamente a receita tributada no mercado interno
+                    //51: operação com direito a crédito: vinculada exclusivamente a receita não tributada no mercado interno
+                    //52: operação com direito a crédito: vinculada exclusivamente a receita de exportação
+                    //53: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno
+                    //54: operação com direito a crédito: vinculada a receitas tributadas no mercado interno e de exportação
+                    //55: operação com direito a crédito: vinculada a receitas não-tributadas no mercado interno e de exportação
+                    //56: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação
+                    //60: crédito presumido: operação de aquisição vinculada exclusivamente a receita tributada no mercado interno
+                    //61: crédito presumido: operação de aquisição vinculada exclusivamente a receita não-tributada no mercado interno
+                    //62: crédito presumido: operação de aquisição vinculada exclusivamente a receita de exportação
+                    //63: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno
+                    //64: crédito presumido: operação de aquisição vinculada a receitas tributadas no mercado interno e de exportação
+                    //65: crédito presumido: operação de aquisição vinculada a receitas não-tributadas no mercado interno e de exportação
+                    //66: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação
+                    //67: crédito presumido: outras operações
+                    //70: operação de aquisição sem direito a crédito
+                    //71: operação de aquisição com isenção
+                    //72: operação de aquisição com suspensão
+                    //73: operação de aquisição a alíquota zero
+                    //74: operação de aquisição sem incidência da contribuição
+                    //75: operação de aquisição por substituição tributária
+                    //98: outras operações de entrada
+                    //99: outras operações
+                    "cofins_situacao_tributaria" => $pecas_utilizada->peca->peca_tributacao->cofins_situacao_tributaria
+//                    "cofins_situacao_tributaria" => $pecas_utilizada->peca->peca_tributacao->cofins_situacao_tributaria //(obrigatório)
+                    //Valores permitidos
+                    //01: operação tributável: base de cálculo = valor da operação (alíquota normal - cumulativo/não cumulativo)
+                    //02: operação tributável: base de cálculo = valor da operação (alíquota diferenciada)
+                    //03: operação tributável: base de cálculo = quantidade vendida × alíquota por unidade de produto
+                    //04: operação tributável: tributação monofásica (alíquota zero)
+                    //05: operação tributável: substituição tributária
+                    //06: operação tributável: alíquota zero
+                    //07: operação isenta da contribuição
+                    //08: operação sem incidência da contribuição
+                    //09: operação com suspensão da contribuição
+                    //49: outras operações de saída
+                    //50: operação com direito a crédito: vinculada exclusivamente a receita tributada no mercado interno
+                    //51: operação com direito a crédito: vinculada exclusivamente a receita não tributada no mercado interno
+                    //52: operação com direito a crédito: vinculada exclusivamente a receita de exportação
+                    //53: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno
+                    //54: operação com direito a crédito: vinculada a receitas tributadas no mercado interno e de exportação
+                    //55: operação com direito a crédito: vinculada a receitas não-tributadas no mercado interno e de exportação
+                    //56: operação com direito a crédito: vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação
+                    //60: crédito presumido: operação de aquisição vinculada exclusivamente a receita tributada no mercado interno
+                    //61: crédito presumido: operação de aquisição vinculada exclusivamente a receita não-tributada no mercado interno
+                    //62: crédito presumido: operação de aquisição vinculada exclusivamente a receita de exportação
+                    //63: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno
+                    //64: crédito presumido: operação de aquisição vinculada a receitas tributadas no mercado interno e de exportação
+                    //65: crédito presumido: operação de aquisição vinculada a receitas não-tributadas no mercado interno e de exportação
+                    //66: crédito presumido: operação de aquisição vinculada a receitas tributadas e não-tributadas no mercado interno e de exportação
+                    //67: crédito presumido: outras operações
+                    //70: operação de aquisição sem direito a crédito
+                    //71: operação de aquisição com isenção
+                    //72: operação de aquisição com suspensão
+                    //73: operação de aquisição a alíquota zero
+                    //74: operação de aquisição sem incidência da contribuição
+                    //75: operação de aquisição por substituição tributária
+                    //98: outras operações de entrada
+                    //99: outras operações
+                ];
+                $item_n++;
+            }
+        }
+        $this->nfe_itens = $NfeItens;
+        return true;
+//        echo json_encode($NfeItens);
+
+
         $this->nfe_itens = array(
             [
                 "numero_item" => "1",
@@ -1019,7 +1164,7 @@ class Nfe
     {
         $client = new Client(['base_uri' => $this->SERVER]);
         try {
-            $response = $client->request('POST', $this->SERVER . "/autorizar.json?token=" . $this->TOKEN . "&ref=" . $this->ref, ['json' => $this->params]);
+            $response = $client->request('POST', $this->SERVER . "/autorizar.json?token=" . $this->TOKEN . "&ref=" . $this->ref, ['json' => $this->$NFe_params]);
             echo $client->getResponse();
             echo $client->getStatusCode(); // "200"
             echo $client->getHeader('content-type'); // 'application/json; charset=utf8'
@@ -1051,7 +1196,7 @@ class Nfe
         // caso queira enviar usando o formato YAML, use a linha abaixo (necessário biblioteca PECL yaml)
         // curl_setopt($ch, CURLOPT_POSTFIELDS,     yaml_emit($nfe));
         // formato JSON
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->params));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->$NFe_params));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
         $body = curl_exec($ch);
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);

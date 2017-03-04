@@ -20,11 +20,14 @@ class PecaTributacao extends Model
         'icms_valor_total',
         'icms_base_calculo_st',
         'icms_valor_total_st',
-        'valor_ipi',
-        'valor_unitario_tributavel',
-        'icms_situacao_tributaria',
         'icms_origem',
+        'icms_situacao_tributaria',
         'pis_situacao_tributaria',
+        'cofins_situacao_tributaria',
+        'valor_unitario_comercial',
+        'unidade_tributavel',
+        'valor_unitario_tributavel',
+        'valor_ipi',
         'valor_frete',
         'valor_seguro',
         'custo_final',
@@ -58,11 +61,6 @@ class PecaTributacao extends Model
         return $this->hasOne('App\Peca', 'idpeca_tributacao');
     }
 
-    public function custo_final_float()
-    {
-        return $this->attributes['custo_final'];
-    }
-
     public function setIcmsBaseCalculoAttribute($value)
     {
         $this->attributes['icms_base_calculo'] = DataHelper::getReal2Float($value);
@@ -79,6 +77,26 @@ class PecaTributacao extends Model
     }
 
     public function getIcmsValorTotalAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setUnidadeTributavelAttribute($value)
+    {
+        $this->attributes['unidade_tributavel'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getValorUnitarioComercialAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setValorUnitarioComercialAttribute($value)
+    {
+        $this->attributes['valor_unitario_comercial'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getUnidadeTributavelAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }
@@ -102,17 +120,6 @@ class PecaTributacao extends Model
     {
         return DataHelper::getFloat2Real($value);
     }
-
-    public function setValorIpiAttribute($value)
-    {
-        $this->attributes['valor_ipi'] = DataHelper::getReal2Float($value);
-    }
-
-    public function getValorIpiAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-
     public function setValorUnitarioTributavelAttribute($value)
     {
         $this->attributes['valor_unitario_tributavel'] = DataHelper::getReal2Float($value);
@@ -123,32 +130,12 @@ class PecaTributacao extends Model
         return DataHelper::getFloat2Real($value);
     }
 
-    public function setIcmsSituacaoTributariaAttribute($value)
+    public function setValorIpiAttribute($value)
     {
-        $this->attributes['icms_situacao_tributaria'] = DataHelper::getReal2Float($value);
+        $this->attributes['valor_ipi'] = DataHelper::getReal2Float($value);
     }
 
-    public function getIcmsSituacaoTributariaAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-
-    public function setIcmsOrigemAttribute($value)
-    {
-        $this->attributes['icms_origem'] = DataHelper::getReal2Float($value);
-    }
-
-    public function getIcmsOrigemAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-
-    public function setPisSituacaoTributariaAttribute($value)
-    {
-        $this->attributes['pis_situacao_tributaria'] = DataHelper::getReal2Float($value);
-    }
-
-    public function getPisSituacaoTributariaAttribute($value)
+    public function getValorIpiAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }
@@ -163,6 +150,11 @@ class PecaTributacao extends Model
         return DataHelper::getFloat2Real($value);
     }
 
+    public function valor_frete_float()
+    {
+        return $this->attributes['valor_frete'];
+    }
+
     public function setValorSeguroAttribute($value)
     {
         $this->attributes['valor_seguro'] = DataHelper::getReal2Float($value);
@@ -171,6 +163,11 @@ class PecaTributacao extends Model
     public function getValorSeguroAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
+    }
+
+    public function valor_seguro_float()
+    {
+        return $this->attributes['valor_seguro'];
     }
 
     public function setCustoFinalAttribute($value)
@@ -182,4 +179,30 @@ class PecaTributacao extends Model
     {
         return DataHelper::getFloat2Real($value);
     }
+
+    public function custo_final_float()
+    {
+        return $this->attributes['custo_final'];
+    }
+
+    public function valor_bruto_float($qtd)
+    {
+        return $qtd * $this->attributes['custo_final'];
+    }
+
+    public function valor_unitario_tributavel_float()
+    {
+        return $this->attributes['custo_final'];
+    }
+
+    public function valor_unitario_comercial_float()
+    {
+        return $this->attributes['custo_final'];
+    }
+
+    public function unidade_tributavel_float()
+    {
+        return $this->attributes['unidade_tributavel'];
+    }
+
 }

@@ -98,7 +98,11 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::get('busca/ordem_servicos/{idordem_servico}/instrumentos', 'OrdemServicoController@buscaInstrumentos')->name('ordem_servicos.instrumentos.busca');
     Route::get('adiciona/ordem_servicos/{idordem_servico}/{idinstrumento}/instrumentos', 'OrdemServicoController@adicionaInstrumento')->name('ordem_servicos.instrumentos.adiciona');
-    Route::get('remove/ordem_servicos/{idaparelho_manutencao}', 'OrdemServicoController@removeInstrumento')->name('ordem_servicos.instrumentos.remove');
+    Route::get('remove/ordem_servicos/{idaparelho_manutencao}/instrumento', 'OrdemServicoController@removeInstrumento')->name('ordem_servicos.instrumentos.remove');
+
+//    Route::get('busca/ordem_servicos/{idordem_servico}/equipamentos', 'OrdemServicoController@buscaInstrumentos')->name('ordem_servicos.instrumentos.busca');
+    Route::get('adiciona/ordem_servicos/{idordem_servico}/{idequipamento}/equipamentos', 'OrdemServicoController@adicionaEquipamento')->name('ordem_servicos.equipamentos.adiciona');
+    Route::get('remove/ordem_servicos/{idaparelho_manutencao}/equipamento', 'OrdemServicoController@removeEquipamento')->name('ordem_servicos.equipamentos.remove');
 
     Route::post('aparelho_manutencao/{idaparelho_manutencao}/update', 'OrdemServicoController@updateAparelhoManutencao')->name('aparelho_manutencao.update');
 
@@ -128,8 +132,8 @@ Route::group(['prefix' => 'teste'], function () {
         $Boleto = new \App\Helpers\BoletoHelper($OrdemServico);
         return $Boleto->gerar_PDF(true);
     });
-    Route::get('nfe', function () {
-        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find(1));
+    Route::get('nfe/{valor}', function (\Illuminate\Http\Request $request) {
+        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find($request->valor));
         $NFE->send_teste();
     });
     Route::get('get_cest2', function () {

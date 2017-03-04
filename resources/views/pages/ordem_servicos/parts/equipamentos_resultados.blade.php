@@ -1,4 +1,8 @@
 <div class="x_panel">
+    <div class="x_title">
+        <h2>Equipamentos</h2>
+        <div class="clearfix"></div>
+    </div>
     <div class="x_content">
         <div class="animated fadeInDown">
             <table id="datatable-responsive"
@@ -6,6 +10,7 @@
                    width="100%">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Imagem</th>
                     <th>Descrição</th>
                     <th>Marca</th>
@@ -15,22 +20,24 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($Buscas as $instrumento)
+                @foreach($Equipamentos as $equipamento)
                     <tr>
+                        <td>{{$equipamento->idequipamento}}</td>
                         <td>
-                            <img src="{{$instrumento->getFoto()}}" class="avatar" alt="Avatar">
+                            <img src="{{$equipamento->getFoto()}}" class="avatar" alt="Avatar">
                         </td>
-                        <td>{{$instrumento->descricao}}</td>
-                        <td>{{$instrumento->marca->descricao}}</td>
-                        <td>{{$instrumento->modelo}}</td>
-                        <td>{{$instrumento->numero_serie}}</td>
+                        <td>{{$equipamento->descricao}}</td>
+                        <td>{{$equipamento->marca->descricao}}</td>
+                        <td>{{$equipamento->modelo}}</td>
+                        <td>{{$equipamento->numero_serie}}</td>
                         <td>
                             <a class="btn btn-primary btn-xs"
-                               data-href="{{route($Page->link.'.instrumentos.adiciona',[$OrdemServico->idordem_servico,$instrumento->idinstrumento])}}"
-                               data-instrumento="{{$instrumento}}"
-                               data-urlfoto="{{$instrumento->getFoto()}}"
+                               data-href="{{route($Page->link.'.equipamentos.adiciona',[$OrdemServico->idordem_servico,$equipamento->idequipamento])}}"
+                               data-tipo="equipamento"
+                               data-aparelho="{{$equipamento}}"
+                               data-urlfoto="{{$equipamento->getFoto()}}"
                                data-toggle="modal"
-                               data-target="#modalPopupInstrumento">
+                               data-target="#modalPopupAparelho">
                                 <i class="fa fa-eye"></i> Visualizar </a>
                         </td>
                     </tr>

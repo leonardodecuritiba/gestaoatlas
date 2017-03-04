@@ -21,11 +21,16 @@ class AparelhoManutencao extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
-    static public function check_equip_duplo($idordem_servico, $idinstrumento)
+    static public function check_instrumento_duplo($idordem_servico, $idinstrumento)
     {
         return parent::where('idordem_servico', $idordem_servico)
             ->where('idinstrumento', $idinstrumento)->count();
-//        return $this->belongsTo('App\OrdemServico', 'idordem_servico');
+    }
+
+    static public function check_equipamento_duplo($idordem_servico, $idequipamento)
+    {
+        return parent::where('idordem_servico', $idordem_servico)
+            ->where('idequipamento', $idequipamento)->count();
     }
 
     public function remover()
