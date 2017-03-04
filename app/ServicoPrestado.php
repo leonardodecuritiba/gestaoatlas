@@ -20,10 +20,6 @@ class ServicoPrestado extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
-    public function setValorAttribute($value)
-    {
-        $this->attributes['valor'] = DataHelper::getReal2Float($value);
-    }
     public function getValorAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
@@ -41,6 +37,16 @@ class ServicoPrestado extends Model
     public function getValorFloatAttribute()
     {
         return $this->attributes['valor'];
+    }
+
+    public function valor_total_float()
+    {
+        return DataHelper::getFloat2Real($this->valor_total());
+    }
+
+    public function valor_total()
+    {
+        return $this->attributes['valor'] * $this->attributes['quantidade'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************

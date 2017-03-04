@@ -201,10 +201,11 @@
                     data.text = $($selected).html();
                     data.preco = $($selected).data('preco');
                     data.quantidade = $($parent).find('input#quantidade').val();
-                    data.valor = $($parent).find('input#valor').val();
+                    data.valor = $($selected).data('preco-float');
                     data.total = $($parent).find('input#total').val();
                     x++;
                     var campo = '<tr>' +
+                        '<input name="' + id_select + '_quantidade[' + (x) + ']" type="hidden" value="' + data.quantidade + '" required>' +
                         '<input name="' + id_select + '_valor[' + (x) + ']" type="hidden" value="' + data.valor + '" required>' +
                         '<input name="' + id_select + '_id[' + (x) + ']" type="hidden" value="' + data.id + '" required>' +
                         '<td>' + data.text + '</td>' +

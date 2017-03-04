@@ -100,10 +100,6 @@ class AparelhoManutencao extends Model
         return $this->hasMany('App\ServicoPrestado', 'idaparelho_manutencao');
     }
 
-
-    // ******************** PEÇAS *********************************
-    // ************************************************************
-
     public function getTotalServicosReal()
     {
         return DataHelper::getFloat2Real($this->getTotalServicos());
@@ -111,8 +107,16 @@ class AparelhoManutencao extends Model
 
     public function getTotalServicos()
     {
-        return $this->servico_prestados->sum('valor_float');
+        $total = 0;
+        foreach ($this->servico_prestados as $servico_prestado) {
+            $total += $servico_prestado->valor_total();
+        }
+        return $total;
     }
+
+
+    // ******************** PEÇAS *********************************
+    // ************************************************************
 
     public function has_pecas_utilizadas()
     {
@@ -129,14 +133,17 @@ class AparelhoManutencao extends Model
         return DataHelper::getFloat2Real($this->getTotalPecas());
     }
 
+    public function getTotalPecas()
+    {
+        $total = 0;
+        foreach ($this->pecas_utilizadas as $pecas_utilizada) {
+            $total += $pecas_utilizada->valor_total();
+        }
+        return $total;
+    }
 
     // ******************** KITS **********************************
     // ************************************************************
-
-    public function getTotalPecas()
-    {
-        return $this->pecas_utilizadas->sum('valor_float');
-    }
 
     public function has_kits_utilizados()
     {
@@ -156,6 +163,11 @@ class AparelhoManutencao extends Model
     public function getTotalKits()
     {
         return $this->kits_utilizados->sum('valor_float');
+        $total = 0;
+        foreach ($this->kits_utilizados as $kits_utilizado) {
+            $total += $kits_utilizado->valor_total();
+        }
+        return $total;
     }
 
     // ******************** **** **********************************
@@ -164,9 +176,9 @@ class AparelhoManutencao extends Model
     public function get_total()
     {
         $total = 0;
-        $total += $this->pecas_utilizadas->sum('valor_float');
-        $total += $this->servico_prestados->sum('valor_float');
-        $total += $this->kits_utilizados->sum('valor_float');
+        $total += $this->getTotalPecas();
+        $total += $this->getTotalServicos();
+        $total += $this->getTotalKits();
         return $total;
     }
 

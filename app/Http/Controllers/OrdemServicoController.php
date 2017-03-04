@@ -363,15 +363,18 @@ class OrdemServicoController extends Controller
 
     public function add_insumos(Request $request, $idordem_servico)
     {
+//        return ($request->all());
         $idaparelho_manutencao = $request->get('idaparelho_manutencao');
         if ($request->has('idservico_id')) {
             $id = $request->get('idservico_id');
             $valor = $request->get('idservico_valor');
+            $quantidade = $request->get('idservico_quantidade');
             foreach ($id as $i => $v) {
                 $data = [
                     'idaparelho_manutencao' => $idaparelho_manutencao,
                     'idservico' => $id[$i],
                     'valor' => $valor[$i],
+                    'quantidade' => $quantidade[$i],
                 ];
                 ServicoPrestado::create($data);
 //                $total += DataHelper::getReal2Float($valor[$i]);
@@ -380,11 +383,13 @@ class OrdemServicoController extends Controller
         if ($request->has('idpeca_id')) {
             $id = $request->get('idpeca_id');
             $valor = $request->get('idpeca_valor');
+            $quantidade = $request->get('idpeca_quantidade');
             foreach ($id as $i => $v) {
                 $data = [
                     'idaparelho_manutencao' => $idaparelho_manutencao,
                     'idpeca' => $id[$i],
                     'valor' => $valor[$i],
+                    'quantidade' => $quantidade[$i],
                 ];
                 PecasUtilizadas::create($data);
 //                $total += DataHelper::getReal2Float($valor[$i]);
@@ -393,11 +398,13 @@ class OrdemServicoController extends Controller
         if ($request->has('idkit_id')) {
             $id = $request->get('idkit_id');
             $valor = $request->get('idkit_valor');
+            $quantidade = $request->get('idkit_quantidade');
             foreach ($id as $i => $v) {
                 $data = [
                     'idaparelho_manutencao' => $idaparelho_manutencao,
                     'idkit' => $id[$i],
                     'valor' => $valor[$i],
+                    'quantidade' => $quantidade[$i],
                 ];
                 KitsUtilizados::create($data);
 //                $total += DataHelper::getReal2Float($valor[$i]);

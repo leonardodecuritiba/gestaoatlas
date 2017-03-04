@@ -20,10 +20,6 @@ class PecasUtilizadas extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
-    public function setValorAttribute($value)
-    {
-        $this->attributes['valor'] = DataHelper::getReal2Float($value);
-    }
     public function getValorAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
@@ -35,7 +31,7 @@ class PecasUtilizadas extends Model
 
     public function valor_total_float()
     {
-        return DataHelper::getReal2Float($this->valor_total());
+        return DataHelper::getFloat2Real($this->valor_total());
     }
 
     public function valor_total()

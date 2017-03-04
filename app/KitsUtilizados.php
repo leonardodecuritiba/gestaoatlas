@@ -20,10 +20,6 @@ class KitsUtilizados extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
-    public function setValorAttribute($value)
-    {
-        $this->attributes['valor'] = DataHelper::getReal2Float($value);
-    }
     public function getValorAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
@@ -35,6 +31,16 @@ class KitsUtilizados extends Model
     public function valor_original()
     {
         return $this->kit->valor_total();
+    }
+
+    public function valor_total_float()
+    {
+        return DataHelper::getFloat2Real($this->valor_total());
+    }
+
+    public function valor_total()
+    {
+        return $this->attributes['valor'] * $this->attributes['quantidade'];
     }
 
     public function valor_float()

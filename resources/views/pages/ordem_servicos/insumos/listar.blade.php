@@ -13,8 +13,8 @@
                         <tr>
                             <th width="40%">Nome</th>
                             <th width="20%">Preço</th>
-                            <th width="20%">Preço Mínimo</th>
-                            <th width="20%">Valor Cobrado</th>
+                            <th width="20%">Quantidade</th>
+                            <th width="20%">Total</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -30,10 +30,10 @@
                                     R$ {{$tabela_preco->preco}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco_minimo}}
+                                    {{$servico_prestado->quantidade}}
                                 </td>
                                 <td>
-                                    R$ {{$servico_prestado->valor}}
+                                    R$ {{$servico_prestado->valor_total_float()}}
                                 </td>
                             </tr>
                         @endforeach
@@ -72,8 +72,8 @@
                         <tr>
                             <th width="40%">Nome</th>
                             <th width="20%">Preço</th>
-                            <th width="20%">Preço Mínimo</th>
-                            <th width="20%">Valor Cobrado</th>
+                            <th width="20%">Quantidade</th>
+                            <th width="20%">Total</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -86,13 +86,13 @@
                                     {{$peca_utilizada->peca->descricao}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco}}
-                                </td>
-                                <td>
-                                    R$ {{$tabela_preco->preco_minimo}}
-                                </td>
-                                <td>
                                     R$ {{$peca_utilizada->valor}}
+                                </td>
+                                <td>
+                                    {{$peca_utilizada->quantidade}}
+                                </td>
+                                <td>
+                                    R$ {{$peca_utilizada->valor_total_float()}}
                                 </td>
                             </tr>
                         @endforeach
@@ -130,8 +130,8 @@
                         <tr>
                             <th width="40%">Nome</th>
                             <th width="20%">Preço</th>
-                            <th width="20%">Preço Mínimo</th>
-                            <th width="20%">Valor Cobrado</th>
+                            <th width="20%">Quantidade</th>
+                            <th width="20%">Total</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -147,10 +147,10 @@
                                     R$ {{$tabela_preco->preco}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco_minimo}}
+                                    {{$kit_utilizado->quantidade}}
                                 </td>
                                 <td>
-                                    R$ {{$kit_utilizado->valor}}
+                                    R$ {{$kit_utilizado->valor_total_float()}}
                                 </td>
                             </tr>
                         @endforeach
