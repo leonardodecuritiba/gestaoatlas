@@ -22,6 +22,7 @@ class CreateKitsUtilizadosTable extends Migration
             $table->foreign('idkit')->references('idkit')->on('kits')->onDelete('cascade');
 
             $table->decimal('valor',11,2);
+            $table->smallInteger('quantidade');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -22,6 +22,7 @@ class CreatePecasUtilizadasTable extends Migration
             $table->foreign('idpeca')->references('idpeca')->on('pecas')->onDelete('cascade');
             
             $table->decimal('valor',11,2);
+            $table->smallInteger('quantidade');
             $table->timestamps();
             $table->softDeletes();
         });

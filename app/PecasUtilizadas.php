@@ -16,7 +16,7 @@ class PecasUtilizadas extends Model
         'idaparelho_manutencao',
         'idpeca',
         'valor',
-        'valor_float',
+        'quantidade',
     ];
 
     // ******************** FUNCTIONS ******************************
@@ -31,6 +31,16 @@ class PecasUtilizadas extends Model
     public function valor_original()
     {
         return $this->peca->custo_final;
+    }
+
+    public function valor_total_float()
+    {
+        return DataHelper::getReal2Float($this->valor_total());
+    }
+
+    public function valor_total()
+    {
+        return $this->attributes['valor'] * $this->attributes['quantidade'];
     }
 
     public function valor_float()

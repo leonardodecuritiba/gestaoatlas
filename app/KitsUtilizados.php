@@ -16,7 +16,7 @@ class KitsUtilizados extends Model
         'idaparelho_manutencao',
         'idkit',
         'valor',
-        'valor_float',
+        'quantidade',
     ];
 
     // ******************** FUNCTIONS ******************************

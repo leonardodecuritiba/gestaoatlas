@@ -195,26 +195,29 @@
                 var data = {};
                 var $parent = $(this).parents('tr');
                 var id_select = $($parent).find('select').attr('id');
-                data.text = $($parent).find('select#' + id_select).find(":selected").html();
-//                    data.valor_original = $($parent).find('select#' + id_select).find(":selected").data('valor');
-                data.preco = $($parent).find('select#' + id_select).find(":selected").data('preco');
-                data.preco_minimo = $($parent).find('select#' + id_select).find(":selected").data('preco_minimo');
-                data.id = $($parent).find('select#' + id_select).find(":selected").val();
-                data.valor = $($parent).find('input#valor').val();
-                x++;
-                var campo = '<tr>' +
-                    '<input name="' + id_select + '_valor[' + (x) + ']" type="hidden" value="' + data.valor + '" required>' +
-                    '<input name="' + id_select + '_id[' + (x) + ']" type="hidden" value="' + data.id + '" required>' +
-                    '<td>' + data.text + '</td>' +
-                    '<td>R$ ' + data.preco + '</td>' +
-                    '<td>R$ ' + data.preco_minimo + ' </td>' +
-                    '<td>R$ ' + data.valor + ' </td>' +
-                    '<td>' +
-                    '<a class="btn btn-danger" onclick="removeEl(this)" title="Excluir">' +
-                    '<i class="fa fa-trash fa-lg"></i></a>' +
-                    '</td>' +
-                    '</tr>';
-                $(campo).insertBefore($parent);
+                var $selected = $($parent).find('select#' + id_select).find(":selected");
+                if ($($selected).val() != '') {
+                    data.id = $($selected).val();
+                    data.text = $($selected).html();
+                    data.preco = $($selected).data('preco');
+                    data.quantidade = $($parent).find('input#quantidade').val();
+                    data.valor = $($parent).find('input#valor').val();
+                    data.total = $($parent).find('input#total').val();
+                    x++;
+                    var campo = '<tr>' +
+                        '<input name="' + id_select + '_valor[' + (x) + ']" type="hidden" value="' + data.valor + '" required>' +
+                        '<input name="' + id_select + '_id[' + (x) + ']" type="hidden" value="' + data.id + '" required>' +
+                        '<td>' + data.text + '</td>' +
+                        '<td>R$ ' + data.preco + '</td>' +
+                        '<td>' + data.quantidade + ' </td>' +
+                        '<td>' + data.total + ' </td>' +
+                        '<td>' +
+                        '<a class="btn btn-danger" onclick="removeEl(this)" title="Excluir">' +
+                        '<i class="fa fa-trash fa-lg"></i></a>' +
+                        '</td>' +
+                        '</tr>';
+                    $(campo).insertBefore($parent);
+                }
             });
         });
         $(document).ready(function () {
@@ -222,20 +225,33 @@
             $(".select2_single").on("select2:select", function() {
                 //achar parent, pegar próximo td e escrever o valor
                 var $sel = $(this).find(":selected");
-                var $td_preco = $(this).parents('td').next();
-                var $td_preco_minimo = $($td_preco).next();
-                var $field_preco = $($td_preco_minimo).next().find('input[name=valor]');
-                var preco = '#';
-                var preco_minimo = '#';
+                var $td = $(this).parents('td');
+                var $field_preco = $($td).next().find("input");
+                var $td_quantidade = $($td).next().next();
+                var $field_total = $($td_quantidade).next().find("input");
+
+                $($td_quantidade).find('input#quantidade').val(1);
+                var preco = '';
                 if($($sel).val()!=''){
                     preco = $sel.data('preco');
-                    preco_minimo = $sel.data('preco_minimo');
-                    $($field_preco).val(preco);
                     preco = 'R$ ' + preco;
-                    preco_minimo = 'R$ ' + preco_minimo;
                 }
-                $($td_preco).html(preco);
-                $($td_preco_minimo).html(preco_minimo);
+                $($field_preco).val(preco);
+                $($field_total).val(preco);
+            });
+            $(".calc-total").on("change", function () {
+                //achar parent, pegar próximo td e escrever o valor
+                var $td = $(this).parents('td');
+                var $sel = $($td).prevAll().find(":selected");
+                var quantidade = $(this).val();
+                var $field_total = $($td).next().find("input");
+                var preco = '';
+                if ($($sel).val() != '') {
+                    preco = $sel.data('preco-float');
+                    preco = preco * quantidade;
+                }
+                $($field_total).maskMoney('mask', preco);
+//                $($field_total ).maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: true});
             });
         });
 

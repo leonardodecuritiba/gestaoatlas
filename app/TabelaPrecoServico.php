@@ -21,6 +21,16 @@ class TabelaPrecoServico extends Model
         'preco_minimo',
     ];
 
+    public function preco_float()
+    {
+        return $this->attributes['preco'];
+    }
+
+    public function preco_minimo_float()
+    {
+        return $this->attributes['preco_minimo'];
+    }
+
     public function getMargemAttribute($value)
     {
         return DataHelper::getFloat2Percent($value);

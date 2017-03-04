@@ -29,15 +29,21 @@
 
 {!! Html::script('js/maskmoney/jquery.maskMoney.min.js') !!}
 <script type="text/javascript">
+    function initMaskMoneyFix(selector) {
+        $(selector).maskMoney({prefix: 'R$ ', allowNegative: false, thousands: '.', decimal: ',', affixesStay: true});
+    }
+    $(document).ready(function () {
+        initMaskMoneyFix($(".show-valor-fixo"));
+    });
     function initMaskMoney(selector) {
         $(selector).maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
     }
     $(document).ready(function () {
         initMaskMoney($(".show-valor"));
     });
-    function initMaskMoney(selector) {
-        $(selector).maskMoney({allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
-    }
+    //    function initMaskMoney(selector) {
+    //        $(selector).maskMoney({allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
+    //    }
     $(document).ready(function () {
         initMaskMoney($(".show-valor-noreal"));
     });
@@ -70,6 +76,19 @@
     }
     $(document).ready(function () {
         initMaskMoneyNumero($(".show-inteiro"));
+    });
+    function initMaskMoneyPositivos(selector) {
+        $(selector).maskMoney({
+            allowNegative: false,
+            allowZero: false,
+            precision: 0,
+            thousands: '',
+            decimal: '',
+            affixesStay: false
+        });
+    }
+    $(document).ready(function () {
+        initMaskMoneyPositivos($(".show-inteiro-positivo"));
     });
 </script>
 

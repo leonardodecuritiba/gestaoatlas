@@ -16,7 +16,7 @@ class ServicoPrestado extends Model
         'idaparelho_manutencao',
         'idservico',
         'valor',
-        'valor_float',
+        'quantidade',
     ];
 
     // ******************** FUNCTIONS ******************************

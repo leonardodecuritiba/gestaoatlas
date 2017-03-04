@@ -19,8 +19,8 @@
                         <tr>
                             <th width="40%">Nome</th>
                             <th>Preço</th>
-                            <th>Preço Mínimo</th>
-                            <th>Valor Cobrado</th>
+                            <th>Quantidade</th>
+                            <th>Total</th>
                             <th>Ações</th>
                         </tr>
                         </thead>
@@ -37,10 +37,10 @@
                                     R$ {{$tabela_preco->preco}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco_minimo}}
+                                    {{$servico_prestado->quantidade}}
                                 </td>
                                 <td>
-                                    R$ {{$servico_prestado->valor}}
+                                    R$ {{$servico_prestado->valor_total_float()}}
                                 </td>
                                 <td>
                                     <a class="btn btn-danger"
@@ -66,19 +66,20 @@
                                         {{--<option>{{$tabela_preco}}</option>--}}
                                         <option value="{{$servico->idservico}}"
                                                 data-preco="{{$tabela_preco->preco}}"
-                                                data-preco_minimo="{{$tabela_preco->preco_minimo}}">{{$servico->nome}}</option>
+                                                data-preco-float="{{$tabela_preco->preco_float()}}">{{$servico->nome}}</option>
                                     @endforeach
                                 </select>
                             </td>
                             <td>
-                                #
+                                <input disabled id="valor" class="form-control show-valor-fixo">
                             </td>
                             <td>
-                                #
+                                <input id="quantidade" value="1" type="text"
+                                       class="form-control show-inteiro-positivo calc-total"
+                                       placeholder="Quantidade">
                             </td>
                             <td>
-                                <input name="valor" id="valor" type="text" class="form-control"
-                                       placeholder="Valor">
+                                <input disabled id="total" class="form-control show-valor-fixo">
                             </td>
                             <td>
                                 <a class="btn btn-success add"
@@ -114,8 +115,8 @@
                         <tr>
                             <th width="40%">Nome</th>
                             <th>Preço</th>
-                            <th>Preço Mínimo</th>
-                            <th>Valor Cobrado</th>
+                            <th>Quantidade</th>
+                            <th>Total</th>
                             <th>Ações</th>
                         </tr>
                         </thead>
@@ -129,16 +130,13 @@
                                     {{$peca_utilizada->peca->descricao}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco}}
-                                </td>
-                                <td>
-                                    R$ {{$tabela_preco->preco_minimo}}
-                                </td>
-                                <td>
-                                    {{--<input name="valor" type="hidden" class="form-control"--}}
-                                    {{--placeholder="Valor"--}}
-                                    {{--value="{{$tabela_preco->preco_minimo}}" required>--}}
                                     R$ {{$peca_utilizada->valor}}
+                                </td>
+                                <td>
+                                    {{$peca_utilizada->quantidade}}
+                                </td>
+                                <td>
+                                    R$ {{$peca_utilizada->valor_total_float()}}
                                 </td>
                                 <td>
                                     <a class="btn btn-danger"
@@ -162,20 +160,21 @@
                                         ?>
                                         <option value="{{$peca->idpeca}}"
                                                 data-preco="{{$tabela_preco->preco}}"
-                                                data-preco_minimo="{{$tabela_preco->preco_minimo}}">
+                                                data-preco-float="{{$tabela_preco->preco_float()}}">
                                             {{$peca->descricao}}</option>
                                     @endforeach
                                 </select>
                             </td>
                             <td>
-                                #
+                                <input disabled id="valor" class="form-control show-valor-fixo">
                             </td>
                             <td>
-                                #
+                                <input id="quantidade" value="1" type="text"
+                                       class="form-control show-inteiro-positivo calc-total"
+                                       placeholder="Quantidade">
                             </td>
                             <td>
-                                <input name="valor" id="valor" type="text" class="form-control"
-                                       placeholder="Valor">
+                                <input disabled id="total" class="form-control show-valor-fixo">
                             </td>
                             <td>
                                 <a class="btn btn-success add"
@@ -210,8 +209,8 @@
                         <tr>
                             <th width="40%">Nome</th>
                             <th>Preço</th>
-                            <th>Preço Mínimo</th>
-                            <th>Valor Cobrado</th>
+                            <th>Quantidade</th>
+                            <th>Total</th>
                             <th>Ações</th>
                         </tr>
                         </thead>
@@ -228,10 +227,10 @@
                                     R$ {{$tabela_preco->preco}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco_minimo}}
+                                    {{$kit_utilizado->quantidade}}
                                 </td>
                                 <td>
-                                    R$ {{$kit_utilizado->valor_original()}}
+                                    R$ {{$kit_utilizado->valor_total_float()}}
                                 </td>
                                 <td>
                                     {{--<a class="btn btn-default"--}}
@@ -261,19 +260,20 @@
                                         ?>
                                         <option value="{{$kit->idkit}}"
                                                 data-preco="{{$tabela_preco->preco}}"
-                                                data-preco_minimo="{{$tabela_preco->preco_minimo}}">{{$kit->descricao}}</option>
+                                                data-preco-float="{{$tabela_preco->preco_float()}}">{{$kit->descricao}}</option>
                                     @endforeach
                                 </select>
                             </td>
                             <td>
-                                #
+                                <input disabled id="valor" class="form-control show-valor-fixo">
                             </td>
                             <td>
-                                #
+                                <input id="quantidade" value="1" type="text"
+                                       class="form-control show-inteiro-positivo calc-total"
+                                       placeholder="Quantidade">
                             </td>
                             <td>
-                                <input name="valor" id="valor" type="text" class="form-control"
-                                       placeholder="Valor">
+                                <input disabled id="total" class="form-control show-valor-fixo">
                             </td>
                             <td>
                                 {{--<a class="btn btn-default"--}}
