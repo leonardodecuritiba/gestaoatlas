@@ -33,6 +33,7 @@ class OrdemServico extends Model
         'desconto',
         'valor_final',
         'custos_deslocamento',
+        'custos_isento',
         'pedagios',
         'outros_custos',
         'validacao',
@@ -67,6 +68,20 @@ class OrdemServico extends Model
         return $query;
     }
 
+    static public function abrir(Cliente $Cliente, $idcolaborador)
+    {
+        $data = [
+            'idcliente' => $Cliente->idcliente,
+            'idcolaborador' => $idcolaborador,
+            'idcentro_custo' => $Cliente->idcliente_centro_custo,
+            'custos_deslocamento' => $Cliente->custo_deslocamento(),
+            'pedagios' => $Cliente->pedagios,
+            'outros_custos' => $Cliente->outros_custos,
+            'idsituacao_ordem_servico' => 1
+        ];
+        return self::create($data);
+    }
+
     public function getResponsavelCpfAttribute($value)
     {
         return DataHelper::mask($value, '###.###.###-##');
@@ -98,6 +113,13 @@ class OrdemServico extends Model
 
     public function fechar($request)
     {
+        if (isset($request['custos_isento'])) {
+            $this->attributes['custos_isento'] = 1;
+            $this->attributes['custos_deslocamento'] = 0;
+            $this->attributes['pedagios'] = 0;
+            $this->attributes['outros_custos'] = 0;
+            $this->update_valores();
+        }
         $this->attributes['numero_chamado'] = $request['numero_chamado'];
         $this->attributes['responsavel'] = $request['responsavel'];
         $this->attributes['responsavel_cpf'] = $request['responsavel_cpf'];
@@ -105,6 +127,17 @@ class OrdemServico extends Model
         $this->attributes['fechamento'] = Carbon::now()->toDateTimeString();
         $this->attributes['idsituacao_ordem_servico'] = 3;
         return $this->save();
+    }
+
+    public function update_valores()
+    {
+        $this->attributes['valor_total'] = 0;
+        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+            $this->attributes['valor_total'] += $aparelho_manutencao->get_total();
+        }
+        $this->attributes['valor_final'] = $this->attributes['valor_total'] + $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
+        $this->save();
+        return 1;
     }
 
     public function getValores()
@@ -137,21 +170,11 @@ class OrdemServico extends Model
         return json_encode($data);
     }
 
-    public function update_valores()
-    {
-        $this->attributes['valor_total'] = 0;
-        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
-            $this->attributes['valor_total'] += $aparelho_manutencao->get_total();
-        }
-        $this->attributes['valor_final'] = $this->attributes['valor_total'] + $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
-        $this->save();
-        return 1;
-    }
-
     public function getCustosDeslocamentoAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }
+
     public function setCustosDeslocamentoAttribute($value)
     {
         $this->attributes['custos_deslocamento'] = DataHelper::getReal2Float($value);
@@ -161,6 +184,7 @@ class OrdemServico extends Model
     {
         return DataHelper::getFloat2Real($value);
     }
+
     public function setPedagiosAttribute($value)
     {
         $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
@@ -170,6 +194,7 @@ class OrdemServico extends Model
     {
         return DataHelper::getFloat2Real($value);
     }
+
     public function setOutrosCustosAttribute($value)
     {
         $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);

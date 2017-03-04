@@ -64,6 +64,9 @@
 							@endforeach
 							</tbody>
 						</table>
+						<div class="pull-right">
+							{!! $Buscas->appends(Request::only('busca'))->links() !!}
+						</div>
 					</div>
 					{{--@endforeach--}}
 				</div>

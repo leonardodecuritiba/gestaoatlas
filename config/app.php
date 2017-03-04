@@ -175,6 +175,7 @@ return [
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
         Zizaco\Entrust\EntrustServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 //        Barryvdh\DomPDF\ServiceProvider::class,
     ],
 

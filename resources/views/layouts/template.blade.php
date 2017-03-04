@@ -16,6 +16,10 @@
 			.loading {
 				background: #fff url("{{asset('imgs/ajax-loader.gif')}}") no-repeat center center !important;
 			}
+
+			.esconda {
+				display: none;
+			}
 		</style>
 	</head>
 	<body class="nav-md">

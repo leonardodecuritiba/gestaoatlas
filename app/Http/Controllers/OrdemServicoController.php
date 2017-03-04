@@ -155,9 +155,9 @@ class OrdemServicoController extends Controller
                     ->from('clientes')
                     ->join('pfisicas', 'pfisicas.idpfisica', '=', 'clientes.idpfisica')
                     ->where('pfisicas.cpf', 'like', '%' . $documento . '%');
-            })->get();
+            })->paginate(10);
         } else {
-            $Buscas = Cliente::getValidosOrdemServico()->get();
+            $Buscas = Cliente::getValidosOrdemServico()->paginate(10);
         }
         return view('pages.' . $this->Page->link . '.busca_cliente')
             ->with('Page', $this->Page)
@@ -167,16 +167,8 @@ class OrdemServicoController extends Controller
     public function abrir($clienteid)
     {
         $Cliente = Cliente::find($clienteid);
-        $data = [
-            'idcliente'                 => $clienteid,
-            'idcolaborador' => $this->colaborador->idcolaborador,
-            'idcentro_custo' => $Cliente->idcliente_centro_custo,
-            'custos_deslocamento'       => $Cliente->custo_deslocamento(),
-            'pedagios'                  => $Cliente->pedagios,
-            'outros_custos'             => $Cliente->outros_custos,
-            'idsituacao_ordem_servico'  => 1
-        ];
-        $OrdemServico = OrdemServico::create($data);
+        $OrdemServico = OrdemServico::abrir($Cliente, $this->colaborador->idcolaborador);
+
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_abr]);
         return Redirect::route('ordem_servicos.show', $OrdemServico->idordem_servico);

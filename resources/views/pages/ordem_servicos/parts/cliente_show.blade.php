@@ -21,6 +21,10 @@
                     <li><i class="fa fa-info"></i> CPF: <b>{{$OrdemServico->responsavel_cpf}}</b></li>
                     <li><i class="fa fa-info"></i> Cargo: <b>{{$OrdemServico->responsavel_cargo}}</b></li>
                 @endif
+                @if($OrdemServico->custos_isento)
+                    <li class="red"><i class="fa fa-exclamation-triangle"></i> <b>Isento de Custos com Deslocamentos</b>
+                    </li>
+                @endif
             </ul>
             <?php $valores = json_decode($OrdemServico->getValores());?>
             <ul class="list-unstyled product_price">

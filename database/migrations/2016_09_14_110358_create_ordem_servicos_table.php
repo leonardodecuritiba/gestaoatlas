@@ -39,6 +39,7 @@ class CreateOrdemServicosTable extends Migration
             $table->decimal('custos_deslocamento',11,2);
             $table->decimal('pedagios',11,2); //em R$
             $table->decimal('outros_custos',11,2); //em R$
+            $table->boolean('custos_isento')->default(0);
 
             $table->boolean('validacao')->default(0);
             $table->timestamps();

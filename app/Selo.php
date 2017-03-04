@@ -46,10 +46,17 @@ class Selo extends Model
         return;
     }
 
+    public function repassaTecnico($idtecnico)
+    {
+        $this->idtecnico = $idtecnico;
+        return $this->save();
+    }
+
     public function getFormatedSelo()
     {
-        return ($this->numeracao != NULL) ? DataHelper::mask($this->numeracao, '##.###.###-#') : '-';
+        return ($this->numeracao != NULL) ? DataHelper::mask($this->numeracao, '##.###.###') : '-';
     }
+
 
     public function getFormatedSeloDV()
     {

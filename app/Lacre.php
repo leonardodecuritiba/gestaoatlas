@@ -43,6 +43,12 @@ class Lacre extends Model
         return;
     }
 
+    public function repassaTecnico($idtecnico)
+    {
+        $this->idtecnico = $idtecnico;
+        return $this->save();
+    }
+
     public function has_lacre_instrumento()
     {
         return ($this->lacre_instrumento()->count() > 0);

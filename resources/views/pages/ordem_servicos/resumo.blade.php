@@ -1,4 +1,8 @@
 @extends('layouts.template')
+@section('style_content')
+	<!-- icheck -->
+	{!! Html::style('css/icheck/flat/green.css') !!}
+@endsection
 @section('page_content')
 	@include('pages.ordem_servicos.popup.ordem_servico')
 	@include('pages.ordem_servicos.popup.aparelho')
@@ -21,10 +25,24 @@
                         'method' => 'POST',
                         'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
 						<div class="form-group">
+							<div class="alert-custos_isento alert alert-danger fade in @if(isset($OrdemServico) && ($OrdemServico->custos_isento == 0)) esconda @endif"
+								 role="alert">
+								<strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong> Esta O.S. está
+								sendo isentada de custos com Deslocamentos, Pedágios e Outros Custos.
+							</div>
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">Nº do Chamado: <span class="required">*</span></label>
-							<div class="col-md-9 col-sm-9 col-xs-12">
+							<div class="col-md-6 col-sm-6 col-xs-12">
 								<input name="numero_chamado" type="text" maxlength="100" class="form-control"
 									   value="{{(isset($OrdemServico))?$OrdemServico->numero_chamado:old('numero_chamado')}}" required>
+							</div>
+							<div class="col-md-2 col-sm-2 col-xs-12">
+								<div class="checkbox">
+									<label>
+										<input name="custos_isento" type="checkbox" class="flat"
+											   @if(isset($OrdemServico) && ($OrdemServico->custos_isento == 1)) checked="checked" @endif
+										> Isenção de Custos
+									</label>
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
@@ -159,6 +177,15 @@
 
             });
             $(this).find('.btn-ok').attr("href", href_);
+        });
+        //ISENÇÃO DE DESLOCAMENTO
+        $('input[name="custos_isento"]').on('ifToggled', function (event) {
+            var $alert = $(this).parents().find('div.alert-custos_isento');
+            if (this.checked) {
+                $($alert).show();
+            } else {
+                $($alert).hide();
+            }
         });
 	</script>
 @endsection

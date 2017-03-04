@@ -173,36 +173,35 @@ class ColaboradoresController extends Controller
             ->with('Page', $this->Page);
     }
 
-    public function selolacre_remanejar(Request $request)
+    public function selolacre_remanejar(Request $request, $idtecnico)
     {
-        return 'AINDA NÃO ESTÁ FUNCIONAL';
-        return $request->all();
         $ini = $request->get('numeracao_inicial');
         $end = $request->get('numeracao_final');
-        $qtd = $end - $ini;
+        $idreceptor = $request->get('idreceptor');
+        $Tecnico = Tecnico::find($idtecnico);
         if ($request->get('opcao') == 'selo') {
-            if (Selo::where('numeracao', $ini)->count() > 0) {
-                $erros = 'Já existem Selos com essa numeração';
-            } else {
-                for ($i = $ini; $i <= $end; $i++) {
-                    $data[] = [
-                        'idtecnico' => $idtecnico,
-                        'numeracao' => $i,
-                    ];
+            $Selos = $Tecnico->selos_a_trocar($ini, $end)->get();
+            $qtd = count($Selos);
+            if ($qtd > 0) {
+                foreach ($Selos as $selo) {
+                    $numeros[] = $selo->getFormatedSelo();
+                    $selo->repassaTecnico($idreceptor);
                 }
-                Selo::insert($data);
+                $msg = 'Foram repassados ' . $qtd . ' selos: [' . implode('; ', $numeros) . ']';
+            } else {
+                $erros = ['Não há selos disponíveis nessa faixa. Nenhum Selo foi repassado!'];
             }
         } else {
-            if (Lacre::where('numeracao', $ini)->count() > 0) {
-                $erros = 'Já existem Lacres com essa numeração';
-            } else {
-                for ($i = $ini; $i <= $end; $i++) {
-                    $data[] = [
-                        'idtecnico' => $idtecnico,
-                        'numeracao' => $i,
-                    ];
+            $Lacres = $Tecnico->lacres_a_trocar($ini, $end)->get();
+            $qtd = count($Lacres);
+            if ($qtd > 0) {
+                foreach ($Lacres as $lacre) {
+                    $numeros[] = $lacre->numeracao;
+                    $lacre->repassaTecnico($idreceptor);
                 }
-                Lacre::insert($data);
+                $msg = 'Foram repassados ' . $qtd . ' lacres: [' . implode('; ', $numeros) . ']';
+            } else {
+                $erros = ['Não há lacres disponíveis nessa faixa. Nenhum Lacre foi repassado!'];
             }
         }
 
@@ -212,7 +211,6 @@ class ColaboradoresController extends Controller
                 ->withInput($request->all());
         }
 
-        $msg = 'Foram adicionados ' . $qtd . ' ' . $request->get('opcao') . 's!';
         session()->forget('mensagem');
         session(['mensagem' => $msg]);
         return redirect()->route('colaboradores.show', ['idcolaborador' => Tecnico::find($idtecnico)->idcolaborador]);

@@ -83,6 +83,23 @@ class Tecnico extends Model
         return $this->hasMany('App\Selo', 'idtecnico')->where('used', 0)->orderBy('numeracao', 'asc');
     }
 
+    public function selos_a_trocar($ini, $end)
+    {
+        return $this->selos()
+            ->where('used', 0)
+            ->whereNotNull('numeracao')
+            ->whereBetween('numeracao', [$ini, $end])
+            ->orderBy('numeracao', 'desc');
+    }
+
+    public function lacres_a_trocar($ini, $end)
+    {
+        return $this->lacres()
+            ->where('used', 0)
+            ->whereNotNull('numeracao')
+            ->whereBetween('numeracao', [$ini, $end])
+            ->orderBy('numeracao', 'desc');
+    }
     // ********************** BELONGS ********************************
 
     public function colaborador()
