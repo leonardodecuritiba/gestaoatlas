@@ -132,8 +132,9 @@ Route::group(['prefix' => 'teste'], function () {
         $Boleto = new \App\Helpers\BoletoHelper($OrdemServico);
         return $Boleto->gerar_PDF(true);
     });
-    Route::get('nfe/{valor}', function (\Illuminate\Http\Request $request) {
-        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find($request->valor));
+    Route::get('nfe/{idordemservico}', function (\Illuminate\Http\Request $request) {
+        return \App\OrdemServico::find($request->idordemservico);
+        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find($request->idordemservico));
         $NFE->send_teste();
     });
     Route::get('get_cest2', function () {

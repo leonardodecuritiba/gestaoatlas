@@ -224,39 +224,36 @@ class PrintHelper
                 //********************************************************************************************//
                 //INSTRUMENTOS ------------------------------------------
                 $AparelhosManutencao = $this->OrdemServico->aparelho_manutencaos;
+                $this->insumos = NULL;
                 foreach ($AparelhosManutencao as $Aparelho) {
-                    $this->insumos = NULL;
                     if ($Aparelho->idinstrumento == NULL) {
                         $sheet = $this->setEquipamento($Aparelho, $sheet);
                     } else {
                         $sheet = $this->setInstrumento($Aparelho, $sheet);
                     }
 
-                    //********************************************************************************************//
-                    //************************** PEÇAS ***********************************************************//
-                    //********************************************************************************************//
-                    $sheet = $this->setPeca($sheet, $Aparelho);
-                    //********************************************************************************************//
-                    //************************** KITS ************************************************************//
-                    //********************************************************************************************//
-                    $sheet = $this->setKit($sheet, $Aparelho);
-                    //********************************************************************************************//
                     //************************** SERVIÇOS ********************************************************//
-                    //********************************************************************************************//
                     $sheet = $this->setServico($sheet, $Aparelho);
+                    //************************** PEÇAS ***********************************************************//
+                    $sheet = $this->setPeca($sheet, $Aparelho);
+                    //************************** KITS ************************************************************//
+                    $sheet = $this->setKit($sheet, $Aparelho);
                 }
 
                 //********************************************************************************************//
                 //************************** FECHAMENTO ******************************************************//
+                $Fechamento = json_decode($this->OrdemServico->getValores());
+                $this->insumos['total_servicos'] = $Fechamento->valor_total_servicos;
+                $this->insumos['total_pecas'] = $Fechamento->valor_total_pecas;
+                $this->insumos['total_kits'] = $Fechamento->valor_total_kits;
+                $sheet = $this->setFechamento($sheet);
+
                 //********************************************************************************************//
-                $sheet = $this->setFechamento($sheet, $Aparelho);
-
-
                 //************************* FECHAMENTO FINAL *********************************************//
                 $sheet->row($this->linha_xls, function ($row) {
                     $row->setFontWeight(true);
                 });
-                $sheet->row($this->linha_xls, ['TOTAL  DA ORDEM SERVIÇO', '', '', '', 'R$ ' . $this->OrdemServico->valor_final]);
+                $sheet->row($this->linha_xls, ['TOTAL  DA ORDEM SERVIÇO', '', '', '', $Fechamento->valor_final]);
                 $this->linha_xls += 2;
 
                 $sheet->mergeCells('B' . $this->linha_xls . ':G' . $this->linha_xls);
@@ -320,7 +317,7 @@ class PrintHelper
         //LINHA ------------------------------------------
         $sheet = self::setCabecalho($sheet, [
             'line' => $this->linha_xls,
-            'info' => ['Equipamento']
+            'info' => ['Equipamento (#' . $Equipamento->idequipamento . ') - ' . $Equipamento->descricao]
         ]);
         //CABEÇALHO ------------------------------------------
         $sheet->rows($dados_equipamento);
@@ -393,7 +390,7 @@ class PrintHelper
         //LINHA ------------------------------------------
         $sheet = self::setCabecalho($sheet, [
             'line' => $this->linha_xls,
-            'info' => ['Instrumento']
+            'info' => ['Instrumento (#' . $Instrumento->idinstrumento . ') - ' . $Instrumento->descricao]
         ]);
         //CABEÇALHO ------------------------------------------
         $this->linha_xls++;
@@ -408,31 +405,29 @@ class PrintHelper
         return $sheet;
     }
 
-    private function setPeca($sheet, $aparelho)
+    private function setServico($sheet, $aparelho)
     {
-        if ($aparelho->has_pecas_utilizadas()) {
-            foreach ($aparelho->pecas_utilizadas as $Peca_utilizada) {
-                $Peca = $Peca_utilizada->peca;
+        if ($aparelho->has_servico_prestados()) {
+            foreach ($aparelho->servico_prestados as $Servico_prestados) {
+                $Servico = $Servico_prestados->servico;
 //                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
-                $this->insumos['pecas'][] = [
-                    $Peca->idpeca,
-                    $Peca->descricao,
-                    'R$ ' . $Peca_utilizada->valor,
-                    $Peca_utilizada->quantidade,
-                    $Peca_utilizada->valor_total_real(),
-                    '-',
-                    '-'
+                $servicos[] = [
+                    $Servico->idservico,
+                    $Servico->descricao,
+                    'R$ ' . $Servico_prestados->valor,
+                    $Servico_prestados->quantidade,
+                    $Servico_prestados->valor_total_real()
                 ];
             }
-            $this->insumos['total_pecas'] = $aparelho->getTotalPecasReal();
             $cabecalho = [
                 'line' => $this->linha_xls,
-                'info' => ['Peças'],
-                'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
-                'values' => $this->insumos['pecas'],
+                'info' => ['Serviços'],
+                'cabecalho' => ['Codigo', 'Kit', 'V. un', 'Qtde', 'V. Total'],
+                'values' => $servicos,
             ];
             $sheet = self::setData($sheet, $cabecalho);
-            $this->linha_xls += count($this->insumos['pecas']) + 2;
+            $this->linha_xls += count($servicos) + 2;
+            $this->insumos['servicos'][] = $servicos;
             $this->linha_xls += 1;
         }
         return $sheet;
@@ -454,13 +449,43 @@ class PrintHelper
         return $sheet;
     }
 
+    private function setPeca($sheet, $aparelho)
+    {
+        if ($aparelho->has_pecas_utilizadas()) {
+            foreach ($aparelho->pecas_utilizadas as $Peca_utilizada) {
+                $Peca = $Peca_utilizada->peca;
+//                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                $pecas[] = [
+                    $Peca->idpeca,
+                    $Peca->descricao,
+                    'R$ ' . $Peca_utilizada->valor,
+                    $Peca_utilizada->quantidade,
+                    $Peca_utilizada->valor_total_real(),
+                    '-',
+                    '-'
+                ];
+            }
+            $cabecalho = [
+                'line' => $this->linha_xls,
+                'info' => ['Peças'],
+                'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
+                'values' => $pecas,
+            ];
+            $sheet = self::setData($sheet, $cabecalho);
+            $this->linha_xls += count($pecas) + 2;
+            $this->insumos['pecas'][] = $pecas;
+            $this->linha_xls += 1;
+        }
+        return $sheet;
+    }
+
     private function setKit($sheet, $aparelho)
     {
         if ($aparelho->has_kits_utilizados()) {
             foreach ($aparelho->kits_utilizados as $Kit_utilizado) {
                 $Kit = $Kit_utilizado->kit;
 //                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
-                $this->insumos['kits'][] = [
+                $kits[] = [
                     $Kit->idkit,
                     $Kit->descricao,
                     'R$ ' . $Kit_utilizado->valor,
@@ -470,43 +495,15 @@ class PrintHelper
                     '-'
                 ];
             }
-            $this->insumos['total_kits'] = $aparelho->getTotalKitsReal();
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Kits'],
                 'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
-                'values' => $this->insumos['kits'],
+                'values' => $kits,
             ];
             $sheet = self::setData($sheet, $cabecalho);
-            $this->linha_xls += count($this->insumos['kits']) + 2;
-            $this->linha_xls += 1;
-        }
-        return $sheet;
-    }
-
-    private function setServico($sheet, $aparelho)
-    {
-        if ($aparelho->has_servico_prestados()) {
-            foreach ($aparelho->servico_prestados as $Servico_prestados) {
-                $Servico = $Servico_prestados->servico;
-//                            $tabela_preco   = $Peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
-                $this->insumos['servicos'][] = [
-                    $Servico->idservico,
-                    $Servico->descricao,
-                    'R$ ' . $Servico_prestados->valor,
-                    $Servico_prestados->quantidade,
-                    $Servico_prestados->valor_total_real()
-                ];
-            }
-            $this->insumos['total_servicos'] = $aparelho->getTotalServicosReal();
-            $cabecalho = [
-                'line' => $this->linha_xls,
-                'info' => ['Serviços'],
-                'cabecalho' => ['Codigo', 'Kit', 'V. un', 'Qtde', 'V. Total'],
-                'values' => $this->insumos['servicos'],
-            ];
-            $sheet = self::setData($sheet, $cabecalho);
-            $this->linha_xls += count($this->insumos['servicos']) + 2;
+            $this->linha_xls += count($kits) + 2;
+            $this->insumos['kits'][] = $kits;
             $this->linha_xls += 1;
         }
         return $sheet;
@@ -521,17 +518,45 @@ class PrintHelper
             'info' => ['Fechamento de Valores'],
         ]);
 
+        //************************* SERVIÇOS *******************************************************//
+        if (isset($this->insumos['servicos'])) {
+            foreach ($this->insumos['servicos'] as $insumo) {
+                foreach ($insumo as $servico) {
+                    $servicos[] = $servico;
+                }
+            }
+            $this->linha_xls += 2;
+            $cabecalho = [
+                'line' => $this->linha_xls,
+                'info' => ['Serviços'],
+                'cabecalho' => ['Codigo', 'Kit', 'V. un', 'Qtde', 'V. Total'],
+                'values' => $servicos,
+            ];
+            $sheet = self::setData($sheet, $cabecalho);
+            $this->linha_xls += count($servicos) + 2;
+
+            //total
+            $sheet->cell('E' . $this->linha_xls, function ($cell) {
+                $cell->setFontWeight(true);
+                $cell->setValue($this->insumos['total_servicos']);
+            });
+        }
         //************************* PEÇAS ***********************************************************//
         if (isset($this->insumos['pecas'])) {
+            foreach ($this->insumos['pecas'] as $insumo) {
+                foreach ($insumo as $peca) {
+                    $pecas[] = $peca;
+                }
+            }
             $this->linha_xls += 2;
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Peças'],
                 'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
-                'values' => $this->insumos['pecas'],
+                'values' => $pecas,
             ];
             $sheet = self::setData($sheet, $cabecalho);
-            $this->linha_xls += count($this->insumos['pecas']) + 2;
+            $this->linha_xls += count($pecas) + 2;
 
             //total
             $sheet->cell('E' . $this->linha_xls, function ($cell) {
@@ -541,12 +566,17 @@ class PrintHelper
         }
         //************************* KITS ***********************************************************//
         if (isset($this->insumos['kits'])) {
+            foreach ($this->insumos['kits'] as $insumo) {
+                foreach ($insumo as $kit) {
+                    $kits[] = $kit;
+                }
+            }
             $this->linha_xls += 2;
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Kits'],
                 'cabecalho' => ['Codigo', 'Peça', 'V. un', 'Qtde', 'V. Total', 'Garantia', 'Garantia Negada'],
-                'values' => $this->insumos['kits'],
+                'values' => $kits,
             ];
             $sheet = self::setData($sheet, $cabecalho);
             $this->linha_xls += count($this->insumos['kits']) + 2;
@@ -555,24 +585,6 @@ class PrintHelper
             $sheet->cell('E' . $this->linha_xls, function ($cell) {
                 $cell->setFontWeight(true);
                 $cell->setValue($this->insumos['total_kits']);
-            });
-        }
-        //************************* SERVIÇOS *******************************************************//
-        if (isset($this->insumos['servicos'])) {
-            $this->linha_xls += 2;
-            $cabecalho = [
-                'line' => $this->linha_xls,
-                'info' => ['Serviços'],
-                'cabecalho' => ['Codigo', 'Kit', 'V. un', 'Qtde', 'V. Total'],
-                'values' => $this->insumos['servicos'],
-            ];
-            $sheet = self::setData($sheet, $cabecalho);
-            $this->linha_xls += count($this->insumos['servicos']) + 2;
-
-            //total
-            $sheet->cell('E' . $this->linha_xls, function ($cell) {
-                $cell->setFontWeight(true);
-                $cell->setValue($this->insumos['total_servicos']);
             });
         }
         //************************* OUTROS *********************************************************//

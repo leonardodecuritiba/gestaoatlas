@@ -27,7 +27,7 @@
                                     {{$servico_prestado->servico->nome}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco}}
+                                    {{$tabela_preco->preco}}
                                 </td>
                                 <td>
                                     {{$servico_prestado->quantidade}}
@@ -41,7 +41,7 @@
                             <td colspan="3">
                             </td>
                             <td>
-                                <p class="green">R$ {{$AparelhoManutencao->getTotalServicosReal()}}</p>
+                                <p class="green">{{$AparelhoManutencao->getTotalServicosReal()}}</p>
                             </td>
                         </tr>
                         </tbody>
@@ -86,7 +86,7 @@
                                     {{$peca_utilizada->peca->descricao}}
                                 </td>
                                 <td>
-                                    R$ {{$peca_utilizada->valor}}
+                                    {{$peca_utilizada->valor}}
                                 </td>
                                 <td>
                                     {{$peca_utilizada->quantidade}}
@@ -100,7 +100,7 @@
                             <td colspan="3">
                             </td>
                             <td>
-                                <p class="green">R$ {{$AparelhoManutencao->getTotalPecasReal()}}</p>
+                                <p class="green">{{$AparelhoManutencao->getTotalPecasReal()}}</p>
                             </td>
                         </tr>
                         </tbody>
@@ -144,7 +144,7 @@
                                     {{$kit_utilizado->nome()}}
                                 </td>
                                 <td>
-                                    R$ {{$tabela_preco->preco}}
+                                    {{$tabela_preco->preco}}
                                 </td>
                                 <td>
                                     {{$kit_utilizado->quantidade}}
@@ -158,7 +158,7 @@
                             <td colspan="3">
                             </td>
                             <td>
-                                <p class="green">R$ {{$AparelhoManutencao->getTotalKitsReal()}}</p>
+                                <p class="green">{{$AparelhoManutencao->getTotalKitsReal()}}</p>
                             </td>
                         </tr>
                         </tbody>
