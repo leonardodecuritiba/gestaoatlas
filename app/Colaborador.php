@@ -24,6 +24,8 @@ class Colaborador extends Model
         'carteira_trabalho'
     ];
 
+    // ************************ FUNCTIONS ******************************
+
     public function setDataNascimentoAttribute($value)
     {
         $this->attributes['data_nascimento'] = DataHelper::setDate($value);
@@ -34,7 +36,6 @@ class Colaborador extends Model
         return DataHelper::getPrettyDate($value);
     }
 
-    // ************************ FUNCTIONS ******************************
     public function getEnderecoResumido() {
         $contato = $this->contato()->first();
         $retorno[0] = $contato->cidade;

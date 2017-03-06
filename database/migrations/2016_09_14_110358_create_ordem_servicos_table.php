@@ -33,7 +33,8 @@ class CreateOrdemServicosTable extends Migration
             $table->string('responsavel_cpf', 16);
             $table->string('responsavel_cargo', 50);
             $table->decimal('valor_total',11,2);
-            $table->decimal('desconto',11,2);
+            $table->decimal('desconto_tec', 5, 2)->default(0);
+            $table->decimal('acrescimo_tec', 5, 2)->default(0);
             $table->decimal('valor_final',11,2);
 
             $table->decimal('custos_deslocamento',11,2);

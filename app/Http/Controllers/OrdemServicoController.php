@@ -413,6 +413,15 @@ class OrdemServicoController extends Controller
         return Redirect::route('ordem_servicos.show', $idordem_servico);
     }
 
+    public function aplicarValores(Request $request, $idordem_servico)
+    {
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $OrdemServico->aplicaValores($request->all());
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_fec]);
+        return Redirect::route('ordem_servicos.resumo', $OrdemServico->idordem_servico);
+    }
+
     public function fechar(Request $request, $idordem_servico)
     {
         $OrdemServico = OrdemServico::find($idordem_servico);

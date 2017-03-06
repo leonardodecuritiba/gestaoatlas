@@ -47,8 +47,14 @@
                 </div>
             </div>
         </section>
+        <section class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    @include('pages.forms.form_tecnico_financeiro')
+                </div>
+            </div>
+        </section>
     @endif
-
     <section class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">

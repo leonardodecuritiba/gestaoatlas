@@ -17,6 +17,7 @@ class ServicoPrestado extends Model
         'idservico',
         'valor',
         'quantidade',
+        'desconto'
     ];
 
     // ******************** FUNCTIONS ******************************

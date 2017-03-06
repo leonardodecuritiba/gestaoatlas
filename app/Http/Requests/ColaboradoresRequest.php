@@ -28,8 +28,8 @@ class ColaboradoresRequest extends Request
      */
     public function rules()
     {
-        $Data = Colaborador::find($this->colaborador);
-        $id = count($Data) ? $Data->id : 0;
+        $Data = Colaborador::find($this->colaboradores);
+        $id = count($Data) ? $Data->idcolaborador : 0;
         switch ($this->method()) {
             case 'GET':
             case 'DELETE': {

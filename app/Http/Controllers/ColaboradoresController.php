@@ -131,6 +131,7 @@ class ColaboradoresController extends Controller
     {
         $Colaborador = Colaborador::find($id);
         $dataUpdate = $request->all();
+//        dd($dataUpdate);
         //update CONTATO
         $Colaborador->contato->update($dataUpdate);
         //store USER
@@ -139,15 +140,16 @@ class ColaboradoresController extends Controller
         foreach (['cnh', 'carteira_trabalho'] as $doc) {
             if ($request->hasfile($doc)) {
                 $img = new ImageController();
-                $dataUpdate[$doc] = $img->store($request->file($doc), $this->Page->link);
+                $dataUpdate[$doc] = $img->update($request->file($doc), $this->Page->link, $Colaborador->{$doc});
             }
         }
         $Colaborador->update($dataUpdate);
+
         if ($Colaborador->hasRole('tecnico')) {
             foreach (['carteira_imetro', 'carteira_ipem'] as $doc) {
                 if ($request->hasfile($doc)) {
                     $img = new ImageController();
-                    $dataUpdate[$doc] = $img->store($request->file($doc), 'tecnicos');
+                    $dataUpdate[$doc] = $img->update($request->file($doc), 'tecnicos', $Colaborador->tecnico->{$doc});
                 } else {
                     $dataUpdate[$doc] = NULL;
                 }
@@ -156,7 +158,7 @@ class ColaboradoresController extends Controller
         }
 
         session()->forget('mensagem');
-        session(['mensagem' => $this->Page->Target . ' adicionado com sucesso!']);
+        session(['mensagem' => $this->Page->Target . ' atualizado com sucesso!']);
         return Redirect::route('colaboradores.show', $Colaborador->idcolaborador);
     }
 
@@ -282,6 +284,7 @@ class ColaboradoresController extends Controller
     public function destroy($id)
     {
         $data = Colaborador::find($id);
+        $data->tecnico->delete();
         $data->delete();
         return response()->json(['status' => '1',
             'response' => $this->Page->msg_rem]);

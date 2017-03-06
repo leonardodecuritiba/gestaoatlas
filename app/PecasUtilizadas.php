@@ -17,6 +17,7 @@ class PecasUtilizadas extends Model
         'idpeca',
         'valor',
         'quantidade',
+        'desconto'
     ];
 
     // ******************** FUNCTIONS ******************************

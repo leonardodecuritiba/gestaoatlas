@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\DataHelper;
 use Illuminate\Database\Eloquent\Model;
 
 class Tecnico extends Model
@@ -12,14 +13,48 @@ class Tecnico extends Model
     protected $fillable = [
         'idcolaborador',
         'carteira_imetro',
-        'carteira_ipem'
+        'carteira_ipem',
+        'desconto_max',
+        'acrescimo_max',
     ];
 
     // ************************ FUNCTIONS ******************************
+
     static public function outros($idtecnico)
     {
         return self::where('idtecnico', '<>', $idtecnico)->get();
     }
+
+    public function setDescontoMaxAttribute($value)
+    {
+        $this->attributes['desconto_max'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getDescontoMaxAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function desconto_max_float()
+    {
+        return $this->attributes['desconto_max'];
+    }
+
+    public function setAcrescimoMaxAttribute($value)
+    {
+        $this->attributes['acrescimo_max'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getAcrescimoMaxAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function acrescimo_max_float()
+    {
+        return $this->attributes['acrescimo_max'];
+    }
+
     public function getDocumentos()
     {
         return json_encode([
@@ -100,6 +135,7 @@ class Tecnico extends Model
             ->whereBetween('numeracao', [$ini, $end])
             ->orderBy('numeracao', 'desc');
     }
+
     // ********************** BELONGS ********************************
 
     public function colaborador()

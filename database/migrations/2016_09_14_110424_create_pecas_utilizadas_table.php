@@ -23,6 +23,7 @@ class CreatePecasUtilizadasTable extends Migration
             
             $table->decimal('valor',11,2);
             $table->smallInteger('quantidade');
+            $table->decimal('desconto', 11, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -246,6 +246,13 @@ class PrintHelper
                 $this->insumos['total_servicos'] = $Fechamento->valor_total_servicos;
                 $this->insumos['total_pecas'] = $Fechamento->valor_total_pecas;
                 $this->insumos['total_kits'] = $Fechamento->valor_total_kits;
+                if (isset($Fechamento->valor_desconto)) {
+                    $this->insumos['descontos'] = $Fechamento->valor_desconto;
+                }
+                if (isset($Fechamento->valor_acrescimo)) {
+                    $this->insumos['acrescimos'] = $Fechamento->valor_acrescimo;
+                }
+                $this->insumos['acrescimos'] = $Fechamento->valor_total_kits;
                 $sheet = $this->setFechamento($sheet);
 
                 //********************************************************************************************//
@@ -315,7 +322,7 @@ class PrintHelper
             )
         ];
         //LINHA ------------------------------------------
-        $sheet = self::setCabecalho($sheet, [
+        $sheet = self::setCabecalhoCinza($sheet, [
             'line' => $this->linha_xls,
             'info' => ['Equipamento (#' . $Equipamento->idequipamento . ') - ' . $Equipamento->descricao]
         ]);
@@ -330,8 +337,9 @@ class PrintHelper
         return $sheet;
     }
 
-    private function setCabecalho($sheet, $dados)
+    private function setCabecalhoCinza($sheet, $dados)
     {
+        $this->linha_xls += 1;
         $linha = $dados['line'];
         //LINHA ------------------------------------------
         $sheet->mergeCells('A' . $linha . ':G' . $linha);
@@ -388,7 +396,7 @@ class PrintHelper
             )
         ];
         //LINHA ------------------------------------------
-        $sheet = self::setCabecalho($sheet, [
+        $sheet = self::setCabecalhoCinza($sheet, [
             'line' => $this->linha_xls,
             'info' => ['Instrumento (#' . $Instrumento->idinstrumento . ') - ' . $Instrumento->descricao]
         ]);
@@ -422,7 +430,7 @@ class PrintHelper
             $cabecalho = [
                 'line' => $this->linha_xls,
                 'info' => ['Serviços'],
-                'cabecalho' => ['Codigo', 'Kit', 'V. un', 'Qtde', 'V. Total'],
+                'cabecalho' => ['Codigo', 'Serviço', 'V. un', 'Qtde', 'V. Total'],
                 'values' => $servicos,
             ];
             $sheet = self::setData($sheet, $cabecalho);
@@ -436,7 +444,7 @@ class PrintHelper
     private function setData($sheet, $dados)
     {
         //LINHA ------------------------------------------
-        $sheet = self::setCabecalho($sheet, $dados);
+        $sheet = self::setCabecalhoCinza($sheet, $dados);
         //CABEÇALHO ------------------------------------------
         $linha = $dados['line'] + 1;
         $sheet->row($linha, function ($row) {
@@ -511,9 +519,7 @@ class PrintHelper
 
     private function setFechamento($sheet)
     {
-
-        $this->linha_xls++;
-        $sheet = self::setCabecalho($sheet, [
+        $sheet = self::setCabecalhoCinza($sheet, [
             'line' => $this->linha_xls,
             'info' => ['Fechamento de Valores'],
         ]);
@@ -593,6 +599,13 @@ class PrintHelper
             array('Pedagios', '', '', '', 'R$ ' . $this->OrdemServico->pedagios),
             array('Outros Custos', '', '', '', 'R$ ' . $this->OrdemServico->outros_custos),
         ];
+        if (isset($this->insumos['descontos'])) {
+            $dados_fechamento[] = array('Descontos', '', '', '', $this->insumos['descontos']);
+        }
+        if (isset($this->insumos['acrescimos'])) {
+            $dados_fechamento[] = array('Acréscimos', '', '', '', $this->insumos['acrescimos']);
+        }
+
         $this->linha_xls += 2;
         $cabecalho = [
             'line' => $this->linha_xls,
@@ -601,7 +614,7 @@ class PrintHelper
             'values' => $dados_fechamento,
         ];
         $sheet = self::setData($sheet, $cabecalho);
-        $this->linha_xls += count($dados_fechamento) + 3;
+        $this->linha_xls += count($dados_fechamento) + 2;
         return $sheet;
     }
 }

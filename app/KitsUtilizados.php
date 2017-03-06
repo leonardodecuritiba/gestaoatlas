@@ -17,6 +17,7 @@ class KitsUtilizados extends Model
         'idkit',
         'valor',
         'quantidade',
+        'desconto'
     ];
 
     // ******************** FUNCTIONS ******************************

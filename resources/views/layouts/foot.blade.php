@@ -54,7 +54,14 @@
         initMaskMoneyDolar($(".show-valor-dolar"));
     });
     function initMaskMoneyPorcento(selector) {
-        $(selector).maskMoney({suffix:' %', allowNegative: false,thousands:'.', decimal:',', affixesStay: false});
+        $(selector).maskMoney({
+            suffix: ' %',
+            allowNegative: false,
+            allowZero: true,
+            thousands: '.',
+            decimal: ',',
+            affixesStay: false
+        });
     }
     $(document).ready(function () {
         initMaskMoneyPorcento($(".show-porcento"));

@@ -37,6 +37,16 @@
                 <li><i class="fa fa-money"></i> Total em Kits: <b class="pull-right"
                                                                   id="valor_total_kits">{{$valores->valor_total_kits}}</b>
                 </li>
+                @if(isset($valores->valor_desconto))
+                    <li class="red"><i class="fa fa-money"></i> Descontos: <b class="pull-right"
+                                                                              id="valor_total_kits">{{$valores->valor_desconto}}</b>
+                    </li>
+                @endif
+                @if(isset($valores->valor_acrescimo))
+                    <li class="blue"><i class="fa fa-money"></i> Acréscimos: <b class="pull-right"
+                                                                                id="valor_total_kits">{{$valores->valor_acrescimo}}</b>
+                    </li>
+                @endif
                 <li>
                     <div class="ln_solid"></div>
                 </li>

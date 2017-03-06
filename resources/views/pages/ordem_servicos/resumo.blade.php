@@ -6,6 +6,7 @@
 @section('page_content')
 	@include('pages.ordem_servicos.popup.ordem_servico')
 	@include('pages.ordem_servicos.popup.aparelho')
+	@include('pages.ordem_servicos.popup.tecnico_valores')
 
 	<div class="page-title">
 		<div class="title_left">
@@ -14,13 +15,29 @@
 	</div>
 	<section class="row">
 		<div class="x_panel">
-			<div class="x_content">
+			<section class="x_content">
 				<div class="alert fade in alert-{{$OrdemServico->getStatusType()}}" role="alert">
 					Status da Ordem de Serviço: <b>{{$OrdemServico->situacao->descricao}}</b>
 				</div>
 				@include('pages.ordem_servicos.parts.cliente_show')
-                <section class="row">
-					@if(!$OrdemServico->status())
+				@role('tecnico')
+				<section class="row form-horizontal form-label-left">
+					<div class="form-group">
+						<label class="control-label col-md-3 col-sm-3 col-xs-12">Aplicação de Valores: </label>
+						<div class="col-md-9 col-sm-9 col-xs-12">
+							<button class="btn btn-warning"
+									data-toggle="modal"
+									data-target="#modalTecnicoValores"><i class="fa fa-money fa-2"></i> Aplicar
+								Desconto/Acrescimo
+							</button>
+						</div>
+					</div>
+					<div class="ln_solid"></div>
+				</section>
+				@endrole
+
+				@if(!$OrdemServico->status())
+					<section class="row">
                     {!! Form::open(['route' => [$Page->link.'.fechar',$OrdemServico->idordem_servico],
                         'method' => 'POST',
                         'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
@@ -101,11 +118,11 @@
                                 </div>
                             @endif
                         </div>
-					@if(!$OrdemServico->status())
+						@if(!$OrdemServico->status())
 						{!! Form::close() !!}
-					@endif
-                </section>
-			</div>
+					</section>
+				@endif
+			</section>
 		</div>
 	</section>
 	@foreach($OrdemServico->aparelho_manutencaos as $AparelhoManutencao)
@@ -126,6 +143,13 @@
     {!! Html::script('js/parsley/parsley.min.js') !!}
 	<script>
 		//ABRE MODAL O.S.
+
+        $(document).ready(function () {
+            $('select[name=tipo]').change(function () {
+                var valor = parseFloat($(this).find(':selected').data('valor')) * 100;
+                $(this).parents('div.form-group').next().find("input[name=valor]").maskMoney('mask', valor);
+            });
+        });
 		$(document).ready(function() {
 			$('div#modalPopup').on('show.bs.modal', function(e) {
 				$origem 		= $(e.relatedTarget);

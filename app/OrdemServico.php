@@ -30,7 +30,8 @@ class OrdemServico extends Model
         'responsavel_cpf',
         'responsavel_cargo',
         'valor_total',
-        'desconto',
+        'desconto_tecnico',
+        'acrescimo_tecnico',
         'valor_final',
         'custos_deslocamento',
         'custos_isento',
@@ -39,6 +40,7 @@ class OrdemServico extends Model
         'validacao',
     ]; //success
 
+    private $valor_desconto, $valor_acrescimo;
 
     // ******************** FUNCTIONS ******************************
 
@@ -80,6 +82,61 @@ class OrdemServico extends Model
             'idsituacao_ordem_servico' => 1
         ];
         return self::create($data);
+    }
+
+    public function aplicaValores($data)
+    {
+        $valor = DataHelper::getReal2Float($data['valor']);
+        if ($data['tipo']) { //acrescimo
+            $max = $this->tecnico->acrescimo_max_float();
+            $this->attributes['acrescimo_tecnico'] = ($valor > $max) ? $max : $valor;
+        } else { //desconto
+            $max = $this->tecnico->desconto_max_float();
+            $this->attributes['desconto_tecnico'] = ($valor > $max) ? $max : $valor;
+        }
+        $this->save();
+        return $this->update_valores();
+
+    }
+
+    public function update_valores()
+    {
+        $this->attributes['valor_total'] = $this->get_valor_total();
+
+        $this->attributes['valor_final'] =
+            $this->attributes['valor_total'] +
+            $this->attributes['custos_deslocamento'] +
+            $this->attributes['pedagios'] +
+            $this->attributes['outros_custos'];
+
+        $this->save();
+        return 1;
+    }
+
+    public function get_valor_total()
+    {
+        $valor_total = $valor_servicos = $valor_pecas = $valor_kits = 0;
+        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+            $valor_servicos += $aparelho_manutencao->getTotalServicos();
+            $valor_pecas += $aparelho_manutencao->getTotalPecas();
+            $valor_kits += $aparelho_manutencao->getTotalKits();
+        }
+
+        $this->valor_desconto = ($this->attributes['desconto_tecnico'] * $valor_servicos / 100);
+        $this->valor_acrescimo = ($this->attributes['acrescimo_tecnico'] * $valor_servicos / 100);
+        $valor_total = $valor_servicos + $valor_pecas + $valor_kits
+            - $this->valor_desconto + $this->valor_acrescimo;
+        return $valor_total;
+    }
+
+    public function get_desconto_tecnico_real()
+    {
+        return DataHelper::getFloat2Real($this->attributes['desconto_tecnico']);
+    }
+
+    public function get_acrescimo_tecnico_real()
+    {
+        return DataHelper::getFloat2Real($this->attributes['acrescimo_tecnico']);
     }
 
     public function getResponsavelCpfAttribute($value)
@@ -129,17 +186,6 @@ class OrdemServico extends Model
         return $this->save();
     }
 
-    public function update_valores()
-    {
-        $this->attributes['valor_total'] = 0;
-        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
-            $this->attributes['valor_total'] += $aparelho_manutencao->get_total();
-        }
-        $this->attributes['valor_final'] = $this->attributes['valor_total'] + $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
-        $this->save();
-        return 1;
-    }
-
     public function getValores()
     {
         $this->update_valores();
@@ -151,6 +197,16 @@ class OrdemServico extends Model
             $valor_total_pecas += $aparelho_manutencao->getTotalPecas();
             $valor_total_kits += $aparelho_manutencao->getTotalKits();
         }
+
+        if ($this->desconto_tecnico > 0) {
+            $data['valor_desconto_float'] = $this->valor_desconto;
+            $data['valor_desconto'] = 'R$ ' . DataHelper::getFloat2Real($data['valor_desconto_float']);
+        }
+        if ($this->acrescimo_tecnico > 0) {
+            $data['valor_acrescimo_float'] = $this->valor_acrescimo;
+            $data['valor_acrescimo'] = 'R$ ' . DataHelper::getFloat2Real($data['valor_acrescimo_float']);
+        }
+
         $data['valor_total_servicos_float'] = $valor_total_servicos;
         $data['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($valor_total_servicos);
         $data['valor_total_pecas_float'] = $valor_total_pecas;
@@ -264,6 +320,10 @@ class OrdemServico extends Model
         return $this->belongsTo('App\Colaborador', 'idcolaborador');
     }
 
+    public function tecnico()
+    {
+        return $this->colaborador->tecnico();
+    }
     // ************************** HASMANY **********************************
 
     public function situacao()

@@ -20,6 +20,8 @@ class CreateTecnicosTable extends Migration
 
             $table->string('carteira_imetro',60);
             $table->string('carteira_ipem',60);
+            $table->decimal('desconto_max', 5, 2)->default(0);
+            $table->decimal('acrescimo_max', 5, 2)->default(0);
             $table->timestamps();
             $table->softDeletes();
 

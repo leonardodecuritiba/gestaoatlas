@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::post('aparelho_manutencao/{idaparelho_manutencao}/update', 'OrdemServicoController@updateAparelhoManutencao')->name('aparelho_manutencao.update');
 
+    Route::post('aplicar_valores/ordem_servicos/{idordem_servico}', 'OrdemServicoController@aplicarValores')->name('ordem_servicos.aplicar_valores');
 
     // REMOVER AQUI
     Route::resource('servico_prestados', 'ServicosPrestadosController');
