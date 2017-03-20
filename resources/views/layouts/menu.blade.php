@@ -133,6 +133,26 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li>
+                                <a>Fechamentos<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('fechamentos.index','todas') }}">Todas</a>
+                                    </li>
+                                    <li><a href="{{ route('fechamentos.index','pendentes') }}">Pendentes</a></li>
+                                    <li>
+                                        <a href="{{ route('fechamentos.index','faturados') }}">Faturados</a>
+                                    </li>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-line-chart"></i> Relatórios<span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            @role('admin')
+                            <li><a href="{{ route('relatorios.ipem') }}"> IPEM</a></li>
+                            @endrole
+                            <li><a href="#">Meu relatório</a></li>
                         </ul>
                     </li>
                     <li><a><i class="fa fa-car"></i> Frotas <span class="label label-danger pull-right">Incompleto</span><span class="fa fa-chevron-down"></span></a>

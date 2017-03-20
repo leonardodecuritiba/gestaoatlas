@@ -104,6 +104,7 @@ class Cliente extends Model
                 'entidade'       => $this->pessoa_juridica()->first()->cnpj,
                 'nome_principal' => $this->pessoa_juridica()->first()->nome_fantasia,
                 'razao_social' => $this->pessoa_juridica()->first()->razao_social,
+                'documento' => 'CNPJ: ' . $this->pessoa_juridica()->first()->cnpj,
             ];
         } else {
             $retorno = (object)[
@@ -112,8 +113,11 @@ class Cliente extends Model
                 'entidade'       => $this->pessoa_fisica()->first()->cpf,
                 'nome_principal' => $this->attributes['nome_responsavel'],
                 'razao_social' => $this->attributes['nome_responsavel'],
+                'documento' => 'CPF: ' . $this->pessoa_fisica()->first()->cpf,
             ];
         }
+
+
         return $retorno;
     }
 
@@ -237,6 +241,11 @@ class Cliente extends Model
         return $this->belongsTo('App\Cliente', 'idcliente');
     }
 
+    public function forma_pagamento()
+    {
+        return $this->belongsTo('App\FormaPagamento', 'idforma_pagamento');
+    }
+
     // ************************** HASMANY **********************************
     public function has_ordem_servicos()
     {
@@ -245,5 +254,10 @@ class Cliente extends Model
     public function ordem_servicos()
     {
         return $this->hasMany('App\OrdemServico', 'idcliente');
+    }
+
+    public function fechamentos()
+    {
+        return $this->hasMany('App\Models\Fechamento', 'idcliente');
     }
 }

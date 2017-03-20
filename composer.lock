@@ -4,7 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2f9dc399d77a31b46a3a06018cb7d9dd",
+    "hash": "3f9c7b8812b470a53ef1b174fc301e35",
+    "content-hash": "ed2fcbe4bac586e60ea5ea21fb8fdc55",
     "packages": [
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -709,6 +710,63 @@
                 "util"
             ],
             "time": "2016-08-23 20:59:52"
+        },
+        {
+            "name": "jenssegers/date",
+            "version": "v3.2.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jenssegers/date.git",
+                "reference": "ad55257ae655af540e055c0fcd48bc3ec1962ec4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jenssegers/date/zipball/ad55257ae655af540e055c0fcd48bc3ec1962ec4",
+                "reference": "ad55257ae655af540e055c0fcd48bc3ec1962ec4",
+                "shasum": ""
+            },
+            "require": {
+                "nesbot/carbon": "^1.0",
+                "php": ">=5.4",
+                "symfony/translation": "^2.7|^3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.0|^5.0",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Jenssegers\\Date\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jens Segers",
+                    "homepage": "https://jenssegers.com"
+                }
+            ],
+            "description": "A date library to help you work with dates in different languages",
+            "homepage": "https://github.com/jenssegers/date",
+            "keywords": [
+                "carbon",
+                "date",
+                "datetime",
+                "i18n",
+                "laravel",
+                "time",
+                "translation"
+            ],
+            "time": "2017-01-02 09:21:15"
         },
         {
             "name": "jeremeamia/SuperClosure",

@@ -85,11 +85,11 @@ class Instrumento extends Model
     public function selo_afixado()
     {
         if($this->has_selo_instrumentos()){
-            return $this->hasMany('App\SeloInstrumento', 'idinstrumento', 'idinstrumento')
-                ->where('retirado_em',NULL)->first()->selo;
-        } else {
-            return NULL;
+            $SeloInstrumento = $this->hasMany('App\SeloInstrumento', 'idinstrumento', 'idinstrumento')
+                ->where('retirado_em', NULL)->first();
+            return ($SeloInstrumento != NULL) ? $SeloInstrumento->selo : $SeloInstrumento;
         }
+        return NULL;
     }
 
     public function has_selo_instrumentos()

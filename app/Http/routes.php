@@ -18,13 +18,9 @@
 Route::auth();
 
 Route::group(['middleware' => ['auth']], function() {
-    Route::get('/', function () {
-        return view('index');
-    });
+    Route::get('/', 'HomeController@index')->name('busca.index');
 
-    Route::get('/index', function () {
-        return view('index');
-    });
+    Route::get('/index', 'HomeController@index');
     Route::get('/home', 'HomeController@index');
 
     Route::resource('clientes', 'ClientesController');
@@ -95,6 +91,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('ordem_servicos/encaminhar/{idordem_servico}', 'OrdemServicoController@encaminhar')->name('ordem_servicos.encaminhar'); //Imprimir O.S
     Route::get('ordem_servicos/destroy/{idordem_servico}', 'OrdemServicoController@destroy')->name('ordem_servicos.destroy'); //Imprimir O.S
     Route::get('ordem_servicos/cliente/{idcliente}', 'OrdemServicoController@get_ordem_servicos_cliente')->name('ordem_servicos.cliente');
+    Route::get('ordem_servicos/por_colaborador/{idcolaborador}/{tipo}', 'OrdemServicoController@get_ordem_servicos_colaborador')->name('ordem_servicos.por_colaborador');
 
     Route::get('busca/ordem_servicos/{idordem_servico}/instrumentos', 'OrdemServicoController@buscaInstrumentos')->name('ordem_servicos.instrumentos.busca');
     Route::get('adiciona/ordem_servicos/{idordem_servico}/{idinstrumento}/instrumentos', 'OrdemServicoController@adicionaInstrumento')->name('ordem_servicos.instrumentos.adiciona');
@@ -125,14 +122,22 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('get_sintegra_params', 'AjaxController@consulta_params')->name('get_sintegra_params');
     Route::get('getAjaxDataByID', 'AjaxController@getAjaxDataByID')->name('getAjaxDataByID');
 
+
+    //FECHAMENTOS
+    Route::resource('fechamentos', 'FechamentoController');
+    Route::get('listar-fechamentos/{status}', 'FechamentoController@index')->name('fechamentos.index');
+
+
+    //RELATÓRIOS
+    Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
 });
 
+Route::group(['prefix' => 'cron-jobs'], function () {
+
+    Route::get('run-fechamento', 'FechamentoController@run');
+});
 Route::group(['prefix' => 'teste'], function () {
-    Route::get('boleto', function () {
-        $OrdemServico = \App\OrdemServico::find(1);
-        $Boleto = new \App\Helpers\BoletoHelper($OrdemServico);
-        return $Boleto->gerar_PDF(true);
-    });
+    Route::get('run-fechamento-temp', 'FechamentoController@run_temp');
     Route::get('nfe/{idordemservico}', function (\Illuminate\Http\Request $request) {
         return \App\OrdemServico::find($request->idordemservico);
         $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find($request->idordemservico));
