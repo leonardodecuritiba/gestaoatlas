@@ -84,11 +84,16 @@
                                 <?php $Instrumento = $Aparelho_manutencao->instrumento; ?>
                                 <tr>
                                     <td>{{$Cliente->razao_social}}</td>
-                                    <td>{{$Cliente->nome_principal}}</td>
+                                    <td><b><a href="{{route('clientes.show', $Ordem_servico->idcliente)}}"
+                                              target="_blank">{{$Cliente->nome_principal}}</a></b></td>
                                     <td>{{$Cliente->documento}}</td>
-                                    <td>{{$Ordem_servico->idordem_servico}}</td>
+                                    <td><b><a href="{{route('ordem_servicos.show', $Ordem_servico->idordem_servico)}}"
+                                              target="_blank">{{$Ordem_servico->idordem_servico}}</a></b></td>
                                     <td>{{$Ordem_servico->created_at}}</td>
-                                    <td>{{$Ordem_servico->colaborador->nome}} - {{$Ordem_servico->colaborador->rg}}</td>
+                                    <td>
+                                        <b><a href="{{route('colaboradores.show', $Ordem_servico->colaborador->idcolaborador)}}"
+                                              target="_blank">{{$Ordem_servico->colaborador->nome.' - '.$Ordem_servico->colaborador->rg}}
+                                        </b></td>
                                     <td>
                                         <span class="red">{{$Aparelho_manutencao->defeito}}</span> /
                                         <span class="green">{{$Aparelho_manutencao->solucao}}</span>
