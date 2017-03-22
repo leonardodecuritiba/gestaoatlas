@@ -3,9 +3,6 @@
 {{--@include('admin.master.forms.search')--}}
 {{--<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />--}}
     <style>
-        .select2 {
-            width: 100%;
-        }
         .preco {
             font-size: 13px;
             font-weight: 400;

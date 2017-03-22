@@ -156,7 +156,6 @@
         autoUpdateInput: false
     };
     $(document).ready(function () {
-
         $('.data-every').daterangepicker(dateOptionsEvery);
         $('.data-to-now').daterangepicker(dateOptionsToNow);
         $('.data-from-now').daterangepicker(dateOptionsFromNow);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\AparelhoManutencao;
+use App\OrdemServico;
+use App\Tecnico;
 use Illuminate\Http\Request;
 
 class RelatoriosController extends Controller
@@ -20,6 +22,7 @@ class RelatoriosController extends Controller
             'search_no_results' => "Nenhuma Relatório encontrado!",
             'titulo_primario' => "",
             'titulo_secundario' => "",
+            'extras' => [],
         ];
         $this->middleware('auth');
     }
@@ -31,11 +34,18 @@ class RelatoriosController extends Controller
      */
     public function ipem(Request $request)
     {
+//        return $request->all();
 //        $DATA = '2017-02-01 00:00:00';//'2017-01-01 00:00:00' (1º dia do mês anterior)
-        $Buscas = AparelhoManutencao::whereNotNull('idinstrumento')->get();
+        $Buscas = AparelhoManutencao::whereNotNull('idinstrumento');
+        if ($request->has('idtecnico')) {
+            $OS = OrdemServico::filterByIdTecnicoDate($request->all());
+            $Buscas->whereIn('idordem_servico', $OS->pluck('idordem_servico'));
+        }
 
+        $this->Page->Targets = 'Instrumentos';
+        $this->Page->extras['tecnicos'] = Tecnico::all();
         return view('pages.relatorios.ipem')
-            ->with('Buscas', $Buscas)
+            ->with('Buscas', $Buscas->get())
             ->with('Page', $this->Page);
     }
 }

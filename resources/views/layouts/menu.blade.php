@@ -149,9 +149,9 @@
                     </li>
                     <li><a><i class="fa fa-line-chart"></i> Relatórios<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            @role('admin')
-                            <li><a href="{{ route('relatorios.ipem') }}"> IPEM</a></li>
-                            @endrole
+                            @if(Auth::user()->hasRole(['admin','financeiro']))
+                                <li><a href="{{ route('relatorios.ipem') }}"> IPEM</a></li>
+                            @endif
                             <li><a href="#">Meu relatório</a></li>
                         </ul>
                     </li>

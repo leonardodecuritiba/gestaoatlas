@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use Carbon\Carbon;
+use Jenssegers\Date\Date;
 use Illuminate\Http\Request;
 
 class DataHelper
@@ -19,17 +20,33 @@ class DataHelper
 
     static public function getPrettyDateTime($value)
     {
-        return ($value!=NULL)?Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('H:i - d/m/Y'):$value;
+        return ($value != NULL) ? Date::createFromFormat('Y-m-d H:i:s', $value)->format('H:i - d/m/Y') : $value;
+    }
+
+    static public function getPrettyDateTimeToMonth($value)
+    {
+        Date::setLocale('pt_BR');
+        return ($value != NULL) ? Date::createFromFormat('Y-m-d H:i:s', $value)->format('F/Y') : $value;
     }
 
     static public function getPrettyDate($value)
     {
-        return ($value!=NULL)?Carbon::createFromFormat('Y-m-d', $value)->format('d/m/Y'):$value;
+        return ($value != NULL) ? Date::createFromFormat('Y-m-d', $value)->format('d/m/Y') : $value;
+    }
+
+    static public function getPrettyToCorrectDate($value)
+    {
+        return ($value != NULL) ? Date::createFromFormat('d/m/Y', $value)->format('Y-m-d') : $value;
+    }
+
+    static public function getPrettyToCorrectDateTime($value)
+    {
+        return ($value != NULL) ? Date::createFromFormat('d/m/Y', $value)->format('Y-m-d H:i:s') : $value;
     }
 
     static public function setDate($value)
     {
-        return (($value != NULL) && ($value != '')) ? Carbon::createFromFormat('d/m/Y', $value)->format('Y-m-d') : NULL;
+        return (($value != NULL) && ($value != '')) ? Date::createFromFormat('d/m/Y', $value)->format('Y-m-d') : NULL;
     }
 
     static public function getOnlyNumbers($value)
@@ -99,8 +116,8 @@ class DataHelper
         $margem_minimos = $dados['margem_minimo'];
 
         foreach ($Tabelas_preco as $tabela_preco) {
-            $margem = DataHelper::getReal2Float($margens[$tabela_preco->idtabela_preco]);
-            $margem_minimo = DataHelper::getReal2Float($margem_minimos[$tabela_preco->idtabela_preco]);
+            $margem = self::getReal2Float($margens[$tabela_preco->idtabela_preco]);
+            $margem_minimo = self::getReal2Float($margem_minimos[$tabela_preco->idtabela_preco]);
 
             $dataUpd = [
                 'preco' => $valor + ($valor * $margem) / 100,

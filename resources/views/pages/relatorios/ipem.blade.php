@@ -1,13 +1,60 @@
 @extends('layouts.template')
 @section('style_content')
     @include('helpers.datatables.head')
+    <!-- Select2 -->
+    @include('helpers.select2.head')
 @endsection
 @section('page_content')
     <!-- Seach form -->
+    <section class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Filtro Selos IPEM</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    {!! Form::open(array('route'=>$Page->link.'.ipem','method'=>'GET','class'=>'form-horizontal form-label-left')) !!}
+                    <div class="form-group">
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">Data: <span
+                                    class="required">*</span></label>
+                        <div class="col-md-3 col-sm-5 col-xs-12">
+                            <input name="data_inicial" type="text" maxlength="50" class="form-control data-to-now"
+                                   placeholder="Data Inicial"
+                                   value="{{Request::get('data_inicial')}}">
+                        </div>
+                        <div class="col-md-3 col-sm-5 col-xs-12">
+                            <input name="data_final" type="text" maxlength="50" class="form-control data-to-now"
+                                   placeholder="Data Final"
+                                   value="{{Request::get('data_final')}}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">Técnico: <span
+                                    class="required">*</span></label>
+                        <div class="col-md-4 col-sm-8 col-xs-12">
+                            <select class="select2_single form-control" name="idtecnico" tabindex="-1">
+                                <option value="0">Todos</option>
+                                @foreach($Page->extras['tecnicos'] as $tecnico)
+                                    <option value="{{$tecnico->idtecnico}}"
+                                            @if(Request::get('idtecnico') == $tecnico->idtecnico) selected @endif
+                                    >{{$tecnico->colaborador->nome}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <button class="btn btn-info btn-block" type="submit">Buscar</button>
+                        </div>
+                    </div>
+                    {!! Form::close() !!}
+                </div>
+            </div>
+        </div>
+    </section>
     @if(count($Buscas) > 0)
         <div class="x_panel">
             <div class="x_title">
-                <h2>{{$Page->Targets}} encontrados</h2>
+                <h2><b>{{$Buscas->count()}}</b> {{$Page->Targets}} encontrados</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
@@ -83,5 +130,15 @@
         });
     </script>
     <!-- /Datatables -->
+    <!-- Select2 -->
+    @include('helpers.select2.foot')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+    </script>
+    <!-- /Select2 -->
 @endsection
 
