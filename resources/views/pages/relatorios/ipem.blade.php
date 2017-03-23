@@ -55,6 +55,16 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2><b>{{$Buscas->count()}}</b> {{$Page->Targets}} encontrados</h2>
+                <ul class="nav navbar-right panel_toolbox">
+                    <li>
+                        <form action="{{route('relatorios.ipem.print')}}" target="_blank">
+                            <input type="hidden" name="idtecnico" value="{{Request::get('idtecnico')}}">
+                            <input type="hidden" name="data_inicial" value="{{Request::get('data_inicial')}}">
+                            <input type="hidden" name="data_final" value="{{Request::get('data_final')}}">
+                            <button class="btn btn-success"><i class="fa fa-print fa-2"></i> Exportar</button>
+                        </form>
+                    </li>
+                </ul>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">

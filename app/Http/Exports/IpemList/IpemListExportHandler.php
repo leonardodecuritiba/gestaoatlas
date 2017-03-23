@@ -1,63 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Exports\IpemList;
 
 use App\AparelhoManutencao;
-use App\Http\Exports\IpemList\IpemListExport;
-use App\Tecnico;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use niklasravnsborg\LaravelPdf\Facades\Pdf as PDF;
+use \Maatwebsite\Excel\Files\ExportHandler;
 
-class RelatoriosController extends Controller
+class IpemListExportHandler implements ExportHandler
 {
 
-    private $Page;
 
-    public function __construct()
-    {
-        $this->Page = (object)[
-            'link' => "relatorios",
-            'Target' => "Relatório",
-            'Targets' => "Relatórios",
-            'Titulo' => "Relatórios",
-            'search_no_results' => "Nenhuma Relatório encontrado!",
-            'titulo_primario' => "",
-            'titulo_secundario' => "",
-            'extras' => [],
-        ];
-        $this->middleware('auth');
-    }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @param  Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function ipem(Request $request)
-    {
-        $Buscas = AparelhoManutencao::getRelatorioIpem($request);
-        $this->Page->Targets = 'Instrumentos';
-        $this->Page->extras['tecnicos'] = Tecnico::all();
-        return view('pages.relatorios.ipem')
-            ->with('Buscas', $Buscas)
-            ->with('Page', $this->Page);
-    }
-
-    /**
-     * Imprime relatório Ipem.
-     *
-     * @param  Request $request
-     * @param  IpemListExport $export
-     * @return \Illuminate\Http\Response
-     */
-    public function ipemPrint(Request $request, IpemListExport $export)
+    public function handle($export, AparelhoManutencao $Buscas)
     {
         // work on the export
-        $Buscas = AparelhoManutencao::getRelatorioIpem($request);
-        $export->setFilename('teste');
         return $export->sheet('sheetName', function ($sheet) use ($export, $Buscas) {
+
             $sheet->setOrientation('landscape');
             $cabecalho = [
                 'Razão Social',

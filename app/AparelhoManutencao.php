@@ -21,6 +21,15 @@ class AparelhoManutencao extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
+    static public function getRelatorioIpem($data)
+    {
+        $query = self::whereNotNull('idinstrumento');
+        if (isset($data['idtecnico'])) {
+            $OS = OrdemServico::filterByIdTecnicoDate($data);
+            $query->whereIn('idordem_servico', $OS->pluck('idordem_servico'));
+        }
+        return $query->get();
+    }
     static public function check_instrumento_duplo($idordem_servico, $idinstrumento)
     {
         return parent::where('idordem_servico', $idordem_servico)

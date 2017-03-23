@@ -174,9 +174,10 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
-        Zizaco\Entrust\EntrustServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-//        Barryvdh\DomPDF\ServiceProvider::class,
+        Jenssegers\Date\DateServiceProvider::class,
+
+        niklasravnsborg\LaravelPdf\PdfServiceProvider::class
     ],
 
     /*
@@ -229,7 +230,8 @@ return [
         'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
         'SintegraSP' => SintegraPHP\SP\SintegraSP::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
-//        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'Date' => Jenssegers\Date\Date::class,
+        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class
 
     ],
 

@@ -119,28 +119,29 @@ class PrintHelper
                 ),
             ];
         }
+        $default_size = '13';
         $font = [
             'nome' => array(
                 'family' => 'Bookman Old Style',
                 'size' => '16',
             ),
             'descricao' => array(
-                'size' => '12',
+                'size' => $default_size,
                 'bold' => true
             ),
             'endereco' => array(
-                'size' => '12',
+                'size' => $default_size,
             ),
             'quebra' => array(
-                'size' => '12',
+                'size' => $default_size,
                 'bold' => true
             ),
             'negrito' => array(
-                'size' => '12',
+                'size' => $default_size,
                 'bold' => true
             ),
             'normal' => array(
-                'size' => '12',
+                'size' => $default_size,
             )
         ];
 
@@ -263,27 +264,52 @@ class PrintHelper
                 $sheet->row($this->linha_xls, ['TOTAL  DA ORDEM SERVIÇO', '', '', '', $Fechamento->valor_final]);
                 $this->linha_xls += 2;
 
-                $sheet->mergeCells('B' . $this->linha_xls . ':G' . $this->linha_xls);
-                $sheet->row($this->linha_xls, $this->data['aviso_txt'][0]);
+
+                $sheet = self::setCabecalhoCinza($sheet, [
+                    'line' => $this->linha_xls,
+                    'info' => ['Termos'],
+                ]);
+                $sheet->mergeCells('A' . $this->linha_xls . ':G' . $this->linha_xls);
+                $sheet->row($this->linha_xls, [$this->data['aviso_txt'][0][0]]);
+                $this->linha_xls++;
+                $sheet->mergeCells('A' . $this->linha_xls . ':G' . $this->linha_xls);
+                $sheet->row($this->linha_xls, [$this->data['aviso_txt'][0][1]]);
                 $this->linha_xls++;
 
-                $sheet->mergeCells('B' . $this->linha_xls . ':G' . ($this->linha_xls));
-                $sheet->row($this->linha_xls, [$this->data['aviso_txt'][1][0], $this->data['aviso_txt'][1][1]]);
+                $sheet->mergeCells('A' . $this->linha_xls . ':G' . ($this->linha_xls));
+                $sheet->row($this->linha_xls, [$this->data['aviso_txt'][1][0]]);
                 $this->linha_xls++;
-
-                $sheet->mergeCells('B' . $this->linha_xls . ':G' . ($this->linha_xls));
-                $sheet->row($this->linha_xls, ['', $this->data['aviso_txt'][1][2]]);
+                $sheet->mergeCells('A' . $this->linha_xls . ':G' . ($this->linha_xls));
+                $sheet->row($this->linha_xls, [$this->data['aviso_txt'][1][1]]);
+                $this->linha_xls++;
+                $sheet->mergeCells('A' . $this->linha_xls . ':G' . ($this->linha_xls));
+                $sheet->row($this->linha_xls, [$this->data['aviso_txt'][1][2]]);
                 $this->linha_xls += 2;
 
+
+                $sheet = self::setCabecalhoCinza($sheet, [
+                    'line' => $this->linha_xls,
+                    'info' => ['TÉCNICO'],
+                ]);
                 $sheet->row($this->linha_xls, [
-                    'TÉCNICO:', $this->OrdemServico->colaborador->nome,
-                    'CPF:', $this->OrdemServico->colaborador->cpf,
-                    'ASS. TÉCNICO:', '________________________________________']);
-                $this->linha_xls++;
+                    'Nome:', $this->OrdemServico->colaborador->nome,
+                    'CPF:', $this->OrdemServico->colaborador->cpf]);
+                $this->linha_xls += 2;
+                $sheet->mergeCells('B' . $this->linha_xls . ':G' . ($this->linha_xls));
+                $sheet->row($this->linha_xls, ['ASSINATURA :', '________________________________________________________________________________']);
+                $this->linha_xls += 2;
+
+                $sheet = self::setCabecalhoCinza($sheet, [
+                    'line' => $this->linha_xls,
+                    'info' => ['RESPONSÁVEL DO ESTABELECIMENTO'],
+                ]);
                 $sheet->row($this->linha_xls, [
-                    'RESPONSÁVEL ESTABELECIMENTO:', $this->OrdemServico->responsavel,
-                    'CPF:', $this->OrdemServico->responsavel_cpf,
-                    'ASS. RESPONSÁVEL:', '________________________________________']);
+                    'Nome:', $this->OrdemServico->responsavel,
+                    'CPF:', $this->OrdemServico->responsavel_cpf]);
+                $this->linha_xls += 2;
+                $sheet->mergeCells('B' . $this->linha_xls . ':G' . ($this->linha_xls));
+                $sheet->row($this->linha_xls, ['ASSINATURA :', '________________________________________________________________________________']);
+                $this->linha_xls += 2;
 
                 if (isset($this->data['aviso_txt'][2])) {
                     $this->linha_xls++;
