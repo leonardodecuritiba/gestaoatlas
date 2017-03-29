@@ -15,8 +15,6 @@ class NovoFechamentoTableSeeder extends Seeder
     public function run()
     {
         $start = microtime(true);
-
-        exit;
         $FechamentoController = new FechamentoController();
         echo "*** Iniciando os Fechamento ***";
         Carbon::setTestNow('2017-02-01 00:00:00');                        // set the mock (of course this could be a real mock object)

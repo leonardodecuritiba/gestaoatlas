@@ -2,58 +2,68 @@
 
 namespace App\Helpers;
 
+use App\Models\Parcela;
 use App\OrdemServico;
 use Carbon\Carbon;
-use Eduardokum\LaravelBoleto\Boleto\Banco\Santander;
-use Eduardokum\LaravelBoleto\Boleto\Render\Html;
-use Eduardokum\LaravelBoleto\Boleto\Render\Pdf;
-use Eduardokum\LaravelBoleto\Pessoa;
+use \Eduardokum\LaravelBoleto\Boleto\Banco\Santander;
+use \Eduardokum\LaravelBoleto\Boleto\Render\Html;
+use \Eduardokum\LaravelBoleto\Boleto\Render\Pdf;
+use \Eduardokum\LaravelBoleto\Pessoa;
 
 class BoletoHelper
 {
+    private $_LOGO_PATH_;
     private $boleto;
-    private $ordemServico;
+    private $beneficiario;
+    private $pagador;
 
-    function __construct(OrdemServico $ordemServico)
+    function __construct()
     {
-        $this->ordemServico = $ordemServico;
-        $this->set_boleto();
+        $this->_LOGO_PATH_ = public_path('uploads' . DIRECTORY_SEPARATOR . 'institucional' . DIRECTORY_SEPARATOR . 'logo_atlas_min.png');
+        $this->set_beneficiario();
     }
 
-    public function set_boleto()
+    public function set_beneficiario()
     {
-        $logo = asset('uploads/instuticional/logo_atlas.png'); // Logo da empresa
-        $beneficiario = new Pessoa(
+        $this->beneficiario = new Pessoa(
             [
-                'nome' => 'ACME',
-                'endereco' => 'Rua um, 123',
-                'cep' => '99999-999',
-                'uf' => 'UF',
-                'cidade' => 'CIDADE',
-                'documento' => '99.999.999/9999-99',
+                'nome' => 'MACEDO AUTOMACAO COMERCIAL LTDA ME',
+                'endereco' => 'R TRIUNFO, 400 - SANTA CRUZ DO JOSE JACQUES',
+                'cep' => '14020-670',
+                'uf' => 'SP',
+                'cidade' => 'RIBEIRAO PRETO',
+                'documento' => '10.555.180/0001-21',
+
             ]
         );
-        $pagador = new Pessoa(
-            [
-                'nome' => 'Cliente',
-                'endereco' => 'Rua um, 123',
-                'bairro' => 'Bairro',
-                'cep' => '99999-999',
-                'uf' => 'UF',
-                'cidade' => 'CIDADE',
-                'documento' => '999.999.999-99',
-            ]
-        );
+    }
+
+    public function setBoletoParcela(Parcela $Parcela)
+    {
+        $Cliente = $Parcela->cliente;
+        $DadosCliente = $Cliente->getType();
+        $Contato = $Cliente->contato;
+
+        $this->set_pagador([
+            'nome' => $DadosCliente->nome_principal,
+            'endereco' => $Contato->getRua(),
+            'bairro' => $Contato->bairro,
+            'cep' => $Contato->cep,
+            'uf' => $Contato->estado,
+            'cidade' => $Contato->cidade,
+            'documento' => $DadosCliente->entidade,
+        ]);
+
         $boletoArray = [
-            'logo' => public_path('uploads\institucional\logo_atlas_min.png'),
-            'dataVencimento' => new Carbon(),
-            'valor' => 100,
+            'logo' => $this->_LOGO_PATH_,
+            'dataVencimento' => $Parcela->getDataVencimentoBoleto(),
+            'valor' => $Parcela->valor_parcela,
             'multa' => false,
             'juros' => false,
             'numero' => 1,
             'numeroDocumento' => 1,
-            'pagador' => $pagador,
-            'beneficiario' => $beneficiario,
+            'pagador' => $this->pagador,
+            'beneficiario' => $this->beneficiario,
             'carteira' => 101,
             'agencia' => 1111,
             'conta' => 99999999,
@@ -65,7 +75,36 @@ class BoletoHelper
         $this->boleto = new Santander($boletoArray);
     }
 
-    public function gerar_PDF()
+    public function set_pagador($pagador)
+    {
+        $this->pagador = new Pessoa($pagador);
+    }
+
+    public function set_boleto()
+    {
+        $logo = asset('uploads/instuticional/logo_atlas.png'); // Logo da empresa
+        $boletoArray = [
+            'logo' => public_path('uploads\institucional\logo_atlas_min.png'),
+            'dataVencimento' => new Carbon(),
+            'valor' => 100,
+            'multa' => false,
+            'juros' => false,
+            'numero' => 1,
+            'numeroDocumento' => 1,
+            'pagador' => $this->pagador,
+            'beneficiario' => $this->beneficiario,
+            'carteira' => 101,
+            'agencia' => 1111,
+            'conta' => 99999999,
+            'descricaoDemonstrativo' => ['demonstrativo 1', 'demonstrativo 2', 'demonstrativo 3'],
+            'instrucoes' => ['instrucao 1', 'instrucao 2', 'instrucao 3'],
+            'aceite' => 'S',
+            'especieDoc' => 'DM',
+        ];
+        $this->boleto = new Santander($boletoArray);
+    }
+
+    public function gerarPDF()
     {
         $pdf = new Pdf();
         $pdf->addBoleto($this->boleto);
@@ -77,39 +116,24 @@ class BoletoHelper
 //        $pdf->gerarBoleto(Pdf::OUTPUT_DOWNLOAD); // força o download pelo navegador.
     }
 
-    public function gerar_HTML($print)
+    public function gerarHTML($print = true)
     {
         $html = new Html($this->boleto->toArray());
         $html->gerarBoleto();
-        return $html->gerarBoleto(true); // mostra a janela de impressão
+        return $html->gerarBoleto($print); // mostra a janela de impressão
     }
 
     public function teste()
     {
 
         $pdf = new \Eduardokum\LaravelBoleto\Boleto\Render\Pdf();
-        $pdf->addBoleto($boleto);
-        $pdf->gerarBoleto($pdf::OUTPUT_SAVE,
-            __DIR__ . DIRECTORY_SEPARATOR . 'arquivos' . DIRECTORY_SEPARATOR . 'santander.pdf');
+        $pdf->addBoleto($this->boleto);
+//        $filename = public_path('uploads' . DIRECTORY_SEPARATOR . 'boletos' . DIRECTORY_SEPARATOR . 'santander.pdf');
+//        $filename = __DIR__ . DIRECTORY_SEPARATOR . 'arquivos' . DIRECTORY_SEPARATOR . 'santander.pdf');
+//        $pdf->gerarBoleto($pdf::OUTPUT_SAVE,$filename);
 
-        return;
-        $beneficiario = new \Eduardokum\LaravelBoleto\Pessoa([
-            'nome' => 'MACEDO AUTOMACAO COMERCIAL LTDA ME',
-            'endereco' => 'R TRIUNFO, 400 - SANTA CRUZ DO JOSE JACQUES',
-            'cep' => '14020-670',
-            'uf' => 'SP',
-            'cidade' => 'RIBEIRAO PRETO',
-            'documento' => '10.555.180/0001-21',
+        return $pdf->gerarBoleto();
 
-        ]);
-        $pagador = new \Eduardokum\LaravelBoleto\Pessoa([
-            'nome' => 'MACEDO AUTOMACAO COMERCIAL LTDA ME',
-            'endereco' => 'R TRIUNFO, 400 - SANTA CRUZ DO JOSE JACQUES',
-            'cep' => '14020-670',
-            'uf' => 'SP',
-            'cidade' => 'RIBEIRAO PRETO',
-            'documento' => '10.555.180/0001-21',
-        ]);
 
         $boletoArray = [
             'logo' => asset('uploads/instuticional/logo_atlas.png'), // Logo da empresa
@@ -139,10 +163,12 @@ class BoletoHelper
             'instrucoes' => ['inst1', 'inst2'], // máximo de 5
         ];
 
+        exit;
         $boleto = new \Eduardokum\LaravelBoleto\Boleto\Banco\Santander($boletoArray);
 //        $boleto->renderPDF();
 //        $boleto->renderHTML();
 //
         $boleto->renderPDF(true); // imostra a janela de impressão
+        return;
     }
 }

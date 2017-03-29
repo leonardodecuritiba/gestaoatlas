@@ -248,6 +248,9 @@ class Cliente extends Model
         return DataHelper::getFloat2Real($value);
     }
 
+    // ******************** RELASHIONSHIP ******************************
+    // ************************** HAS **********************************
+
     public function setOutrosCustosAttribute($value)
     {
         $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
@@ -257,9 +260,6 @@ class Cliente extends Model
     {
         return DataHelper::getFloat2Real($value);
     }
-
-    // ******************** RELASHIONSHIP ******************************
-    // ************************** HAS **********************************
 
     public function has_instrumento()
     {

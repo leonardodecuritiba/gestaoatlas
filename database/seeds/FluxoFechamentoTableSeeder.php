@@ -30,7 +30,7 @@ class FluxoFechamentoTableSeeder extends Seeder
         $this->call(TipoEmissaoFaturamentoSeeder::class);
         $this->call(StatusFechamentoTableSeeder::class);
         $this->call(ClientePrazoPagamentoSeeder::class);
-//        $this->call(NovoFechamentoTableSeeder::class);
+        $this->call(NovoFechamentoTableSeeder::class);
         echo "\n*** Importacao realizada com sucesso em " . round((microtime(true) - $start), 3) . "s ***";
 
     }
