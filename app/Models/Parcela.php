@@ -25,9 +25,14 @@ class Parcela extends Model
     ];
 
 
-    public function getDataVencimentoBoleto()
+    static public function pagar($data)
     {
-        return Carbon::createFromFormat('Y-m-d', $this->attributes['data_vencimento']);
+        $Parcela = self::findOrFail($data['id']);
+        $Parcela->data_pagamento = $data['data_pagamento'];
+        $Parcela->data_baixa = Carbon::now()->format('Y-m-d');
+        $Parcela->status = 1;
+        $Parcela->save();
+        return $Parcela;
     }
 
     public function getNumeroParcela()
@@ -51,6 +56,11 @@ class Parcela extends Model
     }
 
     // ********************** Accessors ********************************
+
+    public function getDataVencimentoBoleto()
+    {
+        return Carbon::createFromFormat('Y-m-d', $this->attributes['data_vencimento']);
+    }
     public function getCreatedAtAttribute($value)
     {
         return DataHelper::getPrettyDateTime($value);
@@ -61,9 +71,19 @@ class Parcela extends Model
         return DataHelper::getPrettyDate($value);
     }
 
+    public function getDataBaixaAttribute($value)
+    {
+        return DataHelper::getPrettyDate($value);
+    }
+
     public function getDataPagamentoAttribute($value)
     {
         return DataHelper::getPrettyDate($value);
+    }
+
+    public function setDataPagamentoAttribute($value)
+    {
+        return $this->attributes['data_pagamento'] = DataHelper::setDate($value);
     }
 
     public function getDataBaixaAtribute($value)

@@ -61,8 +61,6 @@ class Fechamento extends Model
         }
     }
 
-    // ******************** RELASHIONSHIP ******************************
-
     public function getValores()
     {
 //        return $this->ordem_servicos[0]->aparelho_manutencaos[1]->servico_prestados->sum('valor');
@@ -95,6 +93,8 @@ class Fechamento extends Model
         return (object)$_valores;
     }
 
+    // ******************** RELASHIONSHIP ******************************
+
     static public function filter_status($status)
     {
         $query = self::orderBy('created_at', 'desc');
@@ -113,6 +113,12 @@ class Fechamento extends Model
         return $query;
     }
 
+    public function faturar()
+    {
+        $this->attributes['idstatus_fechamento'] = self::_STATUS_FATURADO_;
+        return $this->save();
+    }
+
     public function getTotalPagoReal()
     {
         return DataHelper::getFloat2RealMoeda($this->getTotalPago());
@@ -120,7 +126,17 @@ class Fechamento extends Model
 
     public function getTotalPago()
     {
-        return $this->pagamento->parcelas->where('status', 1)->sum('valor_parcela');
+        return $this->pagamento->getParcelasPagas()->sum('valor_parcela');
+    }
+
+    public function getTotalPendenteReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->getTotalPendente());
+    }
+
+    public function getTotalPendente()
+    {
+        return $this->pagamento->getParcelasPendentes()->sum('valor_parcela');
     }
 
     public function deleteAll()
@@ -142,7 +158,7 @@ class Fechamento extends Model
 
     public function getPagoText()
     {
-        return ($this->pagamento->status) ? 'Pagamento Efetuado' : 'Pagamento Pendente';
+        return ($this->pagamento->status) ? 'Quitado' : 'Pagamento Pendente';
     }
 
     public function getCreatedAtAttribute($value)

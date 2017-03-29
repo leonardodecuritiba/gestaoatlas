@@ -127,7 +127,7 @@ Route::group(['middleware' => ['auth']], function() {
     //FECHAMENTOS
     Route::resource('fechamentos', 'FechamentoController');
     Route::get('listar-fechamentos/{status}', 'FechamentoController@index')->name('fechamentos.index');
-    Route::get('parcela/pagar/{idparcela}', 'ParcelaController@pagar')->name('parcelas.pagar');
+    Route::post('parcela/pagar', 'ParcelaController@pagar')->name('parcelas.pagar');
     Route::get('parcela/boleto/{idparcela}', 'ParcelaController@gerarBoleto')->name('parcelas.boleto');
     Route::get('parcela/estornar/{idparcela}', 'ParcelaController@estornar')->name('parcelas.estornar');
 
