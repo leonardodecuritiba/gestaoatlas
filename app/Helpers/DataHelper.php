@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 class DataHelper
 {
     // ******************** FUNCTIONS ******************************
+    static public function getFloat2RealMoeda($value)
+    {
+        return 'R$ ' . number_format($value, 2, ',', '.');
+    }
+
     static public function getFloat2Real($value)
     {
         return number_format($value,2,',','.');

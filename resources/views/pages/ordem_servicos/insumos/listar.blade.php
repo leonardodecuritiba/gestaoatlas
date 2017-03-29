@@ -12,15 +12,16 @@
                         <thead>
                         <tr>
                             <th width="40%">Nome</th>
-                            <th width="20%">Preço</th>
-                            <th width="20%">Quantidade</th>
-                            <th width="20%">Total</th>
+                            <th width="15%">Preço</th>
+                            <th width="15%">Quantidade</th>
+                            <th width="15%">Desconto</th>
+                            <th width="15%">Total</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($AparelhoManutencao->servico_prestados as $servico_prestado)
                             <?php
-                            $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                             ?>
                             <tr>
                                 <td>
@@ -33,12 +34,15 @@
                                     {{$servico_prestado->quantidade}}
                                 </td>
                                 <td>
+                                    {{$servico_prestado->desconto_real()}}
+                                </td>
+                                <td>
                                     {{$servico_prestado->valor_total_real()}}
                                 </td>
                             </tr>
                         @endforeach
                         <tr>
-                            <td colspan="3">
+                            <td colspan="4">
                             </td>
                             <td>
                                 <p class="green">{{$AparelhoManutencao->getTotalServicosReal()}}</p>
@@ -71,15 +75,16 @@
                         <thead>
                         <tr>
                             <th width="40%">Nome</th>
-                            <th width="20%">Preço</th>
-                            <th width="20%">Quantidade</th>
-                            <th width="20%">Total</th>
+                            <th width="15%">Preço</th>
+                            <th width="15%">Quantidade</th>
+                            <th width="15%">Desconto</th>
+                            <th width="15%">Total</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($AparelhoManutencao->pecas_utilizadas as $peca_utilizada)
                             <?php
-                            $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                             ?>
                             <tr>
                                 <td>
@@ -92,12 +97,15 @@
                                     {{$peca_utilizada->quantidade}}
                                 </td>
                                 <td>
+                                    {{$peca_utilizada->desconto_real()}}
+                                </td>
+                                <td>
                                     {{$peca_utilizada->valor_total_real()}}
                                 </td>
                             </tr>
                         @endforeach
                         <tr>
-                            <td colspan="3">
+                            <td colspan="4">
                             </td>
                             <td>
                                 <p class="green">{{$AparelhoManutencao->getTotalPecasReal()}}</p>
@@ -129,15 +137,16 @@
                         <thead>
                         <tr>
                             <th width="40%">Nome</th>
-                            <th width="20%">Preço</th>
-                            <th width="20%">Quantidade</th>
-                            <th width="20%">Total</th>
+                            <th width="15%">Preço</th>
+                            <th width="15%">Quantidade</th>
+                            <th width="15%">Desconto</th>
+                            <th width="15%">Total</th>
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($AparelhoManutencao->kits_utilizados as $kit_utilizado)
                             <?php
-                            $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                             ?>
                             <tr>
                                 <td>
@@ -150,12 +159,15 @@
                                     {{$kit_utilizado->quantidade}}
                                 </td>
                                 <td>
+                                    {{$kit_utilizado->desconto_real()}}
+                                </td>
+                                <td>
                                     {{$kit_utilizado->valor_total_real()}}
                                 </td>
                             </tr>
                         @endforeach
                         <tr>
-                            <td colspan="3">
+                            <td colspan="4">
                             </td>
                             <td>
                                 <p class="green">{{$AparelhoManutencao->getTotalKitsReal()}}</p>

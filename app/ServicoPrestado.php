@@ -2,13 +2,13 @@
 
 namespace App;
 
-use App\Helpers\DataHelper;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\Valores;
 
 class ServicoPrestado extends Model
 {
 //    use SoftDeletes;
+    use Valores;
     public $timestamps = true;
     protected $table = 'servico_prestados';
     protected $primaryKey = 'idservico_prestado';
@@ -21,33 +21,9 @@ class ServicoPrestado extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
-    public function getValorAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
     public function valor_original()
     {
         return $this->servico->valor;
-    }
-
-    public function valor_float()
-    {
-        return $this->getValorFloatAttribute();
-    }
-
-    public function getValorFloatAttribute()
-    {
-        return $this->attributes['valor'];
-    }
-
-    public function valor_total_real()
-    {
-        return 'R$ ' . DataHelper::getFloat2Real($this->valor_total());
-    }
-
-    public function valor_total()
-    {
-        return $this->attributes['valor'] * $this->attributes['quantidade'];
     }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************

@@ -201,16 +201,20 @@
                     data.text = $($selected).html();
                     data.preco = $($selected).data('preco');
                     data.quantidade = $($parent).find('input#quantidade').val();
+                    data.desconto = $($parent).find('input#desconto').val();
+                    data.desconto_float = $($parent).find('input#desconto').maskMoney('unmasked')[0];
                     data.valor = $($selected).data('preco-float');
                     data.total = $($parent).find('input#total').val();
                     x++;
                     var campo = '<tr>' +
+                        '<input name="' + id_select + '_desconto[' + (x) + ']" type="hidden" value="' + data.desconto_float + '" required>' +
                         '<input name="' + id_select + '_quantidade[' + (x) + ']" type="hidden" value="' + data.quantidade + '" required>' +
                         '<input name="' + id_select + '_valor[' + (x) + ']" type="hidden" value="' + data.valor + '" required>' +
                         '<input name="' + id_select + '_id[' + (x) + ']" type="hidden" value="' + data.id + '" required>' +
                         '<td>' + data.text + '</td>' +
                         '<td>R$ ' + data.preco + '</td>' +
                         '<td>' + data.quantidade + ' </td>' +
+                        '<td>R$ ' + data.desconto + ' </td>' +
                         '<td>' + data.total + ' </td>' +
                         '<td>' +
                         '<a class="btn btn-danger" onclick="removeEl(this)" title="Excluir">' +
@@ -226,12 +230,14 @@
             $(".select2_single").on("select2:select", function() {
                 //achar parent, pegar próximo td e escrever o valor
                 var $sel = $(this).find(":selected");
-                var $td = $(this).parents('td');
-                var $field_preco = $($td).next().find("input");
-                var $td_quantidade = $($td).next().next();
-                var $field_total = $($td_quantidade).next().find("input");
+                var $tr = $(this).parents('tr');
+                var $field_preco = $($tr).find("input#valor");
+                var $field_quantidade = $($tr).find("input#quantidade");
+                var $field_total = $($tr).find("input#total");
+                var $field_desconto = $($tr).find("input#desconto");
 
-                $($td_quantidade).find('input#quantidade').val(1);
+                $($field_quantidade).val(1);
+                $($field_desconto).val(0.00);
                 var preco = '';
                 if($($sel).val()!=''){
                     preco = $sel.data('preco');
@@ -242,14 +248,22 @@
             });
             $(".calc-total").on("change", function () {
                 //achar parent, pegar próximo td e escrever o valor
-                var $td = $(this).parents('td');
-                var $sel = $($td).prevAll().find(":selected");
-                var quantidade = $(this).val();
-                var $field_total = $($td).next().find("input");
+
+
+                var $sel = $(this).parents('td').prevAll().find(":selected");
+                var $tr = $(this).parents('tr');
+                var $field_preco = $($tr).find("input#valor");
+                var $field_quantidade = $($tr).find("input#quantidade");
+                var $field_total = $($tr).find("input#total");
+                var $field_desconto = $($tr).find("input#desconto");
+
+                var quantidade = $($field_quantidade).val();
+                var desconto = $($field_desconto).maskMoney('unmasked')[0];
                 var preco = '';
                 if ($($sel).val() != '') {
                     preco = $sel.data('preco-float');
                     preco = preco * quantidade;
+                    preco = preco - desconto;
                 }
                 $($field_total).maskMoney('mask', preco);
 //                $($field_total ).maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: true});

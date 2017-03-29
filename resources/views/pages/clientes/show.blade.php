@@ -86,13 +86,13 @@
         $(document).ready(function() {
             $("input[name=centro_custo]").on('ifChecked', function(event){
                 $('select[name=idcliente_centro_custo]').parent('div').toggle();
-                $('input[name=limite_credito]').parent('div').toggle();
+                $('input[name=limite_credito_tecnica]').parent('div').toggle();
                 if(this.value){
                     $('select[name=idcliente_centro_custo]').attr('required', true);
-                    $('input[name=limite_credito]').attr('required', false);
+                    $('input[name=limite_credito_tecnica]').attr('required', false);
                 } else {
                     $('select[name=idcliente_centro_custo]').attr('required', false);
-                    $('input[name=limite_credito]').attr('required', true);
+                    $('input[name=limite_credito_tecnica]').attr('required', true);
                 }
             });
         });
@@ -193,6 +193,57 @@
                 }, "json");
 
             });
+        });
+
+        //AJUSTA PARCELAS
+
+            <?php $n_parcelas = count($Cliente->prazo_pagamento_tecnica->extras) - 1; ?>
+        var N_PARCELA = '{{$n_parcelas}}';
+        function addParcela($this) {
+            N_PARCELA++;
+            $parent = $($this).parents('div.form-group').next();
+            var html = '<div class="form-group">' +
+                '<label class="control-label col-md-2 col-sm-2 col-xs-12">' + (N_PARCELA + 1) + 'ª Parcela</label>' +
+                '<div class="col-md-4 col-sm-4 col-xs-12">' +
+                '<input type="text" class="form-control show-parcelas" name="parcela_tecnica[' + N_PARCELA + ']">' +
+                '</div>' +
+                '</div>';
+            $($parent).append(html);
+            initMaskMoneyParcelas($($parent).find('input[name="parcela_tecnica[' + N_PARCELA + ']"]'));
+        }
+        function remParcela($this) {
+            $parent = $($this).parents('div.form-group').next();
+            if ($($parent).find('div.form-group').length > 1) {
+                N_PARCELA--;
+                $($parent).children().last().remove();
+            }
+        }
+
+        $(document).ready(function () {
+            $("select[name=prazo_pagamento_tecnica]").change(function () {
+                $parent = $(this).parents('div.form-group');
+                if ($(this).val() == "0") {
+                    $($parent).find('div.parcelas').hide();
+                    $($parent).next().hide();
+                } else {
+                    $($parent).find('div.parcelas').show();
+                    $($parent).next().show();
+                }
+            });
+        });
+
+        $("div#parcelasModal").on("show.bs.modal", function () {
+            $parent = $(this).find('div.modal-body');
+            var html = '<div class="form-horizontal form-label-left">' +
+                '<div class="form-group">' +
+                '<label class="control-label col-md-2 col-sm-2 col-xs-12">1ª</label>' +
+                '<div class="col-md-10 col-sm-10 col-xs-12">' +
+                '<input type="text" class="form-control show-parcelas" name="parcela[1]">' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            $($parent).html(html);
+
         });
     </script>
 

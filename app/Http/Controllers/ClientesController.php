@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\FormaPagamento;
 use App\Marca;
+use App\Models\PrazoPagamento;
+use App\Models\TipoEmissaoFaturamento;
 use App\Regiao;
 use App\Segmento;
 use App\TabelaPreco;
@@ -17,6 +19,7 @@ use App\PessoaJuridica;
 use App\PessoaFisica;
 use App\Contato;
 use Illuminate\Http\Request;
+use App\Http\Requests\ClientesRequest;
 
 use App\Http\Requests;
 
@@ -24,13 +27,6 @@ class ClientesController extends Controller
 {
     private $Page;
     private $colaborador;
-
-    private $Validation = [
-        'pessoa_juridica' => array(
-            'razao_social'              => 'required',
-            'nome_fantasia'             => 'required',
-        )
-    ];
 
     public function __construct()
     {
@@ -71,6 +67,7 @@ class ClientesController extends Controller
             'regioes'           => Regiao::all(),
             'tabela_precos'     => TabelaPreco::all(),
             'formas_pagamentos' => FormaPagamento::all(),
+            'tipos_emissao_faturamento' => TipoEmissaoFaturamento::all(),
         ];
         return view('pages.'.$this->Page->link.'.master')
             ->with('Page', $this->Page);
@@ -87,6 +84,7 @@ class ClientesController extends Controller
             'tabela_precos' => TabelaPreco::all(),
             'marcas'        => Marca::all(),
             'formas_pagamentos' => FormaPagamento::all(),
+            'tipos_emissao_faturamento' => TipoEmissaoFaturamento::all(),
         ];
         $Cliente = Cliente::find($id);
         return view('pages.'.$this->Page->link.'.show')
@@ -94,187 +92,103 @@ class ClientesController extends Controller
             ->with('Page', $this->Page);
     }
 
-    public function store(Request $request)
+    public function store(ClientesRequest $request)
     {
-        //cliente
-        $validacao = [
-            'centro_custo'      => 'required',
-            'idforma_pagamento' => 'required',
-            'email_orcamento'   => 'required',
-//            'email_nota'        => 'required',
-            'idsegmento'        => 'required',
-            'idtabela_preco'    => 'required',
-            'idregiao'          => 'required',
-            'distancia'         => 'required',
-            'pedagios'          => 'required',
-        ];
-        if($request->get('centro_custo')=='0'){
-            $validacao = array_merge($validacao,[
-                'limite_credito'    => 'required'
-            ]);
+        return $request->all();
+        $data['idcolaborador_criador'] = $this->colaborador->idcolaborador;
+        if ($this->colaborador->hasRole('admin')) {
+            $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
+            $data['validated_at'] = Carbon::now()->toDateTimeString();
         }
-
-        $data = $request->all();
-        if($request->get('tipo_cliente')=="0"){
-            //pessoa física
-            $validacao = array_merge($validacao,[
-                    'cpf' => 'unique:pfisicas',
-                ]);
-        } else {
-
-            //pessoa juridica, teste da isenção IE
-            if($request->has('isencao_ie')){
-                $data['isencao_ie'] = 1;
-                $validacao = array_merge($validacao,[
-                    'cnpj'  => 'unique:pjuridicas',
-                ]);
-            } else {
-                $validacao = array_merge($validacao,[
-                    'cnpj'  => 'unique:pjuridicas',
-                    'ie'    => 'unique:pjuridicas',
-                ]);
-            }
-
-            $validacao = array_merge($validacao,$this->Validation['pessoa_juridica']);
-
-        }
-        $validator = Validator::make($request->all(), $validacao);
-
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-//                ->withInput();
-        } else {
-
-            $data['idcolaborador_criador'] = $this->colaborador->idcolaborador;
-            if ($this->colaborador->hasRole('admin')) {
-                $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
-                $data['validated_at'] = Carbon::now()->toDateTimeString();
-            }
-            //store CONTATO
-            $Contato = Contato::create($data);
-            $data['idcontato'] = $Contato->idcontato;
+        //store CONTATO
+        $Contato = Contato::create($data);
+        $data['idcontato'] = $Contato->idcontato;
 
 //            return $data;
-            if($data['tipo_cliente']=="0"){
-                //store física
-                $TipoCliente = PessoaFisica::create($data);
-                $data['idpfisica'] = $TipoCliente->idpfisica;
-            } else {
-                //store juridica
-                $TipoCliente = PessoaJuridica::create($data);
-                $data['idpjuridica'] = $TipoCliente->idpjuridica;
-            }
-            if($request->hasfile('foto')){
-                $img = new ImageController();
-                $data['foto'] = $img->store($request->file('foto'), $this->Page->link);
-            } else {
-                $data['foto'] = NULL;
-            }
-
-            //store Cliente
-            if($data['centro_custo']!='0'){
-                $data['idcliente_centro_custo'] = ($data['idcliente_centro_custo']=='')?NULL:$data['idcliente_centro_custo'];
-                $data['limite_credito']=NULL;
-            } else {
-                $data['idcliente_centro_custo']=NULL;
-            }
-
-
-            $Cliente = Cliente::create($data);
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
-            return Redirect::route('clientes.show', $Cliente->idcliente);
+        if ($data['tipo_cliente'] == "0") {
+            //store física
+            $TipoCliente = PessoaFisica::create($data);
+            $data['idpfisica'] = $TipoCliente->idpfisica;
+        } else {
+            //store juridica
+            $TipoCliente = PessoaJuridica::create($data);
+            $data['idpjuridica'] = $TipoCliente->idpjuridica;
         }
+        if ($request->hasfile('foto')) {
+            $img = new ImageController();
+            $data['foto'] = $img->store($request->file('foto'), $this->Page->link);
+        } else {
+            $data['foto'] = NULL;
+        }
+
+        //store Cliente
+        if ($data['centro_custo'] != '0') {
+            $data['idcliente_centro_custo'] = ($data['idcliente_centro_custo'] == '') ? NULL : $data['idcliente_centro_custo'];
+            $data['limite_credito_tecnica'] = NULL;
+        } else {
+            $data['idcliente_centro_custo'] = NULL;
+        }
+
+        foreach (['tecnica', 'comercial'] as $tipo) {
+            $prazo_pagamento['id'] = $data['prazo_pagamento_' . $tipo];
+            switch ($data['prazo_pagamento_' . $tipo]) {
+                case PrazoPagamento::_STATUS_A_VISTA_:
+                    $prazo_pagamento['extras'] = '';
+                    break;
+                case PrazoPagamento::_STATUS_PARCELADO_:
+                    $prazo_pagamento['extras'] = $data['parcela_' . $tipo];
+                    break;
+            }
+            $data['prazo_pagamento_' . $tipo] = json_encode($prazo_pagamento);
+        }
+
+        $Cliente = Cliente::create($data);
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->Target . ' adicionado com sucesso!']);
+        return Redirect::route('clientes.show', $Cliente->idcliente);
+
     }
 
-    public function update(Request $request, $id)
+    public function update(ClientesRequest $request, $id)
     {
         $Cliente = Cliente::find($id);
-        //cliente
-        $validacao = [
-            'centro_custo'      => 'required',
-            'idforma_pagamento' => 'required',
-            'email_orcamento'   => 'required',
-//            'email_nota'        => 'required',
-            'idsegmento'        => 'required',
-            'idtabela_preco'    => 'required',
-            'idregiao'          => 'required',
-            'distancia'         => 'required',
-            'pedagios'          => 'required',
-        ];
-
-        if($request->get('centro_custo')=='0'){
-            $validacao = array_merge($validacao,[
-                'limite_credito'    => 'required'
-            ]);
-        }
-
         $dataUpdate = $request->all();
+
         if($Cliente->getType()->tipo_cliente==0){
-            //pessoa física
-            $idpfisica = $Cliente->pessoa_fisica->idpfisica;
-            $validacao = array_merge($validacao,[
-                'cpf'               => 'unique:pfisicas,cpf,'.$idpfisica.',idpfisica',
-            ]);
+            //update física
+            $Cliente->pessoa_fisica->update($dataUpdate);
         } else {
-            //pessoa juridica, teste da isenção IE
-            $idpjuridica = $Cliente->pessoa_juridica->idpjuridica;
-            if($request->has('isencao_ie')){
-                $data['isencao_ie'] = 1;
-                $validacao = array_merge($validacao,[
-                    'cnpj'  => 'unique:pjuridicas,cnpj,'.$idpjuridica.',idpjuridica'
-                ]);
-            } else {
-                $validacao = array_merge($validacao,[
-                    'cnpj'  => 'unique:pjuridicas,cnpj,'.$idpjuridica.',idpjuridica',
-                    'ie'    => 'unique:pjuridicas,ie,'.$idpjuridica.',idpjuridica',
-                ]);
-            }
-            $validacao = array_merge($validacao,$this->Validation['pessoa_juridica']);
+            //update juridica
+            $Cliente->pessoa_juridica->update($dataUpdate);
         }
-        $validator = Validator::make($request->all(), $validacao);
 
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-//                ->withInput();
+        //update foto
+        if ($request->hasfile('foto')) {
+            $img = new ImageController();
+            $dataUpdate['foto'] = $img->store($request->file('foto'), $this->Page->link);
+        }
+
+        //update CLIENTE
+        if ($dataUpdate['centro_custo'] != '0') {
+            $dataUpdate['idcliente_centro_custo'] = ($dataUpdate['idcliente_centro_custo'] == '') ? NULL : $dataUpdate['idcliente_centro_custo'];
+            $dataUpdate['limite_credito_tecnica'] = NULL;
         } else {
-
-//            return $validacao;
-            if($Cliente->getType()->tipo_cliente==0){
-                //update física
-                $Cliente->pessoa_fisica->update($dataUpdate);
-            } else {
-                //update juridica
-                $Cliente->pessoa_juridica->update($dataUpdate);
-            }
-
-            //update foto
-            if($request->hasfile('foto')){
-                $img = new ImageController();
-                $dataUpdate['foto'] = $img->store($request->file('foto'), $this->Page->link);
-            }
-
-            //update CLIENTE
-            if($dataUpdate['centro_custo']!='0'){
-                $dataUpdate['idcliente_centro_custo'] = ($dataUpdate['idcliente_centro_custo']=='')?NULL:$dataUpdate['idcliente_centro_custo'];
-                $dataUpdate['limite_credito']=NULL;
-            } else {
-                $dataUpdate['idcliente_centro_custo']=NULL;
-            }
-
-            $Cliente->update($dataUpdate);
-            //update CONTATO
-            $Cliente->contato->update($dataUpdate);
-
-            session()->forget('mensagem');
-            session(['mensagem' => ($this->Page->Target.' atualizado com sucesso!')]);
-            return Redirect::route('clientes.show', $Cliente->idcliente);
+            $dataUpdate['idcliente_centro_custo'] = NULL;
         }
+
+        //prazo_pagamento_tecnica
+        $Cliente->updatePrazo($dataUpdate);
+        unset($dataUpdate['prazo_pagamento_comercial']);
+        unset($dataUpdate['prazo_pagamento_tecnica']);
+
+        $Cliente->update($dataUpdate);
+        //update CONTATO
+        $Cliente->contato->update($dataUpdate);
+
+        session()->forget('mensagem');
+        session(['mensagem' => ($this->Page->Target . ' atualizado com sucesso!')]);
+        return Redirect::route('clientes.show', $Cliente->idcliente);
     }
 
     public function destroy($id)

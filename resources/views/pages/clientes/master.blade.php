@@ -57,7 +57,9 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 col-sm-3 col-xs-12" >
-                                    <input value="{{old('limite_credito')}}" type="text" class="form-control show-dinheiro" name="limite_credito" placeholder="Limite de Crédito" required>
+                                    <input value="{{old('limite_credito_tecnica')}}" type="text"
+                                           class="form-control show-dinheiro" name="limite_credito_tecnica"
+                                           placeholder="Limite de Crédito Técnica" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -89,11 +91,11 @@
                             <div class="form-group">
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Tabela de Preço<span class="required">*</span></label>
                                 <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <select name="idtabela_preco" class="select2_single form-control" required>
+                                    <select name="idtabela_preco_tecnica" class="select2_single form-control" required>
                                         <option value="">Escolha a Tabela</option>
                                         @foreach($Page->extras['tabela_precos'] as $sel)
-                                            <option value="{{$sel->idtabela_preco}}"
-                                                    @if(old("idtabela_preco") == $sel->idtabela_preco) selected @endif>{{$sel->descricao}}</option>
+                                            <option value="{{$sel->idtabela_preco_tecnica}}"
+                                                    @if(old("idtabela_preco_tecnica") == $sel->idtabela_preco) selected @endif>{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -208,13 +210,13 @@
         $(document).ready(function() {
             $("input[name=centro_custo]").on('ifChecked', function(event){
                 $('select[name=idcliente_centro_custo]').parent('div').toggle();
-                $('input[name=limite_credito]').parent('div').toggle();
+                $('input[name=limite_credito_tecnica]').parent('div').toggle();
                 if(this.value){
                     $('select[name=idcliente_centro_custo]').attr('required', true);
-                    $('input[name=limite_credito]').attr('required', false);
+                    $('input[name=limite_credito_tecnica]').attr('required', false);
                 } else {
                     $('select[name=idcliente_centro_custo]').attr('required', false);
-                    $('input[name=limite_credito]').attr('required', true);
+                    $('input[name=limite_credito_tecnica]').attr('required', true);
                 }
             });
         });

@@ -29,14 +29,15 @@ class Contato extends Model
     {
         return $this->belongsTo('App\Cliente', 'idcontato');
     }
-    public function getTelefoneAttribute($value)
-    {
-        return DataHelper::mask($value, '(##) ####-####');
-    }
 
     public function getTelefone()
     {
         return $this->attributes['telefone'];
+    }
+
+    public function getTelefoneAttribute($value)
+    {
+        return DataHelper::mask($value, '(##) ####-####');
     }
     public function getCelularAttribute($value)
     {

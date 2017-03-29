@@ -20,6 +20,7 @@
                             <th width="40%">Nome</th>
                             <th>Preço</th>
                             <th>Quantidade</th>
+                            <th>Desconto</th>
                             <th>Total</th>
                             <th>Ações</th>
                         </tr>
@@ -27,7 +28,7 @@
                         <tbody>
                         @foreach($AparelhoManutencao->servico_prestados as $servico_prestado)
                             <?php
-                            $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                             ?>
                             <tr>
                                 <td>
@@ -38,6 +39,9 @@
                                 </td>
                                 <td>
                                     {{$servico_prestado->quantidade}}
+                                </td>
+                                <td>
+                                    {{$servico_prestado->desconto_real()}}
                                 </td>
                                 <td>
                                     {{$servico_prestado->valor_total_real()}}
@@ -60,7 +64,7 @@
                                     <option value="">Selecione</option>
                                     @foreach($Servicos as $servico)
                                         <?php
-                                        $tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        $tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                         //                                                        print_r($tabela_preco);
                                         ?>
                                         {{--<option>{{$tabela_preco}}</option>--}}
@@ -77,6 +81,13 @@
                                 <input id="quantidade" value="1" type="text"
                                        class="form-control show-inteiro-positivo calc-total"
                                        placeholder="Quantidade">
+                            </td>
+
+                            <td>
+                                <input id="desconto" value="0,00" type="text"
+                                       class="form-control show-valor calc-total"
+                                       placeholder="Desconto"
+                                       @role('tecnico') disabled @endrole>
                             </td>
                             <td>
                                 <input disabled id="total" class="form-control show-valor-fixo">
@@ -116,6 +127,7 @@
                             <th width="40%">Nome</th>
                             <th>Preço</th>
                             <th>Quantidade</th>
+                            <th>Desconto</th>
                             <th>Total</th>
                             <th>Ações</th>
                         </tr>
@@ -123,7 +135,7 @@
                         <tbody>
                         @foreach($AparelhoManutencao->pecas_utilizadas as $peca_utilizada)
                             <?php
-                            $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                             ?>
                             <tr>
                                 <td>
@@ -134,6 +146,9 @@
                                 </td>
                                 <td>
                                     {{$peca_utilizada->quantidade}}
+                                </td>
+                                <td>
+                                    {{$peca_utilizada->desconto_real()}}
                                 </td>
                                 <td>
                                     {{$peca_utilizada->valor_total_real()}}
@@ -156,7 +171,7 @@
                                     <option value="">Selecione</option>
                                     @foreach($Pecas as $peca)
                                         <?php
-                                        $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                         ?>
                                         <option value="{{$peca->idpeca}}"
                                                 data-preco="{{$tabela_preco->preco}}"
@@ -172,6 +187,12 @@
                                 <input id="quantidade" value="1" type="text"
                                        class="form-control show-inteiro-positivo calc-total"
                                        placeholder="Quantidade">
+                            </td>
+                            <td>
+                                <input id="desconto" value="0,00" type="text"
+                                       class="form-control show-valor calc-total"
+                                       placeholder="Desconto"
+                                       @role('tecnico') disabled @endrole>
                             </td>
                             <td>
                                 <input disabled id="total" class="form-control show-valor-fixo">
@@ -210,6 +231,7 @@
                             <th width="40%">Nome</th>
                             <th>Preço</th>
                             <th>Quantidade</th>
+                            <th>Desconto</th>
                             <th>Total</th>
                             <th>Ações</th>
                         </tr>
@@ -217,7 +239,7 @@
                         <tbody>
                         @foreach($AparelhoManutencao->kits_utilizados as $kit_utilizado)
                             <?php
-                            $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                            $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                             ?>
                             <tr>
                                 <td>
@@ -228,6 +250,9 @@
                                 </td>
                                 <td>
                                     {{$kit_utilizado->quantidade}}
+                                </td>
+                                <td>
+                                    {{$kit_utilizado->desconto_real()}}
                                 </td>
                                 <td>
                                     {{$kit_utilizado->valor_total_real()}}
@@ -256,7 +281,7 @@
                                     <option value="">Selecione</option>
                                     @foreach($Kits as $kit)
                                         <?php
-                                        $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                         ?>
                                         <option value="{{$kit->idkit}}"
                                                 data-preco="{{$tabela_preco->preco}}"
@@ -271,6 +296,12 @@
                                 <input id="quantidade" value="1" type="text"
                                        class="form-control show-inteiro-positivo calc-total"
                                        placeholder="Quantidade">
+                            </td>
+                            <td>
+                                <input id="desconto" value="0,00" type="text"
+                                       class="form-control show-valor calc-total"
+                                       placeholder="Desconto"
+                                       @role('tecnico') disabled @endrole>
                             </td>
                             <td>
                                 <input disabled id="total" class="form-control show-valor-fixo">

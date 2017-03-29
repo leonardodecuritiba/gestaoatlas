@@ -207,7 +207,7 @@ if($Instrumento->has_lacres_instrumentos()){
                                     <tbody>
                                     @foreach($AparelhoManutencao->servico_prestados as $servico_prestado)
                                         <?php
-                                        $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                         ?>
                                         <tr>
                                             <td>
@@ -240,7 +240,7 @@ if($Instrumento->has_lacres_instrumentos()){
                                                 <option value="">Selecione</option>
                                                 @foreach($Servicos as $servico)
                                                     <?php
-                                                    $tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                                    $tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                                     //                                                        print_r($tabela_preco);
                                                     ?>
                                                     {{--<option>{{$tabela_preco}}</option>--}}
@@ -302,7 +302,7 @@ if($Instrumento->has_lacres_instrumentos()){
                                     <tbody>
                                     @foreach($AparelhoManutencao->pecas_utilizadas as $peca_utilizada)
                                         <?php
-                                        $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                         ?>
                                         <tr>
                                             <td>
@@ -338,7 +338,7 @@ if($Instrumento->has_lacres_instrumentos()){
                                                 <option value="">Selecione</option>
                                                 @foreach($Pecas as $peca)
                                                     <?php
-                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                                     ?>
                                                     <option value="{{$peca->idpeca}}"
                                                             data-preco="{{$tabela_preco->preco}}"
@@ -398,7 +398,7 @@ if($Instrumento->has_lacres_instrumentos()){
                                     <tbody>
                                     @foreach($AparelhoManutencao->kits_utilizados as $kit_utilizado)
                                         <?php
-                                        $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                        $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                         ?>
                                         <tr>
                                             <td>
@@ -437,7 +437,7 @@ if($Instrumento->has_lacres_instrumentos()){
                                                 <option value="">Selecione</option>
                                                 @foreach($Kits as $kit)
                                                     <?php
-                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco);
+                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
                                                     ?>
                                                     <option value="{{$kit->idkit}}"
                                                             data-preco="{{$tabela_preco->preco}}"

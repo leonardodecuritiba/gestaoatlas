@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('/home', 'HomeController@index');
 
     Route::resource('clientes', 'ClientesController');
+    Route::patch('clientes/{cliente}', 'ClientesController@update')->name('clientes.update');
     Route::get('cliente/validar/{id}', 'ClientesController@validar')->name('cliente.validar');
 
     Route::resource('instrumentos', 'InstrumentosController');

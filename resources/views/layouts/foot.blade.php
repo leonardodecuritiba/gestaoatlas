@@ -86,6 +86,16 @@
     });
     function initMaskMoneyPositivos(selector) {
         $(selector).maskMoney({
+            allowNegative: false, allowZero: false, precision: 0, thousands: '', decimal: '', affixesStay: false
+        });
+    }
+    $(document).ready(function () {
+        initMaskMoneyPositivos($(".show-inteiro-positivo"));
+    });
+
+    function initMaskMoneyParcelas(selector) {
+        $(selector).maskMoney({
+            suffix: ' dias',
             allowNegative: false,
             allowZero: false,
             precision: 0,
@@ -95,7 +105,7 @@
         });
     }
     $(document).ready(function () {
-        initMaskMoneyPositivos($(".show-inteiro-positivo"));
+        initMaskMoneyParcelas($(".show-parcelas"));
     });
 </script>
 

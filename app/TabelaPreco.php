@@ -17,9 +17,16 @@ class TabelaPreco extends Model
 
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
-    public function cliente()
+    // ************************** HASMANY **********************************
+
+    public function clientes_comercial()
     {
-        return $this->belongsTo('App\Cliente', 'idcliente');
+        return $this->hasMany('App\Cliente', 'idtabela_preco_comercial');
+    }
+
+    public function clientes_tecnica()
+    {
+        return $this->hasMany('App\Cliente', 'idtabela_preco_tecnica');
     }
 
     public function tabela_preco_kit()
@@ -36,6 +43,6 @@ class TabelaPreco extends Model
     {
         return $this->hasMany('App\TabelaPrecoServico', 'idtabela_preco');
     }
-    // ************************** HASMANY **********************************
+
 
 }

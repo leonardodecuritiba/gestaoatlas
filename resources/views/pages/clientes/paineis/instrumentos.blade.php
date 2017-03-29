@@ -193,11 +193,12 @@
                                     <td>{{$instrumento->selo_afixado_numeracao()}}</td>
                                     <td>
                                         <button class="btn btn-default btn-xs edit-instrumento"
-                                           data-dados="{{$instrumento}}"
-                                           data-selo-afixado="{{$instrumento->selo_instrumento_cliente()}}"
-                                           data-lacres-afixados="{{$instrumento->lacres_instrumento_cliente()}}"
-                                           data-lacres="{{$instrumento->lacres_instrumentos}}">
-                                            <i class="fa fa-edit"></i> Visualizar / Editar</button>
+                                                data-dados="{{$instrumento}}"
+                                                data-selo-afixado="{{$instrumento->selo_instrumento_cliente()}}"
+                                                data-lacres-afixados="{{$instrumento->lacres_instrumento_cliente()}}"
+                                                data-lacres="{{$instrumento->lacres_instrumentos}}"
+                                        ><i class="fa fa-edit"></i> Visualizar / Editar
+                                        </button>
 
                                         <button class="btn btn-danger btn-xs"
                                                 data-nome="Patrimônio: {{$instrumento->descricao}}"

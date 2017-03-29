@@ -64,7 +64,7 @@ class OrdemServicoController extends Controller
 //        } else {
 //            $Buscas = OrdemServico::paginate(10);
 //        }
-        $Buscas = OrdemServico::filter_situacao($situacao_ordem_servico)->paginate(10);
+        $Buscas = OrdemServico::filter_situacao($situacao_ordem_servico)->get();
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
@@ -76,7 +76,7 @@ class OrdemServicoController extends Controller
             ->whereNotNull('idcentro_custo')
             ->groupBy('idcentro_custo')
             ->pluck('idcentro_custo');
-        $Buscas = Cliente::whereIn('idcliente', $ids)->paginate(10);
+        $Buscas = Cliente::whereIn('idcliente', $ids)->get();
         return view('pages.' . $this->Page->link . '.index_centro_custo')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
@@ -85,7 +85,7 @@ class OrdemServicoController extends Controller
     public function show_centro_custo(Request $request, $situacao_ordem_servico, $idcentro_custo)
     {
         //atualizando o valor total da OS
-        $Buscas = OrdemServico::centro_custo_os($idcentro_custo, $situacao_ordem_servico)->paginate(10);
+        $Buscas = OrdemServico::centro_custo_os($idcentro_custo, $situacao_ordem_servico)->get();
         $CentroCusto = Cliente::find($idcentro_custo);
         return view('pages.' . $this->Page->link . '.show_centro_custo')
             ->with('Page', $this->Page)
@@ -363,18 +363,19 @@ class OrdemServicoController extends Controller
 
     public function add_insumos(Request $request, $idordem_servico)
     {
-//        return ($request->all());
         $idaparelho_manutencao = $request->get('idaparelho_manutencao');
         if ($request->has('idservico_id')) {
             $id = $request->get('idservico_id');
             $valor = $request->get('idservico_valor');
             $quantidade = $request->get('idservico_quantidade');
+            $desconto = $request->get('idservico_desconto');
             foreach ($id as $i => $v) {
                 $data = [
                     'idaparelho_manutencao' => $idaparelho_manutencao,
                     'idservico' => $id[$i],
                     'valor' => $valor[$i],
                     'quantidade' => $quantidade[$i],
+                    'desconto' => $desconto[$i],
                 ];
                 ServicoPrestado::create($data);
 //                $total += DataHelper::getReal2Float($valor[$i]);
@@ -384,12 +385,14 @@ class OrdemServicoController extends Controller
             $id = $request->get('idpeca_id');
             $valor = $request->get('idpeca_valor');
             $quantidade = $request->get('idpeca_quantidade');
+            $desconto = $request->get('idpeca_desconto');
             foreach ($id as $i => $v) {
                 $data = [
                     'idaparelho_manutencao' => $idaparelho_manutencao,
                     'idpeca' => $id[$i],
                     'valor' => $valor[$i],
                     'quantidade' => $quantidade[$i],
+                    'desconto' => $desconto[$i],
                 ];
                 PecasUtilizadas::create($data);
 //                $total += DataHelper::getReal2Float($valor[$i]);
@@ -399,12 +402,14 @@ class OrdemServicoController extends Controller
             $id = $request->get('idkit_id');
             $valor = $request->get('idkit_valor');
             $quantidade = $request->get('idkit_quantidade');
+            $desconto = $request->get('idkit_desconto');
             foreach ($id as $i => $v) {
                 $data = [
                     'idaparelho_manutencao' => $idaparelho_manutencao,
                     'idkit' => $id[$i],
                     'valor' => $valor[$i],
                     'quantidade' => $quantidade[$i],
+                    'desconto' => $desconto[$i],
                 ];
                 KitsUtilizados::create($data);
 //                $total += DataHelper::getReal2Float($valor[$i]);
@@ -468,6 +473,11 @@ class OrdemServicoController extends Controller
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
+    }
+
+    public function get_ordem_servicos_colaborador(Request $request, $idcliente)
+    {
+        return 'EM BREVE, =]';
     }
 
 }

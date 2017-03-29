@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\DataHelper;
+use App\Models\PrazoPagamento;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,9 +18,7 @@ class Cliente extends Model
         'idpjuridica',
         'idpfisica',
         'idsegmento',
-        'idtabela_preco',
         'idregiao',
-        'idforma_pagamento',
         'idcolaborador_criador',
         'idcolaborador_validador',
         'validated_at',
@@ -31,11 +30,22 @@ class Cliente extends Model
         'nome_responsavel',
         'distancia',
         'pedagios',
-        'outros_custos'
+        'outros_custos',
+
+        'idforma_pagamento_comercial',
+        'prazo_pagamento_comercial',
+        'idemissao_comercial',
+        'limite_credito_comercial',
+        'idtabela_preco_comercial',
+
+        'idforma_pagamento_tecnica',
+        'prazo_pagamento_tecnica',
+        'idemissao_tecnica',
+        'limite_credito_tecnica',
+        'idtabela_preco_tecnica',
     ];
 
     // ************************ FUNCTIONS ******************************
-
 
     static public function getInvalidos()
     {
@@ -52,6 +62,42 @@ class Cliente extends Model
         $pessoa_juridica_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
             ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
         return self::whereIn('idpjuridica', $pessoa_juridica_ids);
+    }
+//    public function setPrazoPagamentoTecnicaAttribute($value)
+//    {
+//        return json_encode($value);
+//    }
+//    public function setPrazoPagamentoComercialAttribute($value)
+//    {
+//        return json_encode($value);
+//    }
+
+    public function updatePrazo($dataUpdate)
+    {
+        foreach (['tecnica', 'comercial'] as $tipo) {
+            $prazo_pagamento['id'] = $dataUpdate['prazo_pagamento_' . $tipo];
+            switch ($dataUpdate['prazo_pagamento_' . $tipo]) {
+                case PrazoPagamento::_STATUS_A_VISTA_:
+                    $prazo_pagamento['extras'] = '';
+                    break;
+                case PrazoPagamento::_STATUS_PARCELADO_:
+                    $prazo_pagamento['extras'] = $dataUpdate['parcela_' . $tipo];
+                    break;
+            }
+            $this->{'prazo_pagamento_' . $tipo} = json_encode($prazo_pagamento);
+        }
+        $this->save();
+
+    }
+
+    public function getPrazoPagamentoTecnicaAttribute($value)
+    {
+        return json_decode($value);
+    }
+
+    public function getPrazoPagamentoComercialAttribute($value)
+    {
+        return json_decode($value);
     }
 
     public function custo_deslocamento()
@@ -121,6 +167,8 @@ class Cliente extends Model
         return $retorno;
     }
 
+    //Mutattors
+
     public function pessoa_juridica()
     {
         return $this->hasOne('App\PessoaJuridica', 'idpjuridica', 'idpjuridica');
@@ -136,7 +184,25 @@ class Cliente extends Model
         return ($this->attributes['foto'] != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/user.png');
     }
 
-    //Mutattors
+    public function setLimiteCreditoTecnicaAttribute($value)
+    {
+        $this->attributes['limite_credito_tecnica'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getLimiteCreditoTecnicaAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
+    public function setLimiteCreditoComercialAttribute($value)
+    {
+        $this->attributes['limite_credito_comercial'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getLimiteCreditoComercialAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
 
     public function validado()
     {
@@ -162,16 +228,6 @@ class Cliente extends Model
 //        return Carbon::now()->diffForHumans(Carbon::createFromFormat('Y-m-d H:i:s',$this->attributes['created_at']));
     }
 
-    public function setLimiteCreditoAttribute($value)
-    {
-        $this->attributes['limite_credito'] = DataHelper::getReal2Float($value);
-    }
-
-    public function getLimiteCreditoAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
-    }
-
     public function setDistanciaAttribute($value)
     {
         $this->attributes['distancia'] = DataHelper::getReal2Float($value);
@@ -186,8 +242,6 @@ class Cliente extends Model
     {
         $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
     }
-    // ******************** RELASHIONSHIP ******************************
-    // ************************** HAS **********************************
 
     public function getPedagiosAttribute($value)
     {
@@ -204,15 +258,8 @@ class Cliente extends Model
         return DataHelper::getFloat2Real($value);
     }
 
-    public function centro_custo_para()
-    {
-        return $this->hasOne('App\Cliente', 'idcliente', 'idcliente');
-    }
-
-    public function segmento()
-    {
-        return $this->hasOne('App\Segmento', 'idsegmento', 'idsegmento');
-    }
+    // ******************** RELASHIONSHIP ******************************
+    // ************************** HAS **********************************
 
     public function has_instrumento()
     {
@@ -234,26 +281,64 @@ class Cliente extends Model
         return $this->hasMany('App\Equipamento', 'idcliente');
     }
 
-    // ********************** BELONGS ********************************
-
-    public function centro_custo_de()
-    {
-        return $this->belongsTo('App\Cliente', 'idcliente');
-    }
-
-    public function forma_pagamento()
-    {
-        return $this->belongsTo('App\FormaPagamento', 'idforma_pagamento');
-    }
-
-    // ************************** HASMANY **********************************
     public function has_ordem_servicos()
     {
         return ($this->ordem_servicos()->count() > 0);
     }
+
     public function ordem_servicos()
     {
         return $this->hasMany('App\OrdemServico', 'idcliente');
+    }
+
+    public function centro_custo_para()
+    {
+        return $this->hasOne('App\Cliente', 'idcliente', 'idcliente');
+    }
+
+    // ********************** BELONGS ********************************
+
+    public function segmento()
+    {
+        return $this->hasOne('App\Segmento', 'idsegmento', 'idsegmento');
+    }
+
+    public function tabela_preco_tecnica()
+    {
+        return $this->belongsTo('App\TabelaPreco', 'idtabela_preco_tecnica');
+    }
+
+    public function tipo_emissao_tecnica()
+    {
+        return $this->belongsTo('App\Models\TipoEmissaoFaturamento', 'idemissao_tecnica');
+    }
+
+    public function forma_pagamento_tecnica()
+    {
+        return $this->belongsTo('App\FormaPagamento', 'idforma_pagamento_tecnica');
+    }
+
+    public function tabela_preco_comercial()
+    {
+        return $this->belongsTo('App\TabelaPreco', 'idtabela_preco_comercial');
+    }
+
+    public function tipo_emissao_comercial()
+    {
+        return $this->belongsTo('App\Models\TipoEmissaoFaturamento', 'idemissao_comercial');
+    }
+
+    public function forma_pagamento_comercial()
+    {
+        return $this->belongsTo('App\FormaPagamento', 'idforma_pagamento_comercial');
+    }
+
+
+    // ************************** HASMANY **********************************
+
+    public function centro_custo_de()
+    {
+        return $this->belongsTo('App\Cliente', 'idcliente');
     }
 
     public function fechamentos()

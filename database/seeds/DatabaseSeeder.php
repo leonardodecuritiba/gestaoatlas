@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             DB::unprepared(DB::raw(file_get_contents(storage_path('uploads') . '\import\\' . $d . '.sql')));
             echo "\n Importacao (" . ('\import\\' . $d . '.sql') . ")***************************************************";
         }
+        $this->call(StatusFechamentoTableSeeder::class);
+
         echo "\n*****************************************************";
         echo "\n*** Importacao realizada com sucesso em " . round((microtime(true) - $start), 3) . "s ***";
     }
