@@ -110,9 +110,24 @@ class OrdemServico extends Model
         return self::create($data);
     }
 
+    static public function reabrir($idordem_servico)
+    {
+        $OrdemServico = self::find($idordem_servico);
+        $OrdemServico->fechamento = NULL;
+        $OrdemServico->idsituacao_ordem_servico = self::_STATUS_ABERTA_;
+        $OrdemServico->save();
+        return true;
+    }
+
     public function setFechamento($idfechamento)
     {
         $this->attributes['idfechamento'] = $idfechamento;
+        return $this->save();
+    }
+
+    public function unsetFechamento()
+    {
+        $this->attributes['idfechamento'] = NULL;
         return $this->save();
     }
 

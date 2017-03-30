@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\OrdemServico;
 use Carbon\Carbon;
 use Exception;
 use GuzzleHttp\Client;
@@ -32,9 +31,9 @@ class Nfe
     private $SERVER;
     private $TOKEN;
     private $now;
-    private $ref = 3;
+    private $ref = 4;
     private $_EMPRESA_;
-    private $_ORDEM_DE_SERVICO_;
+    private $_FECHAMENTO_;
     private $nfe_cabecalho;
     private $nfe_emitente;
     private $nfe_destinatario;
@@ -42,7 +41,7 @@ class Nfe
     private $nfe_tributacao;
     private $nfe_itens;
 
-    function __construct($debug, OrdemServico $ordemServico)
+    function __construct($debug, Fechamento $fechamento)
     {
         $this->debug = $debug;
         if ($this->debug) {
@@ -53,33 +52,32 @@ class Nfe
             $this->TOKEN = self::_TOKEN_PRODUCAO_;
         }
         $this->now = Carbon::now();
-        $this->_ORDEM_DE_SERVICO_ = $ordemServico;
+        $this->_FECHAMENTO_ = $fechamento;
         $this->_EMPRESA_ = new Empresa();
         $this->setParams();
-        dd($this->NFe_params);
     }
 
     public function setParams()
     {
-        //Configurando o cabeçalho
+        //Configurando o cabeçalho - OK
         $this->setCabecalho();
 
-        //Configurando o emitente
+        //Configurando o emitente - OK
         $this->setEmitente();
 
-        //Configurando o destinatário
+        //Configurando o destinatário - OK
         $this->setDestinatario();
         if ($this->debug) {
             $this->nfe_destinatario["nome_destinatario"] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
         }
 
-        //Configurando a tributação
+        //Configurando a tributação - OK
         $this->setTributacao();
 
-        //Configurando o transportadora
+        //Configurando o transportadora - OK
         $this->setTransportadora();
 
-        //Configurando itens
+        //Configurando itens - OK
         $this->setItens();
 
         $this->NFe_params = array_merge(
@@ -155,8 +153,7 @@ class Nfe
 
     public function setDestinatario()
     {
-        $Cliente = $this->_ORDEM_DE_SERVICO_->cliente;
-
+        $Cliente = $this->_FECHAMENTO_->cliente;
         if ($Cliente->idpjuridica != NULL) { //1:PJ, 0: PF
             $PessoaJuridica = $Cliente->pessoa_juridica;
             $this->nfe_destinatario["nome_destinatario"] = $PessoaJuridica->razao_social;
@@ -218,7 +215,7 @@ class Nfe
 
     public function setTributacao()
     {
-        $valores = json_decode($this->_ORDEM_DE_SERVICO_->getValores());
+        $valores = $this->_FECHAMENTO_->getValores();
         $this->nfe_tributacao = [
             "icms_base_calculo" => "0.00", //Valor total da base de cálculo do ICMS. (obrigatório) Decimal[13.2] Tag XML vBC
             "icms_valor_total" => "0.00", //Valor total do ICMS. (obrigatório) Decimal[13.2] Tag XML vICMS
@@ -234,7 +231,7 @@ class Nfe
             "valor_pis" => "0.00", //Valor do PIS. (obrigatório) Decimal[13.2] Tag XML vPIS
             "valor_cofins" => "0.00", //Valor do COFINS. (obrigatório) Decimal[13.2] Tag XML vCOFINS
             "valor_outras_despesas" => "0.00", //Valor das despesas acessórias. (obrigatório) Decimal[13.2] Tag XML vOutro
-            "valor_total" => $valores->valor_final_float, //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
+            "valor_total" => $valores->valor_total_pecas_float, //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
         ];
     }
 
@@ -273,8 +270,7 @@ class Nfe
     public function setItens()
     {
         $item_n = 1;
-        $qtd = 1;
-        foreach ($this->_ORDEM_DE_SERVICO_->aparelho_manutencaos as $aparelho_manutencao) {
+        foreach ($this->_FECHAMENTO_->getAparelhoManutencaos() as $aparelho_manutencao) {
             foreach ($aparelho_manutencao->pecas_utilizadas as $pecas_utilizada) {
                 $NfeItens[] = [
                     "numero_item" => $item_n, //Número (índice) do item na nota fiscal, começando por 1. (obrigatório) Integer[1-3] Tag XML nItem
@@ -286,19 +282,24 @@ class Nfe
 //                    "codigo_ex_tipi " => **, //Código EX TIPI do produto. Integer[2-3] Tag XML EXTIPI
                     "cfop" => $pecas_utilizada->peca->peca_tributacao->cfop->numeracao, //CFOP do produto. (obrigatório) Integer[4] Tag XML CFOP
                     "unidade_comercial" => $pecas_utilizada->peca->unidade->codigo, //Unidade comercial. (obrigatório) String[1-6] Tag XML uCom
-                    "quantidade_comercial" => $qtd, //Quantidade comercial. (obrigatório) Decimal[11.0-4] Tag XML qCom
-                    "valor_unitario_comercial" => $pecas_utilizada->peca->peca_tributacao->valor_unitario_comercial_float(), //Valor unitário comercial. (obrigatório) Decimal[11.0-10] Tag XML vUnCom
-                    "valor_bruto" => $pecas_utilizada->peca->peca_tributacao->valor_bruto_float($qtd), //Valor bruto. Deve ser igual ao produto de Valor unitário comercial com quantidade comercial. Decimal[13.2] Tag XML vProd
+
+                    //MESMA COISA DO CAMPO quantidade_comercial E unidade_tributave
+
+                    "quantidade_comercial" => $pecas_utilizada->quantidade, //Quantidade comercial. (obrigatório) Decimal[11.0-4] Tag XML qCom
+                    "valor_unitario_comercial" => $pecas_utilizada->valor_float(), //Valor unitário comercial. (obrigatório) Decimal[11.0-10] Tag XML vUnCom
+                    "valor_bruto" => $pecas_utilizada->valor_bruto(), //Valor bruto. Deve ser igual ao produto de Valor unitário comercial com quantidade comercial. Decimal[13.2] Tag XML vProd
 //                    "codigo_barras_tributavel" => "**", //Código GTIN/EAN tributável. Integer[0,8,12,13,14] Tag XML cEANTrib
-                    "unidade_tributavel" => $pecas_utilizada->peca->peca_tributacao->unidade_tributavel_float(), //Unidade tributável. (obrigatório) String[1-6] Tag XML uTrib
-                    "quantidade_tributavel" => $qtd, //Quantidade tributável. (obrigatório) Decimal[11.0-4] Tag XML qTrib
-                    "valor_unitario_tributavel" => $pecas_utilizada->peca->peca_tributacao->valor_unitario_tributavel_float(), //Valor unitário tributável. (obrigatório) Decimal[11.0-10] Tag XML vUnTrib
+                    "unidade_tributavel" => $pecas_utilizada->peca->unidade->codigo, //Unidade tributável. (obrigatório) String[1-6] Tag XML uTrib
+                    "quantidade_tributavel" => $pecas_utilizada->quantidade, //Quantidade tributável. (obrigatório) Decimal[11.0-4] Tag XML qTrib
+                    "valor_unitario_tributavel" => $pecas_utilizada->valor_float(), //Valor unitário tributável. (obrigatório) Decimal[11.0-10] Tag XML vUnTrib
 
                     //O valor do frete vai ser incluído dentro do produto mesmo (compo é hoje) ou vai depender da O.S?
                     "valor_frete" => $pecas_utilizada->peca->peca_tributacao->valor_frete_float(), //Valor do frete. Decimal[13.2] Tag XML vFrete
                     "valor_seguro" => $pecas_utilizada->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
 //                    "valor_desconto" =>  ***, //Valor do desconto. Decimal[13.2] Tag XML vSeg
 //                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
+
+
                     "inclui_no_total" => "1", //Valor do item (valor_bruto) compõe valor total da NFe (valor_produtos)? (obrigatório) Tag XML indTot
                     //Valores permitidos:
                     // 0: não
@@ -413,6 +414,7 @@ class Nfe
                 $item_n++;
             }
         }
+
         $this->nfe_itens = $NfeItens;
         return true;
 //        echo json_encode($NfeItens);
@@ -1196,7 +1198,7 @@ class Nfe
         // caso queira enviar usando o formato YAML, use a linha abaixo (necessário biblioteca PECL yaml)
         // curl_setopt($ch, CURLOPT_POSTFIELDS,     yaml_emit($nfe));
         // formato JSON
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->$NFe_params));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->NFe_params));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
         $body = curl_exec($ch);
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);

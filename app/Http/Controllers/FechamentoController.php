@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class FechamentoController extends Controller
 {
@@ -36,6 +37,7 @@ class FechamentoController extends Controller
             'msg_abr' => 'Fechamento aberto com sucesso!',
             'msg_upd' => 'Fechamento atualizado com sucesso!',
             'msg_rem' => 'Fechamento removido com sucesso!',
+            'msg_rea' => 'Fechamento reaberto com sucesso!',
             'titulo_primario' => "",
             'titulo_secundario' => "",
         ];
@@ -100,6 +102,15 @@ class FechamentoController extends Controller
         }
 
         return Fechamento::all();
+    }
+
+    public function remover($id)
+    {
+        Fechamento::remover($id);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_rea]);
+        return Redirect::route('fechamentos.index', 'todas');
+        //
     }
 
     /**

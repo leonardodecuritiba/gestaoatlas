@@ -93,6 +93,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('ordem_servicos/destroy/{idordem_servico}', 'OrdemServicoController@destroy')->name('ordem_servicos.destroy'); //Imprimir O.S
     Route::get('ordem_servicos/cliente/{idcliente}', 'OrdemServicoController@get_ordem_servicos_cliente')->name('ordem_servicos.cliente');
     Route::get('ordem_servicos/por_colaborador/{idcolaborador}/{tipo}', 'OrdemServicoController@get_ordem_servicos_colaborador')->name('ordem_servicos.por_colaborador');
+    Route::get('ordem_servicos/reabrir/{idordem_servico}', 'OrdemServicoController@reabrir')->name('ordem_servicos.reabrir');
 
     Route::get('busca/ordem_servicos/{idordem_servico}/instrumentos', 'OrdemServicoController@buscaInstrumentos')->name('ordem_servicos.instrumentos.busca');
     Route::get('adiciona/ordem_servicos/{idordem_servico}/{idinstrumento}/instrumentos', 'OrdemServicoController@adicionaInstrumento')->name('ordem_servicos.instrumentos.adiciona');
@@ -126,6 +127,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     //FECHAMENTOS
     Route::resource('fechamentos', 'FechamentoController');
+    Route::get('fechamentos/remover/{id}', 'FechamentoController@remover')->name('fechamentos.remover');
     Route::get('listar-fechamentos/{status}', 'FechamentoController@index')->name('fechamentos.index');
     Route::post('parcela/pagar', 'ParcelaController@pagar')->name('parcelas.pagar');
     Route::get('parcela/boleto/{idparcela}', 'ParcelaController@gerarBoleto')->name('parcelas.boleto');
@@ -143,10 +145,16 @@ Route::group(['prefix' => 'cron-jobs'], function () {
 });
 Route::group(['prefix' => 'teste'], function () {
     Route::get('run-fechamento-temp', 'FechamentoController@run_temp');
-    Route::get('nfe/{idordemservico}', function (\Illuminate\Http\Request $request) {
-        return \App\OrdemServico::find($request->idordemservico);
-        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find($request->idordemservico));
-        $NFE->send_teste();
+//    Route::get('nfe/{idordemservico}', function (\Illuminate\Http\Request $request) {
+//        return \App\OrdemServico::find($request->idordemservico);
+//        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find($request->idordemservico));
+//        $NFE->send_teste();
+//    });
+
+    Route::get('nfe/{idfechamento}', function (\Illuminate\Http\Request $request) {
+        $NFE = new \App\Models\Nfe($debug = 1, \App\Models\Fechamento::find($request->idfechamento));
+        return $NFE->NFe_params;
+        return $NFE->send_teste();
     });
     Route::get('get_cest2', function () {
         return \App\Models\Nfe::consulta2();

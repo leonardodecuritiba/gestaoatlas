@@ -4,6 +4,13 @@
             <h4>Cliente:
                 <a target="_blank"
                    href="{{route('clientes.show', $OrdemServico->idcliente)}}"><i>{{$OrdemServico->cliente->getType()->nome_principal}}</i></a>
+                @if($OrdemServico->status() && $OrdemServico->idfechamento == NULL)
+                    @role('admin')
+                    <a class="btn btn-danger pull-right"
+                       href="{{route('ordem_servicos.reabrir',$OrdemServico->idordem_servico)}}">
+                        <i class="fa fa-trash fa-2"></i> Reabrir O.S.</a>
+                    @endrole
+                @endif
             </h4>
             <ul class="list-unstyled">
                 <li><i class="fa fa-info"></i> Nº da O.S.: <b>{{$OrdemServico->idordem_servico}}</b>

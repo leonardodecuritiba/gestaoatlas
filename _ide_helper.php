@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.2.45 on 2017-03-04.
+ * Generated for Laravel 5.2.45 on 2017-03-30.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -13565,6 +13565,56 @@ namespace {
         public static function getFilters($key = false)
         {
             return \Maatwebsite\Excel\Excel::getFilters($key);
+        }
+
+    }
+
+
+    class Date extends \Jenssegers\Date\Date
+    {
+
+    }
+
+
+    class PDF extends \niklasravnsborg\LaravelPdf\Facades\Pdf
+    {
+
+        /**
+         * Load a HTML string
+         *
+         * @param string $html
+         * @return \niklasravnsborg\LaravelPdf\Pdf
+         * @static
+         */
+        public static function loadHTML($html, $config = array())
+        {
+            return \niklasravnsborg\LaravelPdf\PdfWrapper::loadHTML($html, $config);
+        }
+
+        /**
+         * Load a HTML file
+         *
+         * @param string $file
+         * @return \niklasravnsborg\LaravelPdf\Pdf
+         * @static
+         */
+        public static function loadFile($file, $config = array())
+        {
+            return \niklasravnsborg\LaravelPdf\PdfWrapper::loadFile($file, $config);
+        }
+
+        /**
+         * Load a View and convert to HTML
+         *
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @return \niklasravnsborg\LaravelPdf\Pdf
+         * @static
+         */
+        public static function loadView($view, $data = array(), $mergeData = array(), $config = array())
+        {
+            return \niklasravnsborg\LaravelPdf\PdfWrapper::loadView($view, $data, $mergeData, $config);
         }
 
     }

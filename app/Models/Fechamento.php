@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\AparelhoManutencao;
 use App\Cliente;
 use App\Helpers\DataHelper;
 use Carbon\Carbon;
@@ -93,6 +94,17 @@ class Fechamento extends Model
         return (object)$_valores;
     }
 
+    static public function remover($idfechamento)
+    {
+        $Fechamento = Fechamento::find($idfechamento);
+        foreach ($Fechamento->ordem_servicos as $ordem_servico) {
+            $ordem_servico->unsetFechamento();
+        }
+        $Fechamento->pagamento->delete();
+        $Fechamento->delete();
+        return true;
+    }
+
     // ******************** RELASHIONSHIP ******************************
 
     static public function filter_status($status)
@@ -111,6 +123,15 @@ class Fechamento extends Model
 //            $query->where('idcolaborador', $User->colaborador->idcolaborador);
 //        }
         return $query;
+    }
+
+    public function getAparelhoManutencaos()
+    {
+        $ids = [];
+        foreach ($this->ordem_servicos as $ordem_servico) {
+            $ids[] = $ordem_servico->idordem_servico;
+        }
+        return AparelhoManutencao::whereIn('idordem_servico', $ids)->get();
     }
 
     public function faturar()

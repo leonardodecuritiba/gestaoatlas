@@ -50,6 +50,7 @@ class OrdemServicoController extends Controller
             'msg_fec' => 'Ordem de Serviço fechada com sucesso!',
             'msg_upd' => 'Ordem de Serviço atualizada com sucesso!',
             'msg_rem' => 'Ordem de Serviço removida com sucesso!',
+            'msg_rea' => 'Ordem de Serviço reaberta com sucesso!',
             'titulo_primario' => "",
             'titulo_secundario' => "",
         ];
@@ -425,6 +426,15 @@ class OrdemServicoController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
         return Redirect::route('ordem_servicos.resumo', $OrdemServico->idordem_servico);
+    }
+
+    public function reabrir($idordem_servico)
+    {
+        OrdemServico::reabrir($idordem_servico);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_rea]);
+        return Redirect::route('ordem_servicos.resumo', $idordem_servico);
+        //
     }
 
     public function fechar(Request $request, $idordem_servico)
