@@ -34,6 +34,11 @@ class PessoaJuridica extends Model
     {
         return $this->attributes['cnpj'];
     }
+
+    public function getIe()
+    {
+        return $this->attributes['ie'];
+    }
     public function getIeAttribute($value)
     {
         return DataHelper::mask($value, '###.###.###.###');

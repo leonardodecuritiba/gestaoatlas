@@ -133,6 +133,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('parcela/boleto/{idparcela}', 'ParcelaController@gerarBoleto')->name('parcelas.boleto');
     Route::get('parcela/estornar/{idparcela}', 'ParcelaController@estornar')->name('parcelas.estornar');
 
+    Route::get('nfe/{idfechamento}', 'FechamentoController@getNfeTeste')->name('fechamentos.nfe');
+
 
     //RELATÓRIOS
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
@@ -153,7 +155,7 @@ Route::group(['prefix' => 'teste'], function () {
 
     Route::get('nfe/{idfechamento}', function (\Illuminate\Http\Request $request) {
         $NFE = new \App\Models\Nfe($debug = 1, \App\Models\Fechamento::find($request->idfechamento));
-        return $NFE->NFe_params;
+//        return $NFE->NFe_params;
         return $NFE->send_teste();
     });
     Route::get('get_cest2', function () {

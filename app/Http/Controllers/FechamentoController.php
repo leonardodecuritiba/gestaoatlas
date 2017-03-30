@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Cliente;
 use App\FormaPagamento;
 use App\Models\Fechamento;
-use App\Models\Pagamento;
-use App\Models\Parcela;
-use App\Models\PrazoPagamento;
+use App\Models\Nfe;
 use App\OrdemServico;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -110,7 +108,31 @@ class FechamentoController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_rea]);
         return Redirect::route('fechamentos.index', 'todas');
-        //
+    }
+
+    public function getNfeTeste($id)
+    {
+        $Fechamento = Fechamento::find($id);
+        $NFE = new Nfe($debug = 1, $Fechamento);
+        $retorno = $NFE->send_teste();
+        if (isset($retorno->body->erros)) {
+            $responseNFE = [
+                'message' => $retorno->body->erros,
+                'code' => $retorno->result,
+                'error' => 1,
+            ];
+        } else {
+            $responseNFE = [
+                'message' => 'Nota Fiscal (#' . $NFE->ref . ') gerada com sucesso!',
+                'code' => $retorno->result,
+                'error' => 0,
+            ];
+        }
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Page', $this->Page)
+            ->with('responseNFE', $responseNFE)
+            ->with('Fechamento', $Fechamento);
+
     }
 
     /**

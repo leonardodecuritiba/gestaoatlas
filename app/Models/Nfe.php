@@ -26,12 +26,13 @@ class Nfe
 //    CONST _TOKEN_PRODUCAO_ = 'QmPEhv5PrVGmkXpUtZIw7nvx0ZUOrDos';
 
     CONST _CEST_DEFAULT_ = '0106400';
+    public $ref = 9;
+
     public $debug;
     public $NFe_params;
     private $SERVER;
     private $TOKEN;
     private $now;
-    private $ref = 4;
     private $_EMPRESA_;
     private $_FECHAMENTO_;
     private $nfe_cabecalho;
@@ -160,9 +161,10 @@ class Nfe
             $this->nfe_destinatario["cnpj_destinatario"] = $PessoaJuridica->getCnpj();
             if ($PessoaJuridica->isencao_ie) {
                 $this->nfe_destinatario["indicador_inscricao_estadual_destinatario"] = '9';
-                $this->nfe_destinatario["inscricao_estadual_destinatario"] = $PessoaJuridica->isencao_ie;
-            } else {
                 $this->nfe_destinatario["inscricao_estadual_destinatario"] = 'ISENTO';
+            } else {
+                $this->nfe_destinatario["indicador_inscricao_estadual_destinatario "] = '1';
+                $this->nfe_destinatario["inscricao_estadual_destinatario"] = $PessoaJuridica->getIe();
             }
         } else {
             $PessoaFisica = $Cliente->pessoa_fisica;
@@ -1192,6 +1194,7 @@ class Nfe
         // caso queira enviar usando o formato YAML, use a linha abaixo
         // curl_setopt($ch, CURLOPT_URL, $SERVER."/nfe2/autorizar?ref=" . $ref . "&token=" . $TOKEN);
         // formato JSON
+        $_REF_ = $this->ref + $this->_FECHAMENTO_->id;
         curl_setopt($ch, CURLOPT_URL, $this->SERVER . "/autorizar.json?ref=" . $this->ref . "&token=" . $this->TOKEN);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -1200,10 +1203,21 @@ class Nfe
         // formato JSON
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->NFe_params));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+
+        $retorno = (object)[
+            'body' => json_decode(curl_exec($ch)),
+            'result' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+        ];
+        curl_close($ch);
+
+        return ($retorno);
+
+
         $body = curl_exec($ch);
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         //as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
         //interpretar e lidar com o retorno
+
         print("STATUS: " . $result . "<br>");
         print("BODY <br><br>");
         print(($body));
