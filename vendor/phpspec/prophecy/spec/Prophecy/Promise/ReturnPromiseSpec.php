@@ -32,8 +32,7 @@ class ReturnPromiseSpec extends ObjectBehavior
     function it_consequently_returns_multiple_values_it_was_constructed_with(
         ObjectProphecy $object,
         MethodProphecy $method
-    )
-    {
+    ) {
         $this->beConstructedWith(array(42, 24, 12));
 
         $this->execute(array(), $object, $method)->shouldReturn(42);

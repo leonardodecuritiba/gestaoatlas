@@ -30,8 +30,7 @@ class DisableConstructorPatchSpec extends ObjectBehavior
         MethodNode $method,
         ArgumentNode $arg1,
         ArgumentNode $arg2
-    )
-    {
+    ) {
         $class->hasMethod('__construct')->willReturn(true);
         $class->getMethod('__construct')->willReturn($method);
         $method->getArguments()->willReturn(array($arg1, $arg2));

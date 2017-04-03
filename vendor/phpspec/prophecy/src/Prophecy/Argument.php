@@ -70,6 +70,16 @@ class Argument
     }
 
     /**
+     * Matches any single value.
+     *
+     * @return Token\AnyValueToken
+     */
+    public static function any()
+    {
+        return new Token\AnyValueToken;
+    }
+
+    /**
      * Matches all values to the rest of the signature.
      *
      * @return Token\AnyValuesToken
@@ -138,16 +148,6 @@ class Argument
     public static function containing($value)
     {
         return new Token\ArrayEntryToken(self::any(), $value);
-    }
-
-    /**
-     * Matches any single value.
-     *
-     * @return Token\AnyValueToken
-     */
-    public static function any()
-    {
-        return new Token\AnyValueToken;
     }
 
     /**

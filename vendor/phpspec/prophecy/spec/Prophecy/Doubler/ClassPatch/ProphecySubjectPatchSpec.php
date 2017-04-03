@@ -43,8 +43,7 @@ class ProphecySubjectPatchSpec extends ObjectBehavior
         MethodNode $method1,
         MethodNode $method2,
         MethodNode $method3
-    )
-    {
+    ) {
         $node->addInterface('Prophecy\Prophecy\ProphecySubjectInterface')->willReturn(null);
         $node->addProperty('objectProphecy', 'private')->willReturn(null);
         $node->hasMethod(Argument::any())->willReturn(false);
@@ -55,6 +54,10 @@ class ProphecySubjectPatchSpec extends ObjectBehavior
         $method1->getName()->willReturn('method1');
         $method2->getName()->willReturn('method2');
         $method3->getName()->willReturn('method3');
+
+        $method1->getReturnType()->willReturn('int');
+        $method2->getReturnType()->willReturn('int');
+        $method3->getReturnType()->willReturn('void');
 
         $node->getMethods()->willReturn(array(
             'method1' => $method1,
@@ -68,7 +71,7 @@ class ProphecySubjectPatchSpec extends ObjectBehavior
             ->shouldBeCalled();
         $method2->setCode('return $this->getProphecy()->makeProphecyMethodCall(__FUNCTION__, func_get_args());')
             ->shouldBeCalled();
-        $method3->setCode('return $this->getProphecy()->makeProphecyMethodCall(__FUNCTION__, func_get_args());')
+        $method3->setCode('$this->getProphecy()->makeProphecyMethodCall(__FUNCTION__, func_get_args());')
             ->shouldBeCalled();
 
         $this->apply($node);

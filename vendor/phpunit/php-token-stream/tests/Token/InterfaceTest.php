@@ -26,6 +26,21 @@ class PHP_Token_InterfaceTest extends PHPUnit_Framework_TestCase
     protected $class;
     protected $interfaces;
 
+    protected function setUp()
+    {
+        $ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source4.php');
+        $i  = 0;
+        foreach ($ts as $token) {
+            if ($token instanceof PHP_Token_CLASS) {
+                $this->class = $token;
+            }
+            elseif ($token instanceof PHP_Token_INTERFACE) {
+                $this->interfaces[$i] = $token;
+                $i++;
+            }
+        }
+    }
+
     /**
      * @covers PHP_Token_INTERFACE::getName
      */
@@ -96,7 +111,6 @@ class PHP_Token_InterfaceTest extends PHPUnit_Framework_TestCase
             $this->class->hasInterfaces()
         );
     }
-
     /**
      * @covers PHP_Token_INTERFACE::getPackage
      */
@@ -109,6 +123,7 @@ class PHP_Token_InterfaceTest extends PHPUnit_Framework_TestCase
             }
         }
     }
+
 
     public function provideFilesWithClassesWithinMultipleNamespaces() {
         return array(
@@ -172,19 +187,5 @@ class PHP_Token_InterfaceTest extends PHPUnit_Framework_TestCase
             }
         }
         $this->fail("Searching for 2 classes failed");
-    }
-
-    protected function setUp()
-    {
-        $ts = new PHP_Token_Stream(TEST_FILES_PATH . 'source4.php');
-        $i = 0;
-        foreach ($ts as $token) {
-            if ($token instanceof PHP_Token_CLASS) {
-                $this->class = $token;
-            } elseif ($token instanceof PHP_Token_INTERFACE) {
-                $this->interfaces[$i] = $token;
-                $i++;
-            }
-        }
     }
 }

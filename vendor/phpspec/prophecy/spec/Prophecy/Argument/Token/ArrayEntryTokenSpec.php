@@ -61,8 +61,7 @@ class ArrayEntryTokenSpec extends ObjectBehavior
         TokenInterface $key,
         TokenInterface $value,
         \Iterator $object
-    )
-    {
+    ) {
         $object->current()->will(function () use ($object) {
             $object->valid()->willReturn(false);
 
@@ -81,8 +80,7 @@ class ArrayEntryTokenSpec extends ObjectBehavior
         TokenInterface $key,
         TokenInterface $value,
         \ArrayAccess $object
-    )
-    {
+    ) {
         $key->__toString()->willReturn('any_token');
         $this->beConstructedWith($key,$value);
         $errorMessage = 'You can only use exact value tokens to match key of ArrayAccess object'.PHP_EOL.
@@ -94,8 +92,7 @@ class ArrayEntryTokenSpec extends ObjectBehavior
         ExactValueToken $key,
         TokenInterface $value,
         \ArrayAccess $object
-    )
-    {
+    ) {
         $object->offsetExists('key')->willReturn(true);
         $object->offsetGet('key')->willReturn('value');
         $key->getValue()->willReturn('key');
@@ -108,8 +105,7 @@ class ArrayEntryTokenSpec extends ObjectBehavior
         TokenInterface $key,
         TokenInterface $value,
         \ArrayIterator $object
-    )
-    {
+    ) {
         $this->beConstructedWith($key, $value);
         $object->current()->will(function () use ($object) {
             $object->valid()->willReturn(false);
@@ -156,8 +152,7 @@ class ArrayEntryTokenSpec extends ObjectBehavior
         TokenInterface $key,
         TokenInterface $value,
         \Iterator $object
-    )
-    {
+    ) {
         $object->current()->willReturn('foo');
         $object->current()->will(function () use ($object) {
             $object->valid()->willReturn(false);
@@ -179,8 +174,7 @@ class ArrayEntryTokenSpec extends ObjectBehavior
     function it_does_not_score_array_accessible_object_if_it_has_no_offset_with_key_token_value(
         ExactValueToken $key,
         \ArrayAccess $object
-    )
-    {
+    ) {
         $object->offsetExists('key')->willReturn(false);
         $key->getValue()->willReturn('key');
         $this->scoreArgument($object)->shouldBe(false);
@@ -190,8 +184,7 @@ class ArrayEntryTokenSpec extends ObjectBehavior
         ExactValueToken $key,
         TokenInterface $value,
         \ArrayAccess $object
-    )
-    {
+    ) {
         $object->offsetExists('key')->willReturn(true);
         $object->offsetGet('key')->willReturn('value');
         $key->getValue()->willReturn('key');

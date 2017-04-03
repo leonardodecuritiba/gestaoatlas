@@ -24,8 +24,7 @@ class RevealerSpec extends ObjectBehavior
         ProphecyInterface $prophecy2,
         \stdClass $object1,
         \stdClass $object2
-    )
-    {
+    ) {
         $prophecy1->reveal()->willReturn($object1);
         $prophecy2->reveal()->willReturn($object2);
 

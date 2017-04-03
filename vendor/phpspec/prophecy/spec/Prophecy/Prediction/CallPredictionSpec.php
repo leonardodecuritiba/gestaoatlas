@@ -20,8 +20,7 @@ class CallPredictionSpec extends ObjectBehavior
         ObjectProphecy $object,
         MethodProphecy $method,
         Call $call
-    )
-    {
+    ) {
         $this->check(array($call), $object, $method)->shouldReturn(null);
     }
 
@@ -29,8 +28,7 @@ class CallPredictionSpec extends ObjectBehavior
         ObjectProphecy $object,
         MethodProphecy $method,
         ArgumentsWildcard $arguments
-    )
-    {
+    ) {
         $method->getObjectProphecy()->willReturn($object);
         $method->getMethodName()->willReturn('getName');
         $method->getArgumentsWildcard()->willReturn($arguments);

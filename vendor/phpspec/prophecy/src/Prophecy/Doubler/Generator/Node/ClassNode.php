@@ -31,6 +31,19 @@ class ClassNode
      */
     private $methods     = array();
 
+    public function getParentClass()
+    {
+        return $this->parentClass;
+    }
+
+    /**
+     * @param string $class
+     */
+    public function setParentClass($class)
+    {
+        $this->parentClass = $class ?: 'stdClass';
+    }
+
     /**
      * @return string[]
      */
@@ -98,28 +111,6 @@ class ClassNode
         $this->methods[$method->getName()] = $method;
     }
 
-    /**
-     * @param string $method
-     * @return bool
-     */
-    public function isExtendable($method)
-    {
-        return !in_array($method, $this->unextendableMethods);
-    }
-
-    public function getParentClass()
-    {
-        return $this->parentClass;
-    }
-
-    /**
-     * @param string $class
-     */
-    public function setParentClass($class)
-    {
-        $this->parentClass = $class ?: 'stdClass';
-    }
-
     public function removeMethod($name)
     {
         unset($this->methods[$name]);
@@ -162,5 +153,14 @@ class ClassNode
             return;
         }
         $this->unextendableMethods[] = $unextendableMethod;
+    }
+
+    /**
+     * @param string $method
+     * @return bool
+     */
+    public function isExtendable($method)
+    {
+        return !in_array($method, $this->unextendableMethods);
     }
 }

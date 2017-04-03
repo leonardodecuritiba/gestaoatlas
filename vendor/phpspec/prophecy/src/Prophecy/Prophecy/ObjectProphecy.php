@@ -103,6 +103,30 @@ class ObjectProphecy implements ProphecyInterface
     }
 
     /**
+     * Reveals double.
+     *
+     * @return object
+     *
+     * @throws \Prophecy\Exception\Prophecy\ObjectProphecyException If double doesn't implement needed interface
+     */
+    public function reveal()
+    {
+        $double = $this->lazyDouble->getInstance();
+
+        if (null === $double || !$double instanceof ProphecySubjectInterface) {
+            throw new ObjectProphecyException(
+                "Generated double must implement ProphecySubjectInterface, but it does not.\n".
+                'It seems you have wrongly configured doubler without required ClassPatch.',
+                $this
+            );
+        }
+
+        $double->setProphecy($this);
+
+        return $double;
+    }
+
+    /**
      * Adds method prophecy to object prophecy.
      *
      * @param MethodProphecy $methodProphecy
@@ -132,27 +156,23 @@ class ObjectProphecy implements ProphecyInterface
     }
 
     /**
-     * Reveals double.
+     * Returns either all or related to single method prophecies.
      *
-     * @return object
+     * @param null|string $methodName
      *
-     * @throws \Prophecy\Exception\Prophecy\ObjectProphecyException If double doesn't implement needed interface
+     * @return MethodProphecy[]
      */
-    public function reveal()
+    public function getMethodProphecies($methodName = null)
     {
-        $double = $this->lazyDouble->getInstance();
-
-        if (null === $double || !$double instanceof ProphecySubjectInterface) {
-            throw new ObjectProphecyException(
-                "Generated double must implement ProphecySubjectInterface, but it does not.\n" .
-                'It seems you have wrongly configured doubler without required ClassPatch.',
-                $this
-            );
+        if (null === $methodName) {
+            return $this->methodProphecies;
         }
 
-        $double->setProphecy($this);
+        if (!isset($this->methodProphecies[$methodName])) {
+            return array();
+        }
 
-        return $double;
+        return $this->methodProphecies[$methodName];
     }
 
     /**
@@ -234,26 +254,6 @@ class ObjectProphecy implements ProphecyInterface
         }
 
         return new MethodProphecy($this, $methodName, $arguments);
-    }
-
-    /**
-     * Returns either all or related to single method prophecies.
-     *
-     * @param null|string $methodName
-     *
-     * @return MethodProphecy[]
-     */
-    public function getMethodProphecies($methodName = null)
-    {
-        if (null === $methodName) {
-            return $this->methodProphecies;
-        }
-
-        if (!isset($this->methodProphecies[$methodName])) {
-            return array();
-        }
-
-        return $this->methodProphecies[$methodName];
     }
 
     /**

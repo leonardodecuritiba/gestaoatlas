@@ -32,8 +32,7 @@ class DoublerSpec extends ObjectBehavior
         ClassPatchInterface $alt2,
         ClassPatchInterface $alt3,
         ClassPatchInterface $alt4
-    )
-    {
+    ) {
         $alt1->getPriority()->willReturn(2);
         $alt2->getPriority()->willReturn(50);
         $alt3->getPriority()->willReturn(10);
@@ -57,8 +56,7 @@ class DoublerSpec extends ObjectBehavior
         \ReflectionClass $interface1,
         \ReflectionClass $interface2,
         ClassNode $node
-    )
-    {
+    ) {
         $mirror->reflect($class, array($interface1, $interface2))->willReturn($node);
         $alt1->supports($node)->willReturn(true);
         $alt2->supports($node)->willReturn(false);
@@ -85,8 +83,7 @@ class DoublerSpec extends ObjectBehavior
         \ReflectionClass $class,
         ClassNode $node,
         $namer
-    )
-    {
+    ) {
         $class->getName()->willReturn('ReflectionClass');
         $mirror->reflect($class, array())->willReturn($node);
         $namer->name($class, array())->willReturn('ReflectionClass');
@@ -101,8 +98,7 @@ class DoublerSpec extends ObjectBehavior
         \ReflectionClass $class,
         ClassNode $node,
         $namer
-    )
-    {
+    ) {
         $class->getName()->willReturn('spec\Prophecy\Doubler\WithFinalConstructor');
         $mirror->reflect($class, array())->willReturn($node);
         $namer->name($class, array())->willReturn('spec\Prophecy\Doubler\WithFinalConstructor');

@@ -56,8 +56,7 @@ class ProphetSpec extends ObjectBehavior
         MethodProphecy $method2,
         ArgumentsWildcard $arguments1,
         ArgumentsWildcard $arguments2
-    )
-    {
+    ) {
         $method1->getMethodName()->willReturn('getName');
         $method1->getArgumentsWildcard()->willReturn($arguments1);
         $method1->checkPrediction()->willReturn(null);

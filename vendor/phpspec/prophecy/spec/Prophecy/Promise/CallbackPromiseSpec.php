@@ -70,7 +70,7 @@ class ClassCallback
     /**
      * @param array $args
      */
-    static function staticCallbackMethod($args)
+    function callbackMethod($args)
     {
         return $args[0];
     }
@@ -78,7 +78,7 @@ class ClassCallback
     /**
      * @param array $args
      */
-    function callbackMethod($args)
+    static function staticCallbackMethod($args)
     {
         return $args[0];
     }

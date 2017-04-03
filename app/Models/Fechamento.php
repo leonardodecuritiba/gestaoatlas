@@ -21,6 +21,8 @@ class Fechamento extends Model
         'idcliente',
         'idstatus_fechamento',
         'idpagamento',
+        'idnfe_homologacao',
+        'idnfe_producao',
         'centro_custo'
     ];
 
@@ -105,8 +107,6 @@ class Fechamento extends Model
         return true;
     }
 
-    // ******************** RELASHIONSHIP ******************************
-
     static public function filter_status($status)
     {
         $query = self::orderBy('created_at', 'desc');
@@ -124,6 +124,52 @@ class Fechamento extends Model
 //        }
         return $query;
     }
+
+    public function getStatusNfeHomologacao()
+    {
+        return ($this->idnfe_homologacao != NULL);
+    }
+
+    public function getStatusNfeProducao()
+    {
+        return ($this->idnfe_producao != NULL);
+    }
+
+    public function setNfe($debug = true)
+    {
+        if ($debug) {
+            $this->idnfe_homologacao = $this->id + 9;
+        } else {
+            $this->idnfe_producao = $this->id;
+        }
+        $this->save();
+        $NFE = new Nfe($debug, $this);
+        $retorno = $NFE->envia();
+
+        if (isset($retorno->body->erros)) {
+            $responseNFE = [
+                'message' => $retorno->body->erros,
+                'code' => $retorno->result,
+                'error' => 1,
+            ];
+        } else {
+            $responseNFE = [
+                'message' => 'Nota Fiscal (#' . $NFE->ref . ') gerada com sucesso!',
+                'code' => $retorno->result,
+                'error' => 0,
+            ];
+        }
+        return $responseNFE;
+    }
+
+    public function getDataNfe($debug = true)
+    {
+        $ref = ($debug) ? $this->idnfe_homologacao : $this->idnfe_producao;
+        if ($ref == NULL) RETURN $ref;
+        return json_encode(Nfe::consulta($debug, $ref));
+    }
+
+    // ******************** RELASHIONSHIP ******************************
 
     public function getAparelhoManutencaos()
     {

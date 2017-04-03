@@ -25,8 +25,7 @@ class CallTimesPredictionSpec extends ObjectBehavior
         MethodProphecy $method,
         Call $call1,
         Call $call2
-    )
-    {
+    ) {
         $this->check(array($call1, $call2), $object, $method)->shouldReturn(null);
     }
 
@@ -35,8 +34,7 @@ class CallTimesPredictionSpec extends ObjectBehavior
         MethodProphecy $method,
         Call $call,
         ArgumentsWildcard $arguments
-    )
-    {
+    ) {
         $method->getObjectProphecy()->willReturn($object);
         $method->getMethodName()->willReturn('getName');
         $method->getArgumentsWildcard()->willReturn($arguments);

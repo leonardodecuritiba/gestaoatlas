@@ -25,8 +25,7 @@ class NoCallsPredictionSpec extends ObjectBehavior
         MethodProphecy $method,
         Call $call,
         ArgumentsWildcard $arguments
-    )
-    {
+    ) {
         $method->getObjectProphecy()->willReturn($object);
         $method->getMethodName()->willReturn('getName');
         $method->getArgumentsWildcard()->willReturn($arguments);

@@ -5,16 +5,16 @@
 class Foo{function foo(){}
 
     /**
-     * @param Foobar $foobar
+     * @param Baz $baz
      */
-    static public function foobar(Foobar $foobar)
+    public function bar(Baz $baz)
     {
     }
 
     /**
-     * @param Baz $baz
+     * @param Foobar $foobar
      */
-    public function bar(Baz $baz)
+    static public function foobar(Foobar $foobar)
     {
     }
 

@@ -26,6 +26,7 @@ class MethodNode
     private $static = false;
     private $returnsReference = false;
     private $returnType;
+    private $nullableReturnType = false;
 
     /**
      * @var ArgumentNode[]
@@ -83,6 +84,11 @@ class MethodNode
         $this->returnsReference = true;
     }
 
+    public function getName()
+    {
+        return $this->name;
+    }
+
     public function addArgument(ArgumentNode $argument)
     {
         $this->arguments[] = $argument;
@@ -101,11 +107,6 @@ class MethodNode
         return null !== $this->returnType;
     }
 
-    public function getReturnType()
-    {
-        return $this->returnType;
-    }
-
     /**
      * @param string $type
      */
@@ -122,6 +123,8 @@ class MethodNode
             case 'bool':
             case 'array':
             case 'callable':
+            case 'iterable':
+            case 'void':
                 $this->returnType = $type;
                 break;
 
@@ -143,13 +146,25 @@ class MethodNode
         }
     }
 
-    public function getCode()
+    public function getReturnType()
     {
-        if ($this->returnsReference) {
-            return "throw new \Prophecy\Exception\Doubler\ReturnByReferenceException('Returning by reference not supported', get_class(\$this), '{$this->name}');";
-        }
+        return $this->returnType;
+    }
 
-        return (string)$this->code;
+    /**
+     * @param bool $bool
+     */
+    public function setNullableReturnType($bool = true)
+    {
+        $this->nullableReturnType = (bool) $bool;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasNullableReturnType()
+    {
+        return $this->nullableReturnType;
     }
 
     /**
@@ -160,6 +175,16 @@ class MethodNode
         $this->code = $code;
     }
 
+    public function getCode()
+    {
+        if ($this->returnsReference)
+        {
+            return "throw new \Prophecy\Exception\Doubler\ReturnByReferenceException('Returning by reference not supported', get_class(\$this), '{$this->name}');";
+        }
+
+        return (string) $this->code;
+    }
+
     public function useParentCode()
     {
         $this->code = sprintf(
@@ -167,11 +192,6 @@ class MethodNode
                 array_map(array($this, 'generateArgument'), $this->arguments)
             )
         );
-    }
-
-    public function getName()
-    {
-        return $this->name;
     }
 
     private function generateArgument(ArgumentNode $arg)
