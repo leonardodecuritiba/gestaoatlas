@@ -13,8 +13,8 @@ class AlterFechamentosTable extends Migration
     public function up()
     {
         Schema::table('fechamentos', function (Blueprint $table) {
-            $table->integer('idnfe_homologacao')->unsigned();
-            $table->integer('idnfe_producao')->unsigned();
+            $table->integer('idnfe_homologacao')->unsigned()->nullable();
+            $table->integer('idnfe_producao')->unsigned()->nullable();
         });
     }
 

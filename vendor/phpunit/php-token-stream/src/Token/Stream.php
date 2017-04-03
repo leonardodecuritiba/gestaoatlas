@@ -119,68 +119,6 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
     }
 
     /**
-     * Scans the source for sequences of characters and converts them into a
-     * stream of tokens.
-     *
-     * @param string $sourceCode
-     */
-    protected function scan($sourceCode)
-    {
-        $line      = 1;
-        $tokens    = token_get_all($sourceCode);
-        $numTokens = count($tokens);
-
-        $lastNonWhitespaceTokenWasDoubleColon = false;
-
-        for ($i = 0; $i < $numTokens; ++$i) {
-            $token = $tokens[$i];
-            unset($tokens[$i]);
-
-            if (is_array($token)) {
-                $name = substr(token_name($token[0]), 2);
-                $text = $token[1];
-
-                if ($lastNonWhitespaceTokenWasDoubleColon && $name == 'CLASS') {
-                    $name = 'CLASS_NAME_CONSTANT';
-                } elseif ($name == 'USE' && isset($tokens[$i + 2][0]) && $tokens[$i + 2][0] == T_FUNCTION) {
-                    unset($tokens[$i + 1]);
-                    unset($tokens[$i + 2]);
-
-                    $i += 2;
-
-                    $name = 'USE_FUNCTION';
-                }
-
-                $tokenClass = 'PHP_Token_' . $name;
-            } else {
-                $text       = $token;
-                $tokenClass = self::$customTokens[$token];
-            }
-
-            $this->tokens[] = new $tokenClass($text, $line, $this, $i);
-            $lines          = substr_count($text, "\n");
-            $line          += $lines;
-
-            if ($tokenClass == 'PHP_Token_HALT_COMPILER') {
-                break;
-            } elseif ($tokenClass == 'PHP_Token_COMMENT' ||
-                $tokenClass == 'PHP_Token_DOC_COMMENT') {
-                $this->linesOfCode['cloc'] += $lines + 1;
-            }
-
-            if ($name == 'DOUBLE_COLON') {
-                $lastNonWhitespaceTokenWasDoubleColon = true;
-            } elseif ($name != 'WHITESPACE') {
-                $lastNonWhitespaceTokenWasDoubleColon = false;
-            }
-        }
-
-        $this->linesOfCode['loc']   = substr_count($sourceCode, "\n");
-        $this->linesOfCode['ncloc'] = $this->linesOfCode['loc'] -
-                                      $this->linesOfCode['cloc'];
-    }
-
-    /**
      * Destructor.
      */
     public function __destruct()
@@ -212,6 +150,67 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
     }
 
     /**
+     * Scans the source for sequences of characters and converts them into a
+     * stream of tokens.
+     *
+     * @param string $sourceCode
+     */
+    protected function scan($sourceCode)
+    {
+        $id        = 0;
+        $line      = 1;
+        $tokens    = token_get_all($sourceCode);
+        $numTokens = count($tokens);
+
+        $lastNonWhitespaceTokenWasDoubleColon = false;
+
+        for ($i = 0; $i < $numTokens; ++$i) {
+            $token = $tokens[$i];
+            $skip  = 0;
+
+            if (is_array($token)) {
+                $name = substr(token_name($token[0]), 2);
+                $text = $token[1];
+
+                if ($lastNonWhitespaceTokenWasDoubleColon && $name == 'CLASS') {
+                    $name = 'CLASS_NAME_CONSTANT';
+                } elseif ($name == 'USE' && isset($tokens[$i+2][0]) && $tokens[$i+2][0] == T_FUNCTION) {
+                    $name = 'USE_FUNCTION';
+                    $skip = 2;
+                }
+
+                $tokenClass = 'PHP_Token_' . $name;
+            } else {
+                $text       = $token;
+                $tokenClass = self::$customTokens[$token];
+            }
+
+            $this->tokens[] = new $tokenClass($text, $line, $this, $id++);
+            $lines          = substr_count($text, "\n");
+            $line          += $lines;
+
+            if ($tokenClass == 'PHP_Token_HALT_COMPILER') {
+                break;
+            } elseif ($tokenClass == 'PHP_Token_COMMENT' ||
+                $tokenClass == 'PHP_Token_DOC_COMMENT') {
+                $this->linesOfCode['cloc'] += $lines + 1;
+            }
+
+            if ($name == 'DOUBLE_COLON') {
+                $lastNonWhitespaceTokenWasDoubleColon = true;
+            } elseif ($name != 'WHITESPACE') {
+                $lastNonWhitespaceTokenWasDoubleColon = false;
+            }
+
+            $i += $skip;
+        }
+
+        $this->linesOfCode['loc']   = substr_count($sourceCode, "\n");
+        $this->linesOfCode['ncloc'] = $this->linesOfCode['loc'] -
+                                      $this->linesOfCode['cloc'];
+    }
+
+    /**
      * @return integer
      */
     public function count()
@@ -239,6 +238,118 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
         $this->parse();
 
         return $this->classes;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFunctions()
+    {
+        if ($this->functions !== null) {
+            return $this->functions;
+        }
+
+        $this->parse();
+
+        return $this->functions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInterfaces()
+    {
+        if ($this->interfaces !== null) {
+            return $this->interfaces;
+        }
+
+        $this->parse();
+
+        return $this->interfaces;
+    }
+
+    /**
+     * @return array
+     * @since  Method available since Release 1.1.0
+     */
+    public function getTraits()
+    {
+        if ($this->traits !== null) {
+            return $this->traits;
+        }
+
+        $this->parse();
+
+        return $this->traits;
+    }
+
+    /**
+     * Gets the names of all files that have been included
+     * using include(), include_once(), require() or require_once().
+     *
+     * Parameter $categorize set to TRUE causing this function to return a
+     * multi-dimensional array with categories in the keys of the first dimension
+     * and constants and their values in the second dimension.
+     *
+     * Parameter $category allow to filter following specific inclusion type
+     *
+     * @param bool   $categorize OPTIONAL
+     * @param string $category   OPTIONAL Either 'require_once', 'require',
+     *                                           'include_once', 'include'.
+     * @return array
+     * @since  Method available since Release 1.1.0
+     */
+    public function getIncludes($categorize = false, $category = null)
+    {
+        if ($this->includes === null) {
+            $this->includes = array(
+              'require_once' => array(),
+              'require'      => array(),
+              'include_once' => array(),
+              'include'      => array()
+            );
+
+            foreach ($this->tokens as $token) {
+                switch (get_class($token)) {
+                    case 'PHP_Token_REQUIRE_ONCE':
+                    case 'PHP_Token_REQUIRE':
+                    case 'PHP_Token_INCLUDE_ONCE':
+                    case 'PHP_Token_INCLUDE':
+                        $this->includes[$token->getType()][] = $token->getName();
+                        break;
+                }
+            }
+        }
+
+        if (isset($this->includes[$category])) {
+            $includes = $this->includes[$category];
+        } elseif ($categorize === false) {
+            $includes = array_merge(
+                $this->includes['require_once'],
+                $this->includes['require'],
+                $this->includes['include_once'],
+                $this->includes['include']
+            );
+        } else {
+            $includes = $this->includes;
+        }
+
+        return $includes;
+    }
+
+    /**
+     * Returns the name of the function or method a line belongs to.
+     *
+     * @return string or null if the line is not in a function or method
+     * @since  Method available since Release 1.2.0
+     */
+    public function getFunctionForLine($line)
+    {
+        $this->parse();
+
+        if (isset($this->lineToFunctionMap[$line])) {
+            return $this->lineToFunctionMap[$line];
+        }
     }
 
     protected function parse()
@@ -367,130 +478,6 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
     }
 
     /**
-     * @param string $name
-     * @param integer $startLine
-     * @param integer $endLine
-     */
-    private function addFunctionToMap($name, $startLine, $endLine)
-    {
-        for ($line = $startLine; $line <= $endLine; $line++) {
-            $this->lineToFunctionMap[$line] = $name;
-        }
-    }
-
-    /**
-     * @return array
-     */
-    public function getFunctions()
-    {
-        if ($this->functions !== null) {
-            return $this->functions;
-        }
-
-        $this->parse();
-
-        return $this->functions;
-    }
-
-    /**
-     * @return array
-     */
-    public function getInterfaces()
-    {
-        if ($this->interfaces !== null) {
-            return $this->interfaces;
-        }
-
-        $this->parse();
-
-        return $this->interfaces;
-    }
-
-    /**
-     * @return array
-     * @since  Method available since Release 1.1.0
-     */
-    public function getTraits()
-    {
-        if ($this->traits !== null) {
-            return $this->traits;
-        }
-
-        $this->parse();
-
-        return $this->traits;
-    }
-
-    /**
-     * Gets the names of all files that have been included
-     * using include(), include_once(), require() or require_once().
-     *
-     * Parameter $categorize set to TRUE causing this function to return a
-     * multi-dimensional array with categories in the keys of the first dimension
-     * and constants and their values in the second dimension.
-     *
-     * Parameter $category allow to filter following specific inclusion type
-     *
-     * @param bool $categorize OPTIONAL
-     * @param string $category OPTIONAL Either 'require_once', 'require',
-     *                                           'include_once', 'include'.
-     * @return array
-     * @since  Method available since Release 1.1.0
-     */
-    public function getIncludes($categorize = false, $category = null)
-    {
-        if ($this->includes === null) {
-            $this->includes = array(
-                'require_once' => array(),
-                'require' => array(),
-                'include_once' => array(),
-                'include' => array()
-            );
-
-            foreach ($this->tokens as $token) {
-                switch (get_class($token)) {
-                    case 'PHP_Token_REQUIRE_ONCE':
-                    case 'PHP_Token_REQUIRE':
-                    case 'PHP_Token_INCLUDE_ONCE':
-                    case 'PHP_Token_INCLUDE':
-                        $this->includes[$token->getType()][] = $token->getName();
-                        break;
-                }
-            }
-        }
-
-        if (isset($this->includes[$category])) {
-            $includes = $this->includes[$category];
-        } elseif ($categorize === false) {
-            $includes = array_merge(
-                $this->includes['require_once'],
-                $this->includes['require'],
-                $this->includes['include_once'],
-                $this->includes['include']
-            );
-        } else {
-            $includes = $this->includes;
-        }
-
-        return $includes;
-    }
-
-    /**
-     * Returns the name of the function or method a line belongs to.
-     *
-     * @return string or null if the line is not in a function or method
-     * @since  Method available since Release 1.2.0
-     */
-    public function getFunctionForLine($line)
-    {
-        $this->parse();
-
-        if (isset($this->lineToFunctionMap[$line])) {
-            return $this->lineToFunctionMap[$line];
-        }
-    }
-
-    /**
      * @return array
      */
     public function getLinesOfCode()
@@ -503,6 +490,14 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
     public function rewind()
     {
         $this->position = 0;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function valid()
+    {
+        return isset($this->tokens[$this->position]);
     }
 
     /**
@@ -530,6 +525,15 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
 
     /**
      * @param  integer $offset
+     * @return boolean
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->tokens[$offset]);
+    }
+
+    /**
+     * @param  integer $offset
      * @return mixed
      * @throws OutOfBoundsException
      */
@@ -545,15 +549,6 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
         }
 
         return $this->tokens[$offset];
-    }
-
-    /**
-     * @param  integer $offset
-     * @return boolean
-     */
-    public function offsetExists($offset)
-    {
-        return isset($this->tokens[$offset]);
     }
 
     /**
@@ -604,10 +599,14 @@ class PHP_Token_Stream implements ArrayAccess, Countable, SeekableIterator
     }
 
     /**
-     * @return boolean
+     * @param string  $name
+     * @param integer $startLine
+     * @param integer $endLine
      */
-    public function valid()
+    private function addFunctionToMap($name, $startLine, $endLine)
     {
-        return isset($this->tokens[$this->position]);
+        for ($line = $startLine; $line <= $endLine; $line++) {
+            $this->lineToFunctionMap[$line] = $name;
+        }
     }
 }

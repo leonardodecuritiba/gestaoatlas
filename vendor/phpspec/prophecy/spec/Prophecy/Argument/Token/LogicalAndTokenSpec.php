@@ -24,8 +24,7 @@ class LogicalAndTokenSpec extends ObjectBehavior
         TokenInterface $token1,
         TokenInterface $token2,
         TokenInterface $token3
-    )
-    {
+    ) {
         $token1->__toString()->willReturn('token_1');
         $token2->__toString()->willReturn('token_2');
         $token3->__toString()->willReturn('token_3');

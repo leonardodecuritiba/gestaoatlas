@@ -24,8 +24,7 @@ class KeywordPatchSpec extends ObjectBehavior
         MethodNode $method1,
         MethodNode $method2,
         MethodNode $method3
-    )
-    {
+    ) {
         $node->removeMethod('eval')->shouldBeCalled();
         $node->removeMethod('echo')->shouldBeCalled();
 
