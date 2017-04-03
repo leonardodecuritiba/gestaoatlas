@@ -13,8 +13,9 @@
                         <div class="col-xs-12">
                             <div class="perfil left">
                                 <ul class="list-unstyled">
-                                    <li><i class="fa fa-link"></i> Caminho PDF: <b id="url_danfe"></b></li>
-                                    <li><i class="fa fa-link"></i> Caminho XML: <b id="url_xml_nota_fiscal"></b></li>
+                                    <li><i class="fa fa-link"></i> Nota Fiscal PDF: <b id="url_danfe"></b></li>
+                                    <li><i class="fa fa-link"></i> Nota Fiscal XML: <b id="url_xml_nota_fiscal"></b>
+                                    </li>
                                     <li><i class="fa fa-info"></i> Chave: <b id="chave_nfe"></b></li>
                                     <li><i class="fa fa-info"></i> Mensagem SEFAZ: <b id="mensagem_sefaz"></b></li>
                                     <li><i class="fa fa-info"></i> Número/Série: <b id="numero_serie"></b></li>

@@ -16,8 +16,7 @@ class OrdemServico extends Model
     const _STATUS_FINALIZADA_ = 3;
     const _STATUS_AGUARDANDO_PECA_ = 4;
     const _STATUS_EQUIPAMENTO_NA_OFICINA_ = 5; //primary
-    const _STATUS_PAGAMENTO_PENDENTE_ = 6; //warning
-    const _STATUS_FATURADA_ = 7; //warning
+    const _STATUS_FATURADA_ = 6; //success
     public $timestamps = true;
     public $valores = [];
     protected $table = 'ordem_servicos';
@@ -198,7 +197,16 @@ class OrdemServico extends Model
 
     public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
     {
-        return (($this->attributes['fechamento'] != NULL) && ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)) ? 1 : 0;
+        return (
+            ($this->attributes['fechamento'] != NULL)
+            &&
+            (
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
+                ||
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_)
+
+            )
+        ) ? 1 : 0;
     }
 
     public function getStatusType()

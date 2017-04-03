@@ -5,6 +5,7 @@ namespace App\Models;
 use App\AparelhoManutencao;
 use App\Cliente;
 use App\Helpers\DataHelper;
+use App\OrdemServico;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\VarDumper\Cloner\Data;
@@ -183,6 +184,10 @@ class Fechamento extends Model
     public function faturar()
     {
         $this->attributes['idstatus_fechamento'] = self::_STATUS_FATURADO_;
+        foreach ($this->ordem_servicos as $ordem_servico) {
+            $ordem_servico->idsituacao_ordem_servico = OrdemServico::_STATUS_FATURADA_;
+            $ordem_servico->save();
+        }
         return $this->save();
     }
 

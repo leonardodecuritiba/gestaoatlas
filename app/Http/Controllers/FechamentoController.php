@@ -138,6 +138,20 @@ class FechamentoController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $Fechamento = Fechamento::find($id);
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Page', $this->Page)
+            ->with('Fechamento', $Fechamento);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -158,19 +172,6 @@ class FechamentoController extends Controller
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $Fechamento = Fechamento::find($id);
-        return view('pages.' . $this->Page->link . '.show')
-            ->with('Page', $this->Page)
-            ->with('Fechamento', $Fechamento);
-    }
 
     /**
      * Show the form for editing the specified resource.
