@@ -167,8 +167,9 @@ class Fechamento extends Model
     {
         $ref = ($debug) ? $this->idnfe_homologacao : $this->idnfe_producao;
         if ($ref == NULL) RETURN $ref;
-        return json_encode(Nfe::consulta($debug, $ref));
+        return json_encode(Nfe::consulta($ref, $debug));
     }
+
 
     // ******************** RELASHIONSHIP ******************************
 

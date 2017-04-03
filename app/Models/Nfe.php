@@ -838,7 +838,7 @@ class Nfe
         return true;
     }
 
-    static public function consulta($testing = true, $ref)
+    static public function consulta($ref, $testing = true)
     {
         if ($testing) {
             $_SERVER_ = self::_URL_HOMOLOGACAO_;
