@@ -133,7 +133,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('parcela/boleto/{idparcela}', 'ParcelaController@gerarBoleto')->name('parcelas.boleto');
     Route::get('parcela/estornar/{idparcela}', 'ParcelaController@estornar')->name('parcelas.estornar');
 
-    Route::get('nfe/{idfechamento}', 'FechamentoController@getNfeTeste')->name('fechamentos.nfe');
+    Route::get('nfe/teste/{idfechamento}', 'FechamentoController@getNfeTeste')->name('fechamentos.nfe.teste');
+    Route::get('nfe/{idfechamento}', 'FechamentoController@getNfe')->name('fechamentos.nfe');
+    Route::get('consulta/nfe/{idfechamento}', 'FechamentoController@getNfe')->name('fechamentos.nfe.consulta');
 
 
     //RELATÓRIOS

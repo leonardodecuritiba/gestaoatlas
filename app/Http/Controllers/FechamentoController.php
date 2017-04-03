@@ -113,21 +113,18 @@ class FechamentoController extends Controller
     public function getNfeTeste($id)
     {
         $Fechamento = Fechamento::find($id);
-        $NFE = new Nfe($debug = 1, $Fechamento);
-        $retorno = $NFE->send_teste();
-        if (isset($retorno->body->erros)) {
-            $responseNFE = [
-                'message' => $retorno->body->erros,
-                'code' => $retorno->result,
-                'error' => 1,
-            ];
-        } else {
-            $responseNFE = [
-                'message' => 'Nota Fiscal (#' . $NFE->ref . ') gerada com sucesso!',
-                'code' => $retorno->result,
-                'error' => 0,
-            ];
-        }
+        $responseNFE = $Fechamento->setNfe($debug = true);
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Page', $this->Page)
+            ->with('responseNFE', $responseNFE)
+            ->with('Fechamento', $Fechamento);
+
+    }
+
+    public function getNfe($id)
+    {
+        $Fechamento = Fechamento::find($id);
+        $responseNFE = $Fechamento->setNfe($debug = false);
         return view('pages.' . $this->Page->link . '.show')
             ->with('Page', $this->Page)
             ->with('responseNFE', $responseNFE)

@@ -18,15 +18,16 @@ use Symfony\Component\DomCrawler\Crawler;
 class Nfe
 {
     CONST _URL_HOMOLOGACAO_ = 'http://homologacao.acrasnfe.acras.com.br/nfe2';
-    CONST _URL_PRODUCAO_ = 'http://homologacao.acrasnfe.acras.com.br/nfe2';
-//    CONST _URL_PRODUCAO_ = 'https://api.focusnfe.com.br';
+//    CONST _URL_PRODUCAO_ = 'http://homologacao.acrasnfe.acras.com.br/nfe2';
+    CONST _URL_PRODUCAO_ = 'https://api.focusnfe.com.br/nfe2';
 
     CONST _TOKEN_HOMOLOGACAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
-    CONST _TOKEN_PRODUCAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
-//    CONST _TOKEN_PRODUCAO_ = 'QmPEhv5PrVGmkXpUtZIw7nvx0ZUOrDos';
+//    CONST _TOKEN_PRODUCAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
+    CONST _TOKEN_PRODUCAO_ = 'QmPEhv5PrVGmkXpUtZIw7nvx0ZUOrDos';
 
     CONST _CEST_DEFAULT_ = '0106400';
-    public $ref = 9;
+
+    public $ref;
 
     public $debug;
     public $NFe_params;
@@ -48,9 +49,11 @@ class Nfe
         if ($this->debug) {
             $this->SERVER = self::_URL_HOMOLOGACAO_;
             $this->TOKEN = self::_TOKEN_HOMOLOGACAO_;
+            $this->ref = $fechamento->idnfe_homologacao;
         } else {
             $this->SERVER = self::_URL_PRODUCAO_;
             $this->TOKEN = self::_TOKEN_PRODUCAO_;
+            $this->ref = $fechamento->idnfe_producao;
         }
         $this->now = Carbon::now();
         $this->_FECHAMENTO_ = $fechamento;
@@ -827,374 +830,59 @@ class Nfe
         return true;
     }
 
-    public static function consulta1()
+    static public function consulta($testing = true, $ref)
     {
-        //extract data from the post
-        //set POST variables
-        $url = 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm';
-        $fields = array(
-            'ncmsh' => '8507.80.00',
-        );
-
-        $fields_string = '';
-        //url-ify the data for the POST
-        foreach ($fields as $key => $value) {
-            $fields_string .= $key . '=' . $value . '&';
+        if ($testing) {
+            $_SERVER_ = self::_URL_HOMOLOGACAO_;
+            $_TOKEN_ = self::_TOKEN_HOMOLOGACAO_;
+        } else {
+            $_SERVER_ = self::_URL_PRODUCAO_;
+            $_TOKEN_ = self::_TOKEN_PRODUCAO_;
         }
-        rtrim($fields_string, '&');
-
-        //open connection
         $ch = curl_init();
-
-        //set the url, number of POST vars, POST data
-        curl_setopt($ch, CURLOPT_URL, $url);
+        // Substituir pela sua identificação interna da nota
+        // caso queira enviar usando o formato YAML, use a linha abaixo
+        // curl_setopt($ch, CURLOPT_URL, $SERVER."/nfe2/autorizar?ref=" . $ref . "&token=" . $TOKEN);
+        // formato JSON
+        curl_setopt($ch, CURLOPT_URL, $_SERVER_ . "/autorizar.json?ref=" . $ref . "&token=" . $_TOKEN_);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, count($fields));
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_POS, 1);
+        // caso queira enviar usando o formato YAML, use a linha abaixo (necessário biblioteca PECL yaml)
+        // curl_setopt($ch, CURLOPT_POSTFIELDS,     yaml_emit($nfe));
+        // formato JSON
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->NFe_params));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
 
-        //execute post
-        $html = curl_exec($ch);
-        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $retorno = (object)[
+            'body' => json_decode(curl_exec($ch)),
+            'result' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+        ];
         curl_close($ch);
-        //as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
-        //interpretar e lidar com o retorno
-        print("STATUS: " . $result . "<br>");
-        print("BODY <br><br>");
-//        print($html);
+
+        return ($retorno);
+
+//        $body = curl_exec($ch);
+//        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//        //as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
+//        //interpretar e lidar com o retorno
+//
+//        print("STATUS: " . $result . "<br>");
+//        print("BODY <br><br>");
+//        print(($body));
+//
+//        curl_close($ch);
 //        exit;
 
-        $crawler = new Crawler($html);
 
-        //or something like this
-        $body = $crawler->filter('body')->text();
-        dd($body);
     }
 
-    public static function consulta2()
-    {
-
-
-        $client = new Client();//(['base_uri' => 'https://www.codigocest.com.br/', 'timeout'  => 2.0]);
-//        $client->setHeader('Host', 'codigocest.com.br');
-//        $client->setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0');
-//        $client->setHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9, */* ;q=0.8');
-//        $client->setHeader('Accept-Language', 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3');
-//        $client->setHeader('Accept-Encoding', 'gzip, deflate');
-////        $client->setHeader('Referer', 'http://www.codigocest.com.br');
-//        $client->setHeader('Connection', 'keep-alive');
-        $param = array(
-            'ncmsh' => '8507.80.00',
-        );
-        try {
-            $response = $client->request('POST', 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm', $param);
-            dd($response);
-            echo $client->getResponse();
-            echo $client->getStatusCode(); // "200"
-            echo $client->getHeader('content-type'); // 'application/json; charset=utf8'
-            echo $client->getBody();
-            exit;
-        } catch (RequestException $e) {
-            echo "RequestException: <br><br>";
-            if ($e->hasResponse()) {
-                echo Psr7\str($e->getResponse());
-            }
-        } catch (ClientException $e) {
-            echo ">ClientException: <br><br>";
-            echo Psr7\str($e->getRequest());
-            echo Psr7\str($e->getResponse());
-        }
-        exit;
-    }
-
-    public static function getParams()
-    {
-
-        $client = new Client();
-        //https://www.cadesp.fazenda.sp.gov.br/Pages/Cadastro/Consultas/ConsultaPublica/ConsultaPublica.aspx
-        $crawler = $client->request('GET', 'http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/consultaSintegraServlet');
-        $response = $client->getResponse();
-        $input = $crawler->filter('input[name="paramBot"]');
-        $paramBot = trim($input->attr('value'));
-        $headers = $response->getHeaders();
-        $cookie = $headers['Set-Cookie'][0];
-        $paramBotURL = urlencode($paramBot);
-        $ch = curl_init("http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/imageGenerator?keycheck=" . $paramBotURL);
-        $options = array(
-            CURLOPT_COOKIEJAR => 'cookiejar',
-            CURLOPT_HTTPHEADER => array(
-                "Pragma: no-cache",
-                "Origin: http://pfeserv1.fazenda.sp.gov.br",
-                "Host: pfeserv1.fazenda.sp.gov.br",
-                "User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0",
-                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                "Accept-Language: pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3",
-                "Accept-Encoding: gzip, deflate",
-                "Referer: http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/consultaSintegraServlet",
-                "Cookie: flag=1; $cookie",
-                "Connection: keep-alive"
-            ),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_BINARYTRANSFER => true
-        );
-//            CURLOPT_FOLLOWLOCATION => true,
-        curl_setopt_array($ch, $options);
-        $img = curl_exec($ch);
-        curl_close($ch);
-        if (@imagecreatefromstring($img) == false) {
-            throw new Exception('Não foi possível capturar o captcha');
-        }
-        return array(
-            'cookie' => $cookie,
-            'captchaBase64' => 'data:image/png;base64,' . base64_encode($img),
-            'paramBot' => $paramBot
-        );
-    }
-
-    public static function consulta()
-    {
-
-        $client = new Client();
-        #$client->getClient()->setDefaultOption('timeout', 120);
-//        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_TIMEOUT, 0);
-//        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_TIMEOUT_MS, 0);
-//        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_CONNECTTIMEOUT, 0);
-//        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_RETURNTRANSFER, true);
-//        $client->setHeader('Host', 'codigocest.com.br');
-//        $client->setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0');
-//        $client->setHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9, */* ;q=0.8');
-//        $client->setHeader('Accept-Language', 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3');
-//        $client->setHeader('Accept-Encoding', 'gzip, deflate');
-//        $client->setHeader('Referer', 'http://www.codigocest.com.br');
-//        $client->setHeader('Connection', 'keep-alive');
-        $param = array(
-            'ncmsh' => '8507.80.00',
-        );
-        $crawler = $client->request('POST', 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm', $param);
-
-        return $crawler;
-
-
-        $imageError = 'O valor da imagem esta incorreto ou expirou. Verifique novamente a imagem e digite exatamente os 5 caracteres exibidos.';
-        $checkError = $crawler->filter('body > center')->eq(1)->count();
-        if ($checkError && $imageError == trim($crawler->filter('body > center')->eq(1)->text())) {
-            $erro_msg = $imageError;
-            return (['status' => 0, 'response' => $erro_msg]);
-//            throw new Exception($imageError, 99);
-        }
-        $center_ = $crawler->filter('body > center');
-        if (count($center_) == 0) {
-            $erro_msg = 'Serviço indisponível!. Tente novamente.';
-            return (['status' => 0, 'response' => $erro_msg]);
-//            throw new Exception('Serviço indisponível!. Tente novamente.', 99);
-        }
-        //self::saveFile($client);
-        $html = self::parseContent($client->getResponse()->__toString());
-        $crawler = new  \Symfony\Component\DomCrawler\Crawler($html);
-        $data = self::parseSelectors($crawler);
-        return $data;
-    }
-
-    public static function parseContent($content)
-    {
-        $content = utf8_encode($content);
-        $content = str_replace("&nbsp;", "", $content);
-        return $content;
-    }
-
-    public static function parseSelectors($crawler)
-    {
-        try {
-            try {
-                $cnpj = $crawler->filter('body > center')->eq(3)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $cnpj = null;
-            }
-            try {
-                $ie = $crawler->filter('body > center')->eq(3)->filter('table > tr > td')->eq(3)->filter('font')->text();
-            } catch (\Exception $e) {
-                $ie = null;
-            }
-            try {
-                $razao_social = $crawler->filter('body > center')->eq(4)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $razao_social = null;
-            }
-            try {
-                $logradouro = $crawler->filter('body > center')->eq(6)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $logradouro = null;
-            }
-            try {
-                $numero = $crawler->filter('body > center')->eq(7)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $numero = null;
-            }
-            try {
-                $complemento = $crawler->filter('body > center')->eq(7)->filter('table > tr > td')->eq(3)->filter('font')->text();
-            } catch (\Exception $e) {
-                $complemento = null;
-            }
-            try {
-                $bairro = $crawler->filter('body > center')->eq(8)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $bairro = null;
-            }
-            try {
-                $municipio = $crawler->filter('body > center')->eq(9)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $municipio = null;
-            }
-            try {
-                $uf = $crawler->filter('body > center')->eq(9)->filter('table > tr > td')->eq(3)->filter('font')->text();
-            } catch (\Exception $e) {
-                $uf = null;
-            }
-            try {
-                $cep = $crawler->filter('body > center')->eq(10)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $cep = null;
-            }
-            try {
-                $atividade_economica = $crawler->filter('body > center')->eq(12)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $atividade_economica = null;
-            }
-            try {
-                $situacao_cadastral_vigente = $crawler->filter('body > center')->eq(13)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $situacao_cadastral_vigente = null;
-            }
-            try {
-                $situacao_cadastral_vigente .= ' - ' .
-                    $crawler->filter('body > center')->eq(13)->filter('table > tr > td')->eq(2)->filter('font')->text();
-            } catch (\Exception $e) {
-                $situacao_cadastral_vigente = null;
-            }
-            try {
-                $data_situacao_cadastral = $crawler->filter('body > center')->eq(14)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $data_situacao_cadastral = null;
-            }
-            try {
-                $regime_de_apuracao = $crawler->filter('body > center')->eq(15)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $regime_de_apuracao = null;
-            }
-            try {
-                $data_credenciamento_emissor_nfe = $crawler->filter('body > center')->eq(16)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $data_credenciamento_emissor_nfe = null;
-            }
-            try {
-                $indicador_obrigatoriedade_nfe = $crawler->filter('body > center')->eq(17)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $indicador_obrigatoriedade_nfe = null;
-            }
-            try {
-                $data_inicio_obrigatoriedade_nfe = $crawler->filter('body > center')->eq(18)->filter('table > tr > td')->eq(1)->filter('font')->text();
-            } catch (\Exception $e) {
-                $data_inicio_obrigatoriedade_nfe = null;
-            }
-
-            if ($data_inicio_obrigatoriedade_nfe == 'Acessar cadastro de outro Estado') {
-                $data_inicio_obrigatoriedade_nfe = null;
-            }
-
-            $situacao_cadastral = explode(' - ', $situacao_cadastral_vigente);
-            $result = [
-                'status' => 1,
-                'cnpj' => $cnpj,
-                'ie' => $ie,
-                'razao_social' => $razao_social,
-                'ativ_economica' => $atividade_economica,
-                'sit_cad_vigente' => $situacao_cadastral[0],
-                'sit_cad_status' => $situacao_cadastral[1],
-                'data_sit_cad' => $data_situacao_cadastral,
-                'reg_apuracao' => $regime_de_apuracao,
-                'data_credenciamento' => $data_credenciamento_emissor_nfe,
-                'ind_obrigatoriedade' => $indicador_obrigatoriedade_nfe,
-                'data_ini_obrigatoriedade' => $data_inicio_obrigatoriedade_nfe,
-
-                'cep' => $cep,
-                'estado' => $uf,
-                'cidade' => $municipio,
-                'bairro' => $bairro,
-                'logradouro' => $logradouro,
-                'numero' => $numero,
-                'complemento' => $complemento
-            ];
-
-//            $result['status'] = 1;
-//            $result['cnpj'] = $cnpj;
-//            $result['ie'] = $ie;
-//            $result['razao_social'] = $razao_social;
-//            $result['atividade_economica'] = $atividade_economica;
-//            $result['situacao_cadastral_vigente'] = $situacao_cadastral_vigente;
-//            $result['data_situacao_cadastral'] = $data_situacao_cadastral;
-//            $result['regime_de_apuracao'] = $regime_de_apuracao;
-//            $result['data_credenciamento_emissor_nfe'] = $data_credenciamento_emissor_nfe;
-//            $result['indicador_obrigatoriedade_nfe'] = $indicador_obrigatoriedade_nfe;
-//            $result['data_inicio_obrigatoriedade_nfe'] = $data_inicio_obrigatoriedade_nfe;
-//            $result['cep'] = $cep;
-//            $result['uf'] = $uf;
-//            $result['municipio'] = $municipio;
-//            $result['bairro'] = $bairro;
-//            $result['logradouro'] = $logradouro;
-//            $result['numero'] = $numero;
-//            $result['complemento'] = $complemento;
-
-            foreach ($result as $key => $value) {
-                if ($value != '' && $value != null) {
-                    $result[$key] = utf8_decode($value);
-                }
-            }
-            return $result;
-        } catch (\Exception $e) {
-//            throw new Exception($e->getMessage() . "Dados não encontrados/Serviço Indisponível.");
-            $erro_msg = "Dados não encontrados/Serviço Indisponível.";
-            return (['status' => 0, 'response' => $erro_msg]);
-//            return (['status' => 0, 'response' => $erro_msg." ".$e->getMessage()]);
-        }
-    }
-
-    public static function saveFile($client)
-    {
-        $file = fopen(getcwd() . "/crawler-sintegra.html", "w");
-        fwrite($file, $client->getResponse()->__toString());
-        fclose($file);
-    }
-
-    public function send()
-    {
-        $client = new Client(['base_uri' => $this->SERVER]);
-        try {
-            $response = $client->request('POST', $this->SERVER . "/autorizar.json?token=" . $this->TOKEN . "&ref=" . $this->ref, ['json' => $this->$NFe_params]);
-            echo $client->getResponse();
-            echo $client->getStatusCode(); // "200"
-            echo $client->getHeader('content-type'); // 'application/json; charset=utf8'
-            echo $client->getBody();
-            exit;
-        } catch (RequestException $e) {
-            echo "RequestException: <br><br>";
-            if ($e->hasResponse()) {
-                echo Psr7\str($e->getResponse());
-            }
-        } catch (ClientException $e) {
-            echo ">ClientException: <br><br>";
-            echo Psr7\str($e->getRequest());
-            echo Psr7\str($e->getResponse());
-        }
-        exit;
-    }
-
-    public function send_teste()
+    public function envia()
     {
         $ch = curl_init();
         // Substituir pela sua identificação interna da nota
         // caso queira enviar usando o formato YAML, use a linha abaixo
         // curl_setopt($ch, CURLOPT_URL, $SERVER."/nfe2/autorizar?ref=" . $ref . "&token=" . $TOKEN);
         // formato JSON
-        $_REF_ = $this->ref + $this->_FECHAMENTO_->id;
         curl_setopt($ch, CURLOPT_URL, $this->SERVER . "/autorizar.json?ref=" . $this->ref . "&token=" . $this->TOKEN);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
@@ -1212,21 +900,207 @@ class Nfe
 
         return ($retorno);
 
-
-        $body = curl_exec($ch);
-        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        //as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
-        //interpretar e lidar com o retorno
-
-        print("STATUS: " . $result . "<br>");
-        print("BODY <br><br>");
-        print(($body));
-
-        curl_close($ch);
-        exit;
-
-
+//        $body = curl_exec($ch);
+//        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//        //as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
+//        //interpretar e lidar com o retorno
+//
+//        print("STATUS: " . $result . "<br>");
+//        print("BODY <br><br>");
+//        print(($body));
+//
+//        curl_close($ch);
+//        exit;
     }
+
+//    public static function consulta1()
+//    {
+//        //extract data from the post
+//        //set POST variables
+//        $url = 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm';
+//        $fields = array(
+//            'ncmsh' => '8507.80.00',
+//        );
+//
+//        $fields_string = '';
+//        //url-ify the data for the POST
+//        foreach ($fields as $key => $value) {
+//            $fields_string .= $key . '=' . $value . '&';
+//        }
+//        rtrim($fields_string, '&');
+//
+//        //open connection
+//        $ch = curl_init();
+//
+//        //set the url, number of POST vars, POST data
+//        curl_setopt($ch, CURLOPT_URL, $url);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//        curl_setopt($ch, CURLOPT_POST, count($fields));
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
+//
+//        //execute post
+//        $html = curl_exec($ch);
+//        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//        curl_close($ch);
+//        //as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
+//        //interpretar e lidar com o retorno
+//        print("STATUS: " . $result . "<br>");
+//        print("BODY <br><br>");
+////        print($html);
+////        exit;
+//
+//        $crawler = new Crawler($html);
+//
+//        //or something like this
+//        $body = $crawler->filter('body')->text();
+//        dd($body);
+//    }
+//
+//    public static function consulta2()
+//    {
+//
+//
+//        $client = new Client();//(['base_uri' => 'https://www.codigocest.com.br/', 'timeout'  => 2.0]);
+////        $client->setHeader('Host', 'codigocest.com.br');
+////        $client->setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0');
+////        $client->setHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9, */* ;q=0.8');
+////        $client->setHeader('Accept-Language', 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3');
+////        $client->setHeader('Accept-Encoding', 'gzip, deflate');
+//////        $client->setHeader('Referer', 'http://www.codigocest.com.br');
+////        $client->setHeader('Connection', 'keep-alive');
+//        $param = array(
+//            'ncmsh' => '8507.80.00',
+//        );
+//        try {
+//            $response = $client->request('POST', 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm', $param);
+//            dd($response);
+//            echo $client->getResponse();
+//            echo $client->getStatusCode(); // "200"
+//            echo $client->getHeader('content-type'); // 'application/json; charset=utf8'
+//            echo $client->getBody();
+//            exit;
+//        } catch (RequestException $e) {
+//            echo "RequestException: <br><br>";
+//            if ($e->hasResponse()) {
+//                echo Psr7\str($e->getResponse());
+//            }
+//        } catch (ClientException $e) {
+//            echo ">ClientException: <br><br>";
+//            echo Psr7\str($e->getRequest());
+//            echo Psr7\str($e->getResponse());
+//        }
+//        exit;
+//    }
+//
+//    public static function getParams()
+//    {
+//
+//        $client = new Client();
+//        //https://www.cadesp.fazenda.sp.gov.br/Pages/Cadastro/Consultas/ConsultaPublica/ConsultaPublica.aspx
+//        $crawler = $client->request('GET', 'http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/consultaSintegraServlet');
+//        $response = $client->getResponse();
+//        $input = $crawler->filter('input[name="paramBot"]');
+//        $paramBot = trim($input->attr('value'));
+//        $headers = $response->getHeaders();
+//        $cookie = $headers['Set-Cookie'][0];
+//        $paramBotURL = urlencode($paramBot);
+//        $ch = curl_init("http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/imageGenerator?keycheck=" . $paramBotURL);
+//        $options = array(
+//            CURLOPT_COOKIEJAR => 'cookiejar',
+//            CURLOPT_HTTPHEADER => array(
+//                "Pragma: no-cache",
+//                "Origin: http://pfeserv1.fazenda.sp.gov.br",
+//                "Host: pfeserv1.fazenda.sp.gov.br",
+//                "User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0",
+//                "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+//                "Accept-Language: pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3",
+//                "Accept-Encoding: gzip, deflate",
+//                "Referer: http://pfeserv1.fazenda.sp.gov.br/sintegrapfe/consultaSintegraServlet",
+//                "Cookie: flag=1; $cookie",
+//                "Connection: keep-alive"
+//            ),
+//            CURLOPT_RETURNTRANSFER => true,
+//            CURLOPT_BINARYTRANSFER => true
+//        );
+////            CURLOPT_FOLLOWLOCATION => true,
+//        curl_setopt_array($ch, $options);
+//        $img = curl_exec($ch);
+//        curl_close($ch);
+//        if (@imagecreatefromstring($img) == false) {
+//            throw new Exception('Não foi possível capturar o captcha');
+//        }
+//        return array(
+//            'cookie' => $cookie,
+//            'captchaBase64' => 'data:image/png;base64,' . base64_encode($img),
+//            'paramBot' => $paramBot
+//        );
+//    }
+//////
+//    public static function consulta()
+//    {
+//
+//        $client = new Client();
+//        #$client->getClient()->setDefaultOption('timeout', 120);
+////        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_TIMEOUT, 0);
+////        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_TIMEOUT_MS, 0);
+////        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_CONNECTTIMEOUT, 0);
+////        $client->getClient()->setDefaultOption('config/curl/'.CURLOPT_RETURNTRANSFER, true);
+////        $client->setHeader('Host', 'codigocest.com.br');
+////        $client->setHeader('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:32.0) Gecko/20100101 Firefox/32.0');
+////        $client->setHeader('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9, */* ;q=0.8');
+////        $client->setHeader('Accept-Language', 'pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3');
+////        $client->setHeader('Accept-Encoding', 'gzip, deflate');
+////        $client->setHeader('Referer', 'http://www.codigocest.com.br');
+////        $client->setHeader('Connection', 'keep-alive');
+//        $param = array(
+//            'ncmsh' => '8507.80.00',
+//        );
+//        $crawler = $client->request('POST', 'https://www.codigocest.com.br/consulta-codigo-cest-pelo-ncm', $param);
+//
+//        return $crawler;
+//
+//
+//        $imageError = 'O valor da imagem esta incorreto ou expirou. Verifique novamente a imagem e digite exatamente os 5 caracteres exibidos.';
+//        $checkError = $crawler->filter('body > center')->eq(1)->count();
+//        if ($checkError && $imageError == trim($crawler->filter('body > center')->eq(1)->text())) {
+//            $erro_msg = $imageError;
+//            return (['status' => 0, 'response' => $erro_msg]);
+////            throw new Exception($imageError, 99);
+//        }
+//        $center_ = $crawler->filter('body > center');
+//        if (count($center_) == 0) {
+//            $erro_msg = 'Serviço indisponível!. Tente novamente.';
+//            return (['status' => 0, 'response' => $erro_msg]);
+////            throw new Exception('Serviço indisponível!. Tente novamente.', 99);
+//        }
+//        //self::saveFile($client);
+//        $html = self::parseContent($client->getResponse()->__toString());
+//        $crawler = new  \Symfony\Component\DomCrawler\Crawler($html);
+//        $data = self::parseSelectors($crawler);
+//        return $data;
+//    }
+//    public function send()
+//    {
+//        $client = new Client(['base_uri' => $this->SERVER]);
+//        try {
+//            $response = $client->request('POST', $this->SERVER . "/autorizar.json?token=" . $this->TOKEN . "&ref=" . $this->ref, ['json' => $this->$NFe_params]);
+//            echo $client->getResponse();
+//            echo $client->getStatusCode(); // "200"
+//            echo $client->getHeader('content-type'); // 'application/json; charset=utf8'
+//            echo $client->getBody();
+//            exit;
+//        } catch (RequestException $e) {
+//            echo "RequestException: <br><br>";
+//            if ($e->hasResponse()) {
+//                echo Psr7\str($e->getResponse());
+//            }
+//        } catch (ClientException $e) {
+//            echo ">ClientException: <br><br>";
+//            echo Psr7\str($e->getRequest());
+//            echo Psr7\str($e->getResponse());
+//        }
+//        exit;
+//    }
 
 
 }
