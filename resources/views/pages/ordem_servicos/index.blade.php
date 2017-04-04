@@ -80,7 +80,8 @@
                     "language": language_pt_br,
                     "pageLength": 20,
                     "bLengthChange": false, //used to hide the property
-                    "bFilter": false
+                    "bFilter": false,
+                    "order": [0, "desc"]
                 }
             );
         });

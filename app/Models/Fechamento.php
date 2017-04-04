@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Ajuste;
 use App\AparelhoManutencao;
 use App\Cliente;
 use App\Helpers\DataHelper;
@@ -138,10 +139,11 @@ class Fechamento extends Model
 
     public function setNfe($debug = true)
     {
+        $ref = Ajuste::getByMetaKey('ref_index')->meta_value;
         if ($debug) {
-            $this->idnfe_homologacao = $this->id + 9;
+            $this->idnfe_homologacao = $this->id + $ref;
         } else {
-            $this->idnfe_producao = $this->id;
+            $this->idnfe_producao = $this->id + $ref;
         }
         $this->save();
         $NFE = new Nfe($debug, $this);

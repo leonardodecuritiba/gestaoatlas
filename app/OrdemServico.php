@@ -81,7 +81,7 @@ class OrdemServico extends Model
         $query = OrdemServico::orderBy('idordem_servico', 'desc');
         switch ($situacao_ordem_servico) {
             case 'a-faturar':
-                $query->where('idsituacao_ordem_servico', '<=', self::_STATUS_PAGAMENTO_PENDENTE_);
+                $query->where('idsituacao_ordem_servico', '<>', self::_STATUS_FATURADA_);
                 break;
             case 'faturadas':
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
@@ -190,9 +190,14 @@ class OrdemServico extends Model
         return DataHelper::mask($value, '###.###.###-##');
     }
 
-    public function getStatus()
+//    public function getStatus()
+//    {
+//        return $this->situacao->descricao;
+//    }
+
+    public function getStatusText()
     {
-        return $this->situacao->description;
+        return $this->situacao->descricao;
     }
 
     public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA

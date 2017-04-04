@@ -18,6 +18,9 @@ use Symfony\Component\Yaml\Yaml;
  */
 class Nfe
 {
+//  http://homologacao.acrasnfe.acras.com.br/panel/dashboard
+//  https://api.focusnfe.com.br/panel/login
+
     CONST _URL_HOMOLOGACAO_ = 'http://homologacao.acrasnfe.acras.com.br';
 //    CONST _URL_PRODUCAO_ = 'http://homologacao.acrasnfe.acras.com.br/nfe2';
     CONST _URL_PRODUCAO_ = 'https://api.focusnfe.com.br';

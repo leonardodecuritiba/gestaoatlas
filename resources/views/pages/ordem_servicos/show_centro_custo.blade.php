@@ -1,5 +1,8 @@
 @extends('layouts.template')
 @section('modals_content')
+    <!-- Datatables -->
+    @include('helpers.datatables.head')
+    <!-- /Datatables -->
     @include('layouts.modals.delete')
 @endsection
 @section('page_content')
@@ -24,11 +27,12 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                        <table border="0" class="table table-hover">
+                        <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                               width="100%">
                             <thead>
                             <tr>
-                                <th>Situação</th>
                                 <th>ID</th>
+                                <th>Situação</th>
                                 <th>Nº Chamado</th>
                                 <th>Data de Abertura</th>
                                 <th>Técnico</th>
@@ -39,24 +43,11 @@
                             <tbody>
                             @foreach ($Buscas as $selecao)
                                 <tr>
-                                    <td>
-                                        <button class="btn btn-xs
-										<?php
-                                        switch ($selecao->idsituacao_ordem_servico) {
-                                            case '1':
-                                                echo 'btn-success';
-                                                break;
-                                            case '2':
-                                                echo 'btn-warning';
-                                                break;
-                                            case '3':
-                                                echo 'btn-danger';
-                                                break;
-                                        }
-                                        ?>"
-                                        >{{$selecao->situacao->descricao}}</button>
-                                    </td>
                                     <td>{{$selecao->idordem_servico}}</td>
+                                    <td>
+                                        <button class="btn btn-xs btn-{{$selecao->getStatusType()}}"
+                                        >{{$selecao->getStatusText()}}</button>
+                                    </td>
                                     <td>{{$selecao->numero_chamado}}</td>
                                     <td>{{$selecao->created_at}}</td>
                                     <td>{{$selecao->colaborador->nome}}</td>
@@ -77,9 +68,6 @@
                             @endforeach
                             </tbody>
                         </table>
-                        <div class="pull-right">
-                            {!! $Buscas->appends(Request::only('busca'))->links() !!}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -90,6 +78,22 @@
     <!-- /page content -->
 @endsection
 @section('scripts_content')
+    <!-- Datatables -->
+    @include('helpers.datatables.foot')
+    <script>
+        $(document).ready(function () {
+            $('.dt-responsive').DataTable(
+                {
+                    "language": language_pt_br,
+                    "pageLength": 20,
+                    "bLengthChange": false, //used to hide the property
+                    "bFilter": false,
+                    "order": [0, "desc"]
+                }
+            );
+        });
+    </script>
+    <!-- /Datatables -->
     <script>
         <!-- script deleção -->
         $(document).ready(function () {
