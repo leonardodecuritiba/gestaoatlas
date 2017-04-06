@@ -30,6 +30,11 @@ class Contato extends Model
         return $this->belongsTo('App\Cliente', 'idcontato');
     }
 
+    public function getCodCidade()
+    {
+        return $this->attributes['cidade'];
+    }
+
     public function getTelefone()
     {
         return $this->attributes['telefone'];
