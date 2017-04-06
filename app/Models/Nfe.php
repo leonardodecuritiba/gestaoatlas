@@ -869,6 +869,11 @@ class Nfe
         ];
         curl_close($ch);
 
+        print("STATUS: " . $result . "<br>");
+        print("BODY <br><br>");
+        print(($body));
+        exit;
+
         return ($retorno);
 
 

@@ -25,4 +25,11 @@ class Ajuste extends Model
     {
         return DataHelper::getPrettyDateTime($value);
     }
+
+    public function incrementa()
+    {
+        $this->meta_value += 1;
+        $this->save();
+        return;
+    }
 }
