@@ -80,6 +80,15 @@ class OrdemServico extends Model
     {
         $query = OrdemServico::orderBy('idordem_servico', 'desc');
         switch ($situacao_ordem_servico) {
+            case 'abertas':
+                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
+                break;
+            case 'atendimento-em-andamento':
+                $query->where('idsituacao_ordem_servico', self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_);
+                break;
+            case 'finalizadas':
+                $query->where('idsituacao_ordem_servico', self::_STATUS_FINALIZADA_);
+                break;
             case 'a-faturar':
                 $query->where('idsituacao_ordem_servico', '<>', self::_STATUS_FATURADA_);
                 break;

@@ -30,7 +30,8 @@ class Fechamento extends Model
 
     static public function geraFechamento($ordem_servicos, $centro_custo = 0)
     {
-        $Cliente = $ordem_servicos[0]->cliente;
+        $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
+
         if ($Cliente->prazo_pagamento_tecnica->id == PrazoPagamento::_STATUS_A_VISTA_) {
             $cl_parcelas = ['quantidade' => 1, 'prazo' => 0];
         } else {

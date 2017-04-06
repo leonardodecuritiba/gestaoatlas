@@ -113,9 +113,14 @@
                             @role('tecnico')
                             <li><a href="{{ route('ordem_servicos.busca') }}"> Nova Ordem de Serviços</a></li>
                             @endrole
-                            <li><a href="{{ route('ordem_servicos.index','todas') }}">Todas</a></li>
+                            <li><a href="{{ route('ordem_servicos.index','abertas') }}">Abertas</a></li>
+                            <li><a href="{{ route('ordem_servicos.index','atendimento-em-andamento') }}">Em
+                                    andamento</a></li>
+                            <li><a href="{{ route('ordem_servicos.index','finalizadas') }}">Finalizadas</a></li>
                             <li><a href="{{ route('ordem_servicos.index','a-faturar') }}">A faturar</a></li>
                             <li><a href="{{ route('ordem_servicos.index','faturadas') }}">Faturadas</a></li>
+                            <li><a href="{{ route('ordem_servicos.index','todas') }}">Todas</a></li>
+
                         </ul>
                     </li>
                     <li><a><i class="fa fa-money"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
@@ -136,12 +141,11 @@
                             <li>
                                 <a>Fechamentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{ route('fechamentos.index','todas') }}">Todas</a>
-                                    </li>
                                     <li><a href="{{ route('fechamentos.index','pendentes') }}">Pendentes</a></li>
                                     <li>
                                         <a href="{{ route('fechamentos.index','faturados') }}">Faturados</a>
                                     </li>
+                                    <li><a href="{{ route('fechamentos.index','todas') }}">Todas</a>
                                     </li>
                                 </ul>
                             </li>
