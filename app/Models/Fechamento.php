@@ -140,13 +140,15 @@ class Fechamento extends Model
 
     public function setNfe($debug = true)
     {
-        $ref_index = Ajuste::getByMetaKey('ref_index');
-        $ref = $ref_index->meta_value;
-        $ref_index->incrementa();
         if ($debug) {
-            $this->idnfe_homologacao = $ref;
+            $ref_index = Ajuste::getByMetaKey('ref_nfeindex_homologacao');
+            $this->idnfe_homologacao = $ref_index->meta_value;
+            $ref_index->incrementa();
         } else {
-            $this->idnfe_producao = $ref;
+
+            $ref_index = Ajuste::getByMetaKey('ref_nfeindex_producao');
+            $this->idnfe_producao = $ref_index->meta_value;
+            $ref_index->incrementa();
         }
         $this->save();
         $NFE = new Nfe($debug, $this);
