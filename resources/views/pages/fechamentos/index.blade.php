@@ -71,12 +71,10 @@
             $('.dt-responsive').DataTable(
                 {
                     "language": language_pt_br,
-                    "columnDefs": [
-                        {targets: [0, 1, 2, 3, 4, 5], visible: true}
-                    ],
                     "pageLength": 10,
                     "bLengthChange": false, //used to hide the property
-                    "bFilter": false
+                    "bFilter": false,
+                    "order": [0, "desc"]
                 }
             );
         });
