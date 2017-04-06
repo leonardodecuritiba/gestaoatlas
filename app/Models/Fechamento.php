@@ -144,9 +144,9 @@ class Fechamento extends Model
         $ref = $ref_index->meta_value;
         $ref_index->incrementa();
         if ($debug) {
-            $this->idnfe_homologacao = $this->id + $ref;
+            $this->idnfe_homologacao = $ref;
         } else {
-            $this->idnfe_producao = $this->id + $ref;
+            $this->idnfe_producao = $ref;
         }
         $this->save();
         $NFE = new Nfe($debug, $this);
