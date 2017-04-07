@@ -105,18 +105,16 @@ class FechamentoController extends Controller
 
     public function run_teste()
     {
-        $ordem_servicos = OrdemServico::find(211);
-        return $ordem_servicos;
+        $ordem_servico = OrdemServico::find(211);
         $fechamento_cc = []; //fechamento centro de custos
         $fechamento_cl = []; //fechamento clientes
-        foreach ($ordem_servicos as $ordem_servico) {
-            if ($ordem_servico->idcentro_custo != NULL) {
-                $idcentro_custo = $ordem_servico->idcentro_custo;
-                $fechamento_cc[$idcentro_custo][] = $ordem_servico;
-            } else {
-                $idcliente = $ordem_servico->idcliente;
-                $fechamento_cl[$idcliente][] = $ordem_servico;
-            }
+
+        if ($ordem_servico->idcentro_custo != NULL) {
+            $idcentro_custo = $ordem_servico->idcentro_custo;
+            $fechamento_cc[$idcentro_custo][] = $ordem_servico;
+        } else {
+            $idcliente = $ordem_servico->idcliente;
+            $fechamento_cl[$idcliente][] = $ordem_servico;
         }
 
         //fechamentos CLIENTES
