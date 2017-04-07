@@ -173,8 +173,7 @@ class Fechamento extends Model
     public function getDataNfe($debug = true)
     {
         $ref = ($debug) ? $this->idnfe_homologacao : $this->idnfe_producao;
-        if ($ref == NULL) RETURN $ref;
-        return json_encode(Nfe::consulta($ref, $debug));
+        return ($ref == NULL) ? $ref : json_encode(Nfe::consulta($ref, $debug));
     }
 
 
