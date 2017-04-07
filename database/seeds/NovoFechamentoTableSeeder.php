@@ -16,7 +16,7 @@ class NovoFechamentoTableSeeder extends Seeder
     {
         $start = microtime(true);
         $FechamentoController = new FechamentoController();
-        $FechamentoController->run();
+        $FechamentoController->run_teste();
 
         echo "\n*** NovoFechamentoTableSeeder completo em " . round((microtime(true) - $start), 3) . "s ***";
     }
