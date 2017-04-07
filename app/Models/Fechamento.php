@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\LastCreatedScope;
 use App\Ajuste;
 use App\AparelhoManutencao;
 use App\Cliente;
@@ -168,6 +169,17 @@ class Fechamento extends Model
             ];
         }
         return $responseNFE;
+    }
+
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeLastCreated($query)
+    {
+        return $query->orderBy('created_at', 'desc')->first();;
     }
 
     public function getDataNfe($debug = true)

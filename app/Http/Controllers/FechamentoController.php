@@ -100,12 +100,14 @@ class FechamentoController extends Controller
             Fechamento::geraFechamento($ordem_servicos, 1);
         }
 
-        return Fechamento::all();
+        return Fechamento::lastCreated()->first();
     }
 
-    public function run_teste()
+    public function runByID($id = NULL)
     {
-        $ordem_servico = OrdemServico::find(211);
+        if ($id == NULL) return $id;
+
+        $ordem_servico = OrdemServico::find($id);
         $fechamento_cc = []; //fechamento centro de custos
         $fechamento_cl = []; //fechamento clientes
 
@@ -126,8 +128,8 @@ class FechamentoController extends Controller
         foreach ($fechamento_cc as $ordem_servicos) {
             Fechamento::geraFechamento($ordem_servicos, 1);
         }
+        return Fechamento::lastCreated()->first();
 
-        return Fechamento::all();
     }
 
     public function remover($id)
