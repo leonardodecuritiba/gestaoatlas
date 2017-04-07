@@ -106,6 +106,7 @@ class FechamentoController extends Controller
     public function run_teste()
     {
         $ordem_servicos = OrdemServico::find(211);
+        return $ordem_servicos;
         $fechamento_cc = []; //fechamento centro de custos
         $fechamento_cl = []; //fechamento clientes
         foreach ($ordem_servicos as $ordem_servico) {
