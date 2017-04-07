@@ -137,7 +137,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('nfe/{idfechamento}', 'FechamentoController@getNfe')->name('fechamentos.nfe');
     Route::get('consulta/nfe/{idfechamento}/{debug}', 'FechamentoController@consultaNfe')->name('fechamentos.nfe.consulta');
     Route::get('run-fechamento', 'FechamentoController@run');
-    Route::get('run-fechamento-teste', 'FechamentoController@run_teste');
+//    Route::get('run-fechamento-teste', 'FechamentoController@run_teste');
 
 
     //RELATÓRIOS
