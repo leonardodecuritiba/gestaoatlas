@@ -76,14 +76,14 @@
                             <tr>
                                 <th>Razão Social</th>
                                 <th>Nome Fantasia</th>
-                                <th>Documento</th>
+                                <th>CNPJ / CPF</th>
                                 <th>Nº O.S.</th>
+                                <th>Nº do Inventario</th>
+                                <th>Nº de Série</th>
+                                <th>Marca de reparo</th>
                                 <th>Data do Reparo</th>
                                 <th>Técnico</th>
                                 <th>Descrição O.S.</th>
-                                <th>Nº de Série</th>
-                                <th>Nº do Inventario</th>
-                                <th>Marca de reparo</th>
                                 <th>Carga</th>
                             </tr>
                             </thead>
@@ -97,6 +97,9 @@
                                     <td><b><a href="{{route('clientes.show', $Ordem_servico->idcliente)}}"
                                               target="_blank">{{$Cliente->nome_principal}}</a></b></td>
                                     <td>{{$Cliente->documento}}</td>
+                                    <td>{{$Instrumento->inventario}}</td>
+                                    <td>{{$Instrumento->numero_serie}}</td>
+                                    <td>{{$Instrumento->selo_afixado_numeracao()}}</td>
                                     <td><b><a href="{{route('ordem_servicos.show', $Ordem_servico->idordem_servico)}}"
                                               target="_blank">{{$Ordem_servico->idordem_servico}}</a></b></td>
                                     <td>{{$Ordem_servico->created_at}}</td>
@@ -107,9 +110,6 @@
                                     <td>
                                         <span class="red">{{$Aparelho_manutencao->defeito}}</span> /
                                         <span class="green">{{$Aparelho_manutencao->solucao}}</span>
-                                    <td>{{$Instrumento->numero_serie}}</td>
-                                    <td>{{$Instrumento->inventario}}</td>
-                                    <td>{{$Instrumento->selo_afixado_numeracao()}}</td>
                                     <td>{{$Instrumento->capacidade}}</td>
 
                                 </tr>
