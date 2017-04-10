@@ -97,11 +97,11 @@
                                     <td><b><a href="{{route('clientes.show', $Ordem_servico->idcliente)}}"
                                               target="_blank">{{$Cliente->nome_principal}}</a></b></td>
                                     <td>{{$Cliente->documento}}</td>
+                                    <td><b><a href="{{route('ordem_servicos.show', $Ordem_servico->idordem_servico)}}"
+                                              target="_blank">{{$Ordem_servico->idordem_servico}}</a></b></td>
                                     <td>{{$Instrumento->inventario}}</td>
                                     <td>{{$Instrumento->numero_serie}}</td>
                                     <td>{{$Instrumento->selo_afixado_numeracao()}}</td>
-                                    <td><b><a href="{{route('ordem_servicos.show', $Ordem_servico->idordem_servico)}}"
-                                              target="_blank">{{$Ordem_servico->idordem_servico}}</a></b></td>
                                     <td>{{$Ordem_servico->created_at}}</td>
                                     <td>
                                         <b><a href="{{route('colaboradores.show', $Ordem_servico->colaborador->idcolaborador)}}"
