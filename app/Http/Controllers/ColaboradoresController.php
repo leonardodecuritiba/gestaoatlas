@@ -223,7 +223,7 @@ class ColaboradoresController extends Controller
     {
         $ini = $request->get('numeracao_inicial');
         $end = $request->get('numeracao_final');
-        $qtd = $end - $ini;
+        $qtd = $end - $ini + 1;
         if($request->get('opcao') == 'selo'){
             if(Selo::where('numeracao',$ini)->count()>0){
                 $erros = 'Já existem Selos com essa numeração';

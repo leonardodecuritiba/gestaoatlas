@@ -110,7 +110,7 @@
             }
             $($input_numeracao_inicial).attr('min',last);
             $($input_numeracao_inicial).val(last);
-            $($input_numeracao_final).attr('min',last+1);
+            $($input_numeracao_final).attr('min', last);
             $($input_numeracao_final).val(last+1);
         });
         $('div#modalRepassarSeloLacre').on('hide.bs.modal', function (e) {
