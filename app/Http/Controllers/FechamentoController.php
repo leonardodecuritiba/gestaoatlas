@@ -109,7 +109,9 @@ class FechamentoController extends Controller
         $ordem_servico = OrdemServico::find($id);
         $centro_custo = ($ordem_servico->idcentro_custo != NULL);
         Fechamento::geraFechamento($ordem_servico, $centro_custo);
-        return Fechamento::lastCreated()->first();
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_abr]);
+        return Redirect::route('fechamentos.index', 'todas');
 
     }
 
