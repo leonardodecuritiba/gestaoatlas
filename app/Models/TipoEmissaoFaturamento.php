@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class TipoEmissaoFaturamento extends Model
 {
     use SoftDeletes;
+    //BOLETO, NFe, NFSe
+    const _TIPO_BOLETO_NFE_NFSE_ = 1;
+    const _TIPO_BOLETO_NFSE_AGREGADO_PECA_ = 2;
+    const _TIPO_BOLETO_ = 3;
     public $timestamps = true;
     protected $table = 'tipo_emissao_faturamentos';
     protected $primaryKey = 'id';

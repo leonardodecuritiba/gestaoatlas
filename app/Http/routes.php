@@ -135,7 +135,12 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::get('nfe/teste/{idfechamento}', 'FechamentoController@getNfeTeste')->name('fechamentos.nfe.teste');
     Route::get('nfe/{idfechamento}', 'FechamentoController@getNfe')->name('fechamentos.nfe');
-    Route::get('consulta/nfe/{idfechamento}/{debug}', 'FechamentoController@consultaNfe')->name('fechamentos.nfe.consulta');
+    Route::get('nfe/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNfe')->name('fechamentos.nfe.consulta');
+
+    Route::get('nfse/teste/{idfechamento}', 'FechamentoController@getNFSeTeste')->name('fechamentos.nfse.teste');
+    Route::get('nfse/{idfechamento}', 'FechamentoController@getNFSe')->name('fechamentos.nfse');
+    Route::get('nfse/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNFSe')->name('fechamentos.nfse.consulta');
+
     Route::get('run-fechamento', 'FechamentoController@run');
     Route::get('run-fechamento-teste/{id}', 'FechamentoController@runByID');
 
@@ -151,20 +156,15 @@ Route::group(['prefix' => 'cron-jobs'], function () {
 });
 Route::group(['prefix' => 'teste'], function () {
     Route::get('run-fechamento-temp', 'FechamentoController@run_temp');
-//    Route::get('nfe/{idordemservico}', function (\Illuminate\Http\Request $request) {
-//        return \App\OrdemServico::find($request->idordemservico);
-//        $NFE = new \App\Models\Nfe($debug = 1, \App\OrdemServico::find($request->idordemservico));
-//        $NFE->send_teste();
-//    });
 
-    Route::get('nfe/{idfechamento}', function (\Illuminate\Http\Request $request) {
-        $NFE = new \App\Models\Nfe($debug = 1, \App\Models\Fechamento::find($request->idfechamento));
-//        return $NFE->NFe_params;
-        return $NFE->send_teste();
+    Route::get('nfse/{idfechamento}', function (\Illuminate\Http\Request $request) {
+        $Fechamento = \App\Models\Fechamento::find($request->idfechamento);
+        $NFSe = new \App\Models\Nfse($debug = 1, $Fechamento);
+        $NFSe->_REF_ = 30;
+        return $NFSe->emitir();
+//        return $NF->send_teste();
     });
-    Route::get('get_cest2', function () {
-        return \App\Models\Nfe::consulta2();
-    });
+
     Route::get('modulo11_v1/{valor}', function (\Illuminate\Http\Request $request) {
         $DATA_HELPER = new \App\Helpers\DataHelper();
         $valor = $request->valor;

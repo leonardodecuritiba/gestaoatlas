@@ -31,7 +31,6 @@ class NF
 //    CONST _TOKEN_PRODUCAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
     CONST _TOKEN_PRODUCAO_ = 'QmPEhv5PrVGmkXpUtZIw7nvx0ZUOrDos';
 
-    CONST _CEST_DEFAULT_ = '0106400';
     CONST _STATUS_AUTORIZADO_ = 'autorizado';//autorizado – Neste caso a consulta irá conter os demais dados da nota fiscal
     CONST _STATUS_PROCESSANDO_AUTORIZACAO_ = 'processando_autorizacao';//processando_autorizacao – A nota ainda está em processamento. Não será devolvido mais nenhum campo além do status
     CONST _STATUS_ERRO_AUTORIZACAO_ = 'erro_autorizacao';//erro_autorizacao – A nota foi enviada ao SEFAZ mas houve um erro no momento da autorização.O campo status_sefaz e mensagem_sefaz irão detalhar o erro ocorrido. O SEFAZ valida apenas um erro de cada vez.
@@ -40,7 +39,7 @@ class NF
 
     public $_REF_;
     public $debug;
-    public $NFe_params;
+    public $_PARAMS_NF_;
     protected $_SERVER_;
     protected $_NF_TYPE_;
     protected $_TOKEN_;
@@ -48,11 +47,11 @@ class NF
     static public function consultar($ref, $testing = true, $type = 'nfse')
     {
         if ($testing) {
-            $_SERVER_ = parent::_URL_HOMOLOGACAO_;
-            $_TOKEN_ = parent::_TOKEN_HOMOLOGACAO_;
+            $_SERVER_ = self::_URL_HOMOLOGACAO_;
+            $_TOKEN_ = self::_TOKEN_HOMOLOGACAO_;
         } else {
-            $_SERVER_ = parent::_URL_PRODUCAO_;
-            $_TOKEN_ = parent::_TOKEN_PRODUCAO_;
+            $_SERVER_ = self::_URL_PRODUCAO_;
+            $_TOKEN_ = self::_TOKEN_PRODUCAO_;
         }
         $ch = curl_init();
 //        curl_setopt($ch, CURLOPT_URL, "http://homologacao.acrasnfe.acras.com.br/nfse/" . $ref . "?token=" . $token);
@@ -61,6 +60,7 @@ class NF
         curl_setopt($ch, CURLOPT_HTTPHEADER, array());
 
         $retorno = [
+            'type' => $type,
             'url' => $_SERVER_,
             'body' => Yaml::parse(curl_exec($ch)),
             'status' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
@@ -86,6 +86,7 @@ class NF
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
 
         $retorno = [
+            'type' => $type,
             'url' => $_SERVER_,
             'body' => Yaml::parse(curl_exec($ch)),
             'status' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
@@ -96,20 +97,34 @@ class NF
 
     public function emitir()
     {
+        $SERVER = $this->_SERVER_;
+        $URL = "http://homologacao.acrasnfe.acras.com.br/" . $this->_NF_TYPE_ . ".json?token=" . $this->_TOKEN_ . "&ref=" . $this->_REF_;
+
         $ch = curl_init();
-//        curl_setopt($ch, CURLOPT_URL, "http://homologacao.acrasnfe.acras.com.br/nfse?token=".$token."&ref=" . $ref);
-        curl_setopt($ch, CURLOPT_URL, $this->_SERVER_ . "/" . $this->_NF_TYPE_ . "?token=" . $this->_TOKEN_ . ".&ref=" . $this->_REF_);
+        curl_setopt($ch, CURLOPT_URL, $URL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->NFe_params));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->_PARAMS_NF_));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+        $body = curl_exec($ch);
+        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//as três linhas abaixo imprimem as informações retornadas pela API, aqui o seu sistema deverá
+//interpretar e lidar com o retorno
 
         $retorno = (object)[
+            'type' => $this->_NF_TYPE_,
             'body' => json_decode(curl_exec($ch)),
             'result' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
         ];
         curl_close($ch);
+
         return ($retorno);
+
+//        echo $URL.'<BR>';
+//        print("STATUS: ".$result."\n");
+//        print("BODY: ".$body."\n\n");
+//        curl_close($ch);
+
     }
 
 //    public function ITENS()

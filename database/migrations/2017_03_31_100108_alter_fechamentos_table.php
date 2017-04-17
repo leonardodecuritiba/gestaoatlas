@@ -15,6 +15,8 @@ class AlterFechamentosTable extends Migration
         Schema::table('fechamentos', function (Blueprint $table) {
             $table->integer('idnfe_homologacao')->unsigned()->nullable();
             $table->integer('idnfe_producao')->unsigned()->nullable();
+            $table->integer('idnfse_homologacao')->unsigned()->nullable();
+            $table->integer('idnfse_producao')->unsigned()->nullable();
         });
     }
 
@@ -28,6 +30,8 @@ class AlterFechamentosTable extends Migration
         Schema::table('clientes', function (Blueprint $table) {
             $table->dropForeign('idnfe_homologacao');
             $table->dropForeign('idnfe_producao');
+            $table->dropForeign('idnfse_homologacao');
+            $table->dropForeign('idnfse_producao');
 
         });
     }

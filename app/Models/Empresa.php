@@ -27,4 +27,10 @@ class Empresa
     public $icms_valor = '0.00';
     public $icms_cfop = '5352';
     public $icms_codigo_municipio = '3543402';
+
+    //nota de serviço
+    public $regime_especial_tributacao = '6';
+    public $optante_simples_nacional = true;
+    public $incentivador_cultural = false;
+    public $tributacao_rps = 'T';
 }

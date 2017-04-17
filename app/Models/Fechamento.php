@@ -26,6 +26,8 @@ class Fechamento extends Model
         'idpagamento',
         'idnfe_homologacao',
         'idnfe_producao',
+        'idnfse_homologacao',
+        'idnfse_producao',
         'centro_custo'
     ];
 
@@ -93,6 +95,19 @@ class Fechamento extends Model
                 $_valores[$key] += floatval($value);
             }
         }
+
+        switch ($this->cliente->idemissao_tecnica) {
+            case TipoEmissaoFaturamento::_TIPO_BOLETO_NFE_NFSE_:
+                $_valores['valor_nfse_float'] = $_valores['valor_outras_despesas_float'] + $_valores['valor_total_servicos_float'];
+                break;
+            case TipoEmissaoFaturamento::_TIPO_BOLETO_NFSE_AGREGADO_PECA_:
+                $_valores['valor_nfse_float'] = $_valores['valor_final_float'];
+                break;
+            default:
+                $_valores['valor_nfse_float'] = 0;
+                break;
+        }
+
         foreach ($_valores as $key => $value) {
             $nkey = substr($key, 0, strlen($key) - 6);
             $_valores[$nkey] = DataHelper::getFloat2RealMoeda($value);
@@ -128,6 +143,57 @@ class Fechamento extends Model
 //        }
         return $query;
     }
+
+    //====================== NFSe ===========================
+
+    public function getStatusNFSeHomologacao()
+    {
+        return ($this->idnfse_homologacao != NULL);
+    }
+
+    public function getStatusNFSeProducao()
+    {
+        return ($this->idnfse_producao != NULL);
+    }
+
+    public function setNFSe($debug = true)
+    {
+        if ($debug) {
+            $ref_index = Ajuste::getByMetaKey('ref_nfseindex_homologacao');
+            $this->idnfse_homologacao = $ref_index->meta_value;
+            $ref_index->incrementa();
+        } else {
+
+            $ref_index = Ajuste::getByMetaKey('ref_nfseindex_producao');
+            $this->idnfse_producao = $ref_index->meta_value;
+            $ref_index->incrementa();
+        }
+        $this->save();
+        $NFSe = new NFSe($debug, $this);
+        $retorno = $NFSe->emitir();
+        if (isset($retorno->body->erros)) {
+            $responseNFSE = [
+                'message' => $retorno->body->erros,
+                'code' => $retorno->result,
+                'error' => 1,
+            ];
+        } else {
+            $responseNFSE = [
+                'message' => 'Nota Fiscal (#' . $NFSe->_REF_ . ') gerada com sucesso!',
+                'code' => $retorno->result,
+                'error' => 0,
+            ];
+        }
+        return $responseNFSE;
+    }
+
+    public function getDataNFSe($debug = true)
+    {
+        $ref = ($debug) ? $this->idnfse_homologacao : $this->idnfse_producao;
+        return ($ref == NULL) ? $ref : json_encode(NFSe::consultar($ref, $debug));
+    }
+
+    //====================== NFe ============================
 
     public function getStatusNfeHomologacao()
     {
@@ -171,6 +237,11 @@ class Fechamento extends Model
         return $responseNFE;
     }
 
+    public function getDataNfe($debug = true)
+    {
+        $ref = ($debug) ? $this->idnfe_homologacao : $this->idnfe_producao;
+        return ($ref == NULL) ? $ref : json_encode(Nfe::consulta($ref, $debug));
+    }
     /**
      * Scope a query to only include popular users.
      *
@@ -181,13 +252,6 @@ class Fechamento extends Model
     {
         return $query->orderBy('created_at', 'desc')->first();;
     }
-
-    public function getDataNfe($debug = true)
-    {
-        $ref = ($debug) ? $this->idnfe_homologacao : $this->idnfe_producao;
-        return ($ref == NULL) ? $ref : json_encode(Nfe::consulta($ref, $debug));
-    }
-
 
     // ******************** RELASHIONSHIP ******************************
 

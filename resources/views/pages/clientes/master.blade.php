@@ -94,7 +94,7 @@
                                     <select name="idtabela_preco_tecnica" class="select2_single form-control" required>
                                         <option value="">Escolha a Tabela</option>
                                         @foreach($Page->extras['tabela_precos'] as $sel)
-                                            <option value="{{$sel->idtabela_preco_tecnica}}"
+                                            <option value="{{$sel->idtabela_preco}}"
                                                     @if(old("idtabela_preco_tecnica") == $sel->idtabela_preco) selected @endif>{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>

@@ -140,25 +140,49 @@ class FechamentoController extends Controller
         return Redirect::route('fechamentos.index', 'todas');
     }
 
+    // ============= NFSe ==================
+    public function getNFSeTeste($id)
+    {
+        $Fechamento = Fechamento::find($id);
+        $responseNF = $Fechamento->setNFSe($debug = true);
+        session()->forget('responseNF');
+        session(['responseNF' => $responseNF]);
+        return Redirect::route('fechamentos.show', $id);
+    }
+
+    public function getNFSe($id)
+    {
+        $Fechamento = Fechamento::find($id);
+        $responseNF = $Fechamento->setNFSe($debug = false);
+        session()->forget('responseNF');
+        session(['responseNF' => $responseNF]);
+        return Redirect::route('fechamentos.show', $id);
+    }
+
+    public function consultaNFSe($id, $debug = true)
+    {
+        $Fechamento = Fechamento::find($id);
+        return $Fechamento->getDataNFSe($debug);
+    }
+
+
+    // ============= NFe ==================
     public function getNfeTeste($id)
     {
         $Fechamento = Fechamento::find($id);
-        $responseNFE = $Fechamento->setNfe($debug = true);
-        return view('pages.' . $this->Page->link . '.show')
-            ->with('Page', $this->Page)
-            ->with('responseNFE', $responseNFE)
-            ->with('Fechamento', $Fechamento);
+        $responseNF = $Fechamento->setNfe($debug = true);
+        session()->forget('responseNF');
+        session(['responseNF' => $responseNF]);
+        return Redirect::route('fechamentos.show', $id);
     }
 
     public function getNfe($id)
     {
         $Fechamento = Fechamento::find($id);
-        $responseNFE = $Fechamento->setNfe($debug = false);
-        return view('pages.' . $this->Page->link . '.show')
-            ->with('Page', $this->Page)
-            ->with('responseNFE', $responseNFE)
-            ->with('Fechamento', $Fechamento);
-
+        $responseNF = $Fechamento->setNfe($debug = false);
+        session()->forget('responseNF');
+        session(['responseNF' => $responseNF]);
+        return Redirect::route('fechamentos.show', $id);
     }
 
     public function consultaNfe($id, $debug = true)
