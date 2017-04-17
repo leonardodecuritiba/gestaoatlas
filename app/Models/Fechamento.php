@@ -33,7 +33,12 @@ class Fechamento extends Model
 
     static public function geraFechamento($ordem_servicos, $centro_custo = 0)
     {
-        $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
+
+        if (count($ordem_servicos) > 1) {
+            $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
+        } else {
+            $Cliente = ($centro_custo) ? $ordem_servicos->centro_custo : $ordem_servicos->cliente;
+        }
 
         if ($Cliente->prazo_pagamento_tecnica->id == PrazoPagamento::_STATUS_A_VISTA_) {
             $cl_parcelas = ['quantidade' => 1, 'prazo' => 0];
@@ -51,8 +56,13 @@ class Fechamento extends Model
             'idpagamento' => $Pagamento->id,
             'centro_custo' => $centro_custo,
         ]);
-        foreach ($ordem_servicos as $os) {
-            $os->setFechamento($Fechamento->id);
+
+        if (count($ordem_servicos) > 1) {
+            foreach ($ordem_servicos as $os) {
+                $os->setFechamento($Fechamento->id);
+            }
+        } else {
+            $ordem_servicos->setFechamento($Fechamento->id);
         }
 
         $valores = $Fechamento->getValores();

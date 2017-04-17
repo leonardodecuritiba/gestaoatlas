@@ -141,10 +141,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('nfse/{idfechamento}', 'FechamentoController@getNFSe')->name('fechamentos.nfse');
     Route::get('nfse/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNFSe')->name('fechamentos.nfse.consulta');
 
+    //fechamento
+    Route::get('gerar-fechamento/{id}', 'FechamentoController@runByID')->name('fechamento.gerar');
     Route::get('run-fechamento', 'FechamentoController@run');
-    Route::get('run-fechamento-teste/{id}', 'FechamentoController@runByID');
 
- 
     //RELATÓRIOS
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
     Route::get('relatorios/ipem/imprimir', 'RelatoriosController@ipemPrint')->name('relatorios.ipem.print');

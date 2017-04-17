@@ -106,28 +106,9 @@ class FechamentoController extends Controller
     public function runByID($id = NULL)
     {
         if ($id == NULL) return $id;
-
         $ordem_servico = OrdemServico::find($id);
-        $fechamento_cc = []; //fechamento centro de custos
-        $fechamento_cl = []; //fechamento clientes
-
-        if ($ordem_servico->idcentro_custo != NULL) {
-            $idcentro_custo = $ordem_servico->idcentro_custo;
-            $fechamento_cc[$idcentro_custo][] = $ordem_servico;
-        } else {
-            $idcliente = $ordem_servico->idcliente;
-            $fechamento_cl[$idcliente][] = $ordem_servico;
-        }
-
-        //fechamentos CLIENTES
-        foreach ($fechamento_cl as $ordem_servicos) {
-            Fechamento::geraFechamento($ordem_servicos, 0);
-        }
-
-        //fechamentos CENTRO DE CUSTO
-        foreach ($fechamento_cc as $ordem_servicos) {
-            Fechamento::geraFechamento($ordem_servicos, 1);
-        }
+        $centro_custo = ($ordem_servico->idcentro_custo != NULL);
+        Fechamento::geraFechamento($ordem_servico, $centro_custo);
         return Fechamento::lastCreated()->first();
 
     }

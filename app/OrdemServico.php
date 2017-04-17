@@ -16,7 +16,8 @@ class OrdemServico extends Model
     const _STATUS_FINALIZADA_ = 3;
     const _STATUS_AGUARDANDO_PECA_ = 4;
     const _STATUS_EQUIPAMENTO_NA_OFICINA_ = 5; //primary
-    const _STATUS_FATURADA_ = 6; //success
+    const _STATUS_PAGAMENTO_PENDENTE_ = 6; //warning
+    const _STATUS_FATURADA_ = 7; //success
     public $timestamps = true;
     public $valores = [];
     protected $table = 'ordem_servicos';
@@ -89,8 +90,8 @@ class OrdemServico extends Model
             case 'finalizadas':
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FINALIZADA_);
                 break;
-            case 'a-faturar':
-                $query->where('idsituacao_ordem_servico', '<>', self::_STATUS_FATURADA_);
+            case 'pendentes':
+                $query->where('idsituacao_ordem_servico', self::_STATUS_PAGAMENTO_PENDENTE_);
                 break;
             case 'faturadas':
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
@@ -127,9 +128,20 @@ class OrdemServico extends Model
         return true;
     }
 
+    public function getStatusFinalizada()
+    {
+        return ($this->idsituacao_ordem_servico == self::_STATUS_FINALIZADA_);
+    }
+
+    public function getStatusFechada()
+    {
+        return !($this->idsituacao_ordem_servico == self::_STATUS_PAGAMENTO_PENDENTE_ || $this->idsituacao_ordem_servico == self::_STATUS_FATURADA_);
+    }
+
     public function setFechamento($idfechamento)
     {
         $this->attributes['idfechamento'] = $idfechamento;
+        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_PAGAMENTO_PENDENTE_;
         return $this->save();
     }
 
@@ -204,6 +216,7 @@ class OrdemServico extends Model
 //        return $this->situacao->descricao;
 //    }
 
+
     public function getStatusText()
     {
         return $this->situacao->descricao;
@@ -217,7 +230,9 @@ class OrdemServico extends Model
             (
                 ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
                 ||
-                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_)
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
+                ||
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_PAGAMENTO_PENDENTE_)
 
             )
         ) ? 1 : 0;
@@ -230,6 +245,8 @@ class OrdemServico extends Model
                 return 'info';
             case self::_STATUS_FINALIZADA_:
                 return 'danger';
+            case self::_STATUS_PAGAMENTO_PENDENTE_:
+                return 'warning';
             case self::_STATUS_FATURADA_:
                 return 'success';
             default:

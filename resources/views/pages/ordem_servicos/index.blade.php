@@ -50,11 +50,18 @@
 										   href="{{route('ordem_servicos.show',$selecao->idordem_servico)}}">
 											<i class="fa fa-eye"></i> Abrir</a>
 										@role('admin')
-										<a class="btn btn-danger btn-xs"
-										   data-nome="Ordem de Serviço #{{$selecao->idordem_servico}}"
-										   data-href="{{route('ordem_servicos.destroy',$selecao->idordem_servico)}}"
-										   data-toggle="modal"
-										   data-target="#modalDelecao"><i class="fa fa-trash-o"></i> Remover</a>
+										@if($selecao->getStatusFechada())
+											<a class="btn btn-danger btn-xs"
+											   data-nome="Ordem de Serviço #{{$selecao->idordem_servico}}"
+											   data-href="{{route('ordem_servicos.destroy',$selecao->idordem_servico)}}"
+											   data-toggle="modal"
+											   data-target="#modalDelecao"><i class="fa fa-trash-o"></i> Remover</a>
+											@if($selecao->getStatusFinalizada())
+												<a class="btn btn-success btn-xs"
+												   href="{{route('fechamento.gerar',$selecao->idordem_servico)}}">
+													<i class="fa fa-money"></i> Faturar</a>
+											@endif
+										@endif
 										@endrole
 									</td>
 								</tr>
