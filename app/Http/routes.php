@@ -144,7 +144,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('run-fechamento', 'FechamentoController@run');
     Route::get('run-fechamento-teste/{id}', 'FechamentoController@runByID');
 
-
+ 
     //RELATÓRIOS
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
     Route::get('relatorios/ipem/imprimir', 'RelatoriosController@ipemPrint')->name('relatorios.ipem.print');
