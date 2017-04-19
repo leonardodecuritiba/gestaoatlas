@@ -41,6 +41,8 @@
                                 <th>User</th>
                                 <th>Pendentes</th>
                                 <th>Finalizadas</th>
+                                <th>Pagamento Pendentes</th>
+                                <th>Faturadas</th>
                                 <th>Abertas</th>
                                 <th>Total</th>
                             </tr>
@@ -61,6 +63,18 @@
                                            href="{{route('ordem_servicos.por_colaborador',[$selecao->colaborador->idcolaborador,'finalizadas'])}}">
                                             <i class="fa fa-eye"></i></a>
                                     </td>
+                                    <td>{{$selecao->pagamento_pendentes}}
+                                        <a class="btn btn-default btn-xs"
+                                           target="_blank"
+                                           href="{{route('ordem_servicos.por_colaborador',[$selecao->colaborador->idcolaborador,'pagamento_pendentes'])}}">
+                                            <i class="fa fa-eye"></i></a>
+                                    </td>
+                                    <td>{{$selecao->faturadas}}
+                                        <a class="btn btn-default btn-xs"
+                                           target="_blank"
+                                           href="{{route('ordem_servicos.por_colaborador',[$selecao->colaborador->idcolaborador,'faturadas'])}}">
+                                            <i class="fa fa-eye"></i></a>
+                                    </td>
                                     <td>{{$selecao->abertas}}
                                         <a class="btn btn-default btn-xs"
                                            target="_blank"
@@ -74,6 +88,8 @@
                                 <th>SCORE</th>
                                 <th>{{$Score->pendentes}}</th>
                                 <th>{{$Score->finalizadas}}</th>
+                                <th>{{$Score->pagamento_pendentes}}</th>
+                                <th>{{$Score->faturadas}}</th>
                                 <th>{{$Score->abertas}}</th>
                                 <th>{{$Score->total}}</th>
                             </tr>

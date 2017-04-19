@@ -32,6 +32,8 @@ class HomeController extends Controller
         $Resultados = [];
         $Score = [
             'pendentes' => 0,
+            'pagamento_pendentes' => 0,
+            'faturadas' => 0,
             'finalizadas' => 0,
             'abertas' => 0,
             'total' => 0,
@@ -57,15 +59,23 @@ class HomeController extends Controller
 
                 $finalizadas = clone $ordens;
                 $abertas = clone $ordens;
+                $faturadas = clone $ordens;
+                $pagamento_pendentes = clone $ordens;
 
                 $abertas = $abertas->where('idsituacao_ordem_servico', OrdemServico::_STATUS_ABERTA_)
                     ->sum('valor_final');
                 $finalizadas = $finalizadas->where('idsituacao_ordem_servico', OrdemServico::_STATUS_FINALIZADA_)
                     ->sum('valor_final');
+                $faturadas = $faturadas->where('idsituacao_ordem_servico', OrdemServico::_STATUS_FATURADA_)
+                    ->sum('valor_final');
+                $pagamento_pendentes = $pagamento_pendentes->where('idsituacao_ordem_servico', OrdemServico::_STATUS_PAGAMENTO_PENDENTE_)
+                    ->sum('valor_final');
 
 
                 $Resultados[] = (object)[
                     'pendentes' => 'R$ ' . DataHelper::getFloat2Real($pendentes),
+                    'pagamento_pendentes' => 'R$ ' . DataHelper::getFloat2Real($pagamento_pendentes),
+                    'faturadas' => 'R$ ' . DataHelper::getFloat2Real($faturadas),
                     'finalizadas' => 'R$ ' . DataHelper::getFloat2Real($finalizadas),
                     'abertas' => 'R$ ' . DataHelper::getFloat2Real($abertas),
                     'total' => 'R$ ' . DataHelper::getFloat2Real($finalizadas + $abertas + $pendentes),
@@ -73,6 +83,8 @@ class HomeController extends Controller
                 ];
 
                 $Score['pendentes'] += $pendentes;
+                $Score['pagamento_pendentes'] += $pagamento_pendentes;
+                $Score['faturadas'] += $faturadas;
                 $Score['finalizadas'] += $finalizadas;
                 $Score['abertas'] += $abertas;
                 $Score['total'] += $finalizadas + $abertas + $pendentes;
@@ -80,6 +92,8 @@ class HomeController extends Controller
 
             $Score = (object)[
                 'pendentes' => 'R$ ' . DataHelper::getFloat2Real($Score['pendentes']),
+                'pagamento_pendentes' => 'R$ ' . DataHelper::getFloat2Real($Score['pagamento_pendentes']),
+                'faturadas' => 'R$ ' . DataHelper::getFloat2Real($Score['faturadas']),
                 'finalizadas' => 'R$ ' . DataHelper::getFloat2Real($Score['finalizadas']),
                 'abertas' => 'R$ ' . DataHelper::getFloat2Real($Score['abertas']),
                 'total' => 'R$ ' . DataHelper::getFloat2Real($Score['total']),
