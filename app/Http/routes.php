@@ -148,6 +148,9 @@ Route::group(['middleware' => ['auth']], function() {
     //RELATÓRIOS
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
     Route::get('relatorios/ipem/imprimir', 'RelatoriosController@ipemPrint')->name('relatorios.ipem.print');
+
+    //EXPORTAÇÃO
+    Route::get('exportar/cod_municipio', 'ClientesController@exportarCodMunicipio');
 });
 
 Route::group(['prefix' => 'cron-jobs'], function () {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\FormaPagamento;
 use App\Marca;
+use App\Models\ExcelFile;
 use App\Models\PrazoPagamento;
 use App\Models\TipoEmissaoFaturamento;
 use App\Regiao;
@@ -211,4 +212,38 @@ class ClientesController extends Controller
         }
         return Redirect::route('clientes.show', $id);
     }
+
+    public function exportarCodMunicipio(ExcelFile $export)
+    {
+        $Clientes = Cliente::all();
+        return $export->sheet('sheetName', function ($sheet) use ($Clientes) {
+
+            $data = array(
+                'idcontato',
+                'nome_principal',
+                'razao_social',
+                'cpf_cnpj',
+                'estado',
+                'municipio',
+                'codigo_municipio',
+            ); //porcentagem
+
+            $sheet->row(1, $data);
+            $i = 2;
+            foreach ($Clientes as $cliente) {
+                $cliente_tipo = $cliente->getType();
+                $sheet->row($i, array(
+                    $cliente->idcontato,
+                    $cliente_tipo->nome_principal,
+                    $cliente_tipo->razao_social,
+                    $cliente_tipo->documento,
+                    $cliente->contato->estado,
+                    $cliente->contato->cidade,
+                    '',
+                ));
+                $i++;
+            }
+        })->export('xls');
+    }
+
 }

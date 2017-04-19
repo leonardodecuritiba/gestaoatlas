@@ -21,16 +21,24 @@
         <div class="ln_solid"></div>
         <div class="form-group">
             <label class="control-label col-md-1 col-sm-1 col-xs-12">CEP </label>
-            <div class="col-md-3 col-sm-3 col-xs-12">
+            <div class="col-md-5 col-sm-5 col-xs-12">
                 <input value="{{($existe_entidade)?$Entidade->contato->cep:old('cep')}}" type="text" class="form-control show-cep" name="cep" id="cep">
             </div>
             <label class="control-label col-md-1 col-sm-1 col-xs-12">Estado </label>
-            <div class="col-md-3 col-sm-3 col-xs-12">
+            <div class="col-md-5 col-sm-5 col-xs-12">
                 <input value="{{($existe_entidade)?$Entidade->contato->estado:old('estado')}}" type="text" class="form-control" name="estado">
             </div>
+        </div>
+        <div class="form-group">
             <label class="control-label col-md-1 col-sm-1 col-xs-12">Cidade </label>
-            <div class="col-md-3 col-sm-3 col-xs-12">
+            <div class="col-md-5 col-sm-5 col-xs-12">
                 <input value="{{($existe_entidade)?$Entidade->contato->cidade:old('cidade')}}" type="text" class="form-control" name="cidade">
+            </div>
+            <label class="control-label col-md-1 col-sm-1 col-xs-12">Cód. Município </label>
+            <div class="col-md-5 col-sm-5 col-xs-12">
+                <input value="{{($existe_entidade)?$Entidade->contato->codigo_municipio:old('codigo_municipio')}}"
+                       type="text" class="form-control" name="codigo_municipio"
+                       @if(isset($Entidade->idcliente)) required @endif>
             </div>
         </div>
         <div class="form-group">

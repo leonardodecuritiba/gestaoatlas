@@ -18,6 +18,7 @@ class Contato extends Model
         'cep',
         'estado',
         'cidade',
+        'codigo_municipio',
         'bairro',
         'logradouro',
         'numero',

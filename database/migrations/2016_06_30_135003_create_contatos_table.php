@@ -20,6 +20,7 @@ class CreateContatosTable extends Migration
             $table->string('cep',16)->nullable();
             $table->string('estado',72)->nullable();
             $table->string('cidade',60)->nullable();
+            $table->string('codigo_municipio', 20)->nullable();
             $table->string('bairro',72)->nullable();
             $table->string('logradouro',125)->nullable();
             $table->string('numero',7)->nullable();
