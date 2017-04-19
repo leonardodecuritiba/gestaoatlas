@@ -31,35 +31,55 @@ class HomeController extends Controller
 //        $DATA = '2017-02-01 00:00:00';//'2017-01-01 00:00:00' (1º dia do mês anterior)
         $Resultados = [];
         $Score = [
+            'pendentes' => 0,
             'finalizadas' => 0,
             'abertas' => 0,
             'total' => 0,
         ];
-        if ($request->has('data')) {
+
+
+        if ($request->has('data_final')) {
+
             $Tecnicos = Tecnico::all();
-            $data = Carbon::createFromFormat('d/m/Y', $request->get('data'));
+            $data_final = Carbon::createFromFormat('d/m/Y', $request->get('data_final'));
             foreach ($Tecnicos as $tecnico) {
                 $Colaborador = $tecnico->colaborador;
-                $finalizadas = OrdemServico::where('created_at', '>', $data->toDateTimeString())
+                $data_inicial = Carbon::createFromFormat('d/m/Y', $request->get('data_inicial'));
+                $ordens = OrdemServico::whereBetween('created_at', [$data_inicial->toDateTimeString(), $data_final->toDateTimeString()])
+                    ->where('idcolaborador', $Colaborador->idcolaborador);
+                $pendentes = OrdemServico::where('created_at', '<', $data_inicial->toDateTimeString())
                     ->where('idcolaborador', $Colaborador->idcolaborador)
-                    ->where('idsituacao_ordem_servico', OrdemServico::_STATUS_FINALIZADA_)
+                    ->whereIn('idsituacao_ordem_servico', [
+                        OrdemServico::_STATUS_ABERTA_,
+                        OrdemServico::_STATUS_ATENDIMENTO_EM_ANDAMENTO_,
+                        OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_])
                     ->sum('valor_final');
-                $abertas = OrdemServico::where('created_at', '>', $data->toDateTimeString())
-                    ->where('idcolaborador', $Colaborador->idcolaborador)
-                    ->where('idsituacao_ordem_servico', OrdemServico::_STATUS_ABERTA_)
+
+                $finalizadas = clone $ordens;
+                $abertas = clone $ordens;
+
+                $abertas = $abertas->where('idsituacao_ordem_servico', OrdemServico::_STATUS_ABERTA_)
                     ->sum('valor_final');
+                $finalizadas = $finalizadas->where('idsituacao_ordem_servico', OrdemServico::_STATUS_FINALIZADA_)
+                    ->sum('valor_final');
+
+
                 $Resultados[] = (object)[
+                    'pendentes' => 'R$ ' . DataHelper::getFloat2Real($pendentes),
                     'finalizadas' => 'R$ ' . DataHelper::getFloat2Real($finalizadas),
                     'abertas' => 'R$ ' . DataHelper::getFloat2Real($abertas),
-                    'total' => 'R$ ' . DataHelper::getFloat2Real($finalizadas + $abertas),
+                    'total' => 'R$ ' . DataHelper::getFloat2Real($finalizadas + $abertas + $pendentes),
                     'colaborador' => $Colaborador,
                 ];
+
+                $Score['pendentes'] += $pendentes;
                 $Score['finalizadas'] += $finalizadas;
                 $Score['abertas'] += $abertas;
-                $Score['total'] += $finalizadas + $abertas;
+                $Score['total'] += $finalizadas + $abertas + $pendentes;
             }
 
             $Score = (object)[
+                'pendentes' => 'R$ ' . DataHelper::getFloat2Real($Score['pendentes']),
                 'finalizadas' => 'R$ ' . DataHelper::getFloat2Real($Score['finalizadas']),
                 'abertas' => 'R$ ' . DataHelper::getFloat2Real($Score['abertas']),
                 'total' => 'R$ ' . DataHelper::getFloat2Real($Score['total']),
