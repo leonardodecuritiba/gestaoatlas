@@ -38,7 +38,7 @@
             <div class="col-md-5 col-sm-5 col-xs-12">
                 <input value="{{($existe_entidade)?$Entidade->contato->codigo_municipio:old('codigo_municipio')}}"
                        type="text" class="form-control" name="codigo_municipio"
-                       @if(isset($Entidade->idcliente)) required @endif>
+                       required>
             </div>
         </div>
         <div class="form-group">

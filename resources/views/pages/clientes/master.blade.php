@@ -22,7 +22,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Tipo de cadastro</h2>
+                        <h2>Dados do Cliente</h2>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
@@ -37,29 +37,6 @@
                                             Jurídica
                                         </option>
                                     </select>
-                                </div>
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Centro de Custo <span class="required">*</span></label>
-                                <div class="col-md-2 col-sm-2 col-xs-12">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="radio" name="centro_custo" value="0" class="flat" checked="checked" required> Não
-                                            <input type="radio" name="centro_custo" value="1" class="flat" required> Sim
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12" style="display:none;">
-                                    <select name="idcliente_centro_custo" class="select2_single form-control">
-                                        <option value="">Centro de Custo</option>
-                                        @foreach($Page->extras['centro_custo'] as $sel)
-                                            <option value="{{$sel->idcliente}}"
-                                                    @if(old("idcliente") == $sel->idcliente) selected @endif>{{$sel->getType()->nome_principal}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-3 col-sm-3 col-xs-12" >
-                                    <input value="{{old('limite_credito_tecnica')}}" type="text"
-                                           class="form-control show-dinheiro" name="limite_credito_tecnica"
-                                           placeholder="Limite de Crédito Técnica" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -89,34 +66,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Tabela de Preço<span class="required">*</span></label>
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <select name="idtabela_preco_tecnica" class="select2_single form-control" required>
-                                        <option value="">Escolha a Tabela</option>
-                                        @foreach($Page->extras['tabela_precos'] as $sel)
-                                            <option value="{{$sel->idtabela_preco}}"
-                                                    @if(old("idtabela_preco_tecnica") == $sel->idtabela_preco) selected @endif>{{$sel->descricao}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Forma de Pagamento<span class="required">*</span></label>
-                                <div class="col-md-4 col-sm-4 col-xs-12">
-                                    <select name="idforma_pagamento" class="select2_single form-control" required>
-                                        <option value="">Escolha a Forma</option>
-                                        @foreach($Page->extras['formas_pagamentos'] as $sel)
-                                            <option value="{{$sel->idforma_pagamento}}"
-                                                    @if(old("idforma_pagamento") == $sel->idforma_pagamento) selected @endif>{{$sel->descricao}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Foto<span class="required">*</span></label>
-                                <div class="col-md-10 col-sm-10 col-xs-12">
-                                    <input value="{{old('foto')}}" type="file" class="form-control" name="foto"  required>
-                                </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Região Franquia /
                                     Filial</label>
                                 <div class="col-md-10 col-sm-10 col-xs-12">
@@ -127,6 +76,53 @@
                                                     @if(old("idregiao") == $sel->idregiao) selected @endif>{{$sel->descricao}}</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Foto<span class="required">*</span></label>
+                                <div class="col-md-10 col-sm-10 col-xs-12">
+                                    <input value="{{old('foto')}}" type="file" class="form-control" name="foto"  required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Dados Financeiros (Técnica)</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Centro de Custo <span
+                                            class="required">*</span></label>
+                                <div class="col-md-2 col-sm-2 col-xs-12">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="radio" name="centro_custo" value="0" class="flat"
+                                                   checked="checked" required> Não
+                                            <input type="radio" name="centro_custo" value="1" class="flat" required> Sim
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12" style="display:none;">
+                                    <select name="idcliente_centro_custo" class="select2_single form-control">
+                                        <option value="">Centro de Custo</option>
+                                        @foreach($Page->extras['centro_custo'] as $sel)
+                                            <option value="{{$sel->idcliente}}"
+                                                    @if(old("idcliente") == $sel->idcliente) selected @endif>{{$sel->getType()->nome_principal}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-sm-3 col-xs-12">
+                                    <input value="{{old('limite_credito_tecnica')}}" type="text"
+                                           class="form-control show-dinheiro" name="limite_credito_tecnica"
+                                           placeholder="Limite de Crédito Técnica" required>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -143,6 +139,174 @@
                                     <input value="{{old('outros_custos')}}" type="text"
                                            class="form-control show-dinheiro" name="outros_custos"
                                            placeholder="Outros Custos">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Tabela de Preço<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <select name="idtabela_preco_tecnica" class="form-control" required>
+                                        <option value="">Escolha a Tabela</option>
+                                        @foreach($Page->extras['tabela_precos'] as $tabela_preco)
+                                            <option value="{{$tabela_preco->idtabela_preco}}"
+                                                    @if(old('idtabela_preco_tecnica') == $tabela_preco->idtabela_preco) selected @endif>{{$tabela_preco->descricao}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Tipo de Emissão
+                                    Faturamento<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <select name="idemissao_tecnica" class="form-control" required>
+                                        <option value="">Escolha um Tipo</option>
+                                        @foreach($Page->extras['tipos_emissao_faturamento'] as $sel)
+                                            <option value="{{$sel->id}}"
+                                                    @if(old('idemissao_tecnica') == $sel->id) selected @endif>{{$sel->descricao}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Forma de Pagamento<span
+                                            class="required">*</span></label>
+                                <div class="col-md-10 col-sm-10 col-xs-12">
+                                    <select name="idforma_pagamento_tecnica" class="form-control" required>
+                                        <option value="">Escolha a Forma</option>
+                                        @foreach($Page->extras['formas_pagamentos'] as $sel)
+                                            <option value="{{$sel->idforma_pagamento}}"
+                                                    @if(old('idforma_pagamento_tecnica') == $sel->idforma_pagamento) selected @endif>{{$sel->descricao}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Prazo de Pagamento<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    {{--{{$Cliente->prazo_pagamento_tecnica->descricao}}--}}
+                                    <select name="prazo_pagamento_tecnica" class="form-control" required>
+                                        <option value="">Escolha o Prazo</option>
+                                        <option value="0" @if(old('prazo_pagamento_tecnica') == 0) selected @endif>À
+                                            VISTA
+                                        </option>
+                                        <option value="1" @if(old('prazo_pagamento_tecnica') == 1) selected @endif>
+                                            PARCELADO
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="parcelas esconda">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <a class="btn btn-block btn-default" onclick="addParcela(this)"><i
+                                                    class="fa fa-plus"></i> Parcela</a>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <a class="btn btn-block btn-default" onclick="remParcela(this)"><i
+                                                    class="fa fa-minus"></i> Parcela</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="parcelas esconda">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2 col-sm-2 col-xs-12">1ª Parcela</label>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <input type="text" class="form-control show-parcelas" name="parcela_tecnica[0]">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Dados Financeiros (Comercial)</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="form-horizontal form-label-left">
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Limite Crédito<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <input value="{{old('limite_credito_comercial')}}" type="text"
+                                           class="form-control show-dinheiro" name="limite_credito_comercial"
+                                           placeholder="Limite de Crédito Comercial" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Tabela de Preço<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <select name="idtabela_preco_comercial" class="form-control" required>
+                                        <option value="">Escolha a Tabela</option>
+                                        @foreach($Page->extras['tabela_precos'] as $tabela_preco)
+                                            <option value="{{$tabela_preco->idtabela_preco}}"
+                                                    @if(old('idtabela_preco_comercial') == $tabela_preco->idtabela_preco) selected @endif>{{$tabela_preco->descricao}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Tipo de Emissão
+                                    Faturamento<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <select name="idemissao_comercial" class="form-control" required>
+                                        <option value="">Escolha um Tipo</option>
+                                        @foreach($Page->extras['tipos_emissao_faturamento'] as $sel)
+                                            <option value="{{$sel->id}}"
+                                                    @if(old('idemissao_comercial') == $sel->id) selected @endif>{{$sel->descricao}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Forma de Pagamento<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <select name="idforma_pagamento_comercial" class="form-control" required>
+                                        <option value="">Escolha a Forma</option>
+                                        @foreach($Page->extras['formas_pagamentos'] as $sel)
+                                            <option value="{{$sel->idforma_pagamento}}"
+                                                    @if(old('idforma_pagamento_comercial') == $sel->idforma_pagamento) selected @endif>{{$sel->descricao}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-2 col-sm-2 col-xs-12">Prazo de Pagamento<span
+                                            class="required">*</span></label>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <select name="prazo_pagamento_comercial" class="form-control" required>
+                                        <option value="">Escolha o Prazo</option>
+                                        <option value="0" @if(old('prazo_pagamento_comercial') == 0) selected @endif>À
+                                            VISTA
+                                        </option>
+                                        <option value="1" @if(old('prazo_pagamento_comercial') == 1) selected @endif>
+                                            PARCELADO
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="parcelas esconda">
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <a class="btn btn-block btn-default" onclick="addParcela(this)"><i
+                                                    class="fa fa-plus"></i> Parcela</a>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2 col-xs-12">
+                                        <a class="btn btn-block btn-default" onclick="remParcela(this)"><i
+                                                    class="fa fa-minus"></i> Parcela</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="parcelas esconda">
+                                <div class="form-group">
+                                    <label class="control-label col-md-2 col-sm-2 col-xs-12">1ª Parcela</label>
+                                    <div class="col-md-4 col-sm-4 col-xs-12">
+                                        <input type="text" class="form-control show-parcelas"
+                                               name="parcela_comercial[0]">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -317,6 +481,55 @@
                 }, "json");
 
             });
+        });
+
+        //AJUSTA PARCELAS
+        var N_PARCELA = 0;
+        function addParcela($this) {
+            N_PARCELA++;
+            $parent = $($this).parents('div.form-group').next();
+            var html = '<div class="form-group">' +
+                '<label class="control-label col-md-2 col-sm-2 col-xs-12">' + (N_PARCELA + 1) + 'ª Parcela</label>' +
+                '<div class="col-md-4 col-sm-4 col-xs-12">' +
+                '<input type="text" class="form-control show-parcelas" name="parcela_tecnica[' + N_PARCELA + ']">' +
+                '</div>' +
+                '</div>';
+            $($parent).append(html);
+            initMaskMoneyParcelas($($parent).find('input[name="parcela_tecnica[' + N_PARCELA + ']"]'));
+        }
+        function remParcela($this) {
+            $parent = $($this).parents('div.form-group').next();
+            if ($($parent).find('div.form-group').length > 1) {
+                N_PARCELA--;
+                $($parent).children().last().remove();
+            }
+        }
+
+        $(document).ready(function () {
+            $("select[name=prazo_pagamento_tecnica]").change(function () {
+                $parent = $(this).parents('div.form-group');
+                if ($(this).val() == "0") {
+                    $($parent).find('div.parcelas').hide();
+                    $($parent).next().hide();
+                } else {
+                    $($parent).find('div.parcelas').show();
+                    $($parent).next().show();
+                }
+            });
+        });
+
+        $("div#parcelasModal").on("show.bs.modal", function () {
+            $parent = $(this).find('div.modal-body');
+            var html = '<div class="form-horizontal form-label-left">' +
+                '<div class="form-group">' +
+                '<label class="control-label col-md-2 col-sm-2 col-xs-12">1ª</label>' +
+                '<div class="col-md-10 col-sm-10 col-xs-12">' +
+                '<input type="text" class="form-control show-parcelas" name="parcela[1]">' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+            $($parent).html(html);
+
         });
     </script>
 

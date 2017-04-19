@@ -196,7 +196,6 @@
         });
 
         //AJUSTA PARCELAS
-
             <?php $n_parcelas = count($Cliente->prazo_pagamento_tecnica->extras) - 1; ?>
         var N_PARCELA = '{{$n_parcelas}}';
         function addParcela($this) {

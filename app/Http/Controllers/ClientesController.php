@@ -95,12 +95,14 @@ class ClientesController extends Controller
 
     public function store(ClientesRequest $request)
     {
-        return $request->all();
+        $data = $request->all();
+
         $data['idcolaborador_criador'] = $this->colaborador->idcolaborador;
         if ($this->colaborador->hasRole('admin')) {
             $data['idcolaborador_validador'] = $this->colaborador->idcolaborador;
             $data['validated_at'] = Carbon::now()->toDateTimeString();
         }
+
         //store CONTATO
         $Contato = Contato::create($data);
         $data['idcontato'] = $Contato->idcontato;
@@ -115,6 +117,8 @@ class ClientesController extends Controller
             $TipoCliente = PessoaJuridica::create($data);
             $data['idpjuridica'] = $TipoCliente->idpjuridica;
         }
+
+        //store foto
         if ($request->hasfile('foto')) {
             $img = new ImageController();
             $data['foto'] = $img->store($request->file('foto'), $this->Page->link);
