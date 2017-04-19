@@ -39,7 +39,7 @@
                             <thead>
                             <tr>
                                 <th>User</th>
-                                <th>Pendentes</th>
+                                <th>Pendentes (Passadas)</th>
                                 <th>Finalizadas</th>
                                 <th>Pagamento Pendentes</th>
                                 <th>Faturadas</th>
