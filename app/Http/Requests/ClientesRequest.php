@@ -35,8 +35,8 @@ class ClientesRequest extends Request
             'email_orcamento' => 'required',
             'idsegmento' => 'required',
             'idregiao' => 'required',
-            'distancia' => 'required',
-            'pedagios' => 'required',
+//            'distancia' => 'required',
+//            'pedagios' => 'required',
 
             'idtabela_preco_tecnica' => 'required',
             'idforma_pagamento_tecnica' => 'required',

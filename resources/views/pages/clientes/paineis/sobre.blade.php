@@ -100,7 +100,8 @@
                     <div class="form-group">
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">Distância (Km)<span class="required">*</span></label>
                         <div class="col-md-2 col-sm-2 col-xs-12">
-                            <input value="{{$Cliente->distancia}}" type="text" class="form-control" name="distancia" placeholder="Distância (Km)" required>
+                            <input value="{{$Cliente->distancia}}" type="text" class="form-control" name="distancia"
+                                   placeholder="Distância (Km)">
                         </div>
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">Custo em Pedágios (R$)<span class="required">*</span></label>
                         <div class="col-md-2 col-sm-2 col-xs-12">

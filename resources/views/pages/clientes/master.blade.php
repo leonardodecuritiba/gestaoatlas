@@ -128,11 +128,13 @@
                             <div class="form-group">
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Distância (Km)<span class="required">*</span></label>
                                 <div class="col-md-2 col-sm-2 col-xs-12">
-                                    <input value="{{old('distancia')}}" type="text" class="form-control" name="distancia" placeholder="Distância (Km)" required>
+                                    <input value="{{old('distancia')}}" type="text" class="form-control"
+                                           name="distancia" placeholder="Distância (Km)">
                                 </div>
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Custo em Pedágios (R$)<span class="required">*</span></label>
                                 <div class="col-md-2 col-sm-2 col-xs-12">
-                                    <input value="{{old('pedagios')}}" type="text" class="form-control show-dinheiro" name="pedagios" placeholder="Custo Pedágios" required>
+                                    <input value="{{old('pedagios')}}" type="text" class="form-control show-dinheiro"
+                                           name="pedagios" placeholder="Custo Pedágios">
                                 </div>
                                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Outros Custos (R$)</label>
                                 <div class="col-md-2 col-sm-2 col-xs-12">
