@@ -19,6 +19,7 @@
                         <table border="0" class="table table-hover">
                             <thead>
                             <tr>
+                                <th>#</th>
                                 <th>Data de Cadastro</th>
                                 <th>Descrição</th>
                                 <th>Ações</th>
@@ -27,6 +28,7 @@
                             <tbody>
                             @foreach ($Buscas as $selecao)
                                 <tr>
+                                    <td>{{$selecao->id}}</td>
                                     <td>{{$selecao->created_at}}</td>
                                     <td>{{$selecao->descricao}}</td>
                                     <td>

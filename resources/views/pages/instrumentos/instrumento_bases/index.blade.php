@@ -19,6 +19,7 @@
                         <table border="0" class="table table-hover">
                             <thead>
                             <tr>
+                                <th>#</th>
                                 <th>Imagem</th>
                                 <th>Data de Cadastro</th>
                                 <th>Marca/Modelo</th>
@@ -32,6 +33,7 @@
                             <tbody>
                             @foreach ($Buscas as $selecao)
                                 <tr>
+                                    <td>{{$selecao->id}}</td>
                                     <td><img src="{{$selecao->getThumbFoto()}}" class="avatar" alt="Avatar"></td>
                                     <td>{{$selecao->created_at}}</td>
                                     <td>{{$selecao->modelo->getMarcaModelo()}}</td>
