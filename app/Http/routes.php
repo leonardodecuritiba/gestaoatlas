@@ -151,6 +151,13 @@ Route::group(['middleware' => ['auth']], function() {
 
     //EXPORTAÇÃO
     Route::get('exportar/cod_municipio', 'ClientesController@exportarCodMunicipio');
+
+    //NOVOS INSTRUMENTOS
+    Route::resource('instrumento_marcas', 'Instrumentos\InstrumentosMarcasController');
+    Route::resource('instrumento_modelos', 'Instrumentos\InstrumentosModelosController');
+    Route::resource('instrumento_setors', 'Instrumentos\InstrumentosSetorsController');
+    Route::resource('instrumento_bases', 'Instrumentos\InstrumentosBasesController');
+
 });
 
 Route::group(['prefix' => 'cron-jobs'], function () {

@@ -7,8 +7,8 @@ class Empresa
     public $cnpj = '10555180000121';
     public $ie = '797146934117';
     public $im = '20033165';
-    public $razao_social = 'MACEDO AUTOMAÇAO COMERCIAL LTDA';
-    public $nome_fantasia = 'MACEDO AUTOMAÇAO COMERCIAL LTDA';
+    public $razao_social = 'MACEDO AUTOMACAO COMERCIAL LTDA ME';
+    public $nome_fantasia = 'MACEDO AUTOMACAO COMERCIAL LTDA ME';
     public $cnae_fiscal = '0000465';
     public $regime_tributario = '1';
 
@@ -27,6 +27,11 @@ class Empresa
     public $icms_valor = '0.00';
     public $icms_cfop = '5352';
     public $icms_codigo_municipio = '3543402';
+
+    public $boleto = [
+        'juros' => 3.00,
+        'multa' => 1.00,
+    ];
 
     //nota de serviço
     public $regime_especial_tributacao = '6';

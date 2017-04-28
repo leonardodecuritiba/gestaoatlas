@@ -177,7 +177,9 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
 
-        niklasravnsborg\LaravelPdf\PdfServiceProvider::class
+        niklasravnsborg\LaravelPdf\PdfServiceProvider::class,
+
+        App\Providers\ResponseMacroServiceProvider::class,
     ],
 
     /*

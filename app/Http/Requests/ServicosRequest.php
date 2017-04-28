@@ -33,20 +33,20 @@ class ServicosRequest extends Request
             case 'DELETE': {
                 return [];
             }
+            case 'POST': {
+                return [
+                    'idgrupo' => 'required|exists:grupos',
+                    'idunidade' => 'required|exists:unidades',
+                    'nome' => 'required|unique:' . $this->table,
+                    'descricao' => 'required',
+                ];
+            }
             case 'PUT':
             case 'PATCH': {
                 return [
                     'idgrupo' => 'required|exists:grupos',
                     'idunidade' => 'required|exists:unidades',
                     'nome' => 'unique:' . $this->table . ',nome,' . $id . ',idservico',
-                    'descricao' => 'required',
-                ];
-            }
-            case 'POST': {
-                return [
-                    'idgrupo' => 'required|exists:grupos',
-                    'idunidade' => 'required|exists:unidades',
-                    'nome' => 'required|unique:' . $this->table,
                     'descricao' => 'required',
                 ];
             }

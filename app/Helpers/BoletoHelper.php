@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use App\Models\Empresa;
 use App\Models\Parcela;
 use App\OrdemServico;
 use Carbon\Carbon;
@@ -13,6 +14,7 @@ use \Eduardokum\LaravelBoleto\Pessoa;
 class BoletoHelper
 {
     private $_LOGO_PATH_;
+    private $_EMPRESA_;
     private $boleto;
     private $beneficiario;
     private $pagador;
@@ -20,6 +22,7 @@ class BoletoHelper
     function __construct()
     {
         $this->_LOGO_PATH_ = public_path('uploads' . DIRECTORY_SEPARATOR . 'institucional' . DIRECTORY_SEPARATOR . 'logo_atlas_min.png');
+        $this->_EMPRESA_ = new Empresa();
         $this->set_beneficiario();
     }
 
@@ -27,13 +30,12 @@ class BoletoHelper
     {
         $this->beneficiario = new Pessoa(
             [
-                'nome' => 'MACEDO AUTOMACAO COMERCIAL LTDA ME',
+                'nome' => $this->_EMPRESA_->razao_social,
                 'endereco' => 'R TRIUNFO, 400 - SANTA CRUZ DO JOSE JACQUES',
-                'cep' => '14020-670',
-                'uf' => 'SP',
-                'cidade' => 'RIBEIRAO PRETO',
-                'documento' => '10.555.180/0001-21',
-
+                'cep' => $this->_EMPRESA_->cep,
+                'uf' => $this->_EMPRESA_->estado,
+                'cidade' => $this->_EMPRESA_->cidade,
+                'documento' => $this->_EMPRESA_->cnpj,
             ]
         );
     }
@@ -58,10 +60,10 @@ class BoletoHelper
             'logo' => $this->_LOGO_PATH_,
             'dataVencimento' => $Parcela->getDataVencimentoBoleto(),
             'valor' => $Parcela->valor_parcela,
-            'multa' => false,
-            'juros' => false,
+            'multa' => $this->_EMPRESA_->boleto['multa'],
+            'juros' => $this->_EMPRESA_->boleto['juros'],
             'numero' => 1,
-            'numeroDocumento' => 1,
+            'numeroDocumento' => 472,
             'pagador' => $this->pagador,
             'beneficiario' => $this->beneficiario,
             'carteira' => 101,

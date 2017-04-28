@@ -36,7 +36,7 @@ class CstRequest extends Request
             }
             case 'POST': {
                 return [
-                    'numeracao' => 'required|exists:' . $this->table . ',id',
+                    'numeracao' => 'required|unique:' . $this->table,
                 ];
             }
             case 'PUT':

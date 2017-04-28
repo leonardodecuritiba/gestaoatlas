@@ -36,7 +36,7 @@ class NaturezaOperacaoRequest extends Request
             }
             case 'POST': {
                 return [
-                    'numero' => 'required|exists:' . $this->table . ',id',
+                    'numero' => 'required|unique:' . $this->table,
                     'descricao' => 'required',
                 ];
             }

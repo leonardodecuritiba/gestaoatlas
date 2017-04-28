@@ -53,6 +53,14 @@
                                         </li>
                                     </ul>
                                 </li>
+                                <li><a>Instrumentos<span class="fa fa-chevron-down"></span></a>
+                                    <ul class="nav child_menu">
+                                        <li><a href="{{ route('instrumento_marcas.index') }}">Marcas</a></li>
+                                        <li><a href="{{ route('instrumento_modelos.index') }}">Modelos</a></li>
+                                        <li><a href="{{ route('instrumento_setors.index') }}">Setores</a></li>
+                                        <li><a href="{{ route('instrumento_bases.index') }}">Bases</a></li>
+                                    </ul>
+                                </li>
                                 <li><a>Insumos<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="{{ route('grupos.index') }}">Grupos</a></li>

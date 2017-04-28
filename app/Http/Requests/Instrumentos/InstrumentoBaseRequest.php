@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Instrumentos;
 
-use App\Cfop;
+use App\Models\Instrumentos\InstrumentoBase;
 use App\Http\Requests\Request;
+use Illuminate\Support\Facades\Redirect;
 
-class CfopRequest extends Request
+class InstrumentoBaseRequest extends Request
 {
-    private $table = 'cfops';
+    private $table = 'instrumento_bases';
 
     /**
      * Determine if the user is authorized to make this request.
@@ -26,7 +27,7 @@ class CfopRequest extends Request
      */
     public function rules()
     {
-        $Data = Cfop::find($this->cfop);
+        $Data = InstrumentoBase::find($this->instrumento_bases);
         $id = count($Data) ? $Data->id : 0;
         switch ($this->method()) {
             case 'GET':
@@ -35,13 +36,21 @@ class CfopRequest extends Request
             }
             case 'POST': {
                 return [
-                    'numeracao' => 'required|unique:' . $this->table,
+                    'idmodelo' => 'required|exists:instrumento_modelos,id',
+                    'descricao' => 'required|min:3|max:100|unique:' . $this->table,
+                    'divisao' => 'required|min:1|max:100',
+                    'portaria' => 'required|min:1|max:100',
+                    'capacidade' => 'required|min:1|max:100'
                 ];
             }
             case 'PUT':
             case 'PATCH': {
                 return [
-                    'numeracao' => 'required|unique:' . $this->table . ',numeracao,' . $id . ',id',
+                    'idmodelo' => 'required|exists:instrumento_modelos,id',
+                    'descricao' => 'required|min:3|max:100|unique:' . $this->table . ',descricao,' . $id . ',id',
+                    'divisao' => 'required|min:1|max:100',
+                    'portaria' => 'required|min:1|max:100',
+                    'capacidade' => 'required|min:1|max:100'
                 ];
             }
             default:

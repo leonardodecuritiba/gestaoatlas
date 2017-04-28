@@ -17,6 +17,13 @@ class CreateInstrumentosTable extends Migration
             $table->integer('idcliente')->unsigned();
             $table->foreign('idcliente')->references('idcliente')->on('clientes')->onDelete('cascade');
 
+            $table->string('numero_serie', 50);
+            $table->string('ano', 4);
+            $table->string('inventario', 100);
+            $table->string('ip', 100)->nullable();
+            $table->string('endereco', 50)->nullable();
+
+
             $table->integer('idmarca')->unsigned()->nullable();
             $table->foreign('idmarca')->references('idmarca')->on('marcas')->onDelete('cascade');
 
@@ -30,15 +37,11 @@ class CreateInstrumentosTable extends Migration
             $table->string('descricao',100);
             $table->string('foto',60)->nullable();
             $table->string('modelo',100);
-            $table->string('numero_serie',50);
-            $table->string('inventario',100);
+
             $table->string('patrimonio',100);
-            $table->string('ano',4);
             $table->string('portaria',100);
             $table->string('divisao',100);
             $table->string('capacidade',100);
-            $table->string('ip',100)->nullable();
-            $table->string('endereco',50)->nullable();
             $table->string('setor',100);
             $table->timestamps();
             $table->softDeletes();
