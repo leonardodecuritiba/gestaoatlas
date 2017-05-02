@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Instrumento;
+use App\Models\ExcelFile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Validator;
@@ -131,5 +132,56 @@ class InstrumentosController extends Controller
         $Instrumento->delete();
         return response()->json(['status' => '1',
             'response' => $this->Page->Target.' removido com sucesso!']);
+    }
+
+    public function exportar(ExcelFile $export)
+    {
+        $Instrumentos = Instrumento::all();
+        return $export->sheet('sheetName', function ($sheet) use ($Instrumentos) {
+
+            $dados = array(
+                'idinstrumento',
+                'numero_serie',
+                'inventario',
+                'ip',
+                'ano',
+                'patrimonio',
+                'endereco',
+                '',
+                'marca',
+                'modelo',
+                'setor',
+                'descricao',
+                'divisao',
+                'portaria',
+                'capacidade',
+            ); //porcentagem
+
+            $sheet->row(1, $dados);
+            //'idpeca_tributacao',
+//            dd($data_peca);
+
+            $i = 2;
+            foreach ($Instrumentos as $instrumento) {
+                $sheet->row($i, array(
+                    $instrumento->idinstrumento,
+                    $instrumento->numero_serie,
+                    $instrumento->inventario,
+                    $instrumento->ip,
+                    $instrumento->ano,
+                    $instrumento->patrimonio,
+                    $instrumento->endereco,
+                    ' ',
+                    $instrumento->marca->descricao,
+                    strtoupper($instrumento->modelo),
+                    strtoupper($instrumento->setor),
+                    strtoupper($instrumento->descricao),
+                    strtoupper($instrumento->divisao),
+                    $instrumento->portaria,
+                    strtoupper($instrumento->capacidade)
+                ));
+                $i++;
+            }
+        })->export('xls');
     }
 }

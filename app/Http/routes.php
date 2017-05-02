@@ -157,6 +157,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('instrumento_modelos', 'Instrumentos\InstrumentosModelosController');
     Route::resource('instrumento_setors', 'Instrumentos\InstrumentosSetorsController');
     Route::resource('instrumento_bases', 'Instrumentos\InstrumentosBasesController');
+    Route::get('exportar/instrumentos', 'InstrumentosController@exportar')->name('instrumentos.exportar');
 
 });
 
