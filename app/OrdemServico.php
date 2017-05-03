@@ -28,7 +28,6 @@ class OrdemServico extends Model
         'idcolaborador',
         'idsituacao_ordem_servico',
         'idcentro_custo',
-        'idcentro_custo',
         'numero_chamado',
         'responsavel',
         'responsavel_cpf',
@@ -82,10 +81,20 @@ class OrdemServico extends Model
         return $query;
     }
 
-    static public function centro_custo_os($idcentro_custo, $situacao_ordem_servico)
+    static public function centro_custo_os($data)
     {
-        $query = self::filter_situacao($situacao_ordem_servico);
-        return $query->where('idcentro_custo', $idcentro_custo);
+        $query = self::filter_situacao_cliente($data);
+        return $query->where('idcentro_custo', $data['idcentro_custo']);
+    }
+
+    static public function filter_situacao_cliente($data)
+    {
+        $query = self::filter_situacao($data)
+            ->with('cliente', 'colaborador');
+        if (isset($data['idcliente']) && ($data['idcliente'] != "")) {
+            $query->where('idcliente', $data['idcliente']);
+        }
+        return $query;
     }
 
     static public function filter_situacao($data)
@@ -118,6 +127,18 @@ class OrdemServico extends Model
             $query->where('idcolaborador', $User->colaborador->idcolaborador);
         }
 //        dd($query);
+        return $query;
+    }
+
+    static public function filter_situacao_centro_custo($data)
+    {
+        $query = self::filter_situacao($data)
+            ->with('centro_custo')
+            ->whereNotNull('idcentro_custo')
+            ->groupBy('idcentro_custo');
+        if (isset($data['idcentro_custo']) && ($data['idcentro_custo'] != "")) {
+            $query->where('idcentro_custo', $data['idcentro_custo']);
+        }
         return $query;
     }
 

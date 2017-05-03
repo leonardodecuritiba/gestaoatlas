@@ -84,9 +84,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('ordem_servicos', 'OrdemServicoController');
 //    Route::get('ordem_servicos/listar/{situacao_ordem_servico}', 'OrdemServicoController@index')->name('ordem_servicos.index');
     Route::get('ordens-servicos/listar', 'OrdemServicoController@index')->name('ordem_servicos.index');
+    Route::get('ordem-servicos-centro-custo/listar', 'OrdemServicoController@index_centro_custo')->name('ordem_servicos.index_centro_custo');
 
-    Route::get('ordem-servicos-centro-custo/listar/{situacao_ordem_servico}', 'OrdemServicoController@index_centro_custo')->name('ordem_servicos.index_centro_custo');
-    Route::get('ordem-servicos-centro-custo/show/{situacao_ordem_servico}/{idcentro_custo}', 'OrdemServicoController@show_centro_custo')->name('ordem_servicos.show_centro_custo');
+    Route::get('ordem-servicos-centro-custo', 'OrdemServicoController@show_centro_custo')->name('ordem_servicos.show_centro_custo');
+
     Route::get('ordem_servicos/abrir/{clienteid}', 'OrdemServicoController@abrir')->name('ordem_servicos.abrir'); //Abrir O.S
     Route::get('ordem_servicos/resumo/{idordem_servico}', 'OrdemServicoController@resumo')->name('ordem_servicos.resumo'); //Fechar (RESUMO) O.S
     Route::post('ordem_servicos/fechar/{idordem_servico}', 'OrdemServicoController@fechar')->name('ordem_servicos.fechar'); //Fechar O.S

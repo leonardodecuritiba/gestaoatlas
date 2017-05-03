@@ -129,24 +129,7 @@
                     <li><a><i class="fa fa-money"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li>
-                                <a>O.S.<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="{{ route('ordem_servicos.index','pendentes') }}">Pendentes</a></li>
-                                    <li><a href="{{ route('ordem_servicos.index','faturadas') }}">Faturadas</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a>O.S. Centro de Custo<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="{{ route('ordem_servicos.index_centro_custo','todas') }}">Todas</a>
-                                    </li>
-                                    <li><a href="{{ route('ordem_servicos.index_centro_custo','a-faturar') }}">A
-                                            faturar</a></li>
-                                    <li>
-                                        <a href="{{ route('ordem_servicos.index_centro_custo','faturadas') }}">Faturadas</a>
-                                    </li>
-                                    </li>
-                                </ul>
+                                <a href="{{ route('ordem_servicos.index_centro_custo') }}">O.S. Centro de Custo</a>
                             </li>
                             <li>
                                 <a>Faturamentos<span class="fa fa-chevron-down"></span></a>

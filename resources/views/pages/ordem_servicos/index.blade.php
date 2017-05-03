@@ -16,17 +16,27 @@
 				{!! Form::open(array('route'=>'ordem_servicos.index',
 					'method'=>'GET','id'=>'search',
 					'class' => 'form-horizontal form-label-left')) !!}
-				<label class="control-label col-md-1 col-sm-1 col-xs-12">Data de Abertura:</label>
+				<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Data de Abertura:</label>
 				<div class="col-md-2 col-sm-2 col-xs-12">
 					<input value="{{Request::get('data')}}"
 						   type="text" class="form-control data-to-now" name="data" placeholder="Data" required>
 				</div>
-				<label class="control-label col-md-1 col-sm-1 col-xs-12">Tipo:</label>
+				<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Tipo:</label>
 				<div class="col-md-2 col-sm-2 col-xs-12">
 					<select name="situacao" class="form-control" required>
 						@foreach($Page->extras['situacao_ordem_servico'] as $key => $value)
 							<option value="{{$key}}"
 									@if(Request::has('situacao') && Request::get('situacao')==$key) selected @endif>{{$value}}</option>
+						@endforeach
+					</select>
+				</div>
+				<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Cliente:</label>
+				<div class="col-md-2 col-sm-2 col-xs-12">
+					<select name="idcliente" class="form-control">
+						<option value="">Todos</option>
+						@foreach($Page->extras['clientes'] as $cliente)
+							<option value="{{$cliente->idcliente}}"
+									@if(Request::has('idcliente') && Request::get('idcliente')==$cliente->idcliente) selected @endif>{{$cliente->getType()->nome_principal}}</option>
 						@endforeach
 					</select>
 				</div>

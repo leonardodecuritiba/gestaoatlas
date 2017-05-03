@@ -60,45 +60,30 @@ class OrdemServicoController extends Controller
     public function index(Request $request)
     {
         $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
-        $Buscas = OrdemServico::filter_situacao($request->all())->get();
+        $Buscas = OrdemServico::filter_situacao_cliente($request->all())->get();
+        $this->Page->extras['clientes'] = $Buscas->pluck('cliente');
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
 
-//    public function index(Request $request, $situacao_ordem_servico)
-//    {
-//
-////        if (isset($request['busca'])) {
-////            $busca = $request['busca'];
-////            $Buscas = OrdemServico::paginate(10)->orderBy('created_at','asc');
-////        } else {
-////            $Buscas = OrdemServico::paginate(10);
-////        }
-//        return $request->all();
-//        $Buscas = OrdemServico::filter_situacao($situacao_ordem_servico)->get();
-//        return view('pages.' . $this->Page->link . '.index')
-//            ->with('Page', $this->Page)
-//            ->with('Buscas', $Buscas);
-//    }
-
-    public function index_centro_custo(Request $request, $situacao_ordem_servico)
+    public function index_centro_custo(Request $request)
     {
-        $ids = OrdemServico::filter_situacao($situacao_ordem_servico)
-            ->whereNotNull('idcentro_custo')
-            ->groupBy('idcentro_custo')
-            ->pluck('idcentro_custo');
-        $Buscas = Cliente::whereIn('idcliente', $ids)->get();
+        $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
+        $Buscas = OrdemServico::filter_situacao_centro_custo($request->all())->get();
+        $Buscas = Cliente::whereIn('idcliente', $Buscas->pluck('idcentro_custo'))->get();
+        $this->Page->extras['centro_custos'] = $Buscas;
         return view('pages.' . $this->Page->link . '.index_centro_custo')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
 
-    public function show_centro_custo(Request $request, $situacao_ordem_servico, $idcentro_custo)
+    public function show_centro_custo(Request $request)
     {
+        //{situacao_ordem_servico}/{data}/{idcentro_custo}
         //atualizando o valor total da OS
-        $Buscas = OrdemServico::centro_custo_os($idcentro_custo, $situacao_ordem_servico)->get();
-        $CentroCusto = Cliente::find($idcentro_custo);
+        $Buscas = OrdemServico::filter_situacao_centro_custo($request->all())->get();
+        $CentroCusto = $Buscas[0]->centro_custo;
         return view('pages.' . $this->Page->link . '.show_centro_custo')
             ->with('Page', $this->Page)
             ->with('CentroCusto', $CentroCusto)
