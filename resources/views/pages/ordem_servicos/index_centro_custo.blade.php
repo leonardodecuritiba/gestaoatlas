@@ -20,7 +20,7 @@
                 </div>
                 <label class="control-label col-md-1 col-sm-1 col-xs-12">Por Tipo:</label>
                 <div class="col-md-2 col-sm-2 col-xs-12">
-                    <select name="situacao" class="form-control" required>
+                    <select name="situacao" class="form-control select2_single" required>
                         @foreach($Page->extras['situacao_ordem_servico'] as $key => $value)
                             <option value="{{$key}}"
                                     @if(Request::has('situacao') && Request::get('situacao')==$key) selected @endif>{{$value}}</option>
