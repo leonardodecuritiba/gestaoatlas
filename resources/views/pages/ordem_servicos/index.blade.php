@@ -57,10 +57,10 @@
 					{!! Form::open(array('route'=>['ordem_servicos.index'],
                         'method'=>'GET','id'=>'porid',
                         'class' => 'form-horizontal form-label-left')) !!}
-					<label class="control-label col-md-1 col-sm-1 col-xs-12">ID da O.S:</label>
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12">ID:</label>
 					<div class="col-md-2 col-sm-2 col-xs-12">
 						<input value="{{Request::get('idordem_servico')}}" type="text" class="form-control"
-							   name="idordem_servico" placeholder="ID O.S.">
+                               name="idordem_servico" placeholder="ID da Ordem de Serviço">
 					</div>
 					<div class="col-md-3 col-sm-3 col-xs-12">
 						<span class="input-group-btn">
