@@ -156,7 +156,8 @@ class NFSe extends NF
             $endereco["complemento"] = $Contato->complemento; //: Complemento do endereço. Tamanho: 60 caracteres.
         }
         $endereco["bairro"] = $Contato->bairro; //: Bairro. Tamanho: 60 caracteres.
-        $endereco["codigo_municipio"] = $this->servico_params_fixos['codigo_municipio']; //: código IBGE do município.
+//        $endereco["codigo_municipio"] = $this->servico_params_fixos['codigo_municipio']; //: código IBGE do município.
+        $endereco["codigo_municipio"] = $Contato->codigo_municipio; //: código IBGE do município.
         $endereco["uf"] = $Contato->estado; //: UF do endereço. Tamanho: 2 caracteres.
         $endereco["cep"] = $Contato->getCep(); //: CEP do endereço. Caracteres não numéricos são ignorados.
 
@@ -200,7 +201,8 @@ class NFSe extends NF
 
             "codigo_tributario_municipio" => $this->servico_params_fixos['codigo_tributario_municipio'],//codigo_tributario_municipio: Informar o código tributário de acordo com a tabela de cada município (não há um padrão). Campo ignorado pelo município de São Paulo.
             "discriminacao" => $this->servico_params_fixos['discriminacao'],//discriminacao(*): Discriminação dos serviços. Tamanho: 2000 caracteres.
-            "codigo_municipio" => $this->servico_params_fixos['codigo_municipio'],//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
+//            "codigo_municipio" => $this->servico_params_fixos['codigo_municipio'],//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
+            "codigo_municipio" => $this->_EMPRESA_->icms_codigo_municipio,//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
             "percentual_total_tributos" => 0,//percentual_total_tributos: Percentual aproximado de todos os impostos, de acordo com a Lei da Transparência. No momento disponível apenas para São Paulo.
 //                    "fonte_total_tributos" =>0 ,//fonte_total_tributos: Fonte de onde foi retirada a informação de total de impostos, por exemplo, “IBPT”. No momento disponível apenas para São Paulo.
         ];
