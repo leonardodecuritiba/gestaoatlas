@@ -149,16 +149,24 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
     Route::get('relatorios/ipem/imprimir', 'RelatoriosController@ipemPrint')->name('relatorios.ipem.print');
 
-    //EXPORTAÇÃO
-    Route::get('exportar/cod_municipio', 'ClientesController@exportarCodMunicipio');
 
     //NOVOS INSTRUMENTOS
     Route::resource('instrumento_marcas', 'Instrumentos\InstrumentosMarcasController');
     Route::resource('instrumento_modelos', 'Instrumentos\InstrumentosModelosController');
     Route::resource('instrumento_setors', 'Instrumentos\InstrumentosSetorsController');
     Route::resource('instrumento_bases', 'Instrumentos\InstrumentosBasesController');
-    Route::get('exportar/instrumentos', 'InstrumentosController@exportar')->name('instrumentos.exportar');
 
+    //EXPORTAÇÃO
+    Route::group(['prefix' => 'exportar'], function () {
+        Route::get('cod_municipio', 'ClientesController@exportarCodMunicipio');
+        Route::get('instrumentos', 'InstrumentosController@exportar')->name('instrumentos.exportar');
+    });
+
+    //IMPORTAÇÃO
+    Route::group(['prefix' => 'importar'], function () {
+        Route::get('cod_municipio', 'ClientesController@importarCodMunicipio');
+        Route::get('contatos', 'InstrumentosController@exportar')->name('instrumentos.exportar');
+    });
 });
 
 Route::group(['prefix' => 'cron-jobs'], function () {

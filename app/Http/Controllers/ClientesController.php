@@ -250,4 +250,24 @@ class ClientesController extends Controller
         })->export('xls');
     }
 
+    public function importarCodMunicipio(ExcelFile $export)
+    {
+        $file = storage_path('uploads\import\export_19_04_2017-15_26_cod_municipio.xls');
+        $reader = Excel::load($file, function ($sheet) {
+            // Loop through all sheets
+            $sheet->each(function ($row) {
+                $data_contato = ['idcontato', 'municipio', 'codigo_municipio'];
+                foreach ($data_contato as $col) {
+                    $contato[$col] = $row->$col;
+                }
+                $contato['municipio'] = strtoupper($row->municipio);
+                $contato['codigo_municipio'] = $row->codigo_municipio;
+                $Contato = Contato::find($row->idcontato);
+                $Contato->update($contato);
+                echo "<br>idcontato: " . $row->idcontato . " - municipio: " . $contato['municipio'] . " - codigo_municipio: " . $contato['codigo_municipio'];
+            });
+
+        })->ignoreEmpty();
+    }
+
 }
