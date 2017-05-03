@@ -48,6 +48,17 @@ class OrdemServico extends Model
 
     // ******************** FUNCTIONS ******************************
 
+    static public function getSituacaoSelect()
+    {
+        return [
+            'todas' => 'Todas',
+            'abertas' => 'Abertas',
+            'atendimento-em-andamento' => 'Em Atendimento',
+            'finalizadas' => 'Finalizadas',
+            'pendentes' => 'Pendentes',
+            'faturadas' => 'Faturadas',
+        ];
+    }
     static public function filterByIdTecnicoDate($data)
     {
         $query = self::getByIDtecnico($data['idtecnico']);
@@ -77,10 +88,11 @@ class OrdemServico extends Model
         return $query->where('idcentro_custo', $idcentro_custo);
     }
 
-    static public function filter_situacao($situacao_ordem_servico)
+    static public function filter_situacao($data)
     {
+        $data['situacao'] = (isset($data['situacao'])) ? $data['situacao'] : NULL;
         $query = OrdemServico::orderBy('idordem_servico', 'desc');
-        switch ($situacao_ordem_servico) {
+        switch ($data['situacao']) {
             case 'abertas':
                 $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
                 break;
@@ -97,6 +109,10 @@ class OrdemServico extends Model
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
                 break;
         }
+        if (isset($data['data'])) {
+            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data']));
+        }
+
         $User = Auth::user();
         if ($User->hasRole('tecnico')) {
             $query->where('idcolaborador', $User->colaborador->idcolaborador);

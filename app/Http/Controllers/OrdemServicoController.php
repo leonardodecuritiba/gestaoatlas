@@ -53,23 +53,34 @@ class OrdemServicoController extends Controller
             'msg_rea' => 'Ordem de Serviço reaberta com sucesso!',
             'titulo_primario' => "",
             'titulo_secundario' => "",
+            'extras' => [],
         ];
     }
 
-    public function index(Request $request, $situacao_ordem_servico)
+    public function index(Request $request)
     {
-
-//        if (isset($request['busca'])) {
-//            $busca = $request['busca'];
-//            $Buscas = OrdemServico::paginate(10)->orderBy('created_at','asc');
-//        } else {
-//            $Buscas = OrdemServico::paginate(10);
-//        }
-        $Buscas = OrdemServico::filter_situacao($situacao_ordem_servico)->get();
+        $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
+        $Buscas = OrdemServico::filter_situacao($request->all())->get();
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
+
+//    public function index(Request $request, $situacao_ordem_servico)
+//    {
+//
+////        if (isset($request['busca'])) {
+////            $busca = $request['busca'];
+////            $Buscas = OrdemServico::paginate(10)->orderBy('created_at','asc');
+////        } else {
+////            $Buscas = OrdemServico::paginate(10);
+////        }
+//        return $request->all();
+//        $Buscas = OrdemServico::filter_situacao($situacao_ordem_servico)->get();
+//        return view('pages.' . $this->Page->link . '.index')
+//            ->with('Page', $this->Page)
+//            ->with('Buscas', $Buscas);
+//    }
 
     public function index_centro_custo(Request $request, $situacao_ordem_servico)
     {

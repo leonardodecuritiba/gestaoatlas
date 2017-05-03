@@ -121,11 +121,7 @@
                             @role('tecnico')
                             <li><a href="{{ route('ordem_servicos.busca') }}"> Nova Ordem de Serviços</a></li>
                             @endrole
-                            <li><a href="{{ route('ordem_servicos.index','abertas') }}">Abertas</a></li>
-                            <li><a href="{{ route('ordem_servicos.index','atendimento-em-andamento') }}">Em
-                                    andamento</a></li>
-                            <li><a href="{{ route('ordem_servicos.index','finalizadas') }}">Finalizadas</a></li>
-                            <li><a href="{{ route('ordem_servicos.index','todas') }}">Todas</a></li>
+                            <li><a href="{{ route('ordem_servicos.index') }}">Listar</a></li>
 
                         </ul>
                     </li>

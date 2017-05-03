@@ -4,7 +4,7 @@
     <div id="search" class="x_panel animated flipInX">
         <div class="x_content">
             <div class="col-md-12 col-sm-12 col-xs-12">
-                {!! Form::open(array('route'=>'busca.index','method'=>'GET','id'=>'search')) !!}
+                {!! Form::open(array('route'=>'busca.index','method'=>'GET','id'=>'search','class'=>'form-horizontal form-label-left')) !!}
                 <label class="control-label col-md-1 col-sm-1 col-xs-12">Data Inicial:</label>
                 <div class="col-md-2 col-sm-2 col-xs-12">
                     <input value="{{Request::get('data_inicial')}}"

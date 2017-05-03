@@ -10,6 +10,35 @@
 	<!-- Seach form -->
 	{{--@include('layouts.search.form')--}}
 	<!-- Upmenu form -->
+	<div id="search" class="x_panel animated flipInX">
+		<div class="x_content">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				{!! Form::open(array('route'=>'ordem_servicos.index',
+					'method'=>'GET','id'=>'search',
+					'class' => 'form-horizontal form-label-left')) !!}
+				<label class="control-label col-md-1 col-sm-1 col-xs-12">Data de Abertura:</label>
+				<div class="col-md-2 col-sm-2 col-xs-12">
+					<input value="{{Request::get('data')}}"
+						   type="text" class="form-control data-to-now" name="data" placeholder="Data" required>
+				</div>
+				<label class="control-label col-md-1 col-sm-1 col-xs-12">Tipo:</label>
+				<div class="col-md-2 col-sm-2 col-xs-12">
+					<select name="situacao" class="form-control" required>
+						@foreach($Page->extras['situacao_ordem_servico'] as $key => $value)
+							<option value="{{$key}}"
+									@if(Request::has('situacao') && Request::get('situacao')==$key) selected @endif>{{$value}}</option>
+						@endforeach
+					</select>
+				</div>
+				<div class="col-md-3 col-sm-3 col-xs-12">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="submit">Filtrar</button>
+						</span>
+				</div>
+				{!! Form::close() !!}
+			</div>
+		</div>
+	</div>
 	@if(count($Buscas) > 0)
 		<div class="x_panel">
 			<div class="x_title">
