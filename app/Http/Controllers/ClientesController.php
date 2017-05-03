@@ -252,7 +252,7 @@ class ClientesController extends Controller
 
     public function importarCodMunicipio(ExcelFile $export)
     {
-        $file = storage_path('uploads\import\export_19_04_2017-15_26_cod_municipio.xls');
+        $file = storage_path('uploads' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'export_19_04_2017-15_26_cod_municipio.xls');
         $reader = Excel::load($file, function ($sheet) {
             // Loop through all sheets
             $sheet->each(function ($row) {
