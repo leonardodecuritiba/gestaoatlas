@@ -60,8 +60,14 @@ class OrdemServicoController extends Controller
     public function index(Request $request)
     {
         $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
-        $Buscas = OrdemServico::filter_situacao_cliente($request->all())->get();
-        $this->Page->extras['clientes'] = $Buscas->pluck('cliente');
+
+        if ($request->has('idordem_servico')) {
+            $Buscas = OrdemServico::where('idordem_servico', $request->get('idordem_servico'))->with('cliente', 'colaborador')->get();
+            $this->Page->extras['clientes'] = Cliente::all();
+        } else {
+            $Buscas = OrdemServico::filter_situacao_cliente($request->all())->get();
+            $this->Page->extras['clientes'] = $Buscas->pluck('cliente');
+        }
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);

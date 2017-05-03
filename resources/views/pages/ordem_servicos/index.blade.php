@@ -14,40 +14,75 @@
 	<!-- Upmenu form -->
 	<div id="search" class="x_panel animated flipInX">
 		<div class="x_content">
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				{!! Form::open(array('route'=>'ordem_servicos.index',
-					'method'=>'GET','id'=>'search',
-					'class' => 'form-horizontal form-label-left')) !!}
-				<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Data de Abertura:</label>
-				<div class="col-md-2 col-sm-2 col-xs-12">
-					<input value="{{Request::get('data')}}"
-						   type="text" class="form-control data-to-now" name="data" placeholder="Data" required>
-				</div>
-				<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Tipo:</label>
-				<div class="col-md-2 col-sm-2 col-xs-12">
-                    <select name="situacao" class="form-control select2_single" required>
-						@foreach($Page->extras['situacao_ordem_servico'] as $key => $value)
-							<option value="{{$key}}"
-									@if(Request::has('situacao') && Request::get('situacao')==$key) selected @endif>{{$value}}</option>
-						@endforeach
-					</select>
-				</div>
-				<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Cliente:</label>
-				<div class="col-md-2 col-sm-2 col-xs-12">
-                    <select name="idcliente" class="form-control select2_single">
-						<option value="">Todos</option>
-						@foreach($Page->extras['clientes'] as $cliente)
-							<option value="{{$cliente->idcliente}}"
-									@if(Request::has('idcliente') && Request::get('idcliente')==$cliente->idcliente) selected @endif>{{$cliente->getType()->nome_principal}}</option>
-						@endforeach
-					</select>
-				</div>
-				<div class="col-md-3 col-sm-3 col-xs-12">
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					{!! Form::open(array('route'=>'ordem_servicos.index',
+                        'method'=>'GET','id'=>'search',
+                        'class' => 'form-horizontal form-label-left')) !!}
+					<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Data de Abertura:</label>
+					<div class="col-md-2 col-sm-2 col-xs-12">
+						<input value="{{Request::get('data')}}"
+							   type="text" class="form-control data-to-now" name="data" placeholder="Data" required>
+					</div>
+					<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Tipo:</label>
+					<div class="col-md-2 col-sm-2 col-xs-12">
+						<select name="situacao" class="form-control select2_single" required>
+							@foreach($Page->extras['situacao_ordem_servico'] as $key => $value)
+								<option value="{{$key}}"
+										@if(Request::has('situacao') && Request::get('situacao')==$key) selected @endif>{{$value}}</option>
+							@endforeach
+						</select>
+					</div>
+					<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Cliente:</label>
+					<div class="col-md-2 col-sm-2 col-xs-12">
+						<select name="idcliente" class="form-control select2_single">
+							<option value="">Todos</option>
+							@foreach($Page->extras['clientes'] as $cliente)
+								<option value="{{$cliente->idcliente}}"
+										@if(Request::has('idcliente') && Request::get('idcliente')==$cliente->idcliente) selected @endif>{{$cliente->getType()->nome_principal}}</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="col-md-3 col-sm-3 col-xs-12">
 						<span class="input-group-btn">
 							<button class="btn btn-info" type="submit">Filtrar</button>
 						</span>
+					</div>
+					{!! Form::close() !!}
 				</div>
-				{!! Form::close() !!}
+			</div>
+			<div class="ln_solid"></div>
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+					{!! Form::open(array('route'=>['ordem_servicos.index'],
+                        'method'=>'GET','id'=>'porid',
+                        'class' => 'form-horizontal form-label-left')) !!}
+					<label class="control-label col-md-1 col-sm-1 col-xs-12">ID da O.S:</label>
+					<div class="col-md-2 col-sm-2 col-xs-12">
+						<input value="{{Request::get('idordem_servico')}}" type="text" class="form-control"
+							   name="idordem_servico" placeholder="ID O.S.">
+					</div>
+					<div class="col-md-3 col-sm-3 col-xs-12">
+						<span class="input-group-btn">
+							<button class="btn btn-info" type="submit">Filtrar por ID</button>
+						</span>
+					</div>
+					{!! Form::close() !!}
+
+					{{--<script>--}}
+					{{--$(document).ready(function () {--}}
+					{{--$('form#porid').on('submit', function(){--}}
+					{{--var id = $(this).find('input[name=idordem_servico]').val();--}}
+					{{--if(id != ''){--}}
+					{{--var url = $(this).attr('action');--}}
+					{{--$(this).attr('action',url.replace('XX',id));--}}
+					{{--return true;--}}
+					{{--}--}}
+					{{--return false;--}}
+					{{--});--}}
+					{{--});--}}
+					{{--</script>--}}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -144,6 +179,7 @@
         });
     </script>
     <!-- /Datatables -->
+	<!-- /Datatables -->
 	<script>
         <!-- script deleção -->
         $(document).ready(function () {
