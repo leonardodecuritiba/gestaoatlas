@@ -60,11 +60,6 @@
         });
     </script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $(".select2_single").select2({
-                width: 'resolve'
-            });
-        });
         var $_SELECT2_AJAX = [];
         $_SELECT2_AJAX['url'] = "{{url('get_ajaxSelect2')}}";
         $_SELECT2_AJAX['field'] = 'codigo';

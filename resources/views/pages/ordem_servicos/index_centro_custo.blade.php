@@ -3,6 +3,8 @@
     <!-- Datatables -->
     @include('helpers.datatables.head')
     <!-- /Datatables -->
+    <!-- Select2 -->
+    @include('helpers.select2.head')
 @endsection
 @section('page_content')
     <div id="search" class="x_panel animated flipInX">
@@ -27,7 +29,7 @@
                 </div>
                 <label class="control-label col-md-1 col-sm-1 col-xs-12">Por Cliente:</label>
                 <div class="col-md-2 col-sm-2 col-xs-12">
-                    <select name="idcentro_custo" class="form-control">
+                    <select name="idcentro_custo" class="form-control select2_single">
                         <option value="">Todos</option>
                         @foreach($Page->extras['centro_custos'] as $centro_custo)
                             <option value="{{$centro_custo->idcliente}}"
@@ -96,6 +98,15 @@
     <!-- /page content -->
 @endsection
 @section('scripts_content')
+    <!-- Select2 -->
+    @include('helpers.select2.foot')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+    </script>
     <!-- Datatables -->
     @include('helpers.datatables.foot')
     <script>
