@@ -95,6 +95,7 @@ class FechamentoController extends Controller
             Fechamento::geraFechamento($ordem_servicos, 0);
         }
 
+
         //fechamentos CENTRO DE CUSTO
         foreach ($fechamento_cc as $ordem_servicos) {
             Fechamento::geraFechamento($ordem_servicos, 1);
