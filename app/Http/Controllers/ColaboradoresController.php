@@ -86,6 +86,7 @@ class ColaboradoresController extends Controller
         //colaborador
         $data = $request->all();
 
+        return $data;
         //store CONTATO
         $Contato = Contato::create($data);
         $data['idcontato'] = $Contato->idcontato;
