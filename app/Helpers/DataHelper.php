@@ -51,7 +51,7 @@ class DataHelper
 
     static public function setDate($value)
     {
-        return (($value != NULL) && ($value != '')) ? Date::createFromFormat('dmY', getOnlyNumbers($value))->format('Y-m-d') : NULL;
+        return (($value != NULL) && ($value != '')) ? Date::createFromFormat('dmY', self::getOnlyNumbers($value))->format('Y-m-d') : NULL;
     }
 
     static public function getOnlyNumbers($value)
