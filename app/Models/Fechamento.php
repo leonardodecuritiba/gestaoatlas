@@ -34,7 +34,11 @@ class Fechamento extends Model
     static public function geraFechamento($ordem_servicos, $centro_custo = 0)
     {
 
-        $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
+        if (count($ordem_servicos) > 1) {
+            $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
+        } else {
+            $Cliente = ($centro_custo) ? $ordem_servicos->centro_custo : $ordem_servicos->cliente;
+        }
 //        if (count($ordem_servicos) > 1) {
 //            $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
 //        } else {

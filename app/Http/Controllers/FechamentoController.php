@@ -90,6 +90,7 @@ class FechamentoController extends Controller
             }
         }
 
+
         //fechamentos CLIENTES
         foreach ($fechamento_cl as $ordem_servicos) {
             Fechamento::geraFechamento($ordem_servicos, 0);
