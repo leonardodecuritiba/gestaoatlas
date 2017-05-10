@@ -68,7 +68,7 @@ class Fechamento extends Model
                 $os->setFechamento($Fechamento->id);
             }
         } else {
-            $ordem_servicos[0]->setFechamento($Fechamento->id);
+            $ordem_servicos->setFechamento($Fechamento->id);
         }
 
         $valores = $Fechamento->getValores();
