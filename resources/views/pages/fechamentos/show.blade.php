@@ -79,12 +79,12 @@
                                            data-target="#consultaNF"
                                            data-debug="1"
                                            class="btn btn-warning btn-xs"><i class="fa fa-search"></i> Consultar NFe
-                                            TESTE</a>
+                                            (Homologação)</a>
                                     </li>
                                 @else
                                     <li><a href="{{route('fechamentos.nfe.teste',$Fechamento->id)}}"
                                            class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFe
-                                            TESTE</a>
+                                            (Homologação)</a>
                                     </li>
                                 @endif
                                 @if($Fechamento->getStatusNfeProducao())
@@ -100,8 +100,7 @@
                                     <li>
                                         <a href="{{route('fechamentos.nfe',$Fechamento->id)}}"
                                            class="btn btn-xs btn-primary pull-right"><i class="fa fa-info fa-2"></i>
-                                            Gerar
-                                            NFe</a>
+                                            Gerar NFe</a>
                                     </li>
                                 @endif
 
@@ -114,12 +113,12 @@
                                            data-target="#consultaNF"
                                            data-debug="1"
                                            class="btn btn-warning btn-xs"><i class="fa fa-search"></i> Consultar NFSe
-                                            TESTE</a>
+                                            (Homologação)</a>
                                     </li>
                                 @else
                                     <li><a href="{{route('fechamentos.nfse.teste',$Fechamento->id)}}"
                                            class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFSe
-                                            TESTE</a>
+                                            (Homologação)</a>
                                     </li>
                                 @endif
                                 @if($Fechamento->getStatusNFSeProducao())
@@ -385,6 +384,7 @@
                             } else {
                                 $($this).find('div.modal-header h4.modal-title b').html('NFSe');
                             }
+                            $($this).find('div.modal-header h4.modal-title i').html(json.profile);
 
                             $.each(BODY, function (i, v) {
                                 $($parent).find('b#' + i).html(v);
@@ -443,6 +443,8 @@
                             } else {
                                 $($this).find('div.modal-header h4.modal-title b').html('NFSe');
                             }
+                            $($this).find('div.modal-header h4.modal-title i').html(json.profile);
+
                             $($parent).find('b#codigo').html(ERROS.codigo);
                             $($parent).find('b#correcao').html('');
                             $($parent).find('b#mensagem').html(ERROS.mensagem);

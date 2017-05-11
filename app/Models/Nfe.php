@@ -457,6 +457,7 @@ class Nfe //extends NF
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         $retorno = [
+            'profile' => ($testing) ? 'Homologação' : 'Produção',
             'ref' => $ref,
             'type' => 'nfe',
             'url' => $_SERVER_,

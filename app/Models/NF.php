@@ -60,6 +60,7 @@ class NF
         curl_setopt($ch, CURLOPT_HTTPHEADER, array());
 
         $retorno = [
+            'profile' => ($testing) ? 'Homologação' : 'Produção',
             'ref' => $ref,
             'type' => $type,
             'url' => $_SERVER_,
