@@ -60,6 +60,7 @@ class NF
         curl_setopt($ch, CURLOPT_HTTPHEADER, array());
 
         $retorno = [
+            'ref' => $ref,
             'type' => $type,
             'url' => $_SERVER_,
             'body' => Yaml::parse(curl_exec($ch)),

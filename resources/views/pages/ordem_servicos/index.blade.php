@@ -21,7 +21,7 @@
                         'class' => 'form-horizontal form-label-left')) !!}
 					<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Data de Abertura:</label>
 					<div class="col-md-2 col-sm-2 col-xs-12">
-						<input value="{{Request::get('data')}}"
+						<input value="{{Request::has('data')?Request::get('data'):\Carbon\Carbon::now()->format('d/m/Y')}}"
 							   type="text" class="form-control data-to-now" name="data" placeholder="Data" required>
 					</div>
 					<label class="control-label col-md-1 col-sm-1 col-xs-12">Por Tipo:</label>
