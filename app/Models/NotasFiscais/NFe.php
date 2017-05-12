@@ -41,6 +41,7 @@ class NFe extends NF
             $this->_TOKEN_ = parent::_TOKEN_PRODUCAO_;
             $this->_REF_ = $fechamento->idnfe_producao;
         }
+        
         $this->_NF_TYPE_ = parent::_URL_NFe_;
         $this->now = Carbon::now();
         $this->_FECHAMENTO_ = $fechamento;
