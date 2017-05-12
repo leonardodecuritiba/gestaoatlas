@@ -136,13 +136,18 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('parcela/boleto/{idparcela}', 'ParcelaController@gerarBoleto')->name('parcelas.boleto');
     Route::get('parcela/estornar/{idparcela}', 'ParcelaController@estornar')->name('parcelas.estornar');
 
-    Route::get('nfe/teste/{idfechamento}', 'FechamentoController@getNfeTeste')->name('fechamentos.nfe.teste');
-    Route::get('nfe/{idfechamento}', 'FechamentoController@getNfe')->name('fechamentos.nfe');
-    Route::get('nfe/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNfe')->name('fechamentos.nfe.consulta');
 
-    Route::get('nfse/teste/{idfechamento}', 'FechamentoController@getNFSeTeste')->name('fechamentos.nfse.teste');
-    Route::get('nfse/{idfechamento}', 'FechamentoController@getNFSe')->name('fechamentos.nfse');
-    Route::get('nfse/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNFSe')->name('fechamentos.nfse.consulta');
+//    Route::get('nfe/teste/{idfechamento}', 'FechamentoController@getNfeTeste')->name('fechamentos.nfe.teste');
+//    Route::get('nfe/{idfechamento}', 'FechamentoController@getNfe')->name('fechamentos.nfe');
+//    Route::get('nfse/teste/{idfechamento}', 'FechamentoController@getNFSeTeste')->name('fechamentos.nfse.teste');
+//    Route::get('nfse/{idfechamento}', 'FechamentoController@getNFSe')->name('fechamentos.nfse');
+//    Route::get('nfe/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNfe')->name('fechamentos.nfe.consulta');
+//    Route::get('nfse/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNFSe')->name('fechamentos.nfse.consulta');
+
+    Route::get('nf/{idfechamento}/{debug}/{type}', 'FechamentoController@sendNF')->name('fechamentos.nf.send');
+    Route::get('resend-nf/{idfechamento}/{debug}/{type}', 'FechamentoController@resendNF')->name('fechamentos.nf.resend');
+    Route::get('nf/consulta/{idfechamento}/{debug}/{type}', 'FechamentoController@getNF')->name('fechamentos.nf.get');
+
 
     //fechamento
     Route::get('gerar-fechamento/{id}', 'FechamentoController@runByID')->name('fechamento.gerar');

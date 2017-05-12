@@ -1,71 +1,47 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\NotasFiscais;
 
+use App\Models\Empresa;
+use App\Models\Fechamento;
 use Carbon\Carbon;
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * LaravelFocusnfe
  *
- * @author Flávio H. Ferreira <flaviometalvale@gmail.com>
- * @author Jansen Felipe <jansen.felipe@gmail.com>
+ * @author Leonardo Zanin <silva.zanin@gmail.com>
  */
-class Nfe //extends NF
+class NFe extends NF
 {
 //  http://homologacao.acrasnfe.acras.com.br/panel/dashboard
 //  https://api.focusnfe.com.br/panel/login
 
-    CONST _URL_HOMOLOGACAO_ = 'http://homologacao.acrasnfe.acras.com.br';
-//    CONST _URL_PRODUCAO_ = 'http://homologacao.acrasnfe.acras.com.br/nfe2';
-    CONST _URL_PRODUCAO_ = 'https://api.focusnfe.com.br';
-
-    CONST _TOKEN_HOMOLOGACAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
-//    CONST _TOKEN_PRODUCAO_ = 'eR7XfUMdytg6J4nSkirtIf7jPMtc7vzK';
-    CONST _TOKEN_PRODUCAO_ = 'QmPEhv5PrVGmkXpUtZIw7nvx0ZUOrDos';
-
-    CONST _CEST_DEFAULT_ = '0106400';
-
-    CONST _STATUS_AUTORIZADO_ = 'autorizado';//autorizado – Neste caso a consulta irá conter os demais dados da nota fiscal
-    CONST _STATUS_PROCESSANDO_AUTORIZACAO_ = 'processando_autorizacao';//processando_autorizacao – A nota ainda está em processamento. Não será devolvido mais nenhum campo além do status
-    CONST _STATUS_ERRO_AUTORIZACAO_ = 'erro_autorizacao';//erro_autorizacao – A nota foi enviada ao SEFAZ mas houve um erro no momento da autorização.O campo status_sefaz e mensagem_sefaz irão detalhar o erro ocorrido. O SEFAZ valida apenas um erro de cada vez.
-    CONST _STATUS_ERRO_CANCELAMENTO_ = 'erro_cancelamento';//erro_cancelamento – Foi enviada uma tentativa de cancelamento que foi rejeitada pelo SEFAZ. Os campos status_sefaz_cancelamento e mensagem_sefaz_cancelamento irão detalhar o erro ocorrido. Perceba que a nota neste estado continua autorizada.
-    CONST _STATUS_CANCELADO_ = 'cancelado';//cancelado – A nota foi cancelada. Além dos campos devolvidos quanto a nota é autorizada, é disponibilizado o campo caminho_xml_cancelamento que contém o protocolo de cancelamento. O campo caminho_danfe deixa de existir quando a nota é cancelada.
-
-
-    public $ref;
-
-    public $debug;
-    public $NFe_params;
-    private $SERVER;
-    private $TOKEN;
-    private $now;
+    public $params_fixos = [
+        'cest_default' => '0106400',
+    ];
     private $_EMPRESA_;
     private $_FECHAMENTO_;
-    private $nfe_cabecalho;
-    private $nfe_emitente;
-    private $nfe_destinatario;
-    private $nfe_transportadora;
-    private $nfe_tributacao;
-    private $nfe_itens;
+    private $now;
+    private $cabecalho;
+    private $emitente;
+    private $destinatario;
+    private $transportadora;
+    private $tributacao;
+    private $itens;
 
     function __construct($debug, Fechamento $fechamento)
     {
         $this->debug = $debug;
         if ($this->debug) {
-            $this->SERVER = self::_URL_HOMOLOGACAO_;
-            $this->TOKEN = self::_TOKEN_HOMOLOGACAO_;
-            $this->ref = $fechamento->idnfe_homologacao;
+            $this->_SERVER_ = parent::_URL_HOMOLOGACAO_;
+            $this->_TOKEN_ = parent::_TOKEN_HOMOLOGACAO_;
+            $this->_REF_ = $fechamento->idnfse_homologacao;
         } else {
-            $this->SERVER = self::_URL_PRODUCAO_;
-            $this->TOKEN = self::_TOKEN_PRODUCAO_;
-            $this->ref = $fechamento->idnfe_producao;
+            $this->_SERVER_ = parent::_URL_PRODUCAO_;
+            $this->_TOKEN_ = parent::_TOKEN_PRODUCAO_;
+            $this->_REF_ = $fechamento->idnfse_producao;
         }
+        $this->_NF_TYPE_ = parent::_URL_NFe_;
         $this->now = Carbon::now();
         $this->_FECHAMENTO_ = $fechamento;
         $this->_EMPRESA_ = new Empresa();
@@ -83,7 +59,7 @@ class Nfe //extends NF
         //Configurando o destinatário - OK
         $this->setDestinatario();
         if ($this->debug) {
-            $this->nfe_destinatario["nome_destinatario"] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+            $this->destinatario["nome_destinatario"] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
         }
 
         //Configurando a tributação - OK
@@ -95,22 +71,20 @@ class Nfe //extends NF
         //Configurando itens - OK
         $this->setItens();
 
-        $this->NFe_params = array_merge(
-            $this->nfe_cabecalho,
-            $this->nfe_emitente,
-            $this->nfe_destinatario,
-            $this->nfe_tributacao,
-            $this->nfe_transportadora,
-            ["items" => $this->nfe_itens]
+        $this->_PARAMS_NF_ = array_merge(
+            $this->cabecalho,
+            $this->emitente,
+            $this->destinatario,
+            $this->tributacao,
+            $this->transportadora,
+            ["items" => $this->itens]
         );
-        $fp = fopen('results.json', 'w');
-        fwrite($fp, json_encode($this->NFe_params));
-        fclose($fp);
+        $this->writeJson();
     }
 
     public function setCabecalho()
     {
-        $this->nfe_cabecalho = [
+        $this->cabecalho = [
             "natureza_operacao" => 'Venda c/ ST VENDA', //Descrição da natureza de operação. (obrigatório) String[1-60] Tag XML natOp
             "forma_pagamento" => 1, //Forma de pagamento. Valores permitidos 0: a vista. 1: a prazo. 2: outros. (obrigatório) Tag XML indPag
             "local_destino" => 1, //Identificador de local de destino da operação. (obrigatório) Tag XML idDest
@@ -147,7 +121,7 @@ class Nfe //extends NF
 
     public function setEmitente()
     {
-        $this->nfe_emitente = [
+        $this->emitente = [
             "cnpj_emitente" => $this->_EMPRESA_->cnpj,
             "inscricao_estadual_emitente" => $this->_EMPRESA_->ie,
             "inscricao_municipal_emitente" => $this->_EMPRESA_->im,
@@ -171,39 +145,39 @@ class Nfe //extends NF
         $Cliente = $this->_FECHAMENTO_->cliente;
         if ($Cliente->idpjuridica != NULL) { //1:PJ, 0: PF
             $PessoaJuridica = $Cliente->pessoa_juridica;
-            $this->nfe_destinatario["nome_destinatario"] = $PessoaJuridica->razao_social;
-            $this->nfe_destinatario["cnpj_destinatario"] = $PessoaJuridica->getCnpj();
+            $this->destinatario["nome_destinatario"] = $PessoaJuridica->razao_social;
+            $this->destinatario["cnpj_destinatario"] = $PessoaJuridica->getCnpj();
             if ($PessoaJuridica->isencao_ie) {
-                $this->nfe_destinatario["indicador_inscricao_estadual_destinatario"] = '9';
-                $this->nfe_destinatario["inscricao_estadual_destinatario"] = 'ISENTO';
+                $this->destinatario["indicador_inscricao_estadual_destinatario"] = '9';
+                $this->destinatario["inscricao_estadual_destinatario"] = 'ISENTO';
             } else {
-                $this->nfe_destinatario["indicador_inscricao_estadual_destinatario "] = '1';
-                $this->nfe_destinatario["inscricao_estadual_destinatario"] = $PessoaJuridica->getIe();
+                $this->destinatario["indicador_inscricao_estadual_destinatario "] = '1';
+                $this->destinatario["inscricao_estadual_destinatario"] = $PessoaJuridica->getIe();
             }
         } else {
             $PessoaFisica = $Cliente->pessoa_fisica;
-            $this->nfe_destinatario["nome_destinatario"] = $Cliente->nome_responsavel;
-            $this->nfe_destinatario["cpf_destinatario"] = $PessoaFisica->getCpf();
-            $this->nfe_destinatario["inscricao_estadual_destinatario"] = 'ISENTO';
+            $this->destinatario["nome_destinatario"] = $Cliente->nome_responsavel;
+            $this->destinatario["cpf_destinatario"] = $PessoaFisica->getCpf();
+            $this->destinatario["inscricao_estadual_destinatario"] = 'ISENTO';
         }
         $Contato = $Cliente->contato;
         if (($Cliente->email_nota != NULL) && ($Cliente->email_nota != "")) {
-            $this->nfe_destinatario["email_destinatario"] = $Cliente->email_nota;
+            $this->destinatario["email_destinatario"] = $Cliente->email_nota;
         }
-        $this->nfe_destinatario["telefone_destinatario"] = $Contato->getTelefone();
-        $this->nfe_destinatario["logradouro_destinatario"] = $Contato->logradouro;
-        $this->nfe_destinatario["numero_destinatario"] = $Contato->numero;
-        $this->nfe_destinatario["bairro_destinatario"] = $Contato->bairro;
-        $this->nfe_destinatario["municipio_destinatario"] = $Contato->cidade;
-        $this->nfe_destinatario["uf_destinatario"] = $Contato->estado;
-//        $this->nfe_destinatario["pais_destinatario"]                = 'Brasil';
-        $this->nfe_destinatario["cep_destinatario"] = $Contato->getCep();
+        $this->destinatario["telefone_destinatario"] = $Contato->getTelefone();
+        $this->destinatario["logradouro_destinatario"] = $Contato->logradouro;
+        $this->destinatario["numero_destinatario"] = $Contato->numero;
+        $this->destinatario["bairro_destinatario"] = $Contato->bairro;
+        $this->destinatario["municipio_destinatario"] = $Contato->cidade;
+        $this->destinatario["uf_destinatario"] = $Contato->estado;
+//        $this->destinatario["pais_destinatario"]                = 'Brasil';
+        $this->destinatario["cep_destinatario"] = $Contato->getCep();
 
         if ($this->debug) {
-            $this->nfe_destinatario["nome_destinatario"] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
+            $this->destinatario["nome_destinatario"] = 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL';
         }
         return true;
-        $this->nfe_destinatario = [
+        $this->destinatario = [
             "nome_destinatario" => 'NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL', //Nome ou razão social do destinatário. (obrigatório) String[2-60] Tag XML xNome
             "cnpj_destinatario" => '71322150003932', //CNPJ do destinatário. Se este campo for informado não deve ser informado o CPF. Integer[14] Tag XML CNPJ
 //            "cpf_destinatario"                              => '10812933000137', //CPF do destinatário. Se este campo for informado não deve ser informado o CNPJ. Integer[11] Tag XML CPF
@@ -232,7 +206,7 @@ class Nfe //extends NF
     public function setTributacao()
     {
         $valores = $this->_FECHAMENTO_->getValores();
-        $this->nfe_tributacao = [
+        $this->tributacao = [
             "icms_base_calculo" => "0.00", //Valor total da base de cálculo do ICMS. (obrigatório) Decimal[13.2] Tag XML vBC
             "icms_valor_total" => "0.00", //Valor total do ICMS. (obrigatório) Decimal[13.2] Tag XML vICMS
             "icms_valor_total_desonerado" => "0.00", //Valor total do ICMS.Desonerado. (obrigatório) Decimal[13.2] Tag XML vICMSDeson
@@ -253,7 +227,7 @@ class Nfe //extends NF
 
     public function setTransportadora()
     {
-        $this->nfe_transportadora = [
+        $this->transportadora = [
             "modalidade_frete" => $this->_EMPRESA_->modalidade_frete, // Modalidade do frete.(obrigatório) Tag XML modFrete.
             // Valores permitidos
             // 0: por conta do emitente
@@ -312,7 +286,7 @@ class Nfe //extends NF
                     //O valor do frete vai ser incluído dentro do produto mesmo (compo é hoje) ou vai depender da O.S?
                     "valor_frete" => $pecas_utilizada->peca->peca_tributacao->valor_frete_float(), //Valor do frete. Decimal[13.2] Tag XML vFrete
                     "valor_seguro" => $pecas_utilizada->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
-//                    "valor_desconto" =>  ***, //Valor do desconto. Decimal[13.2] Tag XML vSeg
+                    "valor_desconto" => $pecas_utilizada->desconto / $pecas_utilizada->quantidade, //Valor do desconto. Decimal[13.2] Tag XML vSeg
 //                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
 
 
@@ -431,75 +405,8 @@ class Nfe //extends NF
             }
         }
 
-        $this->nfe_itens = $NfeItens;
+        $this->itens = $NfeItens;
         return true;
-    }
-
-    static public function consulta($ref, $testing = true)
-    {
-        if ($testing) {
-            $_SERVER_ = self::_URL_HOMOLOGACAO_;
-            $_TOKEN_ = self::_TOKEN_HOMOLOGACAO_;
-        } else {
-            $_SERVER_ = self::_URL_PRODUCAO_;
-            $_TOKEN_ = self::_TOKEN_PRODUCAO_;
-        }
-        $ch = curl_init();
-        // Substituir pela sua identificação interna da nota
-        // caso queira enviar usando o formato YAML, use a linha abaixo
-        // curl_setopt($ch, CURLOPT_URL, $SERVER."/nfe2/autorizar?ref=" . $ref . "&token=" . $TOKEN);
-        // formato JSON
-        curl_setopt($ch, CURLOPT_URL, $_SERVER_ . "/nfe2/consultar?ref=" . $ref . "&token=" . $_TOKEN_);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-
-        $body = curl_exec($ch);
-        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-        $retorno = [
-            'profile' => ($testing) ? 'Homologação' : 'Produção',
-            'ref' => $ref,
-            'type' => 'nfe',
-            'url' => $_SERVER_,
-            'body' => Yaml::parse($body),
-            'status' => $result,
-        ];
-//        curl_close($ch);
-//
-//        print("STATUS: " . $result . "<br>");
-//        print("BODY <br><br>");
-//        print(($body));
-//        exit;
-
-        return ($retorno);
-
-
-    }
-
-    public function envia()
-    {
-        $ch = curl_init();
-        // Substituir pela sua identificação interna da nota
-        // caso queira enviar usando o formato YAML, use a linha abaixo
-        // curl_setopt($ch, CURLOPT_URL, $SERVER."/nfe2/autorizar?ref=" . $ref . "&token=" . $TOKEN);
-        // formato JSON
-        curl_setopt($ch, CURLOPT_URL, $this->SERVER . "/nfe2/autorizar.json?ref=" . $this->ref . "&token=" . $this->TOKEN);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        // caso queira enviar usando o formato YAML, use a linha abaixo (necessário biblioteca PECL yaml)
-        // curl_setopt($ch, CURLOPT_POSTFIELDS,     yaml_emit($nfe));
-        // formato JSON
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->NFe_params));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
-
-        $retorno = (object)[
-            'body' => json_decode(curl_exec($ch)),
-            'result' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
-        ];
-        curl_close($ch);
-
-        return ($retorno);
-
     }
 
 }

@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\NotasFiscais\NF;
+use App\Models\NotasFiscais\NFe;
+use App\Models\NotasFiscais\NFSe;
+
 use App\Scopes\LastCreatedScope;
 use App\Ajuste;
 use App\AparelhoManutencao;
-use App\Cliente;
 use App\Helpers\DataHelper;
 use App\OrdemServico;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 class Fechamento extends Model
 {
@@ -160,6 +162,57 @@ class Fechamento extends Model
         return $query;
     }
 
+    //====================== NF ===========================
+    public function sendNF($debug, $type)
+    {
+        $ref_index = ($debug) ? Ajuste::getByMetaKey('ref_' . $type . 'index_homologacao') : Ajuste::getByMetaKey('ref_' . $type . 'index_producao');
+        if ($debug) {
+            $this->{'id' . $type . '_homologacao'} = $ref_index->meta_value;
+        } else {
+            $this->{'id' . $type . '_producao'} = $ref_index->meta_value;
+        }
+        $this->save();
+        $ref_index->incrementa();
+        return $this->setNF($debug, $type);
+    }
+
+    public function setNF($debug, $type)
+    {
+        if (!strcmp($type, 'nfe')) {
+            $NF = new NFe($debug, $this);
+        } else {
+            $NF = new NFSe($debug, $this);
+        }
+        $retorno = $NF->emitir();
+        return $retorno;
+
+        if (isset($retorno->body->erros)) {
+            $responseNF = [
+                'message' => $retorno->body->erros,
+                'code' => $retorno->result,
+                'error' => 1,
+            ];
+        } else {
+            $responseNF = [
+                'message' => 'Nota Fiscal (Ref. #' . $NF->_REF_ . ') enviada com sucesso!',
+                'code' => $retorno->result,
+                'error' => 0,
+            ];
+        }
+        return $responseNF;
+    }
+
+    public function resendNF($debug, $type)
+    {
+        return $this->setNF($debug, $type);
+    }
+
+    public function getNF($debug, $type)
+    {
+        $ref = ($debug) ? $this->{'id' . $type . '_homologacao'} : $this->{'id' . $type . '_producao'};
+        return ($ref == NULL) ? $ref : json_encode(NF::consultar($ref, $debug, $type));
+    }
+
     //====================== NFSe ===========================
 
     public function getStatusNFSeHomologacao()
@@ -170,43 +223,6 @@ class Fechamento extends Model
     public function getStatusNFSeProducao()
     {
         return ($this->idnfse_producao != NULL);
-    }
-
-    public function setNFSe($debug = true)
-    {
-        if ($debug) {
-            $ref_index = Ajuste::getByMetaKey('ref_nfseindex_homologacao');
-            $this->idnfse_homologacao = $ref_index->meta_value;
-            $ref_index->incrementa();
-        } else {
-
-            $ref_index = Ajuste::getByMetaKey('ref_nfseindex_producao');
-            $this->idnfse_producao = $ref_index->meta_value;
-            $ref_index->incrementa();
-        }
-        $this->save();
-        $NFSe = new NFSe($debug, $this);
-        $retorno = $NFSe->emitir();
-        if (isset($retorno->body->erros)) {
-            $responseNFSE = [
-                'message' => $retorno->body->erros,
-                'code' => $retorno->result,
-                'error' => 1,
-            ];
-        } else {
-            $responseNFSE = [
-                'message' => 'Nota Fiscal (#' . $NFSe->_REF_ . ') gerada com sucesso!',
-                'code' => $retorno->result,
-                'error' => 0,
-            ];
-        }
-        return $responseNFSE;
-    }
-
-    public function getDataNFSe($debug = true)
-    {
-        $ref = ($debug) ? $this->idnfse_homologacao : $this->idnfse_producao;
-        return ($ref == NULL) ? $ref : json_encode(NFSe::consultar($ref, $debug));
     }
 
     //====================== NFe ============================
@@ -221,43 +237,6 @@ class Fechamento extends Model
         return ($this->idnfe_producao != NULL);
     }
 
-    public function setNfe($debug = true)
-    {
-        if ($debug) {
-            $ref_index = Ajuste::getByMetaKey('ref_nfeindex_homologacao');
-            $this->idnfe_homologacao = $ref_index->meta_value;
-            $ref_index->incrementa();
-        } else {
-
-            $ref_index = Ajuste::getByMetaKey('ref_nfeindex_producao');
-            $this->idnfe_producao = $ref_index->meta_value;
-            $ref_index->incrementa();
-        }
-        $this->save();
-        $NFE = new Nfe($debug, $this);
-        $retorno = $NFE->envia();
-
-        if (isset($retorno->body->erros)) {
-            $responseNFE = [
-                'message' => $retorno->body->erros,
-                'code' => $retorno->result,
-                'error' => 1,
-            ];
-        } else {
-            $responseNFE = [
-                'message' => 'Nota Fiscal (#' . $NFE->ref . ') gerada com sucesso!',
-                'code' => $retorno->result,
-                'error' => 0,
-            ];
-        }
-        return $responseNFE;
-    }
-
-    public function getDataNfe($debug = true)
-    {
-        $ref = ($debug) ? $this->idnfe_homologacao : $this->idnfe_producao;
-        return ($ref == NULL) ? $ref : json_encode(Nfe::consulta($ref, $debug));
-    }
     /**
      * Scope a query to only include popular users.
      *

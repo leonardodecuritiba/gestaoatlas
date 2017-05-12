@@ -125,56 +125,36 @@ class FechamentoController extends Controller
         return Redirect::route('fechamentos.index', 'todas');
     }
 
-    // ============= NFSe ==================
-    public function getNFSeTeste($id)
+    // ============= NF ==================
+
+    public function sendNF($id, $debug, $type)
     {
         $Fechamento = Fechamento::find($id);
-        $responseNF = $Fechamento->setNFSe($debug = true);
+        return json_encode($Fechamento->sendNF($debug, $type));
+
+        $responseNF = $Fechamento->sendNF($debug, $type);
+
         session()->forget('responseNF');
         session(['responseNF' => $responseNF]);
         return Redirect::route('fechamentos.show', $id);
     }
 
-    public function getNFSe($id)
+    public function resendNF($id, $debug, $type)
     {
         $Fechamento = Fechamento::find($id);
-        $responseNF = $Fechamento->setNFSe($debug = false);
+        $responseNF = $Fechamento->resendNF($debug, $type);
         session()->forget('responseNF');
         session(['responseNF' => $responseNF]);
         return Redirect::route('fechamentos.show', $id);
     }
 
-    public function consultaNFSe($id, $debug = true)
+    public function getNF($id, $debug, $type)
     {
         $Fechamento = Fechamento::find($id);
-        return $Fechamento->getDataNFSe($debug);
+        return $Fechamento->getNF($debug, $type);
     }
 
-
-    // ============= NFe ==================
-    public function getNfeTeste($id)
-    {
-        $Fechamento = Fechamento::find($id);
-        $responseNF = $Fechamento->setNfe($debug = true);
-        session()->forget('responseNF');
-        session(['responseNF' => $responseNF]);
-        return Redirect::route('fechamentos.show', $id);
-    }
-
-    public function getNfe($id)
-    {
-        $Fechamento = Fechamento::find($id);
-        $responseNF = $Fechamento->setNfe($debug = false);
-        session()->forget('responseNF');
-        session(['responseNF' => $responseNF]);
-        return Redirect::route('fechamentos.show', $id);
-    }
-
-    public function consultaNfe($id, $debug = true)
-    {
-        $Fechamento = Fechamento::find($id);
-        return $Fechamento->getDataNfe($debug);
-    }
+    // ============= /NF ==================
 
     /**
      * Display the specified resource.

@@ -1,20 +1,15 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\NotasFiscais;
 
+use App\Models\Empresa;
+use App\Models\Fechamento;
 use Carbon\Carbon;
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * LaravelFocusnfe
  *
- * @author Flávio H. Ferreira <flaviometalvale@gmail.com>
- * @author Jansen Felipe <jansen.felipe@gmail.com>
+ * @author Leonardo Zanin <silva.zanin@gmail.com>
  */
 class NFSe extends NF
 {
@@ -84,9 +79,8 @@ class NFSe extends NF
             ['tomador' => $this->tomador],
             ["servico" => $this->servico]
         );
-        $fp = fopen('results_nfse.json', 'w');
-        fwrite($fp, json_encode($this->_PARAMS_NF_));
-        fclose($fp);
+
+        $this->writeJson();
     }
 
     public function setCabecalho()
@@ -138,9 +132,9 @@ class NFSe extends NF
             $PessoaJuridica = $Cliente->pessoa_juridica;
             $this->tomador["cnpj"] = $PessoaJuridica->getCnpj(); //(*): CNPJ do tomador, se aplicável. Caracteres não numéricos são ignorados.
             $this->tomador["razao_social"] = $PessoaJuridica->razao_social; //: Razão social ou nome do tomador. Tamanho: 115 caracteres.
-            if (!$PessoaJuridica->isencao_ie) {
-                $this->tomador["inscricao_municipal"] = $PessoaJuridica->getIe(); //inscricao_municipal: Inscrição municipal do tomador. Caracteres não numéricos são ignorados.
-            }
+//            if (!$PessoaJuridica->isencao_ie) {
+//                $this->tomador["inscricao_municipal"] = $PessoaJuridica->getIe(); //inscricao_municipal: Inscrição municipal do tomador. Caracteres não numéricos são ignorados.
+//            }
         } else {
             $PessoaFisica = $Cliente->pessoa_fisica;
             $this->tomador["cpf"] = $PessoaFisica->getCpf();//(*): CPF do tomador, se aplicável. Caracteres não numéricos são ignorados.

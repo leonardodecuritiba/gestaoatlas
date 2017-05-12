@@ -82,7 +82,8 @@
                                             (Homologação)</a>
                                     </li>
                                 @else
-                                    <li><a href="{{route('fechamentos.nfe.teste',$Fechamento->id)}}"
+                                    <li>
+                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfe'])}}"
                                            class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFe
                                             (Homologação)</a>
                                     </li>
@@ -98,7 +99,7 @@
                                     </li>
                                 @elseif($Fechamento->getStatusNfeHomologacao())
                                     <li>
-                                        <a href="{{route('fechamentos.nfe',$Fechamento->id)}}"
+                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfe'])}}"
                                            class="btn btn-xs btn-primary pull-right"><i class="fa fa-info fa-2"></i>
                                             Gerar NFe</a>
                                     </li>
@@ -116,7 +117,8 @@
                                             (Homologação)</a>
                                     </li>
                                 @else
-                                    <li><a href="{{route('fechamentos.nfse.teste',$Fechamento->id)}}"
+                                    <li>
+                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfse'])}}"
                                            class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFSe
                                             (Homologação)</a>
                                     </li>
@@ -133,7 +135,7 @@
                                     </li>
                                 @elseif($Fechamento->getStatusNFSeHomologacao())
                                     <li>
-                                        <a href="{{route('fechamentos.nfse',$Fechamento->id)}}"
+                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfse'])}}"
                                            class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar
                                             NFSe</a>
                                     </li>
@@ -328,24 +330,32 @@
                 var $loading_modal = $($this).find('div.loading');
                 var $origem = $(e.relatedTarget);
                 var $listas_nf = $($this).find('ul.listas_nf');
-                var $listas_nf = $($this).find('ul.listas_nf');
-                $($listas_nf).hide();
-                $($this).hide();
-
-
+                var $erros_nf = $($this).find('ul.erros_nf');
+                var $btn_refresh = $($this).find('div.modal-footer a#btn-refresh');
                 var type = $($origem).data('type'); //if is NFe or NFSe
                 var debug = $($origem).data('debug'); //if is/not debug
                 var idfechamento = $($origem).data('idfechamento'); //idfechamento
 
+                $($listas_nf).hide();
+                $($erros_nf).hide();
+                $($this).hide();
+
+                $($btn_refresh).hide();
+                $($btn_refresh).attr('href', '');
+
                 var href_ = '';
-                if (type == 'nfe') {
-                    href_ = '{{route('fechamentos.nfe.consulta',['XXX','debug'])}}';
-                } else {
-                    href_ = '{{route('fechamentos.nfse.consulta',['XXX','debug'])}}';
-                }
-                href_ = href_.replace('debug', debug);
+                href_ = '{{route('fechamentos.nf.get',['XXX','debug','type'])}}';
                 href_ = href_.replace('XXX', idfechamento);
+                href_ = href_.replace('debug', debug);
+                href_ = href_.replace('type', type);
                 console.log(href_);
+
+                var url_refresh = '';
+                url_refresh = '{{route('fechamentos.nf.resend',['XXX','debug','type'])}}';
+                url_refresh = url_refresh.replace('XXX', idfechamento);
+                url_refresh = url_refresh.replace('debug', debug);
+                url_refresh = url_refresh.replace('type', type);
+
 
                 $.ajax({
                     url: href_,
@@ -370,14 +380,13 @@
                             var BODY = json.body;
                             var STATUS = BODY.status;
                             var URL = json.url;
-                            var $parent = $($this).find('div.modal-body ul#' + TIPO_NF);
+                            var $parent = $($this).find('div.modal-body ul.listas_nf');
 
                             $($parent).show();
 
                             $($parent).find('b#ref').html(REF);
 
-                            $($parent).find('span.autorizado').hide();
-                            $($parent).find('span.erro_autorizacao').hide();
+                            $($parent).find('span.esconda').hide();
 
                             if (TIPO_NF == 'nfe') {
                                 $($this).find('div.modal-header h4.modal-title b').html('NFe');
@@ -398,30 +407,28 @@
 
                             switch (STATUS) {
                                 case 'autorizado': {
-                                    $($parent).find('span.autorizado').show();
+                                    $($parent).find('span#' + TIPO_NF).show();
                                     //autorizado
                                     if (TIPO_NF == 'nfe') {
                                         $($parent).find('b#numero_serie').html(BODY.numero + '/' + BODY.serie);
-//                                    $($parent).find('b#url_danfe').html('<a href="' + URL + BODY.caminho_danfe + '" target="_blank">Abrir</a>');
-//                                    $($parent).find('b#url_xml_nota_fiscal').html('<a href="' + URL + BODY.caminho_xml_nota_fiscal + '" target="_blank">Abrir</a>');
                                         $($parent).find('a#url_pdf').attr('href', URL + BODY.caminho_danfe);
                                         $($parent).find('a#url_xml').attr('href', URL + BODY.caminho_xml_nota_fiscal);
                                     } else {
-//                                    $($parent).find('a#url_nfse').html('<a href="' + BODY.uri + '" target="_blank">Abrir</a>');
-//                                    $($parent).find('b#url_xml_nota_fiscal').html('<a href="' + URL + BODY.caminho_xml_nota_fiscal + '" target="_blank">Abrir</a>');
                                         $($parent).find('a#url_pdf').attr('href', BODY.uri);
                                         $($parent).find('a#url_xml').attr('href', URL + BODY.caminho_xml_nota_fiscal);
                                     }
                                     break;
                                 }
                                 case 'erro_autorizacao': {
-                                    $($parent).find('span.erro_autorizacao').show();
-                                    if (TIPO_NF == 'nfse') {
-                                        var ERROS = BODY.erros[0];
-                                        $($parent).find('b#codigo').html(ERROS.codigo);
-                                        $($parent).find('b#correcao').html(ERROS.correcao);
-                                        $($parent).find('b#mensagem').html(ERROS.mensagem);
-                                    }
+                                    $($btn_refresh).show();
+                                    $($btn_refresh).attr('href', url_refresh);
+
+//                                    if (TIPO_NF == 'nfse') {
+//                                        var ERROS = BODY.erros;
+//                                        $($parent).find('b#codigo').html(ERROS.codigo);
+//                                        $($parent).find('b#correcao').html(ERROS.correcao);
+//                                        $($parent).find('b#mensagem').html(ERROS.mensagem);
+//                                    }
                                     break;
                                 }
                             }
@@ -430,13 +437,9 @@
                             var REF = json.ref;
                             var BODY = json.body;
                             var ERROS = BODY.erros[0];
-                            var $parent = $($this).find('div.modal-body ul#' + TIPO_NF);
 
-                            $($parent).show();
-                            $($parent).find('b#ref').html(REF);
-
-                            $($parent).find('span.autorizado').hide();
-                            $($parent).find('span.erro_autorizacao').show();
+                            $($erros_nf).show();
+                            $($erros_nf).find('b#ref').html(REF);
 
                             if (TIPO_NF == 'nfe') {
                                 $($this).find('div.modal-header h4.modal-title b').html('NFe');
@@ -445,9 +448,8 @@
                             }
                             $($this).find('div.modal-header h4.modal-title i').html(json.profile);
 
-                            $($parent).find('b#codigo').html(ERROS.codigo);
-                            $($parent).find('b#correcao').html('');
-                            $($parent).find('b#mensagem').html(ERROS.mensagem);
+                            $($erros_nf).find('b#codigo').html(ERROS.codigo);
+                            $($erros_nf).find('b#mensagem').html(ERROS.mensagem);
 
                         } else {
                             alert(json.body);
@@ -456,52 +458,7 @@
                 });
 
             });
-            {{--$('div#consultaNfe').on('show.bs.modal', function (e) {--}}
-            {{--var $this = $(this);--}}
-            {{--var $loading_modal = $($this).find('div.loading');--}}
-            {{--var $origem = $(e.relatedTarget);--}}
-            {{--var href_ = '{{route('fechamentos.nfe.consulta',['XXX','debug'])}}';--}}
-            {{--var id = $($origem).data('idfechamento');--}}
-            {{--var debug = $($origem).data('debug');--}}
-            {{--href_ = href_.replace('debug', debug);--}}
-            {{--href_ = href_.replace('XXX', id);--}}
 
-            {{--console.log(href_);--}}
-            {{--$.ajax({--}}
-            {{--url: href_,--}}
-            {{--type: 'get',--}}
-            {{--dataType: "json",--}}
-            {{--beforeSend: function () {--}}
-            {{--$($loading_modal).show();--}}
-            {{--},--}}
-            {{--complete: function (xhr, textStatus) {--}}
-            {{--$($loading_modal).hide();--}}
-            {{--},--}}
-            {{--error: function (xhr, textStatus) {--}}
-            {{--$($loading_modal).hide();--}}
-            {{--console.log('xhr-error: ' + xhr);--}}
-            {{--console.log('textStatus-error: ' + textStatus);--}}
-            {{--},--}}
-            {{--success: function (json) {--}}
-            {{--console.log(json);--}}
-            {{--if (json.status == 200) {--}}
-            {{--var BODY = json.body;--}}
-            {{--var URL = json.url;--}}
-            {{--var $parent = $($this).find('div.modal-body ul.list-unstyled');--}}
-            {{--$.each(BODY, function (i, v) {--}}
-            {{--$($parent).find('b#' + i).html(v);--}}
-            {{--});--}}
-            {{--$($parent).find('b#numero_serie').html(BODY.numero + '/' + BODY.serie);--}}
-            {{--$($parent).find('b#url_danfe').html('<a href="' + URL + BODY.caminho_danfe + '" target="_blank">Abrir</a>');--}}
-            {{--$($parent).find('b#url_xml_nota_fiscal').html('<a href="' + URL + BODY.caminho_xml_nota_fiscal + '" target="_blank">Abrir</a>');--}}
-            {{--//<a href=""></a>--}}
-            {{--} else {--}}
-            {{--alert(json.body);--}}
-            {{--}--}}
-            {{--}--}}
-            {{--});--}}
-
-            {{--});--}}
         });
     </script>
 @endsection

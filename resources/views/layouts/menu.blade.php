@@ -119,7 +119,7 @@
                     <li><a><i class="fa fa-handshake-o"></i> Ordens de Serviços<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             @role('tecnico')
-                            <li><a href="{{ route('ordem_servicos.busca') }}"> Nova Ordem de Serviços</a></li>
+                            <li><a href="{{ route('ordem_servicos.busca') }}">Abrir O.S.</a></li>
                             @endrole
                             <li><a href="{{ route('ordem_servicos.index') }}">Listar</a></li>
 
