@@ -115,13 +115,23 @@ class NF
 
     public function emitir()
     {
-        $URL = $this->_SERVER_ . "/" . $this->_NF_TYPE_ . "/autorizar.json?ref=" . $this->_REF_ . "&token=" . $this->_TOKEN_;
+        $URL = $this->_SERVER_ . "/" . $this->_NF_TYPE_;
+
+        if (!strcmp($this->_NF_TYPE_, 'nfe2')) {
+            $URL .= "/autorizar?ref=" . $this->_REF_ . "&token=" . $this->_TOKEN_;
+        } else {
+            $URL .= "?token=" . $this->_TOKEN_ . "&ref=" . $this->_REF_;
+        }
+        //http://homologacao.acrasnfe.acras.com.br/nfe2/autorizar?token=TOKEN&ref=1
+        //http://homologacao.acrasnfe.acras.com.br/nfse?ref=REFERENCIA&amp;token=TOKEN
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $URL);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($this->_PARAMS_NF_));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, Yaml::dump($this->_PARAMS_NF_));
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+
         $body = curl_exec($ch);
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 

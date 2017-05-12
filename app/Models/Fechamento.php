@@ -97,6 +97,9 @@ class Fechamento extends Model
         $_valores = [
             'valor_desconto_float' => 0,
             'valor_acrescimo_float' => 0,
+            'valor_desconto_servicos_float' => 0,
+            'valor_desconto_pecas_float' => 0,
+            'valor_desconto_kits_float' => 0,
             'valor_total_servicos_float' => 0,
             'valor_total_pecas_float' => 0,
             'valor_total_kits_float' => 0,
@@ -184,7 +187,6 @@ class Fechamento extends Model
             $NF = new NFSe($debug, $this);
         }
         $retorno = $NF->emitir();
-        return $retorno;
 
         if (isset($retorno->body->erros)) {
             $responseNF = [

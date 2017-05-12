@@ -41,7 +41,7 @@ class NFe extends NF
             $this->_TOKEN_ = parent::_TOKEN_PRODUCAO_;
             $this->_REF_ = $fechamento->idnfe_producao;
         }
-        
+
         $this->_NF_TYPE_ = parent::_URL_NFe_;
         $this->now = Carbon::now();
         $this->_FECHAMENTO_ = $fechamento;
@@ -214,15 +214,19 @@ class NFe extends NF
             "icms_base_calculo_st" => "0.00", //Valor total da base de cálculo do ICMS do substituto tributário. (obrigatório) Decimal[13.2] Tag XML vBCST
             "icms_valor_total_st" => "0.00", //Valor total do ICMS do substituto tributário. (obrigatório) Decimal[13.2] Tag XML vST
 
-            "valor_produtos" => $valores->valor_total_pecas_float, //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
-            "valor_desconto" => "0.00", //Valor total do desconto. (obrigatório) Decimal[13.2] Tag XML vDesc
             "valor_seguro" => "0.00", //Valor total do seguro. (obrigatório) Decimal[13.2] Tag XML vSeg
             "valor_total_ii" => "0.00", //Valor total do imposto de importação. (obrigatório) Decimal[13.2] Tag XML vII
             "valor_ipi" => "0.00", //Valor total do IPI. (obrigatório) Decimal[13.2] Tag XML vIPI
             "valor_pis" => "0.00", //Valor do PIS. (obrigatório) Decimal[13.2] Tag XML vPIS
             "valor_cofins" => "0.00", //Valor do COFINS. (obrigatório) Decimal[13.2] Tag XML vCOFINS
             "valor_outras_despesas" => "0.00", //Valor das despesas acessórias. (obrigatório) Decimal[13.2] Tag XML vOutro
+
+//            "valor_produtos" => $valores->valor_total_pecas_float, //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
+//            "valor_total" => $valores->valor_total_pecas_float, //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
+
             "valor_total" => $valores->valor_total_pecas_float, //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
+            "valor_desconto" => $valores->valor_desconto_pecas_float, //Valor total do desconto. (obrigatório) Decimal[13.2] Tag XML vDesc
+            "valor_produtos" => $valores->valor_total_pecas_float + $valores->valor_desconto_pecas_float, //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
         ];
     }
 
@@ -287,7 +291,7 @@ class NFe extends NF
                     //O valor do frete vai ser incluído dentro do produto mesmo (compo é hoje) ou vai depender da O.S?
                     "valor_frete" => $pecas_utilizada->peca->peca_tributacao->valor_frete_float(), //Valor do frete. Decimal[13.2] Tag XML vFrete
                     "valor_seguro" => $pecas_utilizada->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
-                    "valor_desconto" => $pecas_utilizada->desconto / $pecas_utilizada->quantidade, //Valor do desconto. Decimal[13.2] Tag XML vSeg
+                    "valor_desconto" => $pecas_utilizada->desconto, //Valor do desconto. Decimal[13.2] Tag XML vSeg
 //                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
 
 

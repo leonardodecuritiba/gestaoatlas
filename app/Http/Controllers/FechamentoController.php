@@ -130,10 +130,7 @@ class FechamentoController extends Controller
     public function sendNF($id, $debug, $type)
     {
         $Fechamento = Fechamento::find($id);
-        return json_encode($Fechamento->sendNF($debug, $type));
-
         $responseNF = $Fechamento->sendNF($debug, $type);
-
         session()->forget('responseNF');
         session(['responseNF' => $responseNF]);
         return Redirect::route('fechamentos.show', $id);

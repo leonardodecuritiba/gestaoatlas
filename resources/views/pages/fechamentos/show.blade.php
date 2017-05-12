@@ -71,76 +71,86 @@
                                 <li><i class="fa fa-money"></i> Total Pago: <b
                                             class="text-success">{{$Fechamento->getTotalPagoReal()}}</b>
                                 </li>
-                                @if($Fechamento->getStatusNfeHomologacao())
-                                    <li>
-                                        <a data-toggle="modal"
-                                           data-idfechamento="{{$Fechamento->id}}"
-                                           data-type="nfe"
-                                           data-target="#consultaNF"
-                                           data-debug="1"
-                                           class="btn btn-warning btn-xs"><i class="fa fa-search"></i> Consultar NFe
-                                            (Homologação)</a>
-                                    </li>
-                                @else
-                                    <li>
-                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfe'])}}"
-                                           class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFe
-                                            (Homologação)</a>
-                                    </li>
-                                @endif
-                                @if($Fechamento->getStatusNfeProducao())
-                                    <li>
-                                        <a data-toggle="modal"
-                                           data-idfechamento="{{$Fechamento->id}}"
-                                           data-type="nfe"
-                                           data-target="#consultaNF"
-                                           data-debug="0"
-                                           class="btn btn-warning btn-xs"><i class="fa fa-search"></i> Consultar NFe</a>
-                                    </li>
-                                @elseif($Fechamento->getStatusNfeHomologacao())
-                                    <li>
-                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfe'])}}"
-                                           class="btn btn-xs btn-primary pull-right"><i class="fa fa-info fa-2"></i>
-                                            Gerar NFe</a>
-                                    </li>
-                                @endif
-
-
-                                @if($Fechamento->getStatusNFSeHomologacao())
-                                    <li>
-                                        <a data-toggle="modal"
-                                           data-idfechamento="{{$Fechamento->id}}"
-                                           data-type="nfse"
-                                           data-target="#consultaNF"
-                                           data-debug="1"
-                                           class="btn btn-warning btn-xs"><i class="fa fa-search"></i> Consultar NFSe
-                                            (Homologação)</a>
-                                    </li>
-                                @else
-                                    <li>
-                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfse'])}}"
-                                           class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFSe
-                                            (Homologação)</a>
-                                    </li>
-                                @endif
-                                @if($Fechamento->getStatusNFSeProducao())
-                                    <li>
-                                        <a data-toggle="modal"
-                                           data-idfechamento="{{$Fechamento->id}}"
-                                           data-type="nfse"
-                                           data-target="#consultaNF"
-                                           data-debug="0"
-                                           class="btn btn-warning btn-xs"><i class="fa fa-search"></i> Consultar
-                                            NFSe</a>
-                                    </li>
-                                @elseif($Fechamento->getStatusNFSeHomologacao())
-                                    <li>
-                                        <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfse'])}}"
-                                           class="btn btn-xs btn-primary"><i class="fa fa-info fa-2"></i> Gerar
-                                            NFSe</a>
-                                    </li>
-                                @endif
                             </ul>
+
+                            <div class="row">
+                                <div class="col-lg-6 col-md-6 col-xs-6">
+                                    <ul class="list-unstyled">
+                                        @if($Fechamento->getStatusNfeHomologacao())
+                                            <li>
+                                                <a data-toggle="modal"
+                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-type="nfe"
+                                                   data-target="#consultaNF"
+                                                   data-debug="1"
+                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFe
+                                                    (Homologação)</a>
+                                            </li>
+                                        @else
+                                            <li>
+                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfe'])}}"
+                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFe
+                                                    (Homologação)</a>
+                                            </li>
+                                        @endif
+                                        @if($Fechamento->getStatusNFSeHomologacao())
+                                            <li>
+                                                <a data-toggle="modal"
+                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-type="nfse"
+                                                   data-target="#consultaNF"
+                                                   data-debug="1"
+                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFSe
+                                                    (Homologação)</a>
+                                            </li>
+                                        @else
+                                            <li>
+                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfse'])}}"
+                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFSe
+                                                    (Homologação)</a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </div>
+                                <div class="col-lg-6 col-md-6 col-xs-6">
+                                    <ul class="list-unstyled pull-right">
+                                        @if($Fechamento->getStatusNfeProducao())
+                                            <li>
+                                                <a data-toggle="modal"
+                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-type="nfe"
+                                                   data-target="#consultaNF"
+                                                   data-debug="0"
+                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar
+                                                    NFe</a>
+                                            </li>
+                                        @elseif($Fechamento->getStatusNfeHomologacao())
+                                            <li>
+                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfe'])}}"
+                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i>
+                                                    Gerar NFe</a>
+                                            </li>
+                                        @endif
+                                        @if($Fechamento->getStatusNFSeProducao())
+                                            <li>
+                                                <a data-toggle="modal"
+                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-type="nfse"
+                                                   data-target="#consultaNF"
+                                                   data-debug="0"
+                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar
+                                                    NFSe</a>
+                                            </li>
+                                        @elseif($Fechamento->getStatusNFSeHomologacao())
+                                            <li>
+                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfse'])}}"
+                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar
+                                                    NFSe</a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </div>
+                            </div>
 
                             <?php $valores = $Fechamento->getValores();?>
                             <ul class="list-unstyled product_price">

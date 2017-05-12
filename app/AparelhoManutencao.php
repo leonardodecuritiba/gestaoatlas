@@ -123,6 +123,19 @@ class AparelhoManutencao extends Model
         return $total;
     }
 
+    public function getTotalDescontoServicosReal()
+    {
+        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalDescontoServicos());
+    }
+
+    public function getTotalDescontoServicos()
+    {
+        $total = 0;
+        foreach ($this->servico_prestados as $servico_prestado) {
+            $total += $servico_prestado->desconto;
+        }
+        return $total;
+    }
 
     // ******************** PEÇAS *********************************
     // ************************************************************
@@ -147,6 +160,20 @@ class AparelhoManutencao extends Model
         $total = 0;
         foreach ($this->pecas_utilizadas as $pecas_utilizada) {
             $total += $pecas_utilizada->valor_total();
+        }
+        return $total;
+    }
+
+    public function getTotalDescontoPecasReal()
+    {
+        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalDescontoPecas());
+    }
+
+    public function getTotalDescontoPecas()
+    {
+        $total = 0;
+        foreach ($this->pecas_utilizadas as $pecas_utilizada) {
+            $total += $pecas_utilizada->desconto;
         }
         return $total;
     }
@@ -178,6 +205,19 @@ class AparelhoManutencao extends Model
         return $total;
     }
 
+    public function getTotalDescontoKitsReal()
+    {
+        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalDescontoKits());
+    }
+
+    public function getTotalDescontoKits()
+    {
+        $total = 0;
+        foreach ($this->kits_utilizados as $kits_utilizado) {
+            $total += $kits_utilizado->desconto;
+        }
+        return $total;
+    }
     // ******************** **** **********************************
     // ************************************************************
 
@@ -187,6 +227,15 @@ class AparelhoManutencao extends Model
         $total += $this->getTotalPecas();
         $total += $this->getTotalServicos();
         $total += $this->getTotalKits();
+        return $total;
+    }
+
+    public function get_total_desconto()
+    {
+        $total = 0;
+        $total += $this->getTotalDescontoPecas();
+        $total += $this->getTotalDescontoServicos();
+        $total += $this->getTotalDescontoKits();
         return $total;
     }
 
