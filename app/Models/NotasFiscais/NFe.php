@@ -35,11 +35,11 @@ class NFe extends NF
         if ($this->debug) {
             $this->_SERVER_ = parent::_URL_HOMOLOGACAO_;
             $this->_TOKEN_ = parent::_TOKEN_HOMOLOGACAO_;
-            $this->_REF_ = $fechamento->idnfse_homologacao;
+            $this->_REF_ = $fechamento->idnfe_homologacao;
         } else {
             $this->_SERVER_ = parent::_URL_PRODUCAO_;
             $this->_TOKEN_ = parent::_TOKEN_PRODUCAO_;
-            $this->_REF_ = $fechamento->idnfse_producao;
+            $this->_REF_ = $fechamento->idnfe_producao;
         }
         $this->_NF_TYPE_ = parent::_URL_NFe_;
         $this->now = Carbon::now();
