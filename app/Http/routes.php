@@ -182,6 +182,9 @@ Route::group(['prefix' => 'cron-jobs'], function () {
     Route::get('run-fechamento', 'FechamentoController@run');
 });
 Route::group(['prefix' => 'teste'], function () {
+    Route::get('get-hour', function () {
+        return \Carbon\Carbon::now()->toDateTimeString();
+    });
     Route::get('run-fechamento-temp', 'FechamentoController@run_temp');
 
     Route::get('nfse/{idfechamento}', function (\Illuminate\Http\Request $request) {
