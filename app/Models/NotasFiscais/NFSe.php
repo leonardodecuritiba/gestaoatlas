@@ -192,7 +192,7 @@ class NFSe extends NF
             "base_calculo" => 0,//base_calculo: Base de cálculo do ISS, valor padrão igual ao valor_servicos. Campo ignorado pelo município de São Paulo.
 
             //3. A aliquota não deve ser enviada para optantes do simples nacional
-//            "aliquota" => $this->servico_params_fixos['aliquota'],//aliquota: Aliquota do ISS.
+            "aliquota" => $this->servico_params_fixos['aliquota'],//aliquota: Aliquota do ISS.
 
             "desconto_incondicionado" => 0,//desconto_incondicionado: Valor do desconto incondicionado. Campo ignorado pelo município de São Paulo.
             "desconto_condicionado" => 0,//desconto_condicionado: Valor do desconto incondicionado. Campo ignorado pelo município de São Paulo.
