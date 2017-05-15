@@ -126,7 +126,7 @@
                                             </li>
                                         @elseif($Fechamento->getStatusNfeHomologacao())
                                             <li>
-                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfe'])}}"
+                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = 0, 'nfe'])}}"
                                                    class="btn btn-primary"><i class="fa fa-info fa-2"></i>
                                                     Gerar NFe</a>
                                             </li>
@@ -143,7 +143,7 @@
                                             </li>
                                         @elseif($Fechamento->getStatusNFSeHomologacao())
                                             <li>
-                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = false, 'nfse'])}}"
+                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = 0, 'nfse'])}}"
                                                    class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar
                                                     NFSe</a>
                                             </li>
