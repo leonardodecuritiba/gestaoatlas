@@ -19,7 +19,7 @@ class NFSe extends NF
         //3. A aliquota não deve ser enviada para optantes do simples nacional
         'aliquota' => 3.84,
         'porcentagem_tributos_float' => 11.31,
-        'porcentagem_tributos_real' => '11,31',
+        'porcentagem_tributos_real' => '11,31%',
 
         'item_lista_servico' => '14.01', //'14.01/14.01.11',
         'codigo_cnae' => '3314710', //'3314-7/10',
@@ -171,7 +171,7 @@ class NFSe extends NF
         //# VALOR DE DEDUÇOES ate BASE DE CALCULO= SO SAO USADAS QNDO EMPRESA NAO E SIMPLES. CASO CONTRARIO EM BRANCO OU ZERO.
 
         $valores = $this->_FECHAMENTO_->getValores();
-        $valor_aproximado_tributos = $valores->valor_nfse_float * $this->servico_params_fixos['porcentagem_tributos_float'];
+        $valor_aproximado_tributos = ($valores->valor_nfse_float * $this->servico_params_fixos['porcentagem_tributos_float']) / 100;
         $discriminacao = $this->servico_params_fixos['discriminacao'] .
             ' (' . $this->servico_params_fixos['porcentagem_tributos_real'] . ') - ' .
             DataHelper::getFloat2RealMoeda($valor_aproximado_tributos);
