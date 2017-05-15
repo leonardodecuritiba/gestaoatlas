@@ -16,7 +16,7 @@ class NFSe extends NF
     public $servico_params_fixos = [
 
         //3. A aliquota não deve ser enviada para optantes do simples nacional
-//        'aliquota' => 3.84,
+        'aliquota' => 3.84,
 
         'item_lista_servico' => '14.01', //'14.01/14.01.11',
         'codigo_cnae' => '3314710', //'3314-7/10',
@@ -183,9 +183,8 @@ class NFSe extends NF
 
             "base_calculo" => 0,//base_calculo: Base de cálculo do ISS, valor padrão igual ao valor_servicos. Campo ignorado pelo município de São Paulo.
 
-
             //3. A aliquota não deve ser enviada para optantes do simples nacional
-//            "aliquota" => $this->servico_params_fixos['aliquota'],//aliquota: Aliquota do ISS.
+            "aliquota" => $this->servico_params_fixos['aliquota'],//aliquota: Aliquota do ISS.
 
             "desconto_incondicionado" => 0,//desconto_incondicionado: Valor do desconto incondicionado. Campo ignorado pelo município de São Paulo.
             "desconto_condicionado" => 0,//desconto_condicionado: Valor do desconto incondicionado. Campo ignorado pelo município de São Paulo.
