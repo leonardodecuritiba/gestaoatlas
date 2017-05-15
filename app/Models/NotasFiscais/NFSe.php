@@ -2,6 +2,7 @@
 
 namespace App\Models\NotasFiscais;
 
+use App\Helpers\DataHelper;
 use App\Models\Empresa;
 use App\Models\Fechamento;
 use Carbon\Carbon;
@@ -17,6 +18,8 @@ class NFSe extends NF
 
         //3. A aliquota não deve ser enviada para optantes do simples nacional
         'aliquota' => 3.84,
+        'porcentagem_tributos_float' => 11.31,
+        'porcentagem_tributos_real' => '11,31',
 
         'item_lista_servico' => '14.01', //'14.01/14.01.11',
         'codigo_cnae' => '3314710', //'3314-7/10',
@@ -25,7 +28,8 @@ class NFSe extends NF
         'codigo_tributario_municipio' => '14.01.11 / 00140111', //'14.01',
 
         //1. Alterei a configuração para remover automaticamente os acentos
-        'discriminacao' => 'SERVIÇOS PRESTADOS EM BALANÇAS, MÍDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOMAÇÃO COMERCIAL \ INDUSTRIAL',
+        'discriminacao' => 'SERVIÇOS PRESTADOS EM BALANÇAS, MÍDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOMAÇÃO COMERCIAL \ INDUSTRIAL.
+            \n VALOR APROXIMADO DOS TRIBUTOS',
 //        'discriminacao' => 'SERVI\u00c7OS PRESTADOS EM BALAN\u00c7AS, M\u00cdDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOM\u00c7\u00c3O COMERCIAL \\ INDUSTRIA',
         'codigo_municipio' => '3543402', //cliente
     ];
@@ -167,6 +171,10 @@ class NFSe extends NF
         //# VALOR DE DEDUÇOES ate BASE DE CALCULO= SO SAO USADAS QNDO EMPRESA NAO E SIMPLES. CASO CONTRARIO EM BRANCO OU ZERO.
 
         $valores = $this->_FECHAMENTO_->getValores();
+        $valor_aproximado_tributos = $valores->valor_nfse_float * $this->servico_params_fixos['porcentagem_tributos_float'];
+        $discriminacao = $this->servico_params_fixos['discriminacao'] .
+            ' (' . $this->servico_params_fixos['porcentagem_tributos_real'] . ') - ' .
+            DataHelper::getFloat2RealMoeda($valor_aproximado_tributos);
         $this->servico = [
             "valor_liquido" => $valores->valor_nfse_float,
             "valor_servicos" => $valores->valor_nfse_float,//valor_servicos(*): Valor dos serviços.
@@ -193,7 +201,7 @@ class NFSe extends NF
 //            "codigo_cnae" => $this->servico_params_fixos['codigo_cnae'],//codigo_cnae: Informar o código CNAE. Campo ignorado pelo município de São Paulo.
 
             "codigo_tributario_municipio" => $this->servico_params_fixos['codigo_tributario_municipio'],//codigo_tributario_municipio: Informar o código tributário de acordo com a tabela de cada município (não há um padrão). Campo ignorado pelo município de São Paulo.
-            "discriminacao" => $this->servico_params_fixos['discriminacao'],//discriminacao(*): Discriminação dos serviços. Tamanho: 2000 caracteres.
+            "discriminacao" => $discriminacao,//discriminacao(*): Discriminação dos serviços. Tamanho: 2000 caracteres.
 //            "codigo_municipio" => $this->servico_params_fixos['codigo_municipio'],//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
             "codigo_municipio" => $this->_EMPRESA_->icms_codigo_municipio,//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
             "percentual_total_tributos" => 0,//percentual_total_tributos: Percentual aproximado de todos os impostos, de acordo com a Lei da Transparência. No momento disponível apenas para São Paulo.
