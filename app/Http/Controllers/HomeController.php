@@ -68,7 +68,7 @@ class HomeController extends Controller
                     ->sum('valor_final');
                 $faturadas = $faturadas->where('idsituacao_ordem_servico', OrdemServico::_STATUS_FATURADA_)
                     ->sum('valor_final');
-                $pagamento_pendentes = $pagamento_pendentes->where('idsituacao_ordem_servico', OrdemServico::_STATUS_PAGAMENTO_PENDENTE_)
+                $pagamento_pendentes = $pagamento_pendentes->where('idsituacao_ordem_servico', OrdemServico::_STATUS_A_FATURAR_)
                     ->sum('valor_final');
 
 
