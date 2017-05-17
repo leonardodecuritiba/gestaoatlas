@@ -21,19 +21,21 @@
 				</div>
 				@include('pages.ordem_servicos.parts.cliente_show')
 				@role('tecnico')
-				<section class="row form-horizontal form-label-left">
-					<div class="form-group">
-						<label class="control-label col-md-3 col-sm-3 col-xs-12">Aplicação de Valores: </label>
-						<div class="col-md-9 col-sm-9 col-xs-12">
-							<button class="btn btn-warning"
-									data-toggle="modal"
-									data-target="#modalTecnicoValores"><i class="fa fa-money fa-2"></i> Aplicar
-								Desconto/Acrescimo
-							</button>
-						</div>
-					</div>
-					<div class="ln_solid"></div>
-				</section>
+                @if(!$OrdemServico->status())
+                    <section class="row form-horizontal form-label-left">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12">Aplicação de Valores: </label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <button class="btn btn-warning"
+                                        data-toggle="modal"
+                                        data-target="#modalTecnicoValores"><i class="fa fa-money fa-2"></i> Aplicar
+                                    Desconto/Acrescimo
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ln_solid"></div>
+                    </section>
+                @endif
 				@endrole
 
 				@if(!$OrdemServico->status())
