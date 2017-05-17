@@ -49,6 +49,30 @@ class OrdemServico extends Model
 
     static public function getSituacaoSelect()
     {
+//        if (Auth::user()->hasRole(['admin', 'financeiro'])){
+//            $retorno = [
+//                'todas' => 'Todas',
+//                'abertas' => 'Abertas',
+//                'atendimento-em-andamento' => 'Em Atendimento',
+//                'finalizadas' => 'Finalizadas',
+//                'pendentes' => 'Pendentes',
+//                'faturadas' => 'Faturadas',
+//            ];
+//        } else {
+//            $retorno = [
+//                'todas' => 'Todas',
+//                'abertas' => 'Abertas',
+//                'atendimento-em-andamento' => 'Em Atendimento',
+//                'finalizadas' => 'Finalizadas',
+//                'pendentes' => 'Pendentes',
+//                'faturadas' => 'Faturadas',
+//            ];
+//        }
+//        return [
+//            'abertas' => 'Abertas',
+//            'atendimento-em-andamento' => 'Em Atendimento',
+//            'finalizadas' => 'Finalizadas'
+//        ];
         return [
             'todas' => 'Todas',
             'abertas' => 'Abertas',
@@ -102,9 +126,6 @@ class OrdemServico extends Model
         $data['situacao'] = (isset($data['situacao'])) ? $data['situacao'] : NULL;
         $query = OrdemServico::orderBy('idordem_servico', 'desc');
         switch ($data['situacao']) {
-            case 'abertas':
-                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
-                break;
             case 'atendimento-em-andamento':
                 $query->where('idsituacao_ordem_servico', self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_);
                 break;
@@ -116,6 +137,12 @@ class OrdemServico extends Model
                 break;
             case 'faturadas':
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
+                break;
+            case 'abertas':
+                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
+                break;
+            default:
+//                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
                 break;
         }
         if (isset($data['data'])) {
@@ -421,9 +448,9 @@ class OrdemServico extends Model
 //        return DataHelper::getFloat2Real($value);
 //    }
 
-    public function getCreatedAtAttribute($value)
+    public function getDataAbertura()
     {
-        return DataHelper::getPrettyDateTime($value);
+        return DataHelper::getPrettyDateTime($this->getAttributeValue('created_at'));
     }
     public function getFechamentoAttribute($value)
     {

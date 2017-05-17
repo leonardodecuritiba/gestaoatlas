@@ -25,6 +25,7 @@ use Validator;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use Zizaco\Entrust\Entrust;
 
 class OrdemServicoController extends Controller
 {
@@ -40,17 +41,18 @@ class OrdemServicoController extends Controller
             'table' => "ordem_servicos",
             'link' => "ordem_servicos",
             'primaryKey' => "idordem_servico",
-            'Target' => "Ordem de Serviço",
             'Search' => "Buscar por CPF, CNPJ, Nome Fantasia ou Razão Social...",
             'Search_instrumento' => "Buscar Instrumento/Equipamento por Marca, Nº Série ou Descrição ...",
-            'Targets' => "Ordem de Serviços",
+            'Target' => "Ordem de Serviços",
+            'Targets' => "Ordens de Serviços",
             'Titulo' => "Ordem de Serviços",
-            'search_no_results' => "Nenhuma Ordem de Serviço encontrada!",
-            'msg_abr' => 'Ordem de Serviço aberta com sucesso!',
-            'msg_fec' => 'Ordem de Serviço fechada com sucesso!',
-            'msg_upd' => 'Ordem de Serviço atualizada com sucesso!',
-            'msg_rem' => 'Ordem de Serviço removida com sucesso!',
-            'msg_rea' => 'Ordem de Serviço reaberta com sucesso!',
+            'search_no_results' => "Nenhuma Ordem de Serviços encontrada!",
+            'search_results' => "Ordens de Serviços encontradas",
+            'msg_abr' => 'Ordem de Serviços aberta com sucesso!',
+            'msg_fec' => 'Ordem de Serviços fechada com sucesso!',
+            'msg_upd' => 'Ordem de Serviços atualizada com sucesso!',
+            'msg_rem' => 'Ordem de Serviços removida com sucesso!',
+            'msg_rea' => 'Ordem de Serviços reaberta com sucesso!',
             'titulo_primario' => "",
             'titulo_secundario' => "",
             'extras' => [],
@@ -60,17 +62,49 @@ class OrdemServicoController extends Controller
     public function index(Request $request)
     {
         $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
-
+        $now = Carbon::now();
+        $OrdemServicosMesAtual = NULL;
+        $OrdemServicosPassadas = NULL;
         if ($request->has('idordem_servico')) {
-            $Buscas = OrdemServico::where('idordem_servico', $request->get('idordem_servico'))->with('cliente', 'colaborador')->get();
+            $OrdemServicosMesAtual = OrdemServico::where('idordem_servico', $request->get('idordem_servico'))->with('cliente', 'colaborador')->get();
             $this->Page->extras['clientes'] = Cliente::all();
         } else {
-            $Buscas = OrdemServico::filter_situacao_cliente($request->all())->get();
-            $this->Page->extras['clientes'] = $Buscas->pluck('cliente');
+            if (!$request->has('data')) {
+                $request->merge(['data' => $now->format('d/m/Y')]);
+            }
+            $QuerySearch = OrdemServico::filter_situacao_cliente($request->all())->get();
+            $this->Page->extras['clientes'] = $QuerySearch->pluck('cliente');
+            $Search = $QuerySearch->map(function ($item) {
+                $item->periodo = Carbon::createFromFormat("Y-m-d H:i:s", $item->created_at)->format('m/Y');
+                return $item;
+            })->groupBy('periodo');
+            if ($Search->count() > 0) {
+                $OrdemServicosMesAtual = $Search[$now->format('m/Y')];
+                unset($Search[$now->format('m/Y')]);
+                $OrdemServicosPassadas = $Search;
+            }
+//            return $Search->toArray();
         }
+//        return $OrdemServicosMesAtual;
+//        return $OrdemServicosPassadas;
+//        return $OrdemServicosMesAtual;
+
+//        $Search = $Search->map(function($item){
+//            $item->id = 0;
+//            return $item;
+//        });
+//        foreach ($Search as $key => $search){
+//            print_r($key);
+//            print_r('<pre>');
+//            print_r($search);
+//            print_r('</pre>');
+//        }
+//        exit;
+//        return 0;
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
-            ->with('Buscas', $Buscas);
+            ->with('OrdemServicosMesAtual', $OrdemServicosMesAtual)
+            ->with('OrdemServicosPassadas', $OrdemServicosPassadas);
     }
 
     public function index_centro_custo(Request $request)

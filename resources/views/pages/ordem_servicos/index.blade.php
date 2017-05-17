@@ -86,10 +86,12 @@
 			</div>
 		</div>
 	</div>
-	@if(count($Buscas) > 0)
+	@if(count($OrdemServicosMesAtual) > 0)
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>{{$Page->Targets}} encontrados</h2>
+				<h3><b>{{$OrdemServicosMesAtual->count()}}</b> {{$Page->search_results}}
+					<small><i>Mês atual</i></small>
+				</h3>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
@@ -109,7 +111,7 @@
 							</tr>
 							</thead>
 							<tbody>
-							@foreach ($Buscas as $selecao)
+							@foreach ($OrdemServicosMesAtual as $selecao)
 								<tr>
                                     <td>{{$selecao->idordem_servico}}</td>
 									<td>
@@ -118,7 +120,7 @@
 										</button>
 									</td>
 									<td>{{$selecao->numero_chamado}}</td>
-									<td>{{$selecao->created_at}}</td>
+									<td>{{$selecao->getDataAbertura()}}</td>
 									<td>{{$selecao->colaborador->nome}}</td>
 									<td>{{$selecao->cliente->getType()->nome_principal}}</td>
 									<td>
@@ -151,6 +153,74 @@
 	@else
 		@include('layouts.search.no-results')
 	@endif
+
+	@if(count($OrdemServicosPassadas) > 0)
+		@foreach ($OrdemServicosPassadas as $periodo => $OrdensServicos)
+			<div class="x_panel">
+				<div class="x_title">
+					<h3><b>{{$OrdensServicos->count()}}</b> {{$Page->search_results}}
+						<small><i>Período {{$periodo}}</i></small>
+					</h3>
+					<div class="clearfix"></div>
+				</div>
+				<div class="x_content">
+					<div class="row">
+						<div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
+							<table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+								   width="100%">
+								<thead>
+								<tr>
+									<th>ID</th>
+									<th>Situação</th>
+									<th>Nº Chamado</th>
+									<th>Data de Abertura</th>
+									<th>Técnico</th>
+									<th>Cliente</th>
+									<th>Ações</th>
+								</tr>
+								</thead>
+								<tbody>
+								@foreach ($OrdensServicos as $selecao)
+									<tr>
+										<td>{{$selecao->idordem_servico}}</td>
+										<td>
+											<button class="btn btn-xs btn-{{$selecao->getStatusType()}}">
+												{{$selecao->situacao->descricao}}
+											</button>
+										</td>
+										<td>{{$selecao->numero_chamado}}</td>
+										<td>{{$selecao->getDataAbertura()}}</td>
+										<td>{{$selecao->colaborador->nome}}</td>
+										<td>{{$selecao->cliente->getType()->nome_principal}}</td>
+										<td>
+											<a class="btn btn-primary btn-xs"
+											   href="{{route('ordem_servicos.show',$selecao->idordem_servico)}}">
+												<i class="fa fa-eye"></i> Abrir</a>
+											@role('admin')
+											@if($selecao->getStatusFechada())
+												<a class="btn btn-danger btn-xs"
+												   data-nome="Ordem de Serviço #{{$selecao->idordem_servico}}"
+												   data-href="{{route('ordem_servicos.destroy',$selecao->idordem_servico)}}"
+												   data-toggle="modal"
+												   data-target="#modalDelecao"><i class="fa fa-trash-o"></i> Remover</a>
+												@if($selecao->getStatusFinalizada())
+													<a class="btn btn-success btn-xs"
+													   href="{{route('fechamento.gerar',$selecao->idordem_servico)}}">
+														<i class="fa fa-money"></i> Faturar</a>
+												@endif
+											@endif
+											@endrole
+										</td>
+									</tr>
+								@endforeach
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		@endforeach
+	@endif
 	<!-- /page content -->
 @endsection
 @section('scripts_content')
@@ -170,7 +240,7 @@
             $('.dt-responsive').DataTable(
                 {
                     "language": language_pt_br,
-                    "pageLength": 20,
+                    "pageLength": 5,
                     "bLengthChange": false, //used to hide the property
                     "bFilter": false,
                     "order": [0, "desc"]
@@ -179,8 +249,8 @@
         });
     </script>
     <!-- /Datatables -->
-	<!-- /Datatables -->
 	<script>
+        //
         <!-- script deleção -->
         $(document).ready(function () {
 
