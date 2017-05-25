@@ -135,6 +135,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('listar-pos-fechamentos', 'FaturamentoController@index_pos')->name('faturamentos.index_pos');
     Route::get('visualizar-pos-fechamentos/{centro_custo}/{id}', 'FaturamentoController@show_pos')->name('faturamentos.show_pos');
     Route::get('faturar-pos/{centro_custo}/{id}', 'FaturamentoController@faturar_pos')->name('faturamentos.faturar_pos');
+    Route::get('faturar-por-periodo', 'FaturamentoController@indexFaturarPeriodo')->name('faturamentos.periodo_index');
+    Route::post('faturar-periodo', 'FaturamentoController@faturarPeriodo')->name('faturamentos.faturar_periodo');
 
     //PARCELAS
     Route::post('parcela/pagar', 'ParcelaController@pagar')->name('parcelas.pagar');
@@ -183,7 +185,6 @@ Route::group(['middleware' => ['auth']], function() {
 });
 
 Route::group(['prefix' => 'cron-jobs'], function () {
-
     Route::get('run-faturamento', 'FaturamentoController@run');
 });
 Route::group(['prefix' => 'teste'], function () {

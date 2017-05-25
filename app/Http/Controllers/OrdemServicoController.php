@@ -146,7 +146,7 @@ class OrdemServicoController extends Controller
     public function show(Request $request, $idordem_servico)
     {
         //atualizando o valor total da OS
-        $OrdemServico = OrdemServico::find($idordem_servico);
+        $OrdemServico = OrdemServico::findOrFail($idordem_servico);
         $OrdemServico->update_valores();
         return $this->buscaInstrumentos($request, $idordem_servico);
     }

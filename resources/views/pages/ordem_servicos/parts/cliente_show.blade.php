@@ -67,10 +67,10 @@
                                                                   id="valor_deslocamento">{{$Valores->valor_deslocamento}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Pedágios: <b class="pull-right"
-                                                             id="pedagios">{{$Valores->pedagios}}</b>
+                                                             id="pedagios">{{$Valores->valor_pedagios}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Outros Custos: <b class="pull-right"
-                                                                  id="outros_custos">{{$Valores->outros_custos}}</b>
+                                                                  id="outros_custos">{{$Valores->valor_outros_custos}}</b>
                 </li>
             </ul>
             <ul class="list-unstyled product_price">

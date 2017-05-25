@@ -33,6 +33,34 @@ class Faturamento extends Model
         'centro_custo'
     ];
 
+    static public function faturaPeriodo($OrdemServicos)
+    {
+        $faturamento_cc = []; //faturamento centro de custos
+        $faturamento_cl = []; //faturamento clientes
+        foreach ($OrdemServicos as $ordem_servico) {
+            if ($ordem_servico->idcentro_custo != NULL) {
+                $idcentro_custo = $ordem_servico->idcentro_custo;
+                $faturamento_cc[$idcentro_custo][] = $ordem_servico;
+            } else {
+                $idcliente = $ordem_servico->idcliente;
+                $faturamento_cl[$idcliente][] = $ordem_servico;
+            }
+        }
+
+        //fechamentos CLIENTES
+        foreach ($faturamento_cl as $ordem_servicos) {
+            Faturamento::geraFaturamento($ordem_servicos, 0);
+        }
+
+        //fechamentos CENTRO DE CUSTO
+        foreach ($faturamento_cc as $ordem_servicos) {
+            Faturamento::geraFaturamento($ordem_servicos, 1);
+        }
+
+        return Faturamento::lastCreated()->first();
+
+    }
+
     static public function geraFaturamento($OrdemServicos, $centro_custo = 0)
     {
         $Cliente = ($centro_custo) ? $OrdemServicos->first()->centro_custo : $OrdemServicos->first()->cliente;

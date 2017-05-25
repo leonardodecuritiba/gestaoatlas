@@ -134,7 +134,7 @@
                             <li>
                                 <a>Fechamentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#">Fechar Período</a></li>
+                                    <li><a href="{{ route('faturamentos.periodo_index') }}">Fechar Período</a></li>
                                     <li><a href="{{ route('faturamentos.index_pos') }}">Simulador de Fechamento</a></li>
                                 </ul>
                             </li>

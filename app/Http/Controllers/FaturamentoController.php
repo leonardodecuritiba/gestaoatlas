@@ -158,6 +158,35 @@ class FaturamentoController extends Controller
         return Redirect::route('faturamentos.show', $Faturamento->id);
     }
 
+    public function faturarPeriodo(Request $request)
+    {
+        return 'Em breve';
+        $request->merge(['centro_custo' => $centro_custo]);
+        $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
+        $query = OrdemServico::filter_layout($request->all())
+            ->whereNull('idfechamento');
+
+        if ($request->get('centro_custo')) {
+            $query = $query->where('idcentro_custo', $id);
+            $OrdemServicos = $query->select('*', DB::raw('count(*) as qtd_os'))
+                ->get();
+        } else {
+            $OrdemServicos = $query->where('idcliente', $id)->get();
+        }
+
+        $Faturamento = Faturamento::geraFaturamento($OrdemServicos, $request->get('centro_custo'));
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_abr]);
+        return Redirect::route('faturamentos.show', $Faturamento->id);
+    }
+
+    public function indexFaturarPeriodo(Request $request)
+    {
+        return view('pages.' . $this->Page->link . '.period')
+            ->with('Page', $this->Page);
+    }
+
     public function runByOrdemServicoID($id = NULL)
     {
         if ($id == NULL) return $id;
@@ -188,37 +217,12 @@ class FaturamentoController extends Controller
     {
         $DATA_INICIO = Carbon::parse('first day of last month')->format('Y-m-d 00:00:00');//'2017-01-01 00:00:00' (1º dia do mês anterior)
         $DATA_FIM = Carbon::parse('last day of last month')->format('Y-m-d 23:59:59');// '2017-01-31 23:59:59' (1º dia do mês vigente)
-        $ordem_servicos = OrdemServico::whereBetween('fechamento', [$DATA_INICIO, $DATA_FIM])
+        $OrdemServicos = OrdemServico::whereBetween('fechamento', [$DATA_INICIO, $DATA_FIM])
             ->whereNull('idfechamento')
             ->orderBy('idcentro_custo', 'desc')
             ->get();
 //            ->get(['idordem_servico','idcentro_custo','idcliente']);
-
-        $faturamento_cc = []; //faturamento centro de custos
-        $faturamento_cl = []; //faturamento clientes
-        foreach ($ordem_servicos as $ordem_servico) {
-            if ($ordem_servico->idcentro_custo != NULL) {
-                $idcentro_custo = $ordem_servico->idcentro_custo;
-                $faturamento_cc[$idcentro_custo][] = $ordem_servico;
-            } else {
-                $idcliente = $ordem_servico->idcliente;
-                $faturamento_cl[$idcliente][] = $ordem_servico;
-            }
-        }
-
-
-        //fechamentos CLIENTES
-        foreach ($faturamento_cl as $ordem_servicos) {
-            Faturamento::geraFaturamento($ordem_servicos, 0);
-        }
-
-
-        //fechamentos CENTRO DE CUSTO
-        foreach ($faturamento_cc as $ordem_servicos) {
-            Faturamento::geraFaturamento($ordem_servicos, 1);
-        }
-
-        return Faturamento::lastCreated()->first();
+        return Faturamento::faturaPeriodo($OrdemServicos);
     }
 
 
@@ -272,59 +276,4 @@ class FaturamentoController extends Controller
             ->with('Faturamento', $Faturamento);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
