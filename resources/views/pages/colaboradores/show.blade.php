@@ -21,7 +21,7 @@
     @if($Colaborador->hasRole('tecnico'))
         @include('pages.colaboradores.modal.selolacre')
     @endif
-    @role('admin')
+    @role(['admin', 'financeiro')
         @include('pages.colaboradores.modal.pwd')
     @endrole
     <?php $existe_entidade = 1; $Entidade=$Colaborador; ?>
