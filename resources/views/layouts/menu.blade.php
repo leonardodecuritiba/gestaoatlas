@@ -96,9 +96,11 @@
                     <li><a><i class="fa fa-users"></i> Pessoas <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{{ route('clientes.index') }}">Clientes</a></li>
+                            @role(['admin','financeiro'])
+                            <li><a href="{{ route('colaboradores.index') }}">Colaboradores</a></li>
                             @role('admin')
                             <li><a href="{{ route('fornecedores.index') }}">Fornecedores</a></li>
-                            <li><a href="{{ route('colaboradores.index') }}">Colaboradores</a></li>
+                            @endrole
                             @endrole
                         </ul>
                     </li>
