@@ -136,7 +136,7 @@
 											   data-target="#modalDelecao"><i class="fa fa-trash-o"></i> Remover</a>
 											@if($selecao->getStatusFinalizada())
 												<a class="btn btn-success btn-xs"
-												   href="{{route('fechamento.gerar',$selecao->idordem_servico)}}">
+												   href="{{route('faturamento.gerar',$selecao->idordem_servico)}}">
 													<i class="fa fa-money"></i> Faturar</a>
 											@endif
 										@endif
@@ -205,7 +205,7 @@
 												   data-target="#modalDelecao"><i class="fa fa-trash-o"></i> Remover</a>
 												@if($selecao->getStatusFinalizada())
 													<a class="btn btn-success btn-xs"
-													   href="{{route('fechamento.gerar',$selecao->idordem_servico)}}">
+													   href="{{route('faturamento.gerar',$selecao->idordem_servico)}}">
 														<i class="fa fa-money"></i> Faturar</a>
 												@endif
 											@endif

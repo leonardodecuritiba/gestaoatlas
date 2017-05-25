@@ -128,18 +128,22 @@
                     @role(['admin','financeiro'])
                     <li><a><i class="fa fa-money"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
+                            {{--<li>--}}
+                            {{--<a href="{{ route('ordem_servicos.index_centro_custo') }}">O.S. Centro de Custo</a>--}}
+                            {{--</li>--}}
                             <li>
-                                <a href="{{ route('ordem_servicos.index_centro_custo') }}">O.S. Centro de Custo</a>
+                                <a>Fechamentos<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="#">Fechar Período</a></li>
+                                    <li><a href="{{ route('faturamentos.index_pos') }}">Simulador de Fechamento</a></li>
+                                </ul>
                             </li>
                             <li>
                                 <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{ route('fechamentos.index','pendentes') }}">Pendentes</a></li>
-                                    <li>
-                                        <a href="{{ route('fechamentos.index','faturados') }}">Faturados</a>
+                                    <li><a href="{{ route('faturamentos.index', $centro = 1) }}">Centro de Custo</a>
                                     </li>
-                                    <li><a href="{{ route('fechamentos.index','todas') }}">Todas</a>
-                                    </li>
+                                    <li><a href="{{ route('faturamentos.index', $centro = 0) }}">Clientes</a></li>
                                 </ul>
                             </li>
                         </ul>

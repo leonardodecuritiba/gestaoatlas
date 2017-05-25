@@ -18,7 +18,7 @@ class ParcelaController extends Controller
     public function pagar(Request $request)
     {
         $Pagamento = Pagamento::baixaParcela($request->all());
-        return Redirect::route('fechamentos.show', $Pagamento->fechamento->id);
+        return Redirect::route('faturamentos.show', $Pagamento->faturamento->id);
     }
 
     public function gerarBoleto($id)

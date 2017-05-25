@@ -33,48 +33,49 @@
                     </li>
                 @endif
             </ul>
-            <?php $valores = json_decode($OrdemServico->getValores());?>
+            <?php $Valores = json_decode($OrdemServico->getValores());?>
+            {{--@include('pages.ordem_servicos.parts.resumo_valores')--}}
             <ul class="list-unstyled product_price">
                 <li><i class="fa fa-money"></i> Total em Serviços: <b class="pull-right"
-                                                                      id="valor_total_servicos">{{$valores->valor_total_servicos}}</b>
+                                                                      id="valor_total_servicos">{{$Valores->valor_total_servicos}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Total em Peças/Produtos: <b class="pull-right"
-                                                                            id="valor_total_pecas">{{$valores->valor_total_pecas}}</b>
+                                                                            id="valor_total_pecas">{{$Valores->valor_total_pecas}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Total em Kits: <b class="pull-right"
-                                                                  id="valor_total_kits">{{$valores->valor_total_kits}}</b>
+                                                                  id="valor_total_kits">{{$Valores->valor_total_kits}}</b>
                 </li>
-                @if(isset($valores->valor_desconto))
+                @if(isset($Valores->valor_desconto))
                     <li class="red"><i class="fa fa-money"></i> Descontos: <b class="pull-right"
-                                                                              id="valor_total_kits">{{$valores->valor_desconto}}</b>
+                                                                              id="valor_total_kits">{{$Valores->valor_desconto}}</b>
                     </li>
                 @endif
-                @if(isset($valores->valor_acrescimo))
+                @if(isset($Valores->valor_acrescimo))
                     <li class="blue"><i class="fa fa-money"></i> Acréscimos: <b class="pull-right"
-                                                                                id="valor_total_kits">{{$valores->valor_acrescimo}}</b>
+                                                                                id="valor_total_kits">{{$Valores->valor_acrescimo}}</b>
                     </li>
                 @endif
                 <li>
                     <div class="ln_solid"></div>
                 </li>
                 <li><i class="fa fa-money"></i> Valor Total: <b class="pull-right"
-                                                                id="valor_total">{{$valores->valor_total}}</b>
+                                                                id="valor_total">{{$Valores->valor_total}}</b>
                 </li>
             </ul>
             <ul class="list-unstyled product_price">
                 <li><i class="fa fa-money"></i> Deslocamentos: <b class="pull-right"
-                                                                  id="valor_deslocamento">{{$valores->valor_deslocamento}}</b>
+                                                                  id="valor_deslocamento">{{$Valores->valor_deslocamento}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Pedágios: <b class="pull-right"
-                                                             id="pedagios">{{$valores->pedagios}}</b>
+                                                             id="pedagios">{{$Valores->pedagios}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Outros Custos: <b class="pull-right"
-                                                                  id="outros_custos">{{$valores->outros_custos}}</b>
+                                                                  id="outros_custos">{{$Valores->outros_custos}}</b>
                 </li>
             </ul>
             <ul class="list-unstyled product_price">
                 <li><i class="fa fa-money"></i> Valor Final: <b class="pull-right green"
-                                                                id="valor_final">{{$valores->valor_final}}</b>
+                                                                id="valor_final">{{$Valores->valor_final}}</b>
                 </li>
             </ul>
         </div>

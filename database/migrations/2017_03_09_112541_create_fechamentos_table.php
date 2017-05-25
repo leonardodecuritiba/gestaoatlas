@@ -12,7 +12,7 @@ class CreateFechamentosTable extends Migration
      */
     public function up()
     {
-        Schema::create('fechamentos', function (Blueprint $table) {
+        Schema::create('faturamentos', function (Blueprint $table) {
             $table->increments('id');
 
             $table->integer('idcliente')->unsigned();
@@ -37,6 +37,6 @@ class CreateFechamentosTable extends Migration
      */
     public function down()
     {
-        Schema::drop('fechamentos');
+        Schema::drop('faturamentos');
     }
 }

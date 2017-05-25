@@ -25,7 +25,7 @@ class Pagamento extends Model
             $Pagamento->data_baixa = Carbon::now()->format('Y-m-d');
             $Pagamento->status = 1;
             $Pagamento->save();
-            $Pagamento->fechamento->faturar();
+            $Pagamento->faturamento->faturar();
         }
         return $Pagamento;
     }
@@ -42,9 +42,9 @@ class Pagamento extends Model
     }
 
     // ************************** HASONE **********************************
-    public function fechamento()
+    public function faturamento()
     {
-        return $this->hasOne('App\Models\Fechamento', 'idpagamento');
+        return $this->hasOne('App\Models\Faturamento', 'idpagamento');
     }
 
     // ************************** HASMANY **********************************

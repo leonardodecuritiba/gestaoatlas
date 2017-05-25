@@ -4,7 +4,7 @@ namespace App\Models\NotasFiscais;
 
 use App\Helpers\DataHelper;
 use App\Models\Empresa;
-use App\Models\Fechamento;
+use App\Models\Faturamento;
 use Carbon\Carbon;
 
 /**
@@ -40,21 +40,21 @@ class NFSe extends NF
     private $tomador;
     private $servico;
 
-    function __construct($debug, Fechamento $fechamento)
+    function __construct($debug, Faturamento $faturamento)
     {
         $this->debug = $debug;
         if ($this->debug) {
             $this->_SERVER_ = parent::_URL_HOMOLOGACAO_;
             $this->_TOKEN_ = parent::_TOKEN_HOMOLOGACAO_;
-            $this->_REF_ = $fechamento->idnfse_homologacao;
+            $this->_REF_ = $faturamento->idnfse_homologacao;
         } else {
             $this->_SERVER_ = parent::_URL_PRODUCAO_;
             $this->_TOKEN_ = parent::_TOKEN_PRODUCAO_;
-            $this->_REF_ = $fechamento->idnfse_producao;
+            $this->_REF_ = $faturamento->idnfse_producao;
         }
         $this->_NF_TYPE_ = parent::_URL_NFSe_;
         $this->now = Carbon::now();
-        $this->_FECHAMENTO_ = $fechamento;
+        $this->_FECHAMENTO_ = $faturamento;
         $this->_EMPRESA_ = new Empresa();
         $this->setParams();
     }

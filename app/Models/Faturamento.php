@@ -14,12 +14,12 @@ use App\OrdemServico;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Fechamento extends Model
+class Faturamento extends Model
 {
-    const _STATUS_FATURAMENTO_PENDENTE_ = 1;
-    const _STATUS_PAGAMENTO_PENDENTE_ = 2; //danger
-    const _STATUS_FATURADO_ = 3; //warning
-    public $timestamps = true;//success
+//    const _STATUS_FATURAMENTO_PENDENTE_ = 1;
+    const _STATUS_PAGAMENTO_PENDENTE_ = 1;//danger
+    const _STATUS_FATURADO_ = 2; //success
+    public $timestamps = true;
     protected $table = 'fechamentos';
     protected $primaryKey = 'id';
     protected $fillable = [
@@ -33,59 +33,40 @@ class Fechamento extends Model
         'centro_custo'
     ];
 
-    static public function geraFechamento($ordem_servicos, $centro_custo = 0)
+    static public function geraFaturamento($OrdemServicos, $centro_custo = 0)
     {
-
-        if (count($ordem_servicos) > 1) {
-            $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
-        } else {
-            $Cliente = ($centro_custo) ? $ordem_servicos->centro_custo : $ordem_servicos->cliente;
-        }
-//        if (count($ordem_servicos) > 1) {
-//            $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
-//        } else {
-//            dd($ordem_servicos);
-//            $Cliente = ($centro_custo) ? $ordem_servicos[0]->centro_custo : $ordem_servicos[0]->cliente;
-//        }
-
+        $Cliente = ($centro_custo) ? $OrdemServicos->first()->centro_custo : $OrdemServicos->first()->cliente;
         if ($Cliente->prazo_pagamento_tecnica->id == PrazoPagamento::_STATUS_A_VISTA_) {
-            $cl_parcelas = ['quantidade' => 1, 'prazo' => 0];
+            $data_parcelas = ['quantidade' => 1, 'prazo' => 0];
         } else {
             $temp = $Cliente->prazo_pagamento_tecnica->extras;
-            $cl_parcelas = ['quantidade' => count($temp), 'prazo' => $temp];
+            $data_parcelas = ['quantidade' => count($temp), 'prazo' => $temp];
         }
 
         //CRIAR PAGAMENTO
         $Pagamento = Pagamento::create();
         //ATRIBUIR IDPAGAMENTO AO FECHAMENTO
-        $Fechamento = self::create([
+        $Faturamento = self::create([
             'idcliente' => $Cliente->idcliente,
-            'idstatus_fechamento' => self::_STATUS_FATURAMENTO_PENDENTE_,
+            'idstatus_fechamento' => self::_STATUS_PAGAMENTO_PENDENTE_,
             'idpagamento' => $Pagamento->id,
             'centro_custo' => $centro_custo,
         ]);
 
-        if (count($ordem_servicos) > 1) {
-            foreach ($ordem_servicos as $os) {
-                $os->setFechamento($Fechamento->id);
-            }
-        } else {
-            $ordem_servicos->setFechamento($Fechamento->id);
+        //SETAR ORDEM SERVIÇOS COMO FATURADAS
+        foreach ($OrdemServicos as $ordem_servico) {
+            $ordem_servico->setFaturamento($Faturamento->id);
         }
 
-        $valores = $Fechamento->getValores();
-        $valor_parcela = $valores->valor_final_float / $cl_parcelas['quantidade'];
-        //CRIAR PARCELAS, ATRIBUIR ID PAGAMENTO A ELAS
-        for ($p = 0; $p < $cl_parcelas['quantidade']; $p++) {
-            $data = Carbon::now()->addDay($cl_parcelas['prazo'][$p]);
-            Parcela::create([
-                'idpagamento' => $Pagamento->id,
-                'idforma_pagamento' => $Cliente->idforma_pagamento_tecnica,
-                'data_vencimento' => $data->format('Y-m-d'),
-                'numero_parcela' => $p + 1,
-                'valor_parcela' => $valor_parcela
-            ]);
-        }
+        $Valores = $Faturamento->getValores();
+        $data = [
+            'idpagamento' => $Pagamento->id,
+            'idforma_pagamento' => $Cliente->idforma_pagamento_tecnica,
+            'valor_parcela' => $Valores->valor_final_float / $data_parcelas['quantidade'],
+        ];
+        Parcela::setParcelas($data, $data_parcelas);
+
+        return $Faturamento;
     }
 
     public function getValores()
@@ -138,26 +119,30 @@ class Fechamento extends Model
 
     static public function remover($idfechamento)
     {
-        $Fechamento = Fechamento::find($idfechamento);
+        $Fechamento = Faturamento::find($idfechamento);
         foreach ($Fechamento->ordem_servicos as $ordem_servico) {
-            $ordem_servico->unsetFechamento();
+            $ordem_servico->unsetFaturamento();
         }
         $Fechamento->pagamento->delete();
         $Fechamento->delete();
         return true;
     }
 
-    static public function filter_status($status)
+    static public function filter_layout($data)
     {
+        $query = self::filter_status($data);
+        return ($data['centro_custo']) ? $query->centroCustos() : $query->clientes();
+    }
+
+    static public function filter_status($data)
+    {
+        $data['situacao'] = (isset($data['situacao'])) ? $data['situacao'] : NULL;
         $query = self::orderBy('created_at', 'desc');
-        switch ($status) {
-            case 'pendentes':
-                $query->whereBetween('idstatus_fechamento', [self::_STATUS_FATURAMENTO_PENDENTE_, self::_STATUS_PAGAMENTO_PENDENTE_]);
-                break;
-            case 'faturados':
-                $query->where('idstatus_fechamento', self::_STATUS_FATURADO_);
-                break;
-        }
+        if ($data['situacao'] != NULL) $query->where('idstatus_fechamento', $data['situacao']);
+        if (isset($data['idcliente']) && ($data['idcliente'] != NULL)) $query->where('idcliente', $data['idcliente']);
+//        if (isset($data['data'])) {
+//            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data']));
+//        }
 //        $User = Auth::user();
 //        if ($User->hasRole('tecnico')) {
 //            $query->where('idcolaborador', $User->colaborador->idcolaborador);
@@ -341,6 +326,28 @@ class Fechamento extends Model
             default:
                 return 'warning';
         }
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCentroCustos($query)
+    {
+        return $query->where('centro_custo', 1);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeClientes($query)
+    {
+        return $query->where('centro_custo', 0);
     }
 
     // ********************** BELONGS ********************************

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use \Carbon\Carbon as Carbon;
-use \App\Http\Controllers\FechamentoController as FechamentoController;
+use \App\Http\Controllers\FaturamentoController as FechamentoController;
 
 class NovoFechamentoTableSeeder extends Seeder
 {
@@ -15,7 +15,7 @@ class NovoFechamentoTableSeeder extends Seeder
     public function run()
     {
         $start = microtime(true);
-        $FechamentoController = new FechamentoController();
+        $FechamentoController = new FaturamentoController();
         $FechamentoController->run_teste();
 
         echo "\n*** NovoFechamentoTableSeeder completo em " . round((microtime(true) - $start), 3) . "s ***";

@@ -128,30 +128,35 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('getAjaxDataByID', 'AjaxController@getAjaxDataByID')->name('getAjaxDataByID');
 
 
-    //FECHAMENTOS
-    Route::resource('fechamentos', 'FechamentoController');
-    Route::get('fechamentos/remover/{id}', 'FechamentoController@remover')->name('fechamentos.remover');
-    Route::get('listar-fechamentos/{status}', 'FechamentoController@index')->name('fechamentos.index');
+    //FATURAMENTOS
+    Route::resource('faturamentos', 'FaturamentoController');
+    Route::get('faturamentos/remover/{id}', 'FaturamentoController@remover')->name('faturamentos.remover');
+    Route::get('listar-faturamentos/{centro_custo}', 'FaturamentoController@index')->name('faturamentos.index');
+    Route::get('listar-pos-fechamentos', 'FaturamentoController@index_pos')->name('faturamentos.index_pos');
+    Route::get('visualizar-pos-fechamentos/{centro_custo}/{id}', 'FaturamentoController@show_pos')->name('faturamentos.show_pos');
+    Route::get('faturar-pos/{centro_custo}/{id}', 'FaturamentoController@faturar_pos')->name('faturamentos.faturar_pos');
+
+    //PARCELAS
     Route::post('parcela/pagar', 'ParcelaController@pagar')->name('parcelas.pagar');
     Route::get('parcela/boleto/{idparcela}', 'ParcelaController@gerarBoleto')->name('parcelas.boleto');
     Route::get('parcela/estornar/{idparcela}', 'ParcelaController@estornar')->name('parcelas.estornar');
 
 
-//    Route::get('nfe/teste/{idfechamento}', 'FechamentoController@getNfeTeste')->name('fechamentos.nfe.teste');
-//    Route::get('nfe/{idfechamento}', 'FechamentoController@getNfe')->name('fechamentos.nfe');
-//    Route::get('nfse/teste/{idfechamento}', 'FechamentoController@getNFSeTeste')->name('fechamentos.nfse.teste');
-//    Route::get('nfse/{idfechamento}', 'FechamentoController@getNFSe')->name('fechamentos.nfse');
-//    Route::get('nfe/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNfe')->name('fechamentos.nfe.consulta');
-//    Route::get('nfse/consulta/{idfechamento}/{debug}', 'FechamentoController@consultaNFSe')->name('fechamentos.nfse.consulta');
+//    Route::get('nfe/teste/{idfechamento}', 'FaturamentoController@getNfeTeste')->name('faturamentos.nfe.teste');
+//    Route::get('nfe/{idfechamento}', 'FaturamentoController@getNfe')->name('faturamentos.nfe');
+//    Route::get('nfse/teste/{idfechamento}', 'FaturamentoController@getNFSeTeste')->name('faturamentos.nfse.teste');
+//    Route::get('nfse/{idfechamento}', 'FaturamentoController@getNFSe')->name('faturamentos.nfse');
+//    Route::get('nfe/consulta/{idfechamento}/{debug}', 'FaturamentoController@consultaNfe')->name('faturamentos.nfe.consulta');
+//    Route::get('nfse/consulta/{idfechamento}/{debug}', 'FaturamentoController@consultaNFSe')->name('faturamentos.nfse.consulta');
 
-    Route::get('nf/{idfechamento}/{debug}/{type}', 'FechamentoController@sendNF')->name('fechamentos.nf.send');
-    Route::get('resend-nf/{idfechamento}/{debug}/{type}', 'FechamentoController@resendNF')->name('fechamentos.nf.resend');
-    Route::get('nf/consulta/{idfechamento}/{debug}/{type}', 'FechamentoController@getNF')->name('fechamentos.nf.get');
+    Route::get('nf/{idfechamento}/{debug}/{type}', 'FaturamentoController@sendNF')->name('faturamentos.nf.send');
+    Route::get('resend-nf/{idfechamento}/{debug}/{type}', 'FaturamentoController@resendNF')->name('faturamentos.nf.resend');
+    Route::get('nf/consulta/{idfechamento}/{debug}/{type}', 'FaturamentoController@getNF')->name('faturamentos.nf.get');
 
 
-    //fechamento
-    Route::get('gerar-fechamento/{id}', 'FechamentoController@runByID')->name('fechamento.gerar');
-    Route::get('run-fechamento', 'FechamentoController@run');
+    //faturamento
+    Route::get('gerar-faturamento/{id}', 'FaturamentoController@runByOrdemServicoID')->name('faturamento.gerar');
+    Route::get('run-faturamento', 'FaturamentoController@run');
 
     //RELATÓRIOS
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
@@ -179,16 +184,16 @@ Route::group(['middleware' => ['auth']], function() {
 
 Route::group(['prefix' => 'cron-jobs'], function () {
 
-    Route::get('run-fechamento', 'FechamentoController@run');
+    Route::get('run-faturamento', 'FaturamentoController@run');
 });
 Route::group(['prefix' => 'teste'], function () {
     Route::get('get-hour', function () {
         return \Carbon\Carbon::now()->toDateTimeString();
     });
-    Route::get('run-fechamento-temp', 'FechamentoController@run_temp');
+    Route::get('run-faturamento-temp', 'FaturamentoController@run_temp');
 
     Route::get('nfse/{idfechamento}', function (\Illuminate\Http\Request $request) {
-        $Fechamento = \App\Models\Fechamento::find($request->idfechamento);
+        $Fechamento = \App\Models\Faturamento::find($request->idfechamento);
         $NFSe = new \App\Models\Nfse($debug = 1, $Fechamento);
         $NFSe->_REF_ = 30;
         return $NFSe->emitir();

@@ -41,45 +41,45 @@
     <section class="row">
         <div class="x_panel">
             <div class="x_content">
-                <div class="alert fade in alert-{{$Fechamento->getStatusType()}}" role="alert">
-                    Situação do Fechamento: <b>{{$Fechamento->getStatusText()}}</b>
+                <div class="alert fade in alert-{{$Faturamento->getStatusType()}}" role="alert">
+                    Situação do Fechamento: <b>{{$Faturamento->getStatusText()}}</b>
                 </div>
                 <div class="profile_details">
                     <div class="well">
                         <div class="perfil">
-                            <h4>{{$Fechamento->getTipoFechamento()}}:
+                            <h4>{{$Faturamento->getTipoFechamento()}}:
                                 <a target="_blank"
-                                   href="{{route('clientes.show', $Fechamento->idcliente)}}"><i>{{$Fechamento->cliente->getType()->nome_principal}}</i></a>
+                                   href="{{route('clientes.show', $Faturamento->idcliente)}}"><i>{{$Faturamento->cliente->getType()->nome_principal}}</i></a>
                                 @role('admin')
                                 <a class="btn btn-danger pull-right"
-                                   href="{{route('fechamentos.remover',$Fechamento->id)}}">
+                                   href="{{route('faturamentos.remover',$Faturamento->id)}}">
                                     <i class="fa fa-trash fa-2"></i> Excluir Fechamento</a>
                                 @endrole
                             </h4>
                             <ul class="list-unstyled">
                                 <li><i class="fa fa-calendar"></i> Data do Fechamento:
-                                    <b>{{$Fechamento->created_at}}</b></li>
+                                    <b>{{$Faturamento->created_at}}</b></li>
                                 <li><i class="fa fa-credit-card"></i> Tipo de Emissão (Técnica):
-                                    <b>{{$Fechamento->cliente->tipo_emissao_tecnica->descricao}}</b></li>
+                                    <b>{{$Faturamento->cliente->tipo_emissao_tecnica->descricao}}</b></li>
                                 <li><i class="fa fa-credit-card"></i> Forma de Pagamento (Técnica):
-                                    <b>{{$Fechamento->cliente->forma_pagamento_tecnica->descricao}}</b></li>
+                                    <b>{{$Faturamento->cliente->forma_pagamento_tecnica->descricao}}</b></li>
                                 <li><i class="fa fa-info"></i> Pagamento: <b
-                                            class="text-{{$Fechamento->getPagoStatusColor()}}">{{$Fechamento->getPagoText()}}</b>
+                                            class="text-{{$Faturamento->getPagoStatusColor()}}">{{$Faturamento->getPagoText()}}</b>
                                 </li>
                                 <li><i class="fa fa-money"></i> Total Pendente: <b
-                                            class="text-danger">{{$Fechamento->getTotalPendenteReal()}}</b>
+                                            class="text-danger">{{$Faturamento->getTotalPendenteReal()}}</b>
                                 <li><i class="fa fa-money"></i> Total Pago: <b
-                                            class="text-success">{{$Fechamento->getTotalPagoReal()}}</b>
+                                            class="text-success">{{$Faturamento->getTotalPagoReal()}}</b>
                                 </li>
                             </ul>
 
                             <div class="row">
                                 <div class="col-lg-6 col-md-6 col-xs-6">
                                     <ul class="list-unstyled">
-                                        @if($Fechamento->getStatusNfeHomologacao())
+                                        @if($Faturamento->getStatusNfeHomologacao())
                                             <li>
                                                 <a data-toggle="modal"
-                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-idfechamento="{{$Faturamento->id}}"
                                                    data-type="nfe"
                                                    data-target="#consultaNF"
                                                    data-debug="1"
@@ -88,15 +88,15 @@
                                             </li>
                                         @else
                                             <li>
-                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfe'])}}"
+                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = true, 'nfe'])}}"
                                                    class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFe
                                                     (Homologação)</a>
                                             </li>
                                         @endif
-                                        @if($Fechamento->getStatusNFSeHomologacao())
+                                        @if($Faturamento->getStatusNFSeHomologacao())
                                             <li>
                                                 <a data-toggle="modal"
-                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-idfechamento="{{$Faturamento->id}}"
                                                    data-type="nfse"
                                                    data-target="#consultaNF"
                                                    data-debug="1"
@@ -105,7 +105,7 @@
                                             </li>
                                         @else
                                             <li>
-                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = true, 'nfse'])}}"
+                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = true, 'nfse'])}}"
                                                    class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFSe
                                                     (Homologação)</a>
                                             </li>
@@ -114,36 +114,36 @@
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-xs-6">
                                     <ul class="list-unstyled pull-right">
-                                        @if($Fechamento->getStatusNfeProducao())
+                                        @if($Faturamento->getStatusNfeProducao())
                                             <li>
                                                 <a data-toggle="modal"
-                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-idfechamento="{{$Faturamento->id}}"
                                                    data-type="nfe"
                                                    data-target="#consultaNF"
                                                    data-debug="0"
                                                    class="btn btn-warning"><i class="fa fa-search"></i> Consultar
                                                     NFe</a>
                                             </li>
-                                        @elseif($Fechamento->getStatusNfeHomologacao())
+                                        @elseif($Faturamento->getStatusNfeHomologacao())
                                             <li>
-                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = 0, 'nfe'])}}"
+                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = 0, 'nfe'])}}"
                                                    class="btn btn-primary"><i class="fa fa-info fa-2"></i>
                                                     Gerar NFe</a>
                                             </li>
                                         @endif
-                                        @if($Fechamento->getStatusNFSeProducao())
+                                        @if($Faturamento->getStatusNFSeProducao())
                                             <li>
                                                 <a data-toggle="modal"
-                                                   data-idfechamento="{{$Fechamento->id}}"
+                                                   data-idfechamento="{{$Faturamento->id}}"
                                                    data-type="nfse"
                                                    data-target="#consultaNF"
                                                    data-debug="0"
                                                    class="btn btn-warning"><i class="fa fa-search"></i> Consultar
                                                     NFSe</a>
                                             </li>
-                                        @elseif($Fechamento->getStatusNFSeHomologacao())
+                                        @elseif($Faturamento->getStatusNFSeHomologacao())
                                             <li>
-                                                <a href="{{route('fechamentos.nf.send',[$Fechamento->id, $debug = 0, 'nfse'])}}"
+                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = 0, 'nfse'])}}"
                                                    class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar
                                                     NFSe</a>
                                             </li>
@@ -152,50 +152,8 @@
                                 </div>
                             </div>
 
-                            <?php $valores = $Fechamento->getValores();?>
-                            <ul class="list-unstyled product_price">
-                                <li><i class="fa fa-money"></i> Total em Serviços: <b class="pull-right"
-                                                                                      id="valor_total_servicos">{{$valores->valor_total_servicos}}</b>
-                                </li>
-                                <li><i class="fa fa-money"></i> Total em Peças/Produtos: <b class="pull-right"
-                                                                                            id="valor_total_pecas">{{$valores->valor_total_pecas}}</b>
-                                </li>
-                                <li><i class="fa fa-money"></i> Total em Kits: <b class="pull-right"
-                                                                                  id="valor_total_kits">{{$valores->valor_total_kits}}</b>
-                                </li>
-                                @if($valores->valor_desconto > 0)
-                                    <li class="red"><i class="fa fa-money"></i> Descontos: <b class="pull-right"
-                                                                                              id="valor_total_kits">{{$valores->valor_desconto}}</b>
-                                    </li>
-                                @endif
-                                @if($valores->valor_acrescimo > 0)
-                                    <li class="blue"><i class="fa fa-money"></i> Acréscimos: <b class="pull-right"
-                                                                                                id="valor_total_kits">{{$valores->valor_acrescimo}}</b>
-                                    </li>
-                                @endif
-                                <li>
-                                    <div class="ln_solid"></div>
-                                </li>
-                                <li><i class="fa fa-money"></i> Valor Total: <b class="pull-right"
-                                                                                id="valor_total">{{$valores->valor_total}}</b>
-                                </li>
-                            </ul>
-                            <ul class="list-unstyled product_price">
-                                <li><i class="fa fa-money"></i> Deslocamentos: <b class="pull-right"
-                                                                                  id="valor_deslocamento">{{$valores->valor_deslocamento}}</b>
-                                </li>
-                                <li><i class="fa fa-money"></i> Pedágios: <b class="pull-right"
-                                                                             id="pedagios">{{$valores->valor_pedagios}}</b>
-                                </li>
-                                <li><i class="fa fa-money"></i> Outros Custos: <b class="pull-right"
-                                                                                  id="outros_custos">{{$valores->valor_outros_custos}}</b>
-                                </li>
-                            </ul>
-                            <ul class="list-unstyled product_price">
-                                <li><i class="fa fa-money"></i> Valor Final: <b class="pull-right green"
-                                                                                id="valor_final">{{$valores->valor_final}}</b>
-                                </li>
-                            </ul>
+                            <?php $Valores = $Faturamento->getValores();?>
+                            @include('pages.ordem_servicos.parts.resumo_valores')
                         </div>
                     </div>
                 </div>
@@ -228,7 +186,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach ($Fechamento->pagamento->parcelas as $selecao)
+                            @foreach ($Faturamento->pagamento->parcelas as $selecao)
                                 <tr>
                                     <td>
                                         <button class="btn btn-xs btn-{{$selecao->getStatusColor()}}">
@@ -265,67 +223,8 @@
         </div>
     </section>
     <section class="row">
-        <div class="x_panel">
-            <div class="x_title">
-                <h2>Número de O.S. encontradas: <b>{{$Fechamento->ordem_servicos->count()}}</b></h2>
-                <div class="clearfix"></div>
-            </div>
-            <div class="x_content">
-                <div class="row">
-                </div>
-                <div class="row">
-                    <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                        <table border="0" class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Situação</th>
-                                <th>ID</th>
-                                <th>Nº Chamado</th>
-                                <th>Data de Abertura</th>
-                                <th>Data de Fechamento</th>
-                                <th>Técnico</th>
-                                <th>Total</th>
-                                <th>Total Peças</th>
-                                <th>Cliente</th>
-                                <th>Ações</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            @foreach ($Fechamento->ordem_servicos as $selecao)
-                                <tr>
-                                    <td>
-                                        <button class="btn btn-xs btn-{{$selecao->getStatusType()}}"
-                                        >{{$selecao->situacao->descricao}}</button>
-                                    </td>
-                                    <td>{{$selecao->idordem_servico}}</td>
-                                    <td>{{$selecao->numero_chamado}}</td>
-                                    <td>{{$selecao->created_at}}</td>
-                                    <td>{{$selecao->fechamento}}</td>
-                                    <td>{{$selecao->colaborador->nome}}</td>
-                                    <td>{{$selecao->getValoresObj()->valor_final}}</td>
-                                    <td>{{$selecao->getValoresObj()->valor_total_pecas}}</td>
-                                    <td>{{$selecao->cliente->getType()->nome_principal}}</td>
-                                    <td>
-                                        <a class="btn btn-primary btn-xs"
-                                           target="_blank"
-                                           href="{{route('ordem_servicos.show',$selecao->idordem_servico)}}">
-                                            <i class="fa fa-eye"></i> Abrir</a>
-                                        {{--@role('admin')--}}
-                                        {{--<a class="btn btn-danger btn-xs"--}}
-                                        {{--data-nome="Ordem de Serviço #{{$selecao->idordem_servico}}"--}}
-                                        {{--data-href="{{route('ordem_servicos.destroy',$selecao->idordem_servico)}}"--}}
-                                        {{--data-toggle="modal"--}}
-                                        {{--data-target="#modalDelecao"><i class="fa fa-trash-o"></i> Remover</a>--}}
-                                        {{--@endrole--}}
-                                    </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php $OrdemServicos = $Faturamento->ordem_servicos; ?>
+        @include('pages.faturamentos.panels.lists_ordem_servico')
     </section>
     <!-- /page content -->
 @endsection
@@ -354,14 +253,14 @@
                 $($btn_refresh).attr('href', '');
 
                 var href_ = '';
-                href_ = '{{route('fechamentos.nf.get',['XXX','debug','type'])}}';
+                href_ = '{{route('faturamentos.nf.get',['XXX','debug','type'])}}';
                 href_ = href_.replace('XXX', idfechamento);
                 href_ = href_.replace('debug', debug);
                 href_ = href_.replace('type', type);
                 console.log(href_);
 
                 var url_refresh = '';
-                url_refresh = '{{route('fechamentos.nf.resend',['XXX','debug','type'])}}';
+                url_refresh = '{{route('faturamentos.nf.resend',['XXX','debug','type'])}}';
                 url_refresh = url_refresh.replace('XXX', idfechamento);
                 url_refresh = url_refresh.replace('debug', debug);
                 url_refresh = url_refresh.replace('type', type);

@@ -25,6 +25,35 @@ class Parcela extends Model
     ];
 
 
+    static public function setParcelas($data, $data_parcelas)
+    {
+        //CRIAR PARCELAS, ATRIBUIR ID PAGAMENTO A ELAS
+        for ($i = 0; $i < $data_parcelas['quantidade']; $i++) {
+            $prazo = Carbon::now()->addDay($data_parcelas['prazo'][$i]);
+            Parcela::create([
+                'idpagamento' => $data['idpagamento'],
+                'idforma_pagamento' => $data['idforma_pagamento'],
+                'data_vencimento' => $prazo->format('Y-m-d'),
+                'numero_parcela' => $i + 1,
+                'valor_parcela' => $data['valor_parcela']
+            ]);
+        }
+        return true;
+        //CRIAR PARCELAS, ATRIBUIR ID PAGAMENTO A ELAS
+        for ($p = 0; $p < $cl_parcelas['quantidade']; $p++) {
+            $data = Carbon::now()->addDay($cl_parcelas['prazo'][$p]);
+            Parcela::create([
+                'idpagamento' => $Pagamento->id,
+                'idforma_pagamento' => $Cliente->idforma_pagamento_tecnica,
+                'data_vencimento' => $data->format('Y-m-d'),
+                'numero_parcela' => $p + 1,
+                'valor_parcela' => $valor_parcela
+            ]);
+        }
+        return true;
+    }
+
+
     static public function pagar($data)
     {
         $Parcela = self::findOrFail($data['id']);
@@ -102,14 +131,14 @@ class Parcela extends Model
         return $this->belongsTo('App\Models\Pagamento', 'idpagamento');
     }
 
-    public function fechamento()
+    public function faturamento()
     {
-        return $this->pagamento->fechamento();
+        return $this->pagamento->faturamento();
     }
 
     public function cliente()
     {
-        return $this->fechamento->cliente();
+        return $this->faturamento->cliente();
     }
     // ************************** HASMANY **********************************
 }

@@ -107,16 +107,29 @@ class OrdemServicoController extends Controller
             ->with('OrdemServicosPassadas', $OrdemServicosPassadas);
     }
 
-    public function index_centro_custo(Request $request)
-    {
-        $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
-        $Buscas = OrdemServico::filter_situacao_centro_custo($request->all())->get();
-        $Buscas = Cliente::whereIn('idcliente', $Buscas->pluck('idcentro_custo'))->get();
-        $this->Page->extras['centro_custos'] = $Buscas;
-        return view('pages.' . $this->Page->link . '.index_centro_custo')
-            ->with('Page', $this->Page)
-            ->with('Buscas', $Buscas);
-    }
+//    public function index_centro_custo(Request $request)
+//    {
+//        $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
+//
+//        $query = self::filter_situacao($data)
+//            ->with('centro_custo')
+//            ->whereNotNull('idcentro_custo')
+//            ->groupBy('idcentro_custo');
+//        if ($request->has('idcentro_custo') && ($request->get('idcentro_custo') != "")) {
+//            $query->where('idcentro_custo', $request->get('idcentro_custo'));
+//        }
+//        return $query;
+//
+//
+////        $data['idcentro_custo']
+//
+//        $Buscas = OrdemServico::filter_situacao_centro_custo($request->all())->get();
+//        $Buscas = Cliente::whereIn('idcliente', $Buscas->pluck('idcentro_custo'))->get();
+//        $this->Page->extras['centro_custos'] = $Buscas;
+//        return view('pages.' . $this->Page->link . '.index_centro_custo')
+//            ->with('Page', $this->Page)
+//            ->with('Buscas', $Buscas);
+//    }
 
     public function show_centro_custo(Request $request)
     {

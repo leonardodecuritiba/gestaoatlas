@@ -19,8 +19,8 @@ class StatusFechamento extends Model
     // ********************** BELONGS ********************************
 
     // ************************** HASMANY **********************************
-    public function fechamentos()
+    public function faturamentos()
     {
-        return $this->hasMany('App\Models\Fechamento', 'idstatus_fechamento');
+        return $this->hasMany('App\Models\Faturamento', 'idstatus_fechamento');
     }
 }

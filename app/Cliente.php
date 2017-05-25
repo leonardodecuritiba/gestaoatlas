@@ -145,6 +145,7 @@ class Cliente extends Model
     {
         if ($this->attributes['idpjuridica'] != NULL) {
             $retorno = (object)[
+                'idcliente' => $this->idcliente,
                 'tipo_cliente'   => 1,
                 'tipo'           => 'CNPJ',
                 'entidade'       => $this->pessoa_juridica()->first()->cnpj,
@@ -154,6 +155,7 @@ class Cliente extends Model
             ];
         } else {
             $retorno = (object)[
+                'idcliente' => $this->idcliente,
                 'tipo_cliente'   => 0,
                 'tipo'           => 'CPF',
                 'entidade'       => $this->pessoa_fisica()->first()->cpf,
@@ -341,8 +343,8 @@ class Cliente extends Model
         return $this->belongsTo('App\Cliente', 'idcliente');
     }
 
-    public function fechamentos()
+    public function faturamento()
     {
-        return $this->hasMany('App\Models\Fechamento', 'idcliente');
+        return $this->hasMany('App\Models\Faturamento', 'idcliente');
     }
 }
