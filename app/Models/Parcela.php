@@ -82,8 +82,20 @@ class Parcela extends Model
 
     public function getStatusColor()
     {
-        return 'danger';
-        return ($this->status) ? 'success' : 'danger';
+        switch ($this->attributes['idstatus_fechamento']) {
+            case self::_STATUS_ABERTO_:
+                return 'warning';
+            case self::_STATUS_ABERTO_:
+                return 'success';
+            case self::_STATUS_PAGO_EM_ATRASO_:
+                return 'success';
+            case self::_STATUS_EM_CARTORIO_:
+                return 'success';
+            case self::_STATUS_DESCONTADO_:
+                return 'warning';
+            case self::_STATUS_VENCIDO_:
+                return 'danger';
+        }
     }
 
     public function valor_parcela_real()
