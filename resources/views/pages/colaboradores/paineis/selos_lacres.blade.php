@@ -3,7 +3,7 @@
     <section class="x_panel">
         <div class="x_title">
             <h2>{{ucfirst($l)}}s encontrados</h2>
-            @role('admin')
+            @role(['admin','financeiro'])
             <ul class="nav navbar-right panel_toolbox">
                 <li>
                     <button class="btn btn-primary add"
