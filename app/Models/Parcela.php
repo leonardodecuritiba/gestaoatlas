@@ -8,20 +8,26 @@ use Illuminate\Database\Eloquent\Model;
 
 class Parcela extends Model
 {
-    const _STATUS_PAGO_ = 1;
-    const _STATUS_PENDENTE_ = 0; //danger
+    const _STATUS_ABERTO_ = 1;
+    const _STATUS_PAGO_ = 2;
+    const _STATUS_PAGO_EM_ATRASO_ = 3;
+    const _STATUS_PAGO_EM_CARTORIO_ = 4;
+    const _STATUS_EM_CARTORIO_ = 5;
+    const _STATUS_DESCONTADO_ = 6;
+    const _STATUS_VENCIDO_ = 7;
     public $timestamps = true; //danger
     protected $table = 'parcelas';
     protected $primaryKey = 'id';
     protected $fillable = [
         'idpagamento',
+        'idstatus_parcela',
         'idforma_pagamento',
         'data_vencimento',
         'data_pagamento',
         'data_baixa',
         'numero_parcela',
         'valor_parcela',
-        'status',
+//        'status',
     ];
 
 
@@ -59,7 +65,7 @@ class Parcela extends Model
         $Parcela = self::findOrFail($data['id']);
         $Parcela->data_pagamento = $data['data_pagamento'];
         $Parcela->data_baixa = Carbon::now()->format('Y-m-d');
-        $Parcela->status = 1;
+        $Parcela->idstatus_parcela = self::_STATUS_PAGO_;
         $Parcela->save();
         return $Parcela;
     }
@@ -71,11 +77,12 @@ class Parcela extends Model
 
     public function getStatusText()
     {
-        return ($this->status) ? 'Pago' : 'Pendente';
+        return $this->status->descricao;
     }
 
     public function getStatusColor()
     {
+        return 'danger';
         return ($this->status) ? 'success' : 'danger';
     }
 
@@ -129,6 +136,11 @@ class Parcela extends Model
     public function pagamento()
     {
         return $this->belongsTo('App\Models\Pagamento', 'idpagamento');
+    }
+
+    public function status()
+    {
+        return $this->belongsTo('App\Models\StatusParcela', 'idstatus_parcela');
     }
 
     public function faturamento()
