@@ -140,14 +140,8 @@
                                     <li><a href="{{ route('faturamentos.index_pos') }}">Faturamento Parcial</a></li>
                                 </ul>
                             </li>
-                            <li>
-                                <a>Recebimentos<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="{{ route('faturamentos.index', $centro = 1) }}">Centro de Custo</a>
-                                    </li>
-                                    <li><a href="{{ route('faturamentos.index', $centro = 0) }}">Clientes</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="{{ route('recebimentos.index') }}"> Recebimentos</a></li>
+                            <li><a href="{{ route('faturamentos.index', $centro = 1) }}">Listar Faturamentos</a>
                         </ul>
                     </li>
                     @endif

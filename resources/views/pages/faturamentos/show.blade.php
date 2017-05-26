@@ -176,7 +176,7 @@
                             <tr>
                                 <th>Situação</th>
                                 <th>ID</th>
-                                <th>Número da Parcala</th>
+                                <th>Parcela</th>
                                 <th>Forma de Pagamento</th>
                                 <th>Data de Vencimento</th>
                                 <th>Data de Pagamento</th>

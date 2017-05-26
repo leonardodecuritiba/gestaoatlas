@@ -132,11 +132,21 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('faturamentos', 'FaturamentoController');
     Route::get('faturamentos/remover/{id}', 'FaturamentoController@remover')->name('faturamentos.remover');
     Route::get('listar-faturamentos/{centro_custo}', 'FaturamentoController@index')->name('faturamentos.index');
+
     Route::get('listar-pos-fechamentos', 'FaturamentoController@index_pos')->name('faturamentos.index_pos');
     Route::get('visualizar-pos-fechamentos/{centro_custo}/{id}', 'FaturamentoController@show_pos')->name('faturamentos.show_pos');
+
     Route::get('faturar-pos/{centro_custo}/{id}', 'FaturamentoController@faturar_pos')->name('faturamentos.faturar_pos');
     Route::get('faturar-por-periodo', 'FaturamentoController@indexFaturarPeriodo')->name('faturamentos.periodo_index');
     Route::post('faturar-periodo', 'FaturamentoController@faturarPeriodo')->name('faturamentos.faturar_periodo');
+
+    //faturamento
+    Route::get('gerar-faturamento/{id}', 'FaturamentoController@runByOrdemServicoID')->name('faturamento.gerar');
+    Route::get('run-faturamento', 'FaturamentoController@run');
+
+
+    //RECEBIMENTOS
+    Route::resource('recebimentos', 'RecebimentoController');
 
     //PARCELAS
     Route::post('parcela/pagar', 'ParcelaController@pagar')->name('parcelas.pagar');
@@ -156,9 +166,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('nf/consulta/{idfechamento}/{debug}/{type}', 'FaturamentoController@getNF')->name('faturamentos.nf.get');
 
 
-    //faturamento
-    Route::get('gerar-faturamento/{id}', 'FaturamentoController@runByOrdemServicoID')->name('faturamento.gerar');
-    Route::get('run-faturamento', 'FaturamentoController@run');
 
     //RELATÓRIOS
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
