@@ -27,10 +27,10 @@ class StatusParcelaTableSeeder extends Seeder
         \App\Models\StatusParcela::insert($data);
         echo "\n*** StatusParcelaTableSeeder completo em " . round((microtime(true) - $start), 3) . "s ***";
 
-        DB::table('PARCELAS')
+        DB::table('parcelas')
             ->where('status', 0)
             ->update(['idstatus_parcela' => 1]);
-        DB::table('PARCELAS')
+        DB::table('parcelas')
             ->where('status', 1)
             ->update(['idstatus_parcela' => 2]);
 
