@@ -17,8 +17,7 @@ class OrdemServico extends Model
     const _STATUS_FINALIZADA_ = 3;
     const _STATUS_AGUARDANDO_PECA_ = 4;
     const _STATUS_EQUIPAMENTO_NA_OFICINA_ = 5; //primary
-    const _STATUS_A_FATURAR_ = 6; //warning
-    const _STATUS_FATURADA_ = 7; //success
+    const _STATUS_FATURADA_ = 6; //success
     public $timestamps = true;
     public $valores = [];
     protected $table = 'ordem_servicos';
@@ -115,14 +114,11 @@ class OrdemServico extends Model
             case self::_STATUS_FINALIZADA_:
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FINALIZADA_);
                 break;
-            case self::_STATUS_A_FATURAR_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_A_FATURAR_);
+            case self::_STATUS_ABERTA_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
                 break;
             case self::_STATUS_FATURADA_:
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
-                break;
-            case self::_STATUS_ABERTA_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
                 break;
 //            default:
 //                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
@@ -171,7 +167,6 @@ class OrdemServico extends Model
             self::_STATUS_ABERTA_ => 'Abertas',
             self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_ => 'Em Atendimento',
             self::_STATUS_FINALIZADA_ => 'Finalizadas',
-            self::_STATUS_A_FATURAR_ => 'À Faturar',
             self::_STATUS_FATURADA_ => 'Faturadas',
         ];
     }
@@ -392,8 +387,6 @@ class OrdemServico extends Model
                 return 'info';
             case self::_STATUS_FINALIZADA_:
                 return 'danger';
-            case self::_STATUS_A_FATURAR_:
-                return 'warning';
             case self::_STATUS_FATURADA_:
                 return 'success';
             default:

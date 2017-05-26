@@ -1,11 +1,13 @@
 @extends('layouts.template')
-@section('modals_content')
+@section('style_content')
     <!-- Datatables -->
     @include('helpers.datatables.head')
     <!-- /Datatables -->
-	@include('layouts.modals.delete')
     <!-- Select2 -->
     @include('helpers.select2.head')
+@endsection
+@section('modals_content')
+    @include('layouts.modals.delete')
 @endsection
 @section('page_content')
 	@include('pages.ordem_servicos.popup.cliente')

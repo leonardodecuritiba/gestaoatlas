@@ -134,14 +134,14 @@
                             {{--<a href="{{ route('ordem_servicos.index_centro_custo') }}">O.S. Centro de Custo</a>--}}
                             {{--</li>--}}
                             <li>
-                                <a>Fechamentos<span class="fa fa-chevron-down"></span></a>
+                                <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{ route('faturamentos.periodo_index') }}">Fechar Período</a></li>
-                                    <li><a href="{{ route('faturamentos.index_pos') }}">Simulador de Fechamento</a></li>
+                                    <li><a href="{{ route('faturamentos.periodo_index') }}">Faturamento Período</a></li>
+                                    <li><a href="{{ route('faturamentos.index_pos') }}">Faturamento Parcial</a></li>
                                 </ul>
                             </li>
                             <li>
-                                <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
+                                <a>Recebimentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('faturamentos.index', $centro = 1) }}">Centro de Custo</a>
                                     </li>
