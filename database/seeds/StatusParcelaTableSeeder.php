@@ -12,20 +12,20 @@ class StatusParcelaTableSeeder extends Seeder
 //    php artisan db:seed --class=StatusParcelaTableSeeder
     public function run()
     {
-//        $start = microtime(true);
-//        echo "*** Iniciando os Seeders ***";
-//        $data = [
-//            ['descricao' => 'ABERTO'],
-//            ['descricao' => 'PAGO'],
-//            ['descricao' => 'PAGO EM ATRASO'],
-//            ['descricao' => 'PAGO EM CARTÓRIO'],
-//            ['descricao' => 'EM CARTÓRIO'],
-//            ['descricao' => 'DESCONTADO'],
-//            ['descricao' => 'VENCIDO'],
-//        ];
-//
-//        \App\Models\StatusParcela::insert($data);
-//        echo "\n*** StatusParcelaTableSeeder completo em " . round((microtime(true) - $start), 3) . "s ***";
+        $start = microtime(true);
+        echo "*** Iniciando os Seeders ***";
+        $data = [
+            ['descricao' => 'ABERTO'],
+            ['descricao' => 'PAGO'],
+            ['descricao' => 'PAGO EM ATRASO'],
+            ['descricao' => 'PAGO EM CARTÓRIO'],
+            ['descricao' => 'EM CARTÓRIO'],
+            ['descricao' => 'DESCONTADO'],
+            ['descricao' => 'VENCIDO'],
+        ];
+
+        \App\Models\StatusParcela::insert($data);
+        echo "\n*** StatusParcelaTableSeeder completo em " . round((microtime(true) - $start), 3) . "s ***";
 
         DB::table('parcelas')
             ->where('status', 0)

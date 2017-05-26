@@ -82,7 +82,7 @@ class Parcela extends Model
 
     public function getStatusColor()
     {
-        switch ($this->attributes['idstatus_fechamento']) {
+        switch ($this->attributes['idstatus_parcela']) {
             case self::_STATUS_ABERTO_:
                 return 'warning';
             case self::_STATUS_ABERTO_:
