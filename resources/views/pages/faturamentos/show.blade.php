@@ -201,7 +201,7 @@
                                     <td>{{$selecao->data_baixa}}</td>
                                     <td>{{$selecao->valor_parcela_real()}}</td>
                                     <td>
-                                        @if($selecao->status == 0)
+                                        @if($selecao->recebida() == 0)
                                             <a class="btn btn-primary btn-xs"
                                                target="_blank"
                                                href="{{route('parcelas.boleto',$selecao->id)}}">
