@@ -85,12 +85,8 @@
                                             <td>{{$selecao->data_baixa}}</td>
                                             <td>{{$selecao->valor_parcela_real()}}</td>
                                             <td>
-                                                @if($selecao->status == 0)
-                                                    <a data-toggle="modal"
-                                                       data-parcela="{{$selecao}}"
-                                                       data-valor_real="{{$selecao->valor_parcela_real()}}"
-                                                       data-target="#modalPagarParcela"
-                                                       class="btn btn-info btn-xs"><i class="fa fa-money"></i>
+                                                @if($selecao->recebida() == 0)
+                                                    <a class="btn btn-info btn-xs"><i class="fa fa-money"></i>
                                                         Receber</a>
                                                 @else
                                                     <a class="btn btn-danger btn-xs"><i class="fa fa-refresh"></i>

@@ -27,7 +27,6 @@ class Parcela extends Model
         'data_baixa',
         'numero_parcela',
         'valor_parcela',
-//        'status',
     ];
 
 
@@ -75,6 +74,13 @@ class Parcela extends Model
         return $this->numero_parcela . '/' . $this->pagamento->parcelas->count();
     }
 
+    public function recebida()
+    {
+        return ($this->attributes['idstatus_parcela'] == self::_STATUS_PAGO_)
+            || ($this->attributes['idstatus_parcela'] == self::_STATUS_PAGO_EM_ATRASO_)
+            || ($this->attributes['idstatus_parcela'] == self::_STATUS_PAGO_EM_CARTORIO_);
+    }
+
     public function getStatusText()
     {
         return $this->status->descricao;
@@ -84,15 +90,12 @@ class Parcela extends Model
     {
         switch ($this->attributes['idstatus_parcela']) {
             case self::_STATUS_ABERTO_:
-                return 'warning';
-            case self::_STATUS_ABERTO_:
-                return 'success';
-            case self::_STATUS_PAGO_EM_ATRASO_:
-                return 'success';
-            case self::_STATUS_EM_CARTORIO_:
-                return 'success';
             case self::_STATUS_DESCONTADO_:
                 return 'warning';
+            case self::_STATUS_PAGO_:
+            case self::_STATUS_PAGO_EM_ATRASO_:
+            case self::_STATUS_EM_CARTORIO_:
+                return 'success';
             case self::_STATUS_VENCIDO_:
                 return 'danger';
         }
