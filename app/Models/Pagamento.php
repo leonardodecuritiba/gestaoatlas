@@ -30,15 +30,16 @@ class Pagamento extends Model
         return $Pagamento;
     }
 
+
     // ********************** BELONGS ********************************
     public function getParcelasPendentes()
     {
-        return $this->parcelas->where('status', 0);
+        return Parcela::where('idpagamento', $this->id)->pendentes();
     }
 
     public function getParcelasPagas()
     {
-        return $this->parcelas->where('status', 1);
+        return Parcela::where('idpagamento', $this->id)->pagas();
     }
 
     // ************************** HASONE **********************************

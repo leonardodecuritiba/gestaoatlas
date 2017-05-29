@@ -122,7 +122,7 @@
                                     <td>
                                         <a class="btn btn-default btn-xs"
                                            href="{{route($Page->link.'.show',$selecao->id)}}"
-                                        ><i class="fa fa-edit"></i> Visualizar Fechamento</a>
+                                        ><i class="fa fa-edit"></i> Visualizar Faturamento</a>
                                     </td>
                                 </tr>
                             @endforeach

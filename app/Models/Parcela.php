@@ -143,6 +143,33 @@ class Parcela extends Model
         return DataHelper::getPrettyDate($value);
     }
 
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePendentes($query)
+    {
+        return $query->where('idstatus_parcela', self::_STATUS_ABERTO_)
+            ->orWhere('idstatus_parcela', self::_STATUS_EM_CARTORIO_)
+            ->orWhere('idstatus_parcela', self::_STATUS_DESCONTADO_)
+            ->orWhere('idstatus_parcela', self::_STATUS_VENCIDO_);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePagas($query)
+    {
+        return $query->where('idstatus_parcela', self::_STATUS_PAGO_)
+            ->orWhere('idstatus_parcela', self::_STATUS_PAGO_EM_ATRASO_)
+            ->orWhere('idstatus_parcela', self::_STATUS_PAGO_EM_CARTORIO_);
+    }
+
     // ********************** BELONGS ********************************
     public function forma_pagamento()
     {

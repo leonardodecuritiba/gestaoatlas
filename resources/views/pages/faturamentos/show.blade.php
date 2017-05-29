@@ -68,7 +68,7 @@
                                 </li>
                                 <li><i class="fa fa-money"></i> Total Pendente: <b
                                             class="text-danger">{{$Faturamento->getTotalPendenteReal()}}</b>
-                                <li><i class="fa fa-money"></i> Total Pago: <b
+                                <li><i class="fa fa-money"></i> Total Recebido: <b
                                             class="text-success">{{$Faturamento->getTotalPagoReal()}}</b>
                                 </li>
                             </ul>

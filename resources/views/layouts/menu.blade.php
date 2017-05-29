@@ -142,6 +142,13 @@
                             </li>
                             <li><a href="{{ route('recebimentos.index') }}"> Recebimentos</a></li>
                             <li><a href="{{ route('faturamentos.index', $centro = 1) }}">Listar Faturamentos</a>
+                            <li>
+                                <a>Notas<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="#">NFe</a></li>
+                                    <li><a href="#">NFSe</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                     @endif
