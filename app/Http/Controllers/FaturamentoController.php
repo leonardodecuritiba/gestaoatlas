@@ -51,14 +51,13 @@ class FaturamentoController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $centro_custo)
+    public function index(Request $request)
     {
         $now = Carbon::now();
 
         if ($request->has('idfaturamento')) {
             $Buscas = Faturamento::where('id', $request->get('idfaturamento'))->with('cliente')->get();
         } else {
-            $request->merge(['centro_custo' => $centro_custo]);
             $Buscas = Faturamento::filter_layout($request->all())->get();
         }
         $this->Page->extras['status_fechamento'] = StatusFechamento::whereIn('id', $Buscas->pluck('idstatus_fechamento'))->get();

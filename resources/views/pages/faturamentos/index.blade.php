@@ -17,6 +17,14 @@
                         'class' => 'form-horizontal form-label-left')) !!}
                     <label class="control-label col-md-1 col-sm-1 col-xs-12">Por Tipo:</label>
                     <div class="col-md-2 col-sm-2 col-xs-12">
+                        <select name="centro_custo" class="form-control select2_single">
+                            <option value="0" @if(Request::get('centro_custo') == 0) selected @endif>Cliente</option>
+                            <option value="1" @if(Request::get('centro_custo') == 1) selected @endif>Centro de Custo
+                            </option>
+                        </select>
+                    </div>
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12">Por Status:</label>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
                         <select name="situacao" class="form-control select2_single">
                             <option value="">Todos</option>
                             @foreach($Page->extras['status_fechamento'] as $value)

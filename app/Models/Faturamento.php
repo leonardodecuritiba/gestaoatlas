@@ -159,7 +159,7 @@ class Faturamento extends Model
     static public function filter_layout($data)
     {
         $query = self::filter_status($data);
-        return ($data['centro_custo']) ? $query->centroCustos() : $query->clientes();
+        return (isset($data['centro_custo']) && $data['centro_custo']) ? $query->centroCustos() : $query->clientes();
     }
 
     static public function filter_status($data)
