@@ -37,6 +37,7 @@ class Parcela extends Model
             $prazo = Carbon::now()->addDay($data_parcelas['prazo'][$i]);
             Parcela::create([
                 'idpagamento' => $data['idpagamento'],
+                'idstatus_parcela' => self::_STATUS_ABERTO_,
                 'idforma_pagamento' => $data['idforma_pagamento'],
                 'data_vencimento' => $prazo->format('Y-m-d'),
                 'numero_parcela' => $i + 1,

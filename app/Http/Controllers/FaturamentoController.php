@@ -145,8 +145,7 @@ class FaturamentoController extends Controller
 
         if ($request->get('centro_custo')) {
             $query = $query->where('idcentro_custo', $id);
-            $OrdemServicos = $query->select('*', DB::raw('count(*) as qtd_os'))
-                ->get();
+            $OrdemServicos = $query->get();
         } else {
             $OrdemServicos = $query->where('idcliente', $id)->get();
         }
