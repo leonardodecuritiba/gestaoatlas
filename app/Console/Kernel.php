@@ -29,5 +29,18 @@ class Kernel extends ConsoleKernel
         //          ->hourly();
 
         $schedule->command('command:check_parcelas')->daily();
+
+        $schedule->call(function () {
+
+            $user = array(
+                'email' => "silva.zanin@gmail.com",
+                'name' => "TESTE SCHEDULE",
+                'mensagem' => "olá",
+            );
+            Mail::raw($user['mensagem'], function ($message) use ($user) {
+                $message->to($user['email'], $user['name'])->subject('Welcome!');
+                $message->from('xxx@gmail.com', 'Atendimento');
+            });
+        })->everyMinute();
     }
 }
