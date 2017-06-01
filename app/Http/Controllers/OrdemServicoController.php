@@ -66,7 +66,9 @@ class OrdemServicoController extends Controller
         $OrdemServicosMesAtual = NULL;
         $OrdemServicosPassadas = NULL;
         if ($request->has('idordem_servico')) {
-            $OrdemServicosMesAtual = OrdemServico::where('idordem_servico', $request->get('idordem_servico'))->with('cliente', 'colaborador')->get();
+            $OrdemServicosMesAtual = OrdemServico::where('idordem_servico', $request->get('idordem_servico'))
+                ->with('cliente', 'colaborador')
+                ->get();
             $this->Page->extras['clientes'] = Cliente::all();
         } else {
             if (!$request->has('data')) {
@@ -79,8 +81,13 @@ class OrdemServicoController extends Controller
                 return $item;
             })->groupBy('periodo');
             if ($Search->count() > 0) {
-                $OrdemServicosMesAtual = $Search[$now->format('m/Y')];
-                unset($Search[$now->format('m/Y')]);
+                $mes_atual = $now->format('m/Y');
+                if (key_exists($mes_atual, $Search)) {
+                    $OrdemServicosMesAtual = $Search[$mes_atual];
+                    unset($Search[$mes_atual]);
+                } else {
+                    $OrdemServicosMesAtual = NULL;
+                }
                 $OrdemServicosPassadas = $Search;
             }
 //            return $Search->toArray();
