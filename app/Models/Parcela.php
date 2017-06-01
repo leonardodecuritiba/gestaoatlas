@@ -8,14 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Parcela extends Model
 {
-    const _STATUS_ABERTO_ = 1;
-    const _STATUS_PAGO_ = 2;
-    const _STATUS_PAGO_EM_ATRASO_ = 3;
-    const _STATUS_PAGO_EM_CARTORIO_ = 4;
-    const _STATUS_CARTORIO_ = 5;
-    const _STATUS_DESCONTADO_ = 6;
-    const _STATUS_VENCIDO_ = 7;
-    const _STATUS_PROTESTADO_ = 8;
 
     public $timestamps = true; //danger
     protected $table = 'parcelas';
@@ -84,11 +76,11 @@ class Parcela extends Model
     public function recebida()
     {
         return (in_array($this->attributes['idstatus_parcela'], [
-            self::_STATUS_PAGO_,
-            self::_STATUS_PAGO_EM_ATRASO_,
-            self::_STATUS_PAGO_EM_CARTORIO_,
-            self::_STATUS_DESCONTADO_,
-            self::_STATUS_PROTESTADO_,
+            StatusParcela::_STATUS_PAGO_,
+            StatusParcela::_STATUS_PAGO_EM_ATRASO_,
+            StatusParcela::_STATUS_PAGO_EM_CARTORIO_,
+            StatusParcela::_STATUS_DESCONTADO_,
+            StatusParcela::_STATUS_PROTESTADO_,
         ]));
     }
 
@@ -106,16 +98,16 @@ class Parcela extends Model
     public function getStatusColor()
     {
         switch ($this->attributes['idstatus_parcela']) {
-            case self::_STATUS_ABERTO_:
+            case StatusParcela::_STATUS_ABERTO_:
                 return 'warning';
-            case self::_STATUS_DESCONTADO_:
-            case self::_STATUS_PAGO_EM_ATRASO_:
-            case self::_STATUS_CARTORIO_:
-            case self::_STATUS_PROTESTADO_:
+            case StatusParcela::_STATUS_DESCONTADO_:
+            case StatusParcela::_STATUS_PAGO_EM_ATRASO_:
+            case StatusParcela::_STATUS_CARTORIO_:
+            case StatusParcela::_STATUS_PROTESTADO_:
                 return 'primary';
-            case self::_STATUS_PAGO_:
+            case StatusParcela::_STATUS_PAGO_:
                 return 'success';
-            case self::_STATUS_VENCIDO_:
+            case StatusParcela::_STATUS_VENCIDO_:
                 return 'danger';
         }
     }
@@ -173,9 +165,9 @@ class Parcela extends Model
     public function scopePendentes($query)
     {
         return $query->whereIn('idstatus_parcela', [
-            self::_STATUS_ABERTO_,
-            self::_STATUS_VENCIDO_,
-            self::_STATUS_CARTORIO_,
+            StatusParcela::_STATUS_ABERTO_,
+            StatusParcela::_STATUS_VENCIDO_,
+            StatusParcela::_STATUS_CARTORIO_,
         ]);
     }
 
@@ -188,11 +180,11 @@ class Parcela extends Model
     public function scopeRecebidos($query)
     {
         return $query->whereIn('idstatus_parcela', [
-            self::_STATUS_PAGO_,
-            self::_STATUS_PAGO_EM_ATRASO_,
-            self::_STATUS_PAGO_EM_CARTORIO_,
-            self::_STATUS_DESCONTADO_,
-            self::_STATUS_PROTESTADO_,
+            StatusParcela::_STATUS_PAGO_,
+            StatusParcela::_STATUS_PAGO_EM_ATRASO_,
+            StatusParcela::_STATUS_PAGO_EM_CARTORIO_,
+            StatusParcela::_STATUS_DESCONTADO_,
+            StatusParcela::_STATUS_PROTESTADO_,
         ]);
     }
 
@@ -204,7 +196,7 @@ class Parcela extends Model
      */
     public function scopeCartorios($query)
     {
-        return $query->where('idstatus_parcela', self::_STATUS_CARTORIO_);
+        return $query->where('idstatus_parcela', StatusParcela::_STATUS_CARTORIO_);
     }
 
     /**
@@ -215,7 +207,7 @@ class Parcela extends Model
      */
     public function scopeDescontados($query)
     {
-        return $query->where('idstatus_parcela', self::_STATUS_DESCONTADO_);
+        return $query->where('idstatus_parcela', StatusParcela::_STATUS_DESCONTADO_);
     }
 
     /**
@@ -237,7 +229,7 @@ class Parcela extends Model
      */
     public function scopeVencidos($query)
     {
-        return $query->where('idstatus_parcela', self::_STATUS_VENCIDO_);
+        return $query->where('idstatus_parcela', StatusParcela::_STATUS_VENCIDO_);
     }
 
     // ********************** BELONGS ********************************

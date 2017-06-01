@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Parcela;
+use App\Models\StatusParcela;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -41,8 +41,8 @@ class CheckParcelas extends Command
     public function handle()
     {
         return DB::table('parcelas')->where('idstatus_parcela', 1)
-            ->where('idstatus_parcela', Parcela::_STATUS_ABERTO_)
+            ->where('idstatus_parcela', StatusParcela::_STATUS_ABERTO_)
             ->where('data_vencimento', '<', Carbon::now())
-            ->update(['idstatus_parcela' => Parcela::_STATUS_VENCIDO_]);
+            ->update(['idstatus_parcela' => StatusParcela::_STATUS_VENCIDO_]);
     }
 }
