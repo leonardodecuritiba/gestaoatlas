@@ -7,6 +7,7 @@
     @include('helpers.select2.head')
 @endsection
 @section('page_content')
+    @include('pages.recebimentos.popup.receber_parcela')
     <section class="row">
         <div class="x_panel">
             <div class="x_title">
@@ -16,22 +17,22 @@
             <div class="x_content">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                     {!! Form::open(array('route'=>'recebimentos.index','method'=>'GET','id'=>'search','class'=>'form-horizontal form-label-left')) !!}
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Data Inicial:</label>
-                    <div class="col-md-3 col-sm-3 col-xs-12">
+                    <label class="control-label col-md-1 col-sm-2 col-xs-12">Data Inicial:</label>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
                         <input value="{{Request::get('data_inicial')}}"
                                type="text" class="form-control data-to-now" name="data_inicial" placeholder="Data"
                                required>
                     </div>
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Data Final:</label>
-                    <div class="col-md-3 col-sm-3 col-xs-12">
+                    <label class="control-label col-md-1 col-sm-2 col-xs-12">Data Final:</label>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
                         <input value="{{Request::get('data_final')}}"
                                type="text" class="form-control data-to-now" name="data_final" placeholder="Data"
                                required>
                     </div>
-                    <div class="col-md-3 col-sm-3 col-xs-12">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> Filtrar</button>
-                </span>
+                    <div class="col-md-2 col-sm-2 col-xs-12">
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" type="submit"><i class="fa fa-check"></i> Filtrar</button>
+                        </span>
                     </div>
                     {!! Form::close() !!}
                 </div>
@@ -51,19 +52,23 @@
                             <ul class="list-unstyled product_price">
                                 <li>
                                     <i class="fa fa-money"></i> Recebido no Período:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['no_periodo']['recebidos']}}</b>
                                 </li>
                                 <li class="red">
                                     <i class="fa fa-money"></i> Vencidos:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['no_periodo']['vencidos']}}</b>
                                 </li>
                                 <li>
                                     <i class="fa fa-money"></i> Em Cartório:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['no_periodo']['em_cartorio']}}</b>
                                 </li>
                                 <li>
                                     <i class="fa fa-money"></i> Desconto de Título:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['no_periodo']['descontado']}}</b>
                                 </li>
                             </ul>
                         </div>
@@ -74,23 +79,28 @@
                             <ul class="list-unstyled product_price">
                                 <li>
                                     <i class="fa fa-money"></i> À Receber em 10 dias:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['a_receber']['d10']}}</b>
                                 </li>
                                 <li>
                                     <i class="fa fa-money"></i> À Receber em 20 dias:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['a_receber']['d20']}}</b>
                                 </li>
                                 <li>
                                     <i class="fa fa-money"></i> À Receber em 30 dias:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['a_receber']['d30']}}</b>
                                 </li>
                                 <li>
                                     <i class="fa fa-money"></i> À Receber em 60 dias:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['a_receber']['d60']}}</b>
                                 </li>
                                 <li>
                                     <i class="fa fa-money"></i> À Receber em 90 dias:
-                                    <b class="pull-right" id="valor_total_servicos">R$ X.XXX,XX</b>
+                                    <b class="pull-right"
+                                       id="valor_total_servicos">{{$Page->extras['a_receber']['d90']}}</b>
                                 </li>
                             </ul>
                         </div>
@@ -143,13 +153,11 @@
                                         <td>{{$selecao->data_baixa}}</td>
                                         <td>{{$selecao->valor_parcela_real()}}</td>
                                         <td>
-                                            @if($selecao->recebida() == 0)
-                                                <a class="btn btn-info btn-xs"><i class="fa fa-money"></i>
-                                                    Receber</a>
-                                            @else
-                                                <a class="btn btn-danger btn-xs"><i class="fa fa-refresh"></i>
-                                                    Estornar</a>
-                                            @endif
+                                            <a data-toggle="modal"
+                                               data-parcela="{{$selecao}}"
+                                               data-valor_real="{{$selecao->valor_parcela_real()}}"
+                                               data-target="#modalPagarParcela"
+                                               class="btn btn-primary btn-xs"><i class="fa fa-money"></i> Alterar</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -192,4 +200,26 @@
         });
     </script>
     <!-- /Datatables -->
+
+
+    <!-- Modal Pagar Parcela -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //MODAL DA FORMA DE PAGAMENTO
+            $('#modalPagarParcela').on('show.bs.modal', function (event) {
+                var $button = $(event.relatedTarget);
+                var modal = $(this);
+                var $parcela = $($button).data('parcela');
+                console.log($parcela);
+                $(modal).find('input[name=id]').val($parcela.id);
+                $(modal).find('input[name=valor_parcela]').val($($button).data('valor_real'));
+                $(modal).find('input[name=data_vencimento]').val($parcela.data_vencimento);
+                $(modal).find('input[name=idforma_pagamento]').val($parcela.forma_pagamento.descricao);
+                $(modal).find('select[name=idstatus_parcela]').val($parcela.idstatus_parcela).trigger('change');
+                if ($parcela.data_pagamento != '') {
+                    $(modal).find('input[name=data_pagamento]').val($parcela.data_pagamento);
+                }
+            });
+        });
+    </script>
 @endsection

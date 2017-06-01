@@ -149,7 +149,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('recebimentos', 'RecebimentoController');
 
     //PARCELAS
-    Route::post('parcela/pagar', 'ParcelaController@pagar')->name('parcelas.pagar');
+    Route::post('parcela/baixar', 'RecebimentoController@baixarParcela')->name('parcelas.baixar');
+    Route::get('parcela-verificar', 'RecebimentoController@run')->name('parcelas.run');
+
     Route::get('parcela/boleto/{idparcela}', 'ParcelaController@gerarBoleto')->name('parcelas.boleto');
     Route::get('parcela/estornar/{idparcela}', 'ParcelaController@estornar')->name('parcelas.estornar');
 

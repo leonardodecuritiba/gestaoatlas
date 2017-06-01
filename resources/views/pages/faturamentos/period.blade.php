@@ -6,7 +6,7 @@
     <section class="row">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Faturar por Período</h2>
+                <h2>Fechamento por Período</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">

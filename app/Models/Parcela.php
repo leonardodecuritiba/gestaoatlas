@@ -12,9 +12,11 @@ class Parcela extends Model
     const _STATUS_PAGO_ = 2;
     const _STATUS_PAGO_EM_ATRASO_ = 3;
     const _STATUS_PAGO_EM_CARTORIO_ = 4;
-    const _STATUS_EM_CARTORIO_ = 5;
+    const _STATUS_CARTORIO_ = 5;
     const _STATUS_DESCONTADO_ = 6;
     const _STATUS_VENCIDO_ = 7;
+    const _STATUS_PROTESTADO_ = 8;
+
     public $timestamps = true; //danger
     protected $table = 'parcelas';
     protected $primaryKey = 'id';
@@ -45,41 +47,55 @@ class Parcela extends Model
             ]);
         }
         return true;
-        //CRIAR PARCELAS, ATRIBUIR ID PAGAMENTO A ELAS
-        for ($p = 0; $p < $cl_parcelas['quantidade']; $p++) {
-            $data = Carbon::now()->addDay($cl_parcelas['prazo'][$p]);
-            Parcela::create([
-                'idpagamento' => $Pagamento->id,
-                'idforma_pagamento' => $Cliente->idforma_pagamento_tecnica,
-                'data_vencimento' => $data->format('Y-m-d'),
-                'numero_parcela' => $p + 1,
-                'valor_parcela' => $valor_parcela
-            ]);
-        }
-        return true;
+//        //CRIAR PARCELAS, ATRIBUIR ID PAGAMENTO A ELAS
+//        for ($p = 0; $p < $cl_parcelas['quantidade']; $p++) {
+//            $data = Carbon::now()->addDay($cl_parcelas['prazo'][$p]);
+//            Parcela::create([
+//                'idpagamento' => $Pagamento->id,
+//                'idforma_pagamento' => $Cliente->idforma_pagamento_tecnica,
+//                'data_vencimento' => $data->format('Y-m-d'),
+//                'numero_parcela' => $p + 1,
+//                'valor_parcela' => $valor_parcela
+//            ]);
+//        }
+//        return true;
     }
 
+    static public function getAreceber($ndays)
+    {
+        return self::pendentes()
+            ->where('data_vencimento', '<=', Carbon::now()
+                ->addDays($ndays)
+                ->format('Y-m-d'))
+            ->SumRealValorParcela();
+    }
 
-    static public function pagar($data)
+    static public function baixar($data)
     {
         $Parcela = self::findOrFail($data['id']);
-        $Parcela->data_pagamento = $data['data_pagamento'];
-        $Parcela->data_baixa = Carbon::now()->format('Y-m-d');
-        $Parcela->idstatus_parcela = self::_STATUS_PAGO_;
-        $Parcela->save();
+        $Parcela->update([
+            'data_pagamento' => $data['data_pagamento'],
+            'data_baixa' => Carbon::now()->format('Y-m-d'),
+            'idstatus_parcela' => $data['idstatus_parcela'],
+        ]);
         return $Parcela;
-    }
-
-    public function getNumeroParcela()
-    {
-        return $this->numero_parcela . '/' . $this->pagamento->parcelas->count();
     }
 
     public function recebida()
     {
-        return ($this->attributes['idstatus_parcela'] == self::_STATUS_PAGO_)
-            || ($this->attributes['idstatus_parcela'] == self::_STATUS_PAGO_EM_ATRASO_)
-            || ($this->attributes['idstatus_parcela'] == self::_STATUS_PAGO_EM_CARTORIO_);
+        return (in_array($this->attributes['idstatus_parcela'], [
+            self::_STATUS_PAGO_,
+            self::_STATUS_PAGO_EM_ATRASO_,
+            self::_STATUS_PAGO_EM_CARTORIO_,
+            self::_STATUS_DESCONTADO_,
+            self::_STATUS_PROTESTADO_,
+        ]));
+    }
+
+
+    public function getNumeroParcela()
+    {
+        return $this->numero_parcela . '/' . $this->pagamento->parcelas->count();
     }
 
     public function getStatusText()
@@ -91,28 +107,32 @@ class Parcela extends Model
     {
         switch ($this->attributes['idstatus_parcela']) {
             case self::_STATUS_ABERTO_:
-            case self::_STATUS_DESCONTADO_:
                 return 'warning';
-            case self::_STATUS_PAGO_:
+            case self::_STATUS_DESCONTADO_:
             case self::_STATUS_PAGO_EM_ATRASO_:
-            case self::_STATUS_EM_CARTORIO_:
+            case self::_STATUS_CARTORIO_:
+            case self::_STATUS_PROTESTADO_:
+                return 'primary';
+            case self::_STATUS_PAGO_:
                 return 'success';
             case self::_STATUS_VENCIDO_:
                 return 'danger';
         }
     }
 
+
+    // ********************** Accessors ********************************
+
     public function valor_parcela_real()
     {
         return DataHelper::getFloat2RealMoeda($this->attributes['valor_parcela']);
     }
 
-    // ********************** Accessors ********************************
-
     public function getDataVencimentoBoleto()
     {
         return Carbon::createFromFormat('Y-m-d', $this->attributes['data_vencimento']);
     }
+
     public function getCreatedAtAttribute($value)
     {
         return DataHelper::getPrettyDateTime($value);
@@ -143,6 +163,7 @@ class Parcela extends Model
         return DataHelper::getPrettyDate($value);
     }
 
+    // ********************** Scopes ***********************************
     /**
      * Scope a query to only include active users.
      *
@@ -151,10 +172,11 @@ class Parcela extends Model
      */
     public function scopePendentes($query)
     {
-        return $query->where('idstatus_parcela', self::_STATUS_ABERTO_)
-            ->orWhere('idstatus_parcela', self::_STATUS_EM_CARTORIO_)
-            ->orWhere('idstatus_parcela', self::_STATUS_DESCONTADO_)
-            ->orWhere('idstatus_parcela', self::_STATUS_VENCIDO_);
+        return $query->whereIn('idstatus_parcela', [
+            self::_STATUS_ABERTO_,
+            self::_STATUS_VENCIDO_,
+            self::_STATUS_CARTORIO_,
+        ]);
     }
 
     /**
@@ -163,11 +185,59 @@ class Parcela extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePagas($query)
+    public function scopeRecebidos($query)
     {
-        return $query->where('idstatus_parcela', self::_STATUS_PAGO_)
-            ->orWhere('idstatus_parcela', self::_STATUS_PAGO_EM_ATRASO_)
-            ->orWhere('idstatus_parcela', self::_STATUS_PAGO_EM_CARTORIO_);
+        return $query->whereIn('idstatus_parcela', [
+            self::_STATUS_PAGO_,
+            self::_STATUS_PAGO_EM_ATRASO_,
+            self::_STATUS_PAGO_EM_CARTORIO_,
+            self::_STATUS_DESCONTADO_,
+            self::_STATUS_PROTESTADO_,
+        ]);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCartorios($query)
+    {
+        return $query->where('idstatus_parcela', self::_STATUS_CARTORIO_);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeDescontados($query)
+    {
+        return $query->where('idstatus_parcela', self::_STATUS_DESCONTADO_);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSumRealValorParcela($query)
+    {
+        return DataHelper::getFloat2RealMoeda($query->sum('valor_parcela'));
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVencidos($query)
+    {
+        return $query->where('idstatus_parcela', self::_STATUS_VENCIDO_);
     }
 
     // ********************** BELONGS ********************************

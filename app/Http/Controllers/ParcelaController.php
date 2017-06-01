@@ -15,11 +15,11 @@ use Illuminate\Support\Facades\Redirect;
 
 class ParcelaController extends Controller
 {
-    public function pagar(Request $request)
-    {
-        $Pagamento = Pagamento::baixaParcela($request->all());
-        return Redirect::route('faturamentos.show', $Pagamento->faturamento->id);
-    }
+//    public function baixar(Request $request)
+//    {
+//        $Pagamento = Pagamento::baixaParcela($request->all());
+//        return Redirect::route('faturamentos.show', $Pagamento->faturamento->id);
+//    }
 
     public function gerarBoleto($id)
     {

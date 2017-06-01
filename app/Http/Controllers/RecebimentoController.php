@@ -7,9 +7,11 @@ use App\FormaPagamento;
 use App\Helpers\DataHelper;
 use App\Models\Faturamento;
 use App\Models\Nfe;
+use App\Models\Pagamento;
 use App\Models\Parcela;
 use App\Models\PrazoPagamento;
 use App\Models\StatusFechamento;
+use App\Models\StatusParcela;
 use App\OrdemServico;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -55,16 +57,38 @@ class RecebimentoController extends Controller
     public function index(Request $request)
     {
 
-//        return $request->all();
-//        $now = Carbon::now();
-//
         if ($request->has('data_inicial')) {
             $query = Parcela::whereBetween('data_vencimento',
                 [DataHelper::getPrettyToCorrectDate($request->get('data_inicial')), DataHelper::getPrettyToCorrectDate($request->get('data_final'))]);
-            $Buscas = $query->with('cliente')->get();
+            $Buscas = $query->get();
+
+//            return $Buscas;
+            $this->Page->extras['no_periodo'] = [
+                'recebidos' => $query->recebidos()->SumRealValorParcela(),
+                'vencidos' => $query->vencidos()->SumRealValorParcela(),
+                'em_cartorio' => $query->cartorios()->SumRealValorParcela(),
+                'descontado' => $query->descontados()->SumRealValorParcela(),
+            ];
         } else {
             $Buscas = Parcela::all();
+
+            $this->Page->extras['no_periodo'] = [
+                'recebidos' => Parcela::recebidos()->SumRealValorParcela(),
+                'vencidos' => Parcela::vencidos()->SumRealValorParcela(),
+                'em_cartorio' => Parcela::cartorios()->SumRealValorParcela(),
+                'descontado' => Parcela::descontados()->SumRealValorParcela(),
+            ];
         }
+
+        $this->Page->extras['status_parcelas'] = StatusParcela::all();
+
+        $this->Page->extras['a_receber'] = [
+            'd10' => Parcela::getAreceber(10),
+            'd20' => Parcela::getAreceber(20),
+            'd30' => Parcela::getAreceber(30),
+            'd60' => Parcela::getAreceber(60),
+            'd90' => Parcela::getAreceber(90),
+        ];
 
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
@@ -84,6 +108,13 @@ class RecebimentoController extends Controller
         return view('pages.' . $this->Page->link . '.show')
             ->with('Page', $this->Page)
             ->with('Recebimento', $Recebimento);
+    }
+
+
+    public function baixarParcela(Request $request)
+    {
+        Pagamento::baixaParcela($request->all());
+        return Redirect::route('recebimentos.index');
     }
 
 }

@@ -6,7 +6,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h4 class="modal-title">Pagar parcela</h4>
+                <h4 class="modal-title">Baixar parcela</h4>
             </div>
             <div class="modal-body">
                 <div class="form-horizontal form-label-left">
@@ -31,12 +31,23 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="control-label col-md-5 col-sm-5 col-xs-12">Status: <span
+                                    class="required">*</span></label>
+                        <div class="col-md-7 col-sm-7 col-xs-12">
+                            <select name="idstatus_parcela" class="form-control select2_single">
+                                @foreach($Page->extras['status_parcelas'] as $status_parcela)
+                                    <option value="{{$status_parcela->id}}">{{$status_parcela->descricao}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="control-label col-md-5 col-sm-5 col-xs-12">Data de Pagamento: <span
                                     class="required">*</span></label>
                         <div class="col-md-7 col-sm-7 col-xs-12">
                             <input type="text" class="form-control data-every" name="data_pagamento"
                                    placeholder="Data de Pagamento"
-                                   value="{{\Carbon\Carbon::now()->format('d/m/Y')}}">
+                                   value="{{\Carbon\Carbon::now()->format('d/m/Y')}}" required>
                         </div>
                     </div>
                 </div>
@@ -44,24 +55,9 @@
             <div class="modal-footer">
                 <button class="btn btn-danger pull-left" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar
                 </button>
-                <button class="btn btn-success pull-right"><i class="fa fa-money"></i> Alterar</button>
+                <button class="btn btn-success pull-right"><i class="fa fa-money"></i> Baixar</button>
             </div>
         </div>
         {!! Form::close() !!}
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function () {
-        //MODAL DA FORMA DE PAGAMENTO
-        $('#modalPagarParcela').on('show.bs.modal', function (event) {
-            var $button = $(event.relatedTarget);
-            var modal = $(this);
-            var $parcela = $($button).data('parcela');
-            console.log($parcela);
-            $(modal).find('input[name=id]').val($parcela.id);
-            $(modal).find('input[name=valor_parcela]').val($($button).data('valor_real'));
-            $(modal).find('input[name=data_vencimento]').val($parcela.data_vencimento);
-            $(modal).find('input[name=idforma_pagamento]').val($parcela.forma_pagamento.descricao);
-        });
-    });
-</script>

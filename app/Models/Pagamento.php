@@ -19,7 +19,7 @@ class Pagamento extends Model
 
     static public function baixaParcela($data)
     {
-        $Parcela = Parcela::pagar($data);
+        $Parcela = Parcela::baixar($data);
         $Pagamento = $Parcela->pagamento;
         if ($Pagamento->getParcelasPendentes()->count() == 0) {
             $Pagamento->data_baixa = Carbon::now()->format('Y-m-d');

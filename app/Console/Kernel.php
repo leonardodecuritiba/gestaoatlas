@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
+        Commands\CheckParcelas::class
         // Commands\Inspire::class,
     ];
 
@@ -26,5 +27,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('command:check_parcelas')->daily();
     }
 }
