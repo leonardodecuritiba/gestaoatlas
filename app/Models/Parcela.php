@@ -65,11 +65,34 @@ class Parcela extends Model
     static public function baixar($data)
     {
         $Parcela = self::findOrFail($data['id']);
-        $Parcela->update([
+        $update = [
             'data_pagamento' => $data['data_pagamento'],
             'data_baixa' => Carbon::now()->format('Y-m-d'),
-            'idstatus_parcela' => $data['idstatus_parcela'],
-        ]);
+            'idstatus_parcela' => $data['idstatus_parcela']
+        ];
+        switch ($data['idstatus_parcela']) {
+            case StatusParcela::_STATUS_ABERTO_ :
+                $update['data_pagamento'] = NULL;
+                $update['data_baixa'] = NULL;
+                break;
+            case StatusParcela::_STATUS_PAGO_ :
+                break;
+            case StatusParcela::_STATUS_PAGO_EM_ATRASO_ :
+                break;
+            case StatusParcela::_STATUS_PAGO_EM_CARTORIO_ :
+                break;
+            case StatusParcela::_STATUS_CARTORIO_ :
+                break;
+            case StatusParcela::_STATUS_DESCONTADO_ :
+                break;
+            case StatusParcela::_STATUS_VENCIDO_ :
+                $update['data_pagamento'] = NULL;
+                $update['data_baixa'] = NULL;
+                break;
+            case StatusParcela::_STATUS_PROTESTADO_ :
+                break;
+        }
+        $Parcela->update($update);
         return $Parcela;
     }
 
