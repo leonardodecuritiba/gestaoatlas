@@ -158,25 +158,19 @@ class FaturamentoController extends Controller
 
     public function faturarPeriodo(Request $request)
     {
-        return 'Em breve';
-        $request->merge(['centro_custo' => $centro_custo]);
-        $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
-        $query = OrdemServico::filter_layout($request->all())
-            ->whereNull('idfechamento');
+        $DATA_INICIO = Carbon::createFromFormat('d/m/Y', $request->get('data_inicial'))->format('Y-m-d 23:59:59');//'2017-01-01 00:00:00' (1º dia do mês anterior)
+        $DATA_FIM = Carbon::createFromFormat('d/m/Y', $request->get('data_final'))->format('Y-m-d 23:59:59');// '2017-01-31 23:59:59' (1º dia do mês vigente)
 
-        if ($request->get('centro_custo')) {
-            $query = $query->where('idcentro_custo', $id);
-            $OrdemServicos = $query->select('*', DB::raw('count(*) as qtd_os'))
-                ->get();
-        } else {
-            $OrdemServicos = $query->where('idcliente', $id)->get();
-        }
-
-        $Faturamento = Faturamento::geraFaturamento($OrdemServicos, $request->get('centro_custo'));
+        $OrdemServicos = OrdemServico::whereBetween('fechamento', [$DATA_INICIO, $DATA_FIM])
+            ->whereNull('idfechamento')
+            ->orderBy('idcentro_custo', 'desc')
+            ->get();
+//            ->get(['idordem_servico','idcentro_custo','idcliente']);
+        Faturamento::faturaPeriodo($OrdemServicos);
 
         session()->forget('mensagem');
-        session(['mensagem' => $this->Page->msg_abr]);
-        return Redirect::route('faturamentos.show', $Faturamento->id);
+        session(['mensagem' => 'Faturamneto realizado']);
+        return Redirect::route('faturamentos.periodo_index');
     }
 
     public function indexFaturarPeriodo(Request $request)

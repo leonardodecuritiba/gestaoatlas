@@ -49,21 +49,25 @@ class Faturamento extends Model
 
         //fechamentos CLIENTES
         foreach ($faturamento_cl as $ordem_servicos) {
-            Faturamento::geraFaturamento($ordem_servicos, 0);
+            Faturamento::geraFaturamento($ordem_servicos, 0, $op = 1);
         }
 
         //fechamentos CENTRO DE CUSTO
         foreach ($faturamento_cc as $ordem_servicos) {
-            Faturamento::geraFaturamento($ordem_servicos, 1);
+            Faturamento::geraFaturamento($ordem_servicos, 1, $op = 1);
         }
 
         return Faturamento::lastCreated()->first();
 
     }
 
-    static public function geraFaturamento($OrdemServicos, $centro_custo = 0)
+    static public function geraFaturamento($OrdemServicos, $centro_custo = 0, $op = 0)
     {
-        $Cliente = ($centro_custo) ? $OrdemServicos->first()->centro_custo : $OrdemServicos->first()->cliente;
+        if ($op == 1) {
+            $Cliente = ($centro_custo) ? $OrdemServicos[0]->centro_custo : $OrdemServicos[0]->cliente;
+        } else {
+            $Cliente = ($centro_custo) ? $OrdemServicos->first()->centro_custo : $OrdemServicos->first()->cliente;
+        }
         if ($Cliente->prazo_pagamento_tecnica->id == PrazoPagamento::_STATUS_A_VISTA_) {
             $data_parcelas = ['quantidade' => 1, 'prazo' => 0];
         } else {
