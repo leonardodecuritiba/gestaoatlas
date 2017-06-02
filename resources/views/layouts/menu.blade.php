@@ -137,11 +137,12 @@
                                 <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('faturamentos.periodo_index') }}">Fechamento</a></li>
-                                    <li><a href="{{ route('faturamentos.index_pos') }}">Faturamento</a></li>
+                                    <li><a href="{{ route('faturamentos.index_pos')}}">Pós Fechamento</a></li>
+                                    <li><a href="{{ route('faturamentos.index') }}">Listar Faturamentos</a>
+                                    <li>
                                 </ul>
                             </li>
                             <li><a href="{{ route('recebimentos.index') }}">Recebimentos</a></li>
-                            {{--<li><a href="{{ route('faturamentos.index') }}">Listar Faturamentos</a><li>--}}
                             <li><a>Notas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">NFe</a></li>
