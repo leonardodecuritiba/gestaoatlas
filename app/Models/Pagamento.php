@@ -39,7 +39,7 @@ class Pagamento extends Model
 
     public function getParcelasPagas()
     {
-        return Parcela::where('idpagamento', $this->id)->pagas();
+        return Parcela::where('idpagamento', $this->id)->recebidos();
     }
 
     // ************************** HASONE **********************************

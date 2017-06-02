@@ -45,116 +45,116 @@
                     Situação do Fechamento: <b>{{$Faturamento->getStatusText()}}</b>
                 </div>
                 <div class="profile_details">
-                    <div class="well">
-                        <div class="perfil">
-                            <h4>{{$Faturamento->getTipoFechamento()}}:
-                                <a target="_blank"
-                                   href="{{route('clientes.show', $Faturamento->idcliente)}}"><i>{{$Faturamento->cliente->getType()->nome_principal}}</i></a>
-                                @role('admin')
-                                <a class="btn btn-danger pull-right"
-                                   href="{{route('faturamentos.remover',$Faturamento->id)}}">
-                                    <i class="fa fa-trash fa-2"></i> Excluir Fechamento</a>
-                                @endrole
-                            </h4>
-                            <ul class="list-unstyled">
-                                <li><i class="fa fa-calendar"></i> Data do Fechamento:
-                                    <b>{{$Faturamento->created_at}}</b></li>
-                                <li><i class="fa fa-credit-card"></i> Tipo de Emissão (Técnica):
-                                    <b>{{$Faturamento->cliente->tipo_emissao_tecnica->descricao}}</b></li>
-                                <li><i class="fa fa-credit-card"></i> Forma de Pagamento (Técnica):
-                                    <b>{{$Faturamento->cliente->forma_pagamento_tecnica->descricao}}</b></li>
-                                <li><i class="fa fa-info"></i> Pagamento: <b
-                                            class="text-{{$Faturamento->getPagoStatusColor()}}">{{$Faturamento->getPagoText()}}</b>
-                                </li>
-                                <li><i class="fa fa-money"></i> Total Pendente: <b
-                                            class="text-danger">{{$Faturamento->getTotalPendenteReal()}}</b>
-                                <li><i class="fa fa-money"></i> Total Recebido: <b
-                                            class="text-success">{{$Faturamento->getTotalPagoReal()}}</b>
-                                </li>
-                            </ul>
+                    <div class="well perfil">
 
-                            <div class="row">
-                                <div class="col-lg-6 col-md-6 col-xs-6">
-                                    <ul class="list-unstyled">
-                                        @if($Faturamento->getStatusNfeHomologacao())
-                                            <li>
-                                                <a data-toggle="modal"
-                                                   data-idfechamento="{{$Faturamento->id}}"
-                                                   data-type="nfe"
-                                                   data-target="#consultaNF"
-                                                   data-debug="1"
-                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFe
-                                                    (Homologação)</a>
-                                            </li>
-                                        @else
-                                            <li>
-                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = true, 'nfe'])}}"
-                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFe
-                                                    (Homologação)</a>
-                                            </li>
-                                        @endif
-                                        @if($Faturamento->getStatusNFSeHomologacao())
-                                            <li>
-                                                <a data-toggle="modal"
-                                                   data-idfechamento="{{$Faturamento->id}}"
-                                                   data-type="nfse"
-                                                   data-target="#consultaNF"
-                                                   data-debug="1"
-                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFSe
-                                                    (Homologação)</a>
-                                            </li>
-                                        @else
-                                            <li>
-                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = true, 'nfse'])}}"
-                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFSe
-                                                    (Homologação)</a>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-xs-6">
-                                    <ul class="list-unstyled pull-right">
-                                        @if($Faturamento->getStatusNfeProducao())
-                                            <li>
-                                                <a data-toggle="modal"
-                                                   data-idfechamento="{{$Faturamento->id}}"
-                                                   data-type="nfe"
-                                                   data-target="#consultaNF"
-                                                   data-debug="0"
-                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar
-                                                    NFe</a>
-                                            </li>
-                                        @elseif($Faturamento->getStatusNfeHomologacao())
-                                            <li>
-                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = 0, 'nfe'])}}"
-                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i>
-                                                    Gerar NFe</a>
-                                            </li>
-                                        @endif
-                                        @if($Faturamento->getStatusNFSeProducao())
-                                            <li>
-                                                <a data-toggle="modal"
-                                                   data-idfechamento="{{$Faturamento->id}}"
-                                                   data-type="nfse"
-                                                   data-target="#consultaNF"
-                                                   data-debug="0"
-                                                   class="btn btn-warning"><i class="fa fa-search"></i> Consultar
-                                                    NFSe</a>
-                                            </li>
-                                        @elseif($Faturamento->getStatusNFSeHomologacao())
-                                            <li>
-                                                <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = 0, 'nfse'])}}"
-                                                   class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar
-                                                    NFSe</a>
-                                            </li>
-                                        @endif
-                                    </ul>
-                                </div>
+                        <h4>{{$Faturamento->getTipoFechamento()}}:
+                            <a target="_blank"
+                               href="{{route('clientes.show', $Faturamento->idcliente)}}"><i>{{$Faturamento->cliente->getType()->nome_principal}}</i></a>
+                            @role('admin')
+                            <a class="btn btn-danger pull-right"
+                               href="{{route('faturamentos.remover',$Faturamento->id)}}">
+                                <i class="fa fa-trash fa-2"></i> Excluir Fechamento</a>
+                            @endrole
+                        </h4>
+                        <ul class="list-unstyled">
+                            <li><i class="fa fa-calendar"></i> Data do Fechamento:
+                                <b>{{$Faturamento->created_at}}</b></li>
+                            <li><i class="fa fa-credit-card"></i> Tipo de Emissão (Técnica):
+                                <b>{{$Faturamento->cliente->tipo_emissao_tecnica->descricao}}</b></li>
+                            <li><i class="fa fa-credit-card"></i> Forma de Pagamento (Técnica):
+                                <b>{{$Faturamento->cliente->forma_pagamento_tecnica->descricao}}</b></li>
+                            <li><i class="fa fa-info"></i> Pagamento: <b
+                                        class="text-{{$Faturamento->getPagoStatusColor()}}">{{$Faturamento->getPagoText()}}</b>
+                            </li>
+                            <li><i class="fa fa-money"></i> Total Pendente: <b
+                                        class="text-danger">{{$Faturamento->getTotalPendenteReal()}}</b>
+                            </li>
+                            <li><i class="fa fa-money"></i> Total Recebido: <b
+                                        class="text-success">{{$Faturamento->getTotalPagoReal()}}</b>
+                            </li>
+                        </ul>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-6">
+                                <ul class="list-unstyled">
+                                    @if($Faturamento->getStatusNfeHomologacao())
+                                        <li>
+                                            <a data-toggle="modal"
+                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-type="nfe"
+                                               data-target="#consultaNF"
+                                               data-debug="1"
+                                               class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFe
+                                                (Homologação)</a>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = true, 'nfe'])}}"
+                                               class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFe
+                                                (Homologação)</a>
+                                        </li>
+                                    @endif
+                                    @if($Faturamento->getStatusNFSeHomologacao())
+                                        <li>
+                                            <a data-toggle="modal"
+                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-type="nfse"
+                                               data-target="#consultaNF"
+                                               data-debug="1"
+                                               class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFSe
+                                                (Homologação)</a>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = true, 'nfse'])}}"
+                                               class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar NFSe
+                                                (Homologação)</a>
+                                        </li>
+                                    @endif
+                                </ul>
                             </div>
-
-                            <?php $Valores = $Faturamento->getValores();?>
-                            @include('pages.ordem_servicos.parts.resumo_valores')
+                            <div class="col-lg-6 col-md-6 col-xs-6">
+                                <ul class="list-unstyled pull-right">
+                                    @if($Faturamento->getStatusNfeProducao())
+                                        <li>
+                                            <a data-toggle="modal"
+                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-type="nfe"
+                                               data-target="#consultaNF"
+                                               data-debug="0"
+                                               class="btn btn-warning"><i class="fa fa-search"></i> Consultar
+                                                NFe</a>
+                                        </li>
+                                    @elseif($Faturamento->getStatusNfeHomologacao())
+                                        <li>
+                                            <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = 0, 'nfe'])}}"
+                                               class="btn btn-primary"><i class="fa fa-info fa-2"></i>
+                                                Gerar NFe</a>
+                                        </li>
+                                    @endif
+                                    @if($Faturamento->getStatusNFSeProducao())
+                                        <li>
+                                            <a data-toggle="modal"
+                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-type="nfse"
+                                               data-target="#consultaNF"
+                                               data-debug="0"
+                                               class="btn btn-warning"><i class="fa fa-search"></i> Consultar
+                                                NFSe</a>
+                                        </li>
+                                    @elseif($Faturamento->getStatusNFSeHomologacao())
+                                        <li>
+                                            <a href="{{route('faturamentos.nf.send',[$Faturamento->id, $debug = 0, 'nfse'])}}"
+                                               class="btn btn-primary"><i class="fa fa-info fa-2"></i> Gerar
+                                                NFSe</a>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </div>
                         </div>
+
+                        <?php $Valores = $Faturamento->getValores();?>
+                        @include('pages.ordem_servicos.parts.resumo_valores')
                     </div>
                 </div>
             </div>
