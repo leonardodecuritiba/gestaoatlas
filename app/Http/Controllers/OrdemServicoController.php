@@ -49,7 +49,7 @@ class OrdemServicoController extends Controller
             'search_no_results' => "Nenhuma Ordem de Serviços encontrada!",
             'search_results' => "Ordens de Serviços encontradas",
             'msg_abr' => 'Ordem de Serviços aberta com sucesso!',
-            'msg_fec' => 'Ordem de Serviços fechada com sucesso!',
+            'msg_fec' => 'Ordem de Serviços finalizada com sucesso!',
             'msg_upd' => 'Ordem de Serviços atualizada com sucesso!',
             'msg_rem' => 'Ordem de Serviços removida com sucesso!',
             'msg_rea' => 'Ordem de Serviços reaberta com sucesso!',
