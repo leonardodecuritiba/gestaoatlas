@@ -123,6 +123,9 @@ class OrdemServico extends Model
             case self::_STATUS_FATURADA_:
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
                 break;
+            case self::_STATUS_FECHADA_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_FECHADA_);
+                break;
 //            default:
 //                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
 //                break;
@@ -170,8 +173,8 @@ class OrdemServico extends Model
             self::_STATUS_ABERTA_ => 'Abertas',
             self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_ => 'Em Atendimento',
             self::_STATUS_FINALIZADA_ => 'Finalizadas',
-            self::_STATUS_FATURADA_ => 'Faturadas',
             self::_STATUS_FECHADA_ => 'Fechadas',
+            self::_STATUS_FATURADA_ => 'Faturadas',
         ];
     }
 
@@ -251,28 +254,6 @@ class OrdemServico extends Model
         return true;
     }
 
-    /**
-     * Scope a query to only include active users.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeCentroCustos($query)
-    {
-        return $query->whereNotNull('idcentro_custo');
-    }
-
-    /**
-     * Scope a query to only include active users.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeClientes($query)
-    {
-        return $query->whereNull('idcentro_custo');
-    }
-
     public function getStatusFinalizada()
     {
         return ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_);
@@ -282,7 +263,7 @@ class OrdemServico extends Model
     {
 //        return !($this->idsituacao_ordem_servico == self::_STATUS_A_FATURAR_ || $this->idsituacao_ordem_servico == self::_STATUS_FATURADA_);
         return !($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_
-            || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_);
+            || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FECHADA_);
     }
 
     public function setFaturamento($idfechamento)
@@ -295,7 +276,7 @@ class OrdemServico extends Model
     public function unsetFaturamento()
     {
         $this->attributes['idfechamento'] = NULL;
-        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FINALIZADA_;
+        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FECHADA_;
         return $this->save();
     }
 
@@ -344,63 +325,16 @@ class OrdemServico extends Model
         return $valor_total;
     }
 
-    public function get_desconto_tecnico_real()
-    {
-        return DataHelper::getFloat2Real($this->attributes['desconto_tecnico']);
-    }
-
-    public function get_acrescimo_tecnico_real()
-    {
-        return DataHelper::getFloat2Real($this->attributes['acrescimo_tecnico']);
-    }
-
-    public function getResponsavelCpfAttribute($value)
-    {
-        return DataHelper::mask($value, '###.###.###-##');
-    }
-
 //    public function getStatus()
 //    {
 //        return $this->situacao->descricao;
 //    }
 
-
-    public function getStatusText()
+    public function fechar()
     {
-        return $this->situacao->descricao;
-    }
-
-    public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
-    {
-        return (
-            ($this->attributes['data_finalizada'] != NULL)
-            &&
-            (
-                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
-                ||
-                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
-                ||
-                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_)
-                ||
-                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FECHADA_)
-//                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_A_FATURAR_)
-
-            )
-        ) ? 1 : 0;
-    }
-
-    public function getStatusType()
-    {
-        switch ($this->attributes['idsituacao_ordem_servico']) {
-            case self::_STATUS_ABERTA_:
-                return 'info';
-            case self::_STATUS_FINALIZADA_:
-                return 'danger';
-            case self::_STATUS_FATURADA_:
-                return 'success';
-            default:
-                return 'warning';
-        }
+        $this->attributes['data_fechada'] = Carbon::now()->toDateTimeString();
+        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FECHADA_;
+        return $this->save();
     }
 
     public function finalizar($request)
@@ -503,6 +437,59 @@ class OrdemServico extends Model
 
     // ******************** ACCESSORS ******************************
 
+    public function getStatusText()
+    {
+        return $this->situacao->descricao;
+    }
+
+    public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
+    {
+        return (
+            ($this->attributes['data_finalizada'] != NULL)
+            &&
+            (
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
+                ||
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
+                ||
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_)
+                ||
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FECHADA_)
+//                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_A_FATURAR_)
+
+            )
+        ) ? 1 : 0;
+    }
+
+    public function getStatusType()
+    {
+        switch ($this->attributes['idsituacao_ordem_servico']) {
+            case self::_STATUS_ABERTA_:
+                return 'info';
+            case self::_STATUS_FINALIZADA_:
+                return 'danger';
+            case self::_STATUS_FATURADA_:
+                return 'success';
+            default:
+                return 'warning';
+        }
+    }
+
+    public function get_desconto_tecnico_real()
+    {
+        return DataHelper::getFloat2Real($this->attributes['desconto_tecnico']);
+    }
+
+    public function get_acrescimo_tecnico_real()
+    {
+        return DataHelper::getFloat2Real($this->attributes['acrescimo_tecnico']);
+    }
+
+    public function getResponsavelCpfAttribute($value)
+    {
+        return DataHelper::mask($value, '###.###.###-##');
+    }
+
     public function getCustosDeslocamentoAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
@@ -548,7 +535,30 @@ class OrdemServico extends Model
         return DataHelper::getPrettyDateTime($value);
     }
 
-    // ******************** RELASHIONSHIP ******************************
+    // ******************** SCOPE ******************************
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCentroCustos($query)
+    {
+        return $query->whereNotNull('idcentro_custo');
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeClientes($query)
+    {
+        return $query->whereNull('idcentro_custo');
+    }
+
     // ********************** BELONGS ********************************
 
     public function has_aparelho_manutencaos()
