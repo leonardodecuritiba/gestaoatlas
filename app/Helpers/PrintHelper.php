@@ -73,7 +73,7 @@ class PrintHelper
                 array(
                     'CNPJ:', $Pessoa_juridica->cnpj,
                     'I.E:', $Pessoa_juridica->ie,
-                    'DATA / HR F', $this->OrdemServico->fechamento
+                    'DATA / HR F', $this->OrdemServico->data_finalizada
                 ),
                 array(
                     'Endereço:', $Contato->getRua(),
@@ -102,7 +102,7 @@ class PrintHelper
                 array(
                     'CPF:', $PessoaFisica->cpf,
                     'I.E:', '-',
-                    'DATA / HR F', $this->OrdemServico->fechamento
+                    'DATA / HR F', $this->OrdemServico->data_finalizada
                 ),
                 array(
                     'Endereço:', $Contato->getRua(),

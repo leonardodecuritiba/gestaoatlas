@@ -15,7 +15,7 @@
                         <th>ID</th>
                         <th>Nº Chamado</th>
                         <th>Data de Abertura</th>
-                        <th>Data de Fechamento</th>
+                        <th>Data de Finalização</th>
                         <th>Técnico</th>
                         <th>Serviços</th>
                         <th>Peças</th>
@@ -35,7 +35,7 @@
                             <td>{{$selecao->idordem_servico}}</td>
                             <td>{{$selecao->numero_chamado}}</td>
                             <td>{{$selecao->created_at}}</td>
-                            <td>{{$selecao->fechamento}}</td>
+                            <td>{{$selecao->data_finalizada}}</td>
                             <td>{{$selecao->colaborador->nome}}</td>
                             <td>{{$Valores->valor_total_servicos}}</td>
                             <td>{{$Valores->valor_total_pecas}}</td>

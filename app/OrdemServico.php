@@ -28,6 +28,8 @@ class OrdemServico extends Model
         'idcolaborador',
         'idsituacao_ordem_servico',
         'idcentro_custo',
+        'data_fechada',
+        'data_finalizada',
         'numero_chamado',
         'responsavel',
         'responsavel_cpf',
@@ -239,9 +241,11 @@ class OrdemServico extends Model
     static public function reabrir($idordem_servico)
     {
         $OrdemServico = self::find($idordem_servico);
-        $OrdemServico->fechamento = NULL;
-        $OrdemServico->idsituacao_ordem_servico = self::_STATUS_ABERTA_;
-        $OrdemServico->save();
+        $OrdemServico->update([
+            'data_fechada' => NULL,
+            'data_finalizada' => NULL,
+            'idsituacao_ordem_servico' => self::_STATUS_ABERTA_,
+        ]);
         return true;
     }
 
@@ -269,13 +273,14 @@ class OrdemServico extends Model
 
     public function getStatusFinalizada()
     {
-        return ($this->idsituacao_ordem_servico == self::_STATUS_FINALIZADA_);
+        return ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_);
     }
 
     public function getStatusFechada()
     {
 //        return !($this->idsituacao_ordem_servico == self::_STATUS_A_FATURAR_ || $this->idsituacao_ordem_servico == self::_STATUS_FATURADA_);
-        return !($this->idsituacao_ordem_servico == self::_STATUS_FATURADA_ || $this->idsituacao_ordem_servico == self::_STATUS_FATURADA_);
+        return !($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_
+            || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_);
     }
 
     public function setFaturamento($idfechamento)
@@ -366,7 +371,7 @@ class OrdemServico extends Model
     public function status() //RETORNA O STATUS 0:ABERTA 1:FECHADA
     {
         return (
-            ($this->attributes['fechamento'] != NULL)
+            ($this->attributes['data_finalizada'] != NULL)
             &&
             (
                 ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
@@ -407,7 +412,7 @@ class OrdemServico extends Model
         $this->attributes['responsavel'] = $request['responsavel'];
         $this->attributes['responsavel_cpf'] = $request['responsavel_cpf'];
         $this->attributes['responsavel_cargo'] = $request['responsavel_cargo'];
-        $this->attributes['fechamento'] = Carbon::now()->toDateTimeString();
+        $this->attributes['data_finalizada'] = Carbon::now()->toDateTimeString();
         $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FINALIZADA_;
         return $this->save();
     }
@@ -483,6 +488,17 @@ class OrdemServico extends Model
         return $this->valores;
     }
 
+    public function remover()
+    {
+        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+            $aparelho_manutencao->remover();
+        }
+        $this->forceDelete();
+    }
+
+
+    // ******************** ACCESSORS ******************************
+
     public function getCustosDeslocamentoAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
@@ -513,25 +529,24 @@ class OrdemServico extends Model
         $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
     }
 
-
     public function getValorTotalAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
     }
 
-//    public function getValorFinalAttribute($value)
-//    {
-//        return DataHelper::getFloat2Real($value);
-//    }
-
     public function getDataAbertura()
     {
         return DataHelper::getPrettyDateTime($this->getAttributeValue('created_at'));
     }
-    public function getFechamentoAttribute($value)
+
+    public function getDataFinalizadaAttribute($value)
     {
         return DataHelper::getPrettyDateTime($value);
     }
+
+    // ******************** RELASHIONSHIP ******************************
+    // ********************** BELONGS ********************************
+
     public function has_aparelho_manutencaos()
     {
         return ($this->aparelho_manutencaos()->count() > 0);
@@ -550,16 +565,6 @@ class OrdemServico extends Model
     public function aparelho_equipamentos()
     {
         return $this->hasMany('App\AparelhoManutencao', 'idordem_servico')->whereNotNull('idequipamento');
-    }
-    // ******************** RELASHIONSHIP ******************************
-    // ********************** BELONGS ********************************
-
-    public function remover()
-    {
-        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
-            $aparelho_manutencao->remover();
-        }
-        $this->forceDelete();
     }
 
     public function cliente()

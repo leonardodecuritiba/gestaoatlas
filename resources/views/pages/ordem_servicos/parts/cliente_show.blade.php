@@ -22,7 +22,8 @@
                 <li><i class="fa fa-user"></i> Colaborador: <b>{{$OrdemServico->colaborador->nome}}</b>
                 </li>
                 @if($OrdemServico->status())
-                    <li><i class="fa fa-calendar-o"></i> Data de Fechamento: <b>{{$OrdemServico->fechamento}}</b></li>
+                    <li><i class="fa fa-calendar-o"></i> Data de Finalização: <b>{{$OrdemServico->data_finalização}}</b>
+                    </li>
                     <li><i class="fa fa-info"></i> Nº do chamado: <b>{{$OrdemServico->numero_chamado}}</b></li>
                     <li><i class="fa fa-user"></i> Responsável: <b>{{$OrdemServico->responsavel}}</b></li>
                     <li><i class="fa fa-info"></i> CPF: <b>{{$OrdemServico->responsavel_cpf}}</b></li>

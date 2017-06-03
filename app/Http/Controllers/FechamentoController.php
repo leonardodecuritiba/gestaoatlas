@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
-class FaturamentoController extends Controller
+class FechamentoController extends Controller
 {
     private $Page;
     private $colaborador;
@@ -31,16 +31,16 @@ class FaturamentoController extends Controller
             'table' => "fechamentos",
             'link' => "faturamentos",
             'primaryKey' => "id",
-            'Target' => "Faturamentos",
+            'Target' => "Fechamentos",
             'Search' => "Buscar por CPF, CNPJ, Nome Fantasia ou Razão Social...",
             'Targets' => "Faturamentos",
             'Titulo' => "Faturamentos",
             'search_results' => "",
             'search_no_results' => "Nenhum Faturamento encontrado!",
-            'msg_abr' => 'Faturamento aberto com sucesso!',
-            'msg_upd' => 'Faturamento atualizado com sucesso!',
-            'msg_rem' => 'Faturamento removido com sucesso!',
-            'msg_rea' => 'Faturamento reaberto com sucesso!',
+            'msg_abr' => 'Fechamento aberto com sucesso!',
+            'msg_upd' => 'Fechamento atualizado com sucesso!',
+            'msg_rem' => 'Fechamento removido com sucesso!',
+            'msg_rea' => 'Fechamento reaberto com sucesso!',
             'titulo_primario' => "",
             'titulo_secundario' => "",
         ];
@@ -67,6 +67,7 @@ class FaturamentoController extends Controller
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
+
     /**
      * Display a listing of the resource.
      * @param Request $request

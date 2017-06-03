@@ -514,7 +514,7 @@ class OrdemServicoController extends Controller
         return 'encaminhar por email';
         $OrdemServico = OrdemServico::find($idordem_servico);
         $OrdemServico->update([
-            'fechamento' => Carbon::now()->toDateTimeString()
+            'data_finalizada' => Carbon::now()->toDateTimeString()
         ]);
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
