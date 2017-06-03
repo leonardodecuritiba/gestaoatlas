@@ -80,7 +80,7 @@
                                     @if($Faturamento->getStatusNfeHomologacao())
                                         <li>
                                             <a data-toggle="modal"
-                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-idfaturamento="{{$Faturamento->id}}"
                                                data-type="nfe"
                                                data-target="#consultaNF"
                                                data-debug="1"
@@ -97,7 +97,7 @@
                                     @if($Faturamento->getStatusNFSeHomologacao())
                                         <li>
                                             <a data-toggle="modal"
-                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-idfaturamento="{{$Faturamento->id}}"
                                                data-type="nfse"
                                                data-target="#consultaNF"
                                                data-debug="1"
@@ -118,7 +118,7 @@
                                     @if($Faturamento->getStatusNfeProducao())
                                         <li>
                                             <a data-toggle="modal"
-                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-idfaturamento="{{$Faturamento->id}}"
                                                data-type="nfe"
                                                data-target="#consultaNF"
                                                data-debug="0"
@@ -135,7 +135,7 @@
                                     @if($Faturamento->getStatusNFSeProducao())
                                         <li>
                                             <a data-toggle="modal"
-                                               data-idfechamento="{{$Faturamento->id}}"
+                                               data-idfaturamento="{{$Faturamento->id}}"
                                                data-type="nfse"
                                                data-target="#consultaNF"
                                                data-debug="0"
@@ -243,7 +243,7 @@
                 var $btn_refresh = $($this).find('div.modal-footer a#btn-refresh');
                 var type = $($origem).data('type'); //if is NFe or NFSe
                 var debug = $($origem).data('debug'); //if is/not debug
-                var idfechamento = $($origem).data('idfechamento'); //idfechamento
+                var idfaturamento = $($origem).data('idfaturamento'); //idfaturamento
 
                 $($listas_nf).hide();
                 $($erros_nf).hide();
@@ -254,14 +254,14 @@
 
                 var href_ = '';
                 href_ = '{{route('faturamentos.nf.get',['XXX','debug','type'])}}';
-                href_ = href_.replace('XXX', idfechamento);
+                href_ = href_.replace('XXX', idfaturamento);
                 href_ = href_.replace('debug', debug);
                 href_ = href_.replace('type', type);
                 console.log(href_);
 
                 var url_refresh = '';
                 url_refresh = '{{route('faturamentos.nf.resend',['XXX','debug','type'])}}';
-                url_refresh = url_refresh.replace('XXX', idfechamento);
+                url_refresh = url_refresh.replace('XXX', idfaturamento);
                 url_refresh = url_refresh.replace('debug', debug);
                 url_refresh = url_refresh.replace('type', type);
 

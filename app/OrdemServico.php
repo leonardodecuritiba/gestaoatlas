@@ -25,7 +25,7 @@ class OrdemServico extends Model
     protected $primaryKey = 'idordem_servico';
     protected $fillable = [
         'idcliente',
-        'idfechamento',
+        'idfaturamento',
         'idcolaborador',
         'idsituacao_ordem_servico',
         'idcentro_custo',
@@ -266,16 +266,16 @@ class OrdemServico extends Model
             || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FECHADA_);
     }
 
-    public function setFaturamento($idfechamento)
+    public function setFaturamento($idfaturamento)
     {
-        $this->attributes['idfechamento'] = $idfechamento;
+        $this->attributes['idfaturamento'] = $idfaturamento;
         $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FATURADA_;
         return $this->save();
     }
 
     public function unsetFaturamento()
     {
-        $this->attributes['idfechamento'] = NULL;
+        $this->attributes['idfaturamento'] = NULL;
         $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FECHADA_;
         return $this->save();
     }
@@ -609,7 +609,7 @@ class OrdemServico extends Model
 
     public function faturamento()
     {
-        return $this->belongsTo('App\Models\Faturamento', 'idfechamento');
+        return $this->belongsTo('App\Models\Faturamento', 'idfaturamento');
     }
 
 

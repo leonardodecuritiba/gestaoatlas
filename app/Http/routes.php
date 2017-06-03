@@ -156,16 +156,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('parcela/estornar/{idparcela}', 'ParcelaController@estornar')->name('parcelas.estornar');
 
 
-//    Route::get('nfe/teste/{idfechamento}', 'FaturamentoController@getNfeTeste')->name('faturamentos.nfe.teste');
-//    Route::get('nfe/{idfechamento}', 'FaturamentoController@getNfe')->name('faturamentos.nfe');
-//    Route::get('nfse/teste/{idfechamento}', 'FaturamentoController@getNFSeTeste')->name('faturamentos.nfse.teste');
-//    Route::get('nfse/{idfechamento}', 'FaturamentoController@getNFSe')->name('faturamentos.nfse');
-//    Route::get('nfe/consulta/{idfechamento}/{debug}', 'FaturamentoController@consultaNfe')->name('faturamentos.nfe.consulta');
-//    Route::get('nfse/consulta/{idfechamento}/{debug}', 'FaturamentoController@consultaNFSe')->name('faturamentos.nfse.consulta');
-
-    Route::get('nf/{idfechamento}/{debug}/{type}', 'FaturamentoController@sendNF')->name('faturamentos.nf.send');
-    Route::get('resend-nf/{idfechamento}/{debug}/{type}', 'FaturamentoController@resendNF')->name('faturamentos.nf.resend');
-    Route::get('nf/consulta/{idfechamento}/{debug}/{type}', 'FaturamentoController@getNF')->name('faturamentos.nf.get');
+    Route::get('nf/{idfaturamento}/{debug}/{type}', 'FaturamentoController@sendNF')->name('faturamentos.nf.send');
+    Route::get('resend-nf/{idfaturamento}/{debug}/{type}', 'FaturamentoController@resendNF')->name('faturamentos.nf.resend');
+    Route::get('nf/consulta/{idfaturamento}/{debug}/{type}', 'FaturamentoController@getNF')->name('faturamentos.nf.get');
 
 
 
@@ -202,8 +195,8 @@ Route::group(['prefix' => 'teste'], function () {
     });
     Route::get('run-faturamento-temp', 'FaturamentoController@run_temp');
 
-    Route::get('nfse/{idfechamento}', function (\Illuminate\Http\Request $request) {
-        $Fechamento = \App\Models\Faturamento::find($request->idfechamento);
+    Route::get('nfse/{idfaturamento}', function (\Illuminate\Http\Request $request) {
+        $Fechamento = \App\Models\Faturamento::find($request->idfaturamento);
         $NFSe = new \App\Models\Nfse($debug = 1, $Fechamento);
         $NFSe->_REF_ = 30;
         return $NFSe->emitir();

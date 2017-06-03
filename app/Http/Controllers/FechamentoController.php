@@ -77,7 +77,7 @@ class FechamentoController extends Controller
     {
         $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
         $query = OrdemServico::filter_layout($request->all())
-            ->whereNull('idfechamento')
+            ->whereNull('idfaturamento')
             ->select('*', DB::raw('count(*) as qtd_os'));
 
         if ($request->get('centro_custo')) {
@@ -109,7 +109,7 @@ class FechamentoController extends Controller
         $request->merge(['centro_custo' => $centro_custo]);
         $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
         $query = OrdemServico::filter_layout($request->all())
-            ->whereNull('idfechamento');
+            ->whereNull('idfaturamento');
 
         if ($request->get('centro_custo')) {
             $query = $query->where('idcentro_custo', $id);
@@ -141,7 +141,7 @@ class FechamentoController extends Controller
         $request->merge(['centro_custo' => $centro_custo]);
         $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
         $query = OrdemServico::filter_layout($request->all())
-            ->whereNull('idfechamento');
+            ->whereNull('idfaturamento');
 
         if ($request->get('centro_custo')) {
             $query = $query->where('idcentro_custo', $id);
@@ -163,7 +163,7 @@ class FechamentoController extends Controller
         $DATA_FIM = Carbon::createFromFormat('d/m/Y', $request->get('data_final'))->format('Y-m-d 23:59:59');// '2017-01-31 23:59:59' (1º dia do mês vigente)
 
         $OrdemServicos = OrdemServico::whereBetween('data_finalizada', [$DATA_INICIO, $DATA_FIM])
-            ->whereNull('idfechamento')
+            ->whereNull('idfaturamento')
             ->orderBy('idcentro_custo', 'desc')
             ->get();
 //            ->get(['idordem_servico','idcentro_custo','idcliente']);
@@ -211,7 +211,7 @@ class FechamentoController extends Controller
         $DATA_INICIO = Carbon::parse('first day of last month')->format('Y-m-d 00:00:00');//'2017-01-01 00:00:00' (1º dia do mês anterior)
         $DATA_FIM = Carbon::parse('last day of last month')->format('Y-m-d 23:59:59');// '2017-01-31 23:59:59' (1º dia do mês vigente)
         $OrdemServicos = OrdemServico::whereBetween('data_finalizada', [$DATA_INICIO, $DATA_FIM])
-            ->whereNull('idfechamento')
+            ->whereNull('idfaturamento')
             ->orderBy('idcentro_custo', 'desc')
             ->get();
 //            ->get(['idordem_servico','idcentro_custo','idcliente']);

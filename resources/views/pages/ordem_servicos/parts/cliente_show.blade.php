@@ -4,7 +4,7 @@
             <h4>Cliente:
                 <a target="_blank"
                    href="{{route('clientes.show', $OrdemServico->idcliente)}}"><i>{{$OrdemServico->cliente->getType()->nome_principal}}</i></a>
-                @if($OrdemServico->status() && $OrdemServico->idfechamento == NULL)
+                @if($OrdemServico->status() && $OrdemServico->idfaturamento == NULL)
                     @role('admin')
                     <a class="btn btn-danger pull-right"
                        href="{{route('ordem_servicos.reabrir',$OrdemServico->idordem_servico)}}">

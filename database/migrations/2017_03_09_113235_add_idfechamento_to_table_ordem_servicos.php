@@ -13,8 +13,8 @@ class AddIdfechamentoToTableOrdemServicos extends Migration
     public function up()
     {
         Schema::table('ordem_servicos', function (Blueprint $table) {
-            $table->integer('idfechamento')->unsigned()->nullable()->default(NULL);
-            $table->foreign('idfechamento')->references('id')->on('fechamentos')->onDelete('SET NULL');
+            $table->integer('idfaturamento')->unsigned()->nullable()->default(NULL);
+            $table->foreign('idfaturamento')->references('id')->on('fechamentos')->onDelete('SET NULL');
         });
     }
 
@@ -26,7 +26,7 @@ class AddIdfechamentoToTableOrdemServicos extends Migration
     public function down()
     {
         Schema::table('ordem_servicos', function (Blueprint $table) {
-            $table->dropForeign('idfechamento');
+            $table->dropForeign('idfaturamento');
         });
     }
 }

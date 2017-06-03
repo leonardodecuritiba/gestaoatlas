@@ -401,6 +401,6 @@ class Faturamento extends Model
     // ************************** HASMANY **********************************
     public function ordem_servicos()
     {
-        return $this->hasMany('App\OrdemServico', 'idfechamento');
+        return $this->hasMany('App\OrdemServico', 'idfaturamento');
     }
 }
