@@ -116,7 +116,9 @@
                                        class="btn btn-primary btn-lg btn-block"><i class="fa fa-arrow-circle-left fa-2"></i> Editar</a>
                                 </div>
 								<div class="col-md-4 col-sm-4 col-xs-12 ">
-                                    <button class="btn btn-success btn-lg btn-block"><i class="fa fa-sign-out fa-2"></i> Fechar</button>
+									<button class="btn btn-success btn-lg btn-block"><i class="fa fa-sign-out fa-2"></i>
+										Finalizar
+									</button>
                                 </div>
                             @endif
                         </div>

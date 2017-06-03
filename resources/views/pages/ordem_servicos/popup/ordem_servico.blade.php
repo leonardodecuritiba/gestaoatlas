@@ -11,7 +11,7 @@
                 <a class="btn btn-default pull-right" data-dismiss="modal"><i class="fa fa-times fa-2"></i> Fechar</a>
                 <a class="btn btn-success pull-right"
                     href="{{route('ordem_servicos.resumo',$OrdemServico->idordem_servico)}}">
-                    <i class="fa fa-check fa-2"></i> Fechar O.S.
+                    <i class="fa fa-check fa-2"></i> Finalizar O.S.
                 </a>
                 <a class="btn btn-warning pull-right" target="_blank"
                    href="{{route('clientes.show',$OrdemServico->idcliente)}}">
