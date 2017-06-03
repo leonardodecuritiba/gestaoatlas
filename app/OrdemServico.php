@@ -18,6 +18,7 @@ class OrdemServico extends Model
     const _STATUS_AGUARDANDO_PECA_ = 4;
     const _STATUS_EQUIPAMENTO_NA_OFICINA_ = 5; //primary
     const _STATUS_FATURADA_ = 6; //success
+    const _STATUS_FECHADA_ = 7; //success
     public $timestamps = true;
     public $valores = [];
     protected $table = 'ordem_servicos';
@@ -170,6 +171,7 @@ class OrdemServico extends Model
             self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_ => 'Em Atendimento',
             self::_STATUS_FINALIZADA_ => 'Finalizadas',
             self::_STATUS_FATURADA_ => 'Faturadas',
+            self::_STATUS_FECHADA_ => 'Fechadas',
         ];
     }
 
@@ -379,6 +381,8 @@ class OrdemServico extends Model
                 ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_)
                 ||
                 ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_)
+                ||
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FECHADA_)
 //                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_A_FATURAR_)
 
             )
@@ -399,7 +403,7 @@ class OrdemServico extends Model
         }
     }
 
-    public function fechar($request)
+    public function finalizar($request)
     {
         if (isset($request['custos_isento'])) {
             $this->attributes['custos_isento'] = 1;

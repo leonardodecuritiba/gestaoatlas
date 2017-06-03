@@ -40,9 +40,9 @@
 
 				@if(!$OrdemServico->status())
 					<section class="row">
-                    {!! Form::open(['route' => [$Page->link.'.fechar',$OrdemServico->idordem_servico],
-                        'method' => 'POST',
-                        'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
+						{!! Form::open(['route' => [$Page->link.'.finalizar',$OrdemServico->idordem_servico],
+                            'method' => 'POST',
+                            'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
 						<div class="form-group">
 							<div class="alert-custos_isento alert alert-danger fade in @if(isset($OrdemServico) && ($OrdemServico->custos_isento == 0)) esconda @endif"
 								 role="alert">

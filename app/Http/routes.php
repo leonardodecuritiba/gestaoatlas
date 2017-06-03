@@ -90,7 +90,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::get('ordem_servicos/abrir/{clienteid}', 'OrdemServicoController@abrir')->name('ordem_servicos.abrir'); //Abrir O.S
     Route::get('ordem_servicos/resumo/{idordem_servico}', 'OrdemServicoController@resumo')->name('ordem_servicos.resumo'); //Fechar (RESUMO) O.S
-    Route::post('ordem_servicos/fechar/{idordem_servico}', 'OrdemServicoController@fechar')->name('ordem_servicos.fechar'); //Fechar O.S
+    Route::post('ordem_servicos/finalizar/{idordem_servico}', 'OrdemServicoController@finalizar')->name('ordem_servicos.finalizar'); //Fechar O.S
     Route::get('ordem_servicos/imprimir/{idordem_servico}', 'OrdemServicoController@imprimir')->name('ordem_servicos.imprimir'); //Imprimir O.S
     Route::get('ordem_servicos/encaminhar/{idordem_servico}', 'OrdemServicoController@encaminhar')->name('ordem_servicos.encaminhar'); //Imprimir O.S
     Route::get('ordem_servicos/destroy/{idordem_servico}', 'OrdemServicoController@destroy')->name('ordem_servicos.destroy'); //Imprimir O.S

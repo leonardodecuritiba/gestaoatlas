@@ -493,10 +493,10 @@ class OrdemServicoController extends Controller
         //
     }
 
-    public function fechar(Request $request, $idordem_servico)
+    public function finalizar(Request $request, $idordem_servico)
     {
         $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->fechar($request->all());
+        $OrdemServico->finalizar($request->all());
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
         return Redirect::route('ordem_servicos.resumo', $OrdemServico->idordem_servico);

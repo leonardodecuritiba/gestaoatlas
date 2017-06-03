@@ -27,8 +27,8 @@ class CreateOrdemServicosTable extends Migration
             $table->integer('idcentro_custo')->unsigned()->nullable();
             $table->foreign('idcentro_custo')->references('idcliente')->on('clientes')->onDelete('SET NULL');
 
-            $table->dateTime('data_fechada')->nullable();
             $table->dateTime('data_finalizada')->nullable();
+            $table->dateTime('data_fechada')->nullable();
             $table->string('numero_chamado',50)->nullable();
             $table->string('responsavel', 100);
             $table->string('responsavel_cpf', 16);
