@@ -12,7 +12,7 @@
             <div class="x_content">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        {!! Form::open(array('route'=>'faturamentos.faturar_periodo','method'=>'POST','id'=>'search','class'=>'form-horizontal form-label-left')) !!}
+                        {!! Form::open(array('route'=>'fechamentos.fechar_periodo','method'=>'POST','id'=>'search','class'=>'form-horizontal form-label-left')) !!}
                         <label class="control-label col-md-1 col-sm-1 col-xs-12">Data Inicial:</label>
                         <div class="col-md-2 col-sm-2 col-xs-12">
                             <input value="{{Request::get('data_inicial')}}"
@@ -27,7 +27,7 @@
                         </div>
                         <div class="col-md-3 col-sm-3 col-xs-12">
                     <span class="input-group-btn">
-                        <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Faturar</button>
+                        <button class="btn btn-success" type="submit"><i class="fa fa-check"></i> Fechar</button>
                     </span>
                         </div>
                         {!! Form::close() !!}

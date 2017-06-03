@@ -127,18 +127,21 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('get_sintegra_params', 'AjaxController@consulta_params')->name('get_sintegra_params');
     Route::get('getAjaxDataByID', 'AjaxController@getAjaxDataByID')->name('getAjaxDataByID');
 
+    //FECHAMENTOS
+    Route::get('listar-fechamentos', 'FechamentoController@index')->name('fechamentos.index');
+    Route::get('visualizar-fechamentos/{centro_custo}/{id}', 'FechamentoController@show')->name('fechamentos.show');
+
+    Route::get('listar-pos-fechamentos', 'FechamentoController@index_pos_fechamento')->name('fechamentos.index_pos');
+    Route::get('visualizar-pos-fechamentos/{centro_custo}/{id}', 'FechamentoController@show_pos_fechamento')->name('fechamentos.show_pos');
+    Route::get('fechar-por-periodo', 'FechamentoController@indexFecharPeriodo')->name('fechamentos.periodo_index');
+    Route::post('fechar-periodo', 'FechamentoController@fecharPeriodo')->name('fechamentos.fechar_periodo');
+
 
     //FATURAMENTOS
     Route::resource('faturamentos', 'FaturamentoController');
     Route::get('faturamentos/remover/{id}', 'FaturamentoController@remover')->name('faturamentos.remover');
     Route::get('listar-faturamentos', 'FaturamentoController@index')->name('faturamentos.index');
-
-    Route::get('listar-pos-fechamentos', 'FaturamentoController@index_pos')->name('faturamentos.index_pos');
-    Route::get('visualizar-pos-fechamentos/{centro_custo}/{id}', 'FaturamentoController@show_pos')->name('faturamentos.show_pos');
-
     Route::get('faturar-pos/{centro_custo}/{id}', 'FaturamentoController@faturar_pos')->name('faturamentos.faturar_pos');
-    Route::get('faturar-por-periodo', 'FaturamentoController@indexFaturarPeriodo')->name('faturamentos.periodo_index');
-    Route::post('faturar-periodo', 'FaturamentoController@faturarPeriodo')->name('faturamentos.faturar_periodo');
 
     //faturamento
     Route::get('gerar-faturamento/{id}', 'FaturamentoController@runByOrdemServicoID')->name('faturamento.gerar');

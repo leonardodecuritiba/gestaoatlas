@@ -12,10 +12,10 @@
         <div class="x_content">
             <div class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    {!! Form::open(array('route'=>['fechamentos.index_pos'],
+                    {!! Form::open(array('route'=>['fechamentos.index'],
                         'method'=>'GET','id'=>'porid',
                         'class' => 'form-horizontal form-label-left')) !!}
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12">Listar por:</label>
+                    <label class="control-label col-md-1 col-sm-1 col-xs-12">Listar:</label>
                     <div class="col-md-3 col-sm-3 col-xs-12">
                         <select name="centro_custo" class="form-control select2_single">
                             <option value="0"
@@ -36,21 +36,6 @@
                     {!! Form::close() !!}
                 </div>
             </div>
-            {{--<div class="ln_solid"></div>--}}
-            {{--<div class="row">--}}
-            {{--<div class="col-md-12 col-sm-12 col-xs-12">--}}
-            {{--{!! Form::open(array('route'=>['faturamentos.index',  Request::route('centro_custo')],--}}
-            {{--'method'=>'GET','id'=>'porid',--}}
-            {{--'class' => 'form-horizontal form-label-left')) !!}--}}
-            {{--<input type="hidden" name="pos" value="1">--}}
-            {{--<div class="col-md-12 col-md-offset-1 col-sm-12 col-sm-offset-1 col-xs-12">--}}
-            {{--<span class="input-group-btn">--}}
-            {{--<button class="btn btn-info" type="submit">Buscar O.S. pós fechamento</button>--}}
-            {{--</span>--}}
-            {{--</div>--}}
-            {{--{!! Form::close() !!}--}}
-            {{--</div>--}}
-            {{--</div>--}}
         </div>
     </div>
     @if(count($Buscas) > 0)
@@ -84,7 +69,7 @@
                                     <td>{{$clientType->entidade}}</td>
                                     <td>{{$ordem_servico->qtd_os}}</td>
                                     <td>
-                                        <a href="{{route('faturamentos.show_pos', [(Request::get('centro_custo')) ? 1:0,$clientType->idcliente])}}"
+                                        <a href="{{route('fechamentos.show', [(Request::get('centro_custo')) ? 1:0,$clientType->idcliente])}}"
                                            class="btn btn-default btn-xs"><i class="fa fa-eye"></i>
                                             Visualizar
                                         </a>

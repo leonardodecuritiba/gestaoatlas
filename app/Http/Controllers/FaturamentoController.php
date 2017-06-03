@@ -67,66 +67,6 @@ class FaturamentoController extends Controller
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
-    /**
-     * Display a listing of the resource.
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function index_pos(Request $request)
-    {
-        $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
-        $query = OrdemServico::filter_layout($request->all())
-            ->whereNull('idfaturamento')
-            ->select('*', DB::raw('count(*) as qtd_os'));
-
-        if ($request->get('centro_custo')) {
-            $Buscas = $query->groupBy('idcentro_custo')
-                ->with('centro_custo')
-                ->get();
-            $this->Page->search_results = "Centro de Custos Não Faturados";
-        } else {
-            $Buscas = $query->groupBy('idcliente')
-                ->with('cliente')
-                ->get();
-            $this->Page->search_results = "Clientes Não Faturados";
-        }
-
-        return view('pages.' . $this->Page->link . '.index_pos')
-            ->with('Page', $this->Page)
-            ->with('Buscas', $Buscas);
-    }
-
-    /**
-     * Display a listing of the resource.
-     * @param Request $request
-     * @param int $centro_custo
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show_pos(Request $request, $centro_custo, $id)
-    {
-        $request->merge(['centro_custo' => $centro_custo]);
-        $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
-        $query = OrdemServico::filter_layout($request->all())
-            ->whereNull('idfaturamento');
-
-        if ($request->get('centro_custo')) {
-            $query = $query->where('idcentro_custo', $id);
-            $Valores = OrdemServico::getValoresPosFatoramento($query->get());
-            $Buscas = $query->orderBy('idcliente')->get();
-
-//            $Buscas = $query->select('*', DB::raw('count(*) as qtd_os'))
-//                ->get();
-        } else {
-            $Buscas = $query->where('idcliente', $id)->get();
-            $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
-        }
-//        return json_encode($Valores);
-        return view('pages.' . $this->Page->link . '.show_pos')
-            ->with('Page', $this->Page)
-            ->with('Valores', $Valores)
-            ->with('Buscas', $Buscas);
-    }
 
     /**
      * Display a listing of the resource.
@@ -171,12 +111,6 @@ class FaturamentoController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => 'Faturamneto realizado']);
         return Redirect::route('faturamentos.periodo_index');
-    }
-
-    public function indexFaturarPeriodo(Request $request)
-    {
-        return view('pages.' . $this->Page->link . '.period')
-            ->with('Page', $this->Page);
     }
 
     public function runByOrdemServicoID($id = NULL)

@@ -18,7 +18,7 @@ class OrdemServico extends Model
     const _STATUS_AGUARDANDO_PECA_ = 4;
     const _STATUS_EQUIPAMENTO_NA_OFICINA_ = 5; //primary
     const _STATUS_FATURADA_ = 6; //success
-    const _STATUS_FECHADA_ = 7; //success
+    const _STATUS_FATURAMENTO_PENDENTE_ = 7; //success
     public $timestamps = true;
     public $valores = [];
     protected $table = 'ordem_servicos';
@@ -123,8 +123,8 @@ class OrdemServico extends Model
             case self::_STATUS_FATURADA_:
                 $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
                 break;
-            case self::_STATUS_FECHADA_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_FECHADA_);
+            case self::_STATUS_FATURAMENTO_PENDENTE_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_FATURAMENTO_PENDENTE_);
                 break;
 //            default:
 //                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
@@ -173,7 +173,7 @@ class OrdemServico extends Model
             self::_STATUS_ABERTA_ => 'Abertas',
             self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_ => 'Em Atendimento',
             self::_STATUS_FINALIZADA_ => 'Finalizadas',
-            self::_STATUS_FECHADA_ => 'Fechadas',
+            self::_STATUS_FATURAMENTO_PENDENTE_ => 'Faturamento Pendente',
             self::_STATUS_FATURADA_ => 'Faturadas',
         ];
     }
@@ -263,7 +263,7 @@ class OrdemServico extends Model
     {
 //        return !($this->idsituacao_ordem_servico == self::_STATUS_A_FATURAR_ || $this->idsituacao_ordem_servico == self::_STATUS_FATURADA_);
         return !($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_
-            || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FECHADA_);
+            || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURAMENTO_PENDENTE_);
     }
 
     public function setFaturamento($idfaturamento)
@@ -276,7 +276,7 @@ class OrdemServico extends Model
     public function unsetFaturamento()
     {
         $this->attributes['idfaturamento'] = NULL;
-        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FECHADA_;
+        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FATURAMENTO_PENDENTE_;
         return $this->save();
     }
 
@@ -333,7 +333,7 @@ class OrdemServico extends Model
     public function fechar()
     {
         $this->attributes['data_fechada'] = Carbon::now()->toDateTimeString();
-        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FECHADA_;
+        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FATURAMENTO_PENDENTE_;
         return $this->save();
     }
 
@@ -454,7 +454,7 @@ class OrdemServico extends Model
                 ||
                 ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_)
                 ||
-                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FECHADA_)
+                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURAMENTO_PENDENTE_)
 //                ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_A_FATURAR_)
 
             )

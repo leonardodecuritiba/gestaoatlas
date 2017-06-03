@@ -133,12 +133,12 @@
                             {{--<li>--}}
                             {{--<a href="{{ route('ordem_servicos.index_centro_custo') }}">O.S. Centro de Custo</a>--}}
                             {{--</li>--}}
-                            <li><a href="{{ route('faturamentos.periodo_index') }}">Fechamento</a></li>
+                            <li><a href="{{ route('fechamentos.periodo_index') }}">Fechamento</a></li>
                             <li>
                                 <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{ route('faturamentos.index')}}">Pós Fechamento</a></li>
-                                    <li><a href="{{ route('faturamentos.index_pos') }}">Não Faturados</a>
+                                    <li><a href="{{ route('fechamentos.index') }}">Não Fechados (PICADOS)</a></li>
+                                    <li><a href="{{ route('fechamentos.index_pos')}}">Pós Fechamento</a>
                                     <li>
                                 </ul>
                             </li>

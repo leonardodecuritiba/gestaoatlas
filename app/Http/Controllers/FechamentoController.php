@@ -29,14 +29,14 @@ class FechamentoController extends Controller
     {
         $this->Page = (object)[
             'table' => "fechamentos",
-            'link' => "faturamentos",
+            'link' => "fechamentos",
             'primaryKey' => "id",
             'Target' => "Fechamentos",
             'Search' => "Buscar por CPF, CNPJ, Nome Fantasia ou Razão Social...",
-            'Targets' => "Faturamentos",
-            'Titulo' => "Faturamentos",
+            'Targets' => "Fechamentos",
+            'Titulo' => "Fechamentos",
             'search_results' => "",
-            'search_no_results' => "Nenhum Faturamento encontrado!",
+            'search_no_results' => "Nenhum Fechamento encontrado!",
             'msg_abr' => 'Fechamento aberto com sucesso!',
             'msg_upd' => 'Fechamento atualizado com sucesso!',
             'msg_rem' => 'Fechamento removido com sucesso!',
@@ -53,46 +53,25 @@ class FechamentoController extends Controller
      */
     public function index(Request $request)
     {
-        $now = Carbon::now();
-
-        if ($request->has('idfaturamento')) {
-            $Buscas = Faturamento::where('id', $request->get('idfaturamento'))->with('cliente')->get();
-        } else {
-            $Buscas = Faturamento::filter_layout($request->all())->get();
-        }
-        $this->Page->extras['status_fechamento'] = StatusFechamento::whereIn('id', $Buscas->pluck('idstatus_fechamento'))->get();
-        $this->Page->extras['clientes'] = Cliente::whereIn('idcliente', $Buscas->pluck('idcliente'))->get();
-
-        return view('pages.' . $this->Page->link . '.index')
-            ->with('Page', $this->Page)
-            ->with('Buscas', $Buscas);
-    }
-
-    /**
-     * Display a listing of the resource.
-     * @param Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function index_pos(Request $request)
-    {
         $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
         $query = OrdemServico::filter_layout($request->all())
             ->whereNull('idfaturamento')
+            ->whereNull('data_fechada')
             ->select('*', DB::raw('count(*) as qtd_os'));
 
         if ($request->get('centro_custo')) {
             $Buscas = $query->groupBy('idcentro_custo')
                 ->with('centro_custo')
                 ->get();
-            $this->Page->search_results = "Centro de Custos Não Faturados";
+            $this->Page->search_results = "Centro de Custos Não Fechados";
         } else {
             $Buscas = $query->groupBy('idcliente')
                 ->with('cliente')
                 ->get();
-            $this->Page->search_results = "Clientes Não Faturados";
+            $this->Page->search_results = "Clientes Não Fechados";
         }
 
-        return view('pages.' . $this->Page->link . '.index_pos')
+        return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
@@ -104,11 +83,12 @@ class FechamentoController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show_pos(Request $request, $centro_custo, $id)
+    public function show(Request $request, $centro_custo, $id)
     {
         $request->merge(['centro_custo' => $centro_custo]);
         $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
         $query = OrdemServico::filter_layout($request->all())
+            ->whereNull('data_fechada')
             ->whereNull('idfaturamento');
 
         if ($request->get('centro_custo')) {
@@ -122,12 +102,105 @@ class FechamentoController extends Controller
             $Buscas = $query->where('idcliente', $id)->get();
             $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
         }
-//        return json_encode($Valores);
-        return view('pages.' . $this->Page->link . '.show_pos')
+
+        return view('pages.' . $this->Page->link . '.show')
             ->with('Page', $this->Page)
             ->with('Valores', $Valores)
             ->with('Buscas', $Buscas);
     }
+
+    /**
+     * Display a listing of the resource.
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function index_pos_fechamento(Request $request)
+    {
+        $request->merge(['situacao' => OrdemServico::_STATUS_FECHADA_]);
+        $query = OrdemServico::filter_layout($request->all())
+            ->whereNull('idfaturamento')
+            ->select('*', DB::raw('count(*) as qtd_os'));
+
+        if ($request->get('centro_custo')) {
+            $Buscas = $query->groupBy('idcentro_custo')
+                ->with('centro_custo')
+                ->get();
+            $this->Page->search_results = "Centro de Custos Fechados";
+        } else {
+            $Buscas = $query->groupBy('idcliente')
+                ->with('cliente')
+                ->get();
+            $this->Page->search_results = "Clientes Fechados";
+        }
+
+        return view('pages.' . $this->Page->link . '.pos_fechamento.index')
+            ->with('Page', $this->Page)
+            ->with('Buscas', $Buscas);
+    }
+
+    /**
+     * Display a listing of the resource.
+     * @param Request $request
+     * @param int $centro_custo
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show_pos_fechamento(Request $request, $centro_custo, $id)
+    {
+        $request->merge(['centro_custo' => $centro_custo]);
+        $request->merge(['situacao' => OrdemServico::_STATUS_FECHADA_]);
+        $query = OrdemServico::filter_layout($request->all())
+            ->whereNull('idfaturamento');
+
+        if ($request->get('centro_custo')) {
+            $query = $query->where('idcentro_custo', $id);
+            $Valores = OrdemServico::getValoresPosFatoramento($query->get());
+            $Buscas = $query->orderBy('idcliente')
+                ->get();
+
+//            $Buscas = $query->select('*', DB::raw('count(*) as qtd_os'))
+//                ->get();
+        } else {
+            $Buscas = $query->where('idcliente', $id)->get();
+            $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
+        }
+
+        return view('pages.' . $this->Page->link . '.pos_fechamento.show')
+            ->with('Page', $this->Page)
+            ->with('Valores', $Valores)
+            ->with('Buscas', $Buscas);
+    }
+
+
+    public function indexFecharPeriodo(Request $request)
+    {
+        return view('pages.' . $this->Page->link . '.period')
+            ->with('Page', $this->Page);
+    }
+
+
+    public function fecharPeriodo(Request $request)
+    {
+        $DATA_INICIO = Carbon::createFromFormat('d/m/Y', $request->get('data_inicial'))->format('Y-m-d 23:59:59');//'2017-01-01 00:00:00' (1º dia do mês anterior)
+        $DATA_FIM = Carbon::createFromFormat('d/m/Y', $request->get('data_final'))->format('Y-m-d 23:59:59');// '2017-01-31 23:59:59' (1º dia do mês vigente)
+
+        $OrdemServicos = OrdemServico::whereBetween('data_finalizada', [$DATA_INICIO, $DATA_FIM])
+            ->where('idsituacao_ordem_servico', OrdemServico::_STATUS_FINALIZADA_)
+            ->orderBy('idcentro_custo', 'desc')
+            ->get();
+
+        foreach ($OrdemServicos as $ordem_servico) {
+            $ordem_servico->fechar();
+        }
+
+        session()->forget('mensagem');
+        session(['mensagem' => 'Fechamento realizado']);
+        return Redirect::route('fechamentos.periodo_index');
+    }
+
+
+
+
 
     /**
      * Display a listing of the resource.
@@ -155,29 +228,6 @@ class FechamentoController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_abr]);
         return Redirect::route('faturamentos.show', $Faturamento->id);
-    }
-
-    public function faturarPeriodo(Request $request)
-    {
-        $DATA_INICIO = Carbon::createFromFormat('d/m/Y', $request->get('data_inicial'))->format('Y-m-d 23:59:59');//'2017-01-01 00:00:00' (1º dia do mês anterior)
-        $DATA_FIM = Carbon::createFromFormat('d/m/Y', $request->get('data_final'))->format('Y-m-d 23:59:59');// '2017-01-31 23:59:59' (1º dia do mês vigente)
-
-        $OrdemServicos = OrdemServico::whereBetween('data_finalizada', [$DATA_INICIO, $DATA_FIM])
-            ->whereNull('idfaturamento')
-            ->orderBy('idcentro_custo', 'desc')
-            ->get();
-//            ->get(['idordem_servico','idcentro_custo','idcliente']);
-        Faturamento::faturaPeriodo($OrdemServicos);
-
-        session()->forget('mensagem');
-        session(['mensagem' => 'Faturamneto realizado']);
-        return Redirect::route('faturamentos.periodo_index');
-    }
-
-    public function indexFaturarPeriodo(Request $request)
-    {
-        return view('pages.' . $this->Page->link . '.period')
-            ->with('Page', $this->Page);
     }
 
     public function runByOrdemServicoID($id = NULL)
@@ -225,48 +275,6 @@ class FechamentoController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_rea]);
         return Redirect::route($this->Page->link . '.index', 'todas');
-    }
-
-    // ============= NF ==================
-
-    public function sendNF($id, $debug, $type)
-    {
-        $Faturamento = Faturamento::find($id);
-        $responseNF = $Faturamento->sendNF($debug, $type);
-        session()->forget('responseNF');
-        session(['responseNF' => $responseNF]);
-        return Redirect::route($this->Page->link . '.show', $id);
-    }
-
-    public function resendNF($id, $debug, $type)
-    {
-        $Faturamento = Faturamento::find($id);
-        $responseNF = $Faturamento->resendNF($debug, $type);
-        session()->forget('responseNF');
-        session(['responseNF' => $responseNF]);
-        return Redirect::route($this->Page->link . '.show', $id);
-    }
-
-    public function getNF($id, $debug, $type)
-    {
-        $Faturamento = Faturamento::find($id);
-        return $Faturamento->getNF($debug, $type);
-    }
-
-    // ============= /NF ==================
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $Faturamento = Faturamento::find($id);
-        return view('pages.' . $this->Page->link . '.show')
-            ->with('Page', $this->Page)
-            ->with('Faturamento', $Faturamento);
     }
 
 }
