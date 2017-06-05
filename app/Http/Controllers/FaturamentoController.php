@@ -90,7 +90,12 @@ class FaturamentoController extends Controller
             $query = $query->where('idcliente', $id);
         }
 
-        return $query->get();;
+        $OrdemServicos = $query->get();
+
+        //FECHANDO O.S. PARA FATURAR
+        foreach ($OrdemServicos as $ordem_servico) {
+            $ordem_servico->fechar();
+        }
 
         $Faturamento = Faturamento::geraFaturamento($OrdemServicos, $request->get('centro_custo'));
 
