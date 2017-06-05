@@ -210,7 +210,7 @@
                                                data-parcela="{{$selecao}}"
                                                data-valor_real="{{$selecao->valor_parcela_real()}}"
                                                data-target="#modalPagarParcela"
-                                               class="btn btn-info btn-xs"><i class="fa fa-money"></i> Pagar</a>
+                                               class="btn btn-info btn-xs"><i class="fa fa-money"></i> Receber</a>
                                         @endif
                                     </td>
                                 </tr>

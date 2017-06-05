@@ -61,9 +61,9 @@ class Faturamento extends Model
 
     }
 
-    static public function geraFaturamento($OrdemServicos, $centro_custo = 0, $op = 0)
+    static public function geraFaturamento($OrdemServicos, $centro_custo = 0, $arr = 0)
     {
-        if ($op == 1) {
+        if ($arr == 1) {
             $Cliente = ($centro_custo) ? $OrdemServicos[0]->centro_custo : $OrdemServicos[0]->cliente;
         } else {
             $Cliente = ($centro_custo) ? $OrdemServicos->first()->centro_custo : $OrdemServicos->first()->cliente;

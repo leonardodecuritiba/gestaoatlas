@@ -75,10 +75,34 @@ class FaturamentoController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
+    public function faturar(Request $request, $centro_custo, $id)
+    {
+        $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
+        $request->merge(['centro_custo' => $centro_custo]);
+        $query = OrdemServico::filter_layout($request->all())
+            ->whereNull('idfaturamento');
+
+//        $query->update(['data_fechada', Carbon::now()]);
+
+        if ($request->get('centro_custo')) {
+            $query = $query->where('idcentro_custo', $id);
+        } else {
+            $query = $query->where('idcliente', $id);
+        }
+
+        return $query->get();;
+
+        $Faturamento = Faturamento::geraFaturamento($OrdemServicos, $request->get('centro_custo'));
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_abr]);
+        return Redirect::route('faturamentos.show', $Faturamento->id);
+    }
+
     public function faturar_pos(Request $request, $centro_custo, $id)
     {
+        $request->merge(['situacao' => OrdemServico::_STATUS_FATURAMENTO_PENDENTE_]);
         $request->merge(['centro_custo' => $centro_custo]);
-        $request->merge(['situacao' => OrdemServico::_STATUS_FINALIZADA_]);
         $query = OrdemServico::filter_layout($request->all())
             ->whereNull('idfaturamento');
 
@@ -124,21 +148,6 @@ class FaturamentoController extends Controller
         return Redirect::route($this->Page->link . '.index', 'todas');
     }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function run_temp()
-    {
-        Carbon::setTestNow('2017-02-01 00:00:00');                        // set the mock (of course this could be a real mock object)
-        $this->run();
-        Carbon::setTestNow('2017-03-01 00:00:00');                        // set the mock (of course this could be a real mock object)
-        $this->run();
-    }
-
-
     public function run()
     {
         $DATA_INICIO = Carbon::parse('first day of last month')->format('Y-m-d 00:00:00');//'2017-01-01 00:00:00' (1º dia do mês anterior)
@@ -150,7 +159,6 @@ class FaturamentoController extends Controller
 //            ->get(['idordem_servico','idcentro_custo','idcliente']);
         return Faturamento::faturaPeriodo($OrdemServicos);
     }
-
 
     public function remover($id)
     {

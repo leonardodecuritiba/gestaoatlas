@@ -128,8 +128,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('getAjaxDataByID', 'AjaxController@getAjaxDataByID')->name('getAjaxDataByID');
 
     //FECHAMENTOS
-    Route::get('listar-fechamentos', 'FechamentoController@index')->name('fechamentos.index');
-    Route::get('visualizar-fechamentos/{centro_custo}/{id}', 'FechamentoController@show')->name('fechamentos.show');
+    Route::get('listar-fechamentos-parciais/{centro_custo}', 'FechamentoController@index')->name('fechamentos.index_parcial');
+    Route::get('visualizar-fechamentos/{centro_custo}/{id}', 'FechamentoController@show')->name('fechamentos.show_parcial');
 
     Route::get('listar-pos-fechamentos', 'FechamentoController@index_pos_fechamento')->name('fechamentos.index_pos');
     Route::get('visualizar-pos-fechamentos/{centro_custo}/{id}', 'FechamentoController@show_pos_fechamento')->name('fechamentos.show_pos');
@@ -142,6 +142,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('faturamentos/remover/{id}', 'FaturamentoController@remover')->name('faturamentos.remover');
     Route::get('listar-faturamentos', 'FaturamentoController@index')->name('faturamentos.index');
     Route::get('faturar-pos/{centro_custo}/{id}', 'FaturamentoController@faturar_pos')->name('faturamentos.faturar_pos');
+    Route::get('faturar/{centro_custo}/{id}', 'FaturamentoController@faturar')->name('faturamentos.faturar');
 
     //faturamento
     Route::get('gerar-faturamento/{id}', 'FaturamentoController@runByOrdemServicoID')->name('faturamento.gerar');

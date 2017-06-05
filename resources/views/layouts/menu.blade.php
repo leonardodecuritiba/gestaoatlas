@@ -137,7 +137,10 @@
                             <li>
                                 <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{ route('fechamentos.index') }}">Não Fechados (PICADOS)</a></li>
+                                    <li><a href="{{ route('fechamentos.index_parcial',$centro_custo = 0) }}">Faturamento
+                                            Parcial de Clientes</a></li>
+                                    <li><a href="{{ route('fechamentos.index_parcial',$centro_custo = 1) }}">Faturamento
+                                            Parcial de Centro de Custo</a></li>
                                     <li><a href="{{ route('fechamentos.index_pos')}}">Pós Fechamento</a>
                                     <li>
                                 </ul>
