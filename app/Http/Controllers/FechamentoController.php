@@ -116,7 +116,7 @@ class FechamentoController extends Controller
      */
     public function index_pos_fechamento(Request $request)
     {
-        $request->merge(['situacao' => OrdemServico::_STATUS_FECHADA_]);
+        $request->merge(['situacao' => OrdemServico::_STATUS_FATURAMENTO_PENDENTE_]);
         $query = OrdemServico::filter_layout($request->all())
             ->whereNull('idfaturamento')
             ->select('*', DB::raw('count(*) as qtd_os'));
@@ -148,7 +148,7 @@ class FechamentoController extends Controller
     public function show_pos_fechamento(Request $request, $centro_custo, $id)
     {
         $request->merge(['centro_custo' => $centro_custo]);
-        $request->merge(['situacao' => OrdemServico::_STATUS_FECHADA_]);
+        $request->merge(['situacao' => OrdemServico::_STATUS_FATURAMENTO_PENDENTE_]);
         $query = OrdemServico::filter_layout($request->all())
             ->whereNull('idfaturamento');
 
