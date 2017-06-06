@@ -86,9 +86,6 @@
                                                data-debug="1"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFe
                                                 (Homologação)</a>
-                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = true, 'nfe'])}}"
-                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFe
-                                                (Homologação)</a>
                                         </li>
                                     @else
                                         <li>
@@ -105,9 +102,6 @@
                                                data-target="#consultaNF"
                                                data-debug="1"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFSe
-                                                (Homologação)</a>
-                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = true, 'nfse'])}}"
-                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFe
                                                 (Homologação)</a>
                                         </li>
                                     @else
@@ -130,8 +124,6 @@
                                                data-debug="0"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar
                                                 NFe</a>
-                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = 0, 'nfe'])}}"
-                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFe</a>
                                         </li>
                                     @elseif($Faturamento->getStatusNfeHomologacao())
                                         <li>
@@ -149,8 +141,6 @@
                                                data-debug="0"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar
                                                 NFSe</a>
-                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = 0, 'nfse'])}}"
-                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFSe</a>
                                         </li>
                                     @elseif($Faturamento->getStatusNFSeHomologacao())
                                         <li>
@@ -251,6 +241,7 @@
                 var $listas_nf = $($this).find('ul.listas_nf');
                 var $erros_nf = $($this).find('ul.erros_nf');
                 var $btn_refresh = $($this).find('div.modal-footer a#btn-refresh');
+                var $btn_cancel = $($this).find('div.modal-footer a#btn-cancel');
                 var type = $($origem).data('type'); //if is NFe or NFSe
                 var debug = $($origem).data('debug'); //if is/not debug
                 var idfaturamento = $($origem).data('idfaturamento'); //idfaturamento
@@ -261,6 +252,8 @@
 
                 $($btn_refresh).hide();
                 $($btn_refresh).attr('href', '');
+                $($btn_cancel).hide();
+                $($btn_cancel).attr('href', '');
 
                 var href_ = '';
                 href_ = '{{route('faturamentos.nf.get',['XXX','debug','type'])}}';
@@ -274,6 +267,12 @@
                 url_refresh = url_refresh.replace('XXX', idfaturamento);
                 url_refresh = url_refresh.replace('debug', debug);
                 url_refresh = url_refresh.replace('type', type);
+
+                var url_cancel = '';
+                url_cancel = '{{route('faturamentos.nf.cancel',['XXX','debug','type'])}}';
+                url_cancel = url_cancel.replace('XXX', idfaturamento);
+                url_cancel = url_cancel.replace('debug', debug);
+                url_cancel = url_cancel.replace('type', type);
 
 
                 $.ajax({
@@ -326,6 +325,8 @@
 
                             switch (STATUS) {
                                 case 'autorizado': {
+                                    $($btn_cancel).show();
+                                    $($btn_cancel).attr('href', url_cancel);
                                     $($parent).find('span#' + TIPO_NF).show();
                                     //autorizado
                                     if (TIPO_NF == 'nfe') {
@@ -341,6 +342,8 @@
                                 case 'erro_autorizacao': {
                                     $($btn_refresh).show();
                                     $($btn_refresh).attr('href', url_refresh);
+                                    $($btn_cancel).show();
+                                    $($btn_cancel).attr('href', url_cancel);
 
 //                                    if (TIPO_NF == 'nfse') {
 //                                        var ERROS = BODY.erros;
@@ -352,6 +355,9 @@
                                 }
                             }
                         } else if (json.status == 404) {
+                            $($btn_cancel).show();
+                            $($btn_cancel).attr('href', url_cancel);
+
                             var TIPO_NF = json.type;
                             var REF = json.ref;
                             var BODY = json.body;

@@ -6,6 +6,7 @@ use App\Models\NotasFiscais\NF;
 use App\Models\NotasFiscais\NFe;
 use App\Models\NotasFiscais\NFSe;
 
+use App\PecasUtilizadas;
 use App\Scopes\LastCreatedScope;
 use App\Ajuste;
 use App\AparelhoManutencao;
@@ -13,6 +14,7 @@ use App\Helpers\DataHelper;
 use App\OrdemServico;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Faturamento extends Model
 {
@@ -32,6 +34,8 @@ class Faturamento extends Model
         'idnfse_producao',
         'centro_custo'
     ];
+
+    //================== FUNCTIONS ========================
 
     static public function faturaPeriodo($OrdemServicos)
     {
@@ -182,6 +186,9 @@ class Faturamento extends Model
         return $query;
     }
 
+
+    //====================== NF ===========================
+
     public function cancelNF($debug, $type)
     {
         $debug = ($debug) ? 'homologacao' : 'producao';
@@ -190,18 +197,16 @@ class Faturamento extends Model
         ]);
     }
 
-    //====================== NF ===========================
-
     public function sendNF($debug, $type)
     {
-        $ref_index = ($debug) ? Ajuste::getByMetaKey('ref_' . $type . 'index_homologacao') : Ajuste::getByMetaKey('ref_' . $type . 'index_producao');
-        if ($debug) {
-            $this->{'id' . $type . '_homologacao'} = $ref_index->meta_value;
-        } else {
-            $this->{'id' . $type . '_producao'} = $ref_index->meta_value;
-        }
-        $this->save();
+        $option = ($debug) ? 'homologacao' : 'producao';
+        $ref_index = Ajuste::getByMetaKey('ref_' . $type . 'index_' . $option);
+//        $this->{'id' . $type . '_' . $option} = $ref_index->meta_value;
+        $this->update([
+            'id' . $type . '_' . $option => $ref_index->meta_value
+        ]);
         $ref_index->incrementa();
+
         return $this->setNF($debug, $type);
     }
 
@@ -212,6 +217,7 @@ class Faturamento extends Model
         } else {
             $NF = new NFSe($debug, $this);
         }
+
         $retorno = $NF->emitir();
 
         if (isset($retorno->body->erros)) {
@@ -245,46 +251,43 @@ class Faturamento extends Model
 
     public function getStatusNFSeHomologacao()
     {
-        return ($this->idnfse_homologacao != NULL);
+        return ($this->attributes['idnfse_homologacao'] != NULL);
     }
 
     public function getStatusNFSeProducao()
     {
-        return ($this->idnfse_producao != NULL);
+        return ($this->attributes['idnfse_producao'] != NULL);
     }
 
     //====================== NFe ============================
 
     public function getStatusNfeHomologacao()
     {
-        return ($this->idnfe_homologacao != NULL);
+        return ($this->attributes['idnfe_homologacao'] != NULL);
     }
 
     public function getStatusNfeProducao()
     {
-        return ($this->idnfe_producao != NULL);
+        return ($this->attributes['idnfe_producao'] != NULL);
     }
 
-    /**
-     * Scope a query to only include popular users.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeLastCreated($query)
-    {
-        return $query->orderBy('created_at', 'desc')->first();;
-    }
 
     // ******************** RELASHIONSHIP ******************************
 
+    public function getAllPecas()
+    {
+        $ids_aparelhos_manutencao = AparelhoManutencao::whereIn('idordem_servico', $this->ordem_servicos->pluck('idordem_servico'))
+            ->pluck('idaparelho_manutencao');
+        return PecasUtilizadas::whereIn('idaparelho_manutencao', $ids_aparelhos_manutencao)
+            ->with('peca')
+            ->groupBy('idpeca')
+            ->select('*', DB::raw('SUM(quantidade) as quantidade_comercial'))
+            ->get();
+    }
+
     public function getAparelhoManutencaos()
     {
-        $ids = [];
-        foreach ($this->ordem_servicos as $ordem_servico) {
-            $ids[] = $ordem_servico->idordem_servico;
-        }
-        return AparelhoManutencao::whereIn('idordem_servico', $ids)->get();
+        return AparelhoManutencao::whereIn('idordem_servico', $this->ordem_servicos->pluck('idordem_servico'))->get();
     }
 
     public function faturar()
@@ -367,6 +370,19 @@ class Faturamento extends Model
             default:
                 return 'warning';
         }
+    }
+
+    // ************************ SCOPE ********************************
+
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeLastCreated($query)
+    {
+        return $query->orderBy('created_at', 'desc')->first();;
     }
 
     /**

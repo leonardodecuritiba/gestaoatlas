@@ -33,7 +33,7 @@ class NFSe extends NF
         'codigo_municipio' => '3543402', //cliente
     ];
     private $_EMPRESA_;
-    private $_FECHAMENTO_;
+    private $_FATURAMENTO_;
     private $now;
     private $cabecalho;
     private $prestador;
@@ -47,14 +47,16 @@ class NFSe extends NF
             $this->_SERVER_ = parent::_URL_HOMOLOGACAO_;
             $this->_TOKEN_ = parent::_TOKEN_HOMOLOGACAO_;
             $this->_REF_ = $faturamento->idnfse_homologacao;
+            $this->servico_params_fixos['aliquota'] = 2.50;
         } else {
             $this->_SERVER_ = parent::_URL_PRODUCAO_;
             $this->_TOKEN_ = parent::_TOKEN_PRODUCAO_;
             $this->_REF_ = $faturamento->idnfse_producao;
+            $this->servico_params_fixos['aliquota'] = 3.84;
         }
         $this->_NF_TYPE_ = parent::_URL_NFSe_;
         $this->now = Carbon::now();
-        $this->_FECHAMENTO_ = $faturamento;
+        $this->_FATURAMENTO_ = $faturamento;
         $this->_EMPRESA_ = new Empresa();
         $this->setParams();
     }
@@ -130,7 +132,7 @@ class NFSe extends NF
     public function setTomador() //TOMADOR
     {
 
-        $Cliente = $this->_FECHAMENTO_->cliente;
+        $Cliente = $this->_FATURAMENTO_->cliente;
         if ($Cliente->idpjuridica != NULL) { //1:PJ, 0: PF
             $PessoaJuridica = $Cliente->pessoa_juridica;
             $this->tomador["cnpj"] = $PessoaJuridica->getCnpj(); //(*): CNPJ do tomador, se aplicável. Caracteres não numéricos são ignorados.
@@ -169,7 +171,7 @@ class NFSe extends NF
     {
         //# VALOR DE DEDUÇOES ate BASE DE CALCULO= SO SAO USADAS QNDO EMPRESA NAO E SIMPLES. CASO CONTRARIO EM BRANCO OU ZERO.
 
-        $valores = $this->_FECHAMENTO_->getValores();
+        $valores = $this->_FATURAMENTO_->getValores();
         $valor_aproximado_tributos = ($valores->valor_nfse_float * $this->servico_params_fixos['porcentagem_tributos_float']) / 100;
         $discriminacao = $this->servico_params_fixos['discriminacao'] .
             ' (' . $this->servico_params_fixos['porcentagem_tributos_real'] . ') - ' .

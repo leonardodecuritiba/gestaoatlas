@@ -53,7 +53,9 @@
             <div class="modal-footer">
                 <div class="col-xs-12">
                     <button class="btn btn-danger pull-right" data-dismiss="modal">Fechar</button>
-                    <a id="btn-refresh" class="esconda btn btn-success pull-left"><i class="fa fa-refresh"></i> Reenviar</a>
+                    <a id="btn-refresh" class="btn btn-success pull-left esconda"><i class="fa fa-refresh"></i> Reenviar</a>
+                    <a id="btn-cancel" class="btn btn-warning pull-left esconda"><i class="fa fa-times fa-2"></i>
+                        Cancelar</a>
                 </div>
             </div>
         </div>
