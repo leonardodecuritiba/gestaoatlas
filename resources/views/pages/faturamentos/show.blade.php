@@ -86,6 +86,9 @@
                                                data-debug="1"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFe
                                                 (Homologação)</a>
+                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = true, 'nfe'])}}"
+                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFe
+                                                (Homologação)</a>
                                         </li>
                                     @else
                                         <li>
@@ -102,6 +105,9 @@
                                                data-target="#consultaNF"
                                                data-debug="1"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar NFSe
+                                                (Homologação)</a>
+                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = true, 'nfse'])}}"
+                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFe
                                                 (Homologação)</a>
                                         </li>
                                     @else
@@ -124,6 +130,8 @@
                                                data-debug="0"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar
                                                 NFe</a>
+                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = 0, 'nfe'])}}"
+                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFe</a>
                                         </li>
                                     @elseif($Faturamento->getStatusNfeHomologacao())
                                         <li>
@@ -141,6 +149,8 @@
                                                data-debug="0"
                                                class="btn btn-warning"><i class="fa fa-search"></i> Consultar
                                                 NFSe</a>
+                                            <a href="{{route('faturamentos.nf.cancel',[$Faturamento->id, $debug = 0, 'nfse'])}}"
+                                               class="btn btn-danger"><i class="fa fa-times fa-2"></i> Cancelar NFSe</a>
                                         </li>
                                     @elseif($Faturamento->getStatusNFSeHomologacao())
                                         <li>

@@ -161,6 +161,7 @@ Route::group(['middleware' => ['auth']], function() {
 
 
     Route::get('nf/{idfaturamento}/{debug}/{type}', 'FaturamentoController@sendNF')->name('faturamentos.nf.send');
+    Route::get('cancel-nf/{idfaturamento}/{debug}/{type}', 'FaturamentoController@cancelNF')->name('faturamentos.nf.cancel');
     Route::get('resend-nf/{idfaturamento}/{debug}/{type}', 'FaturamentoController@resendNF')->name('faturamentos.nf.resend');
     Route::get('nf/consulta/{idfaturamento}/{debug}/{type}', 'FaturamentoController@getNF')->name('faturamentos.nf.get');
 

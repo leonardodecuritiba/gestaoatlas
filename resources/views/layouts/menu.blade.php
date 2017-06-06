@@ -143,6 +143,7 @@
                                             Parcial de Centro de Custo</a></li>
                                     <li><a href="{{ route('fechamentos.index_pos')}}">Pós Fechamento</a>
                                     <li>
+                                    <li><a href="{{ route('faturamentos.index')}}">Listar Faturamentos</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{ route('recebimentos.index') }}">Recebimentos</a></li>
@@ -152,7 +153,6 @@
                                     <li><a href="#">NFSe</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('faturamentos.index')}}">Listar Faturamentos</a></li>
                         </ul>
                     </li>
                     @endif

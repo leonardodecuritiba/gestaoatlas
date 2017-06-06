@@ -184,6 +184,15 @@ class FaturamentoController extends Controller
         return Redirect::route($this->Page->link . '.show', $id);
     }
 
+    public function cancelNF($id, $debug, $type)
+    {
+        $Faturamento = Faturamento::find($id);
+        $Faturamento->cancelNF($debug, $type);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return Redirect::route($this->Page->link . '.show', $id);
+    }
+
     public function resendNF($id, $debug, $type)
     {
         $Faturamento = Faturamento::find($id);

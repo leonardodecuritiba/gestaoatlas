@@ -182,7 +182,16 @@ class Faturamento extends Model
         return $query;
     }
 
+    public function cancelNF($debug, $type)
+    {
+        $debug = ($debug) ? 'homologacao' : 'producao';
+        return $this->update([
+            'id' . $type . '_' . $debug => NULL
+        ]);
+    }
+
     //====================== NF ===========================
+
     public function sendNF($debug, $type)
     {
         $ref_index = ($debug) ? Ajuste::getByMetaKey('ref_' . $type . 'index_homologacao') : Ajuste::getByMetaKey('ref_' . $type . 'index_producao');
