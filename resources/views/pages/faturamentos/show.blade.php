@@ -3,6 +3,9 @@
     <!-- icheck -->
     {!! Html::style('css/icheck/flat/green.css') !!}
 @endsection
+@section('modals_content')
+    @include('layouts.modals.notifications')
+@endsection
 @section('page_content')
     @include('layouts.modals.pagar_parcela')
     @include('layouts.modals.consulta_nf')
@@ -42,40 +45,53 @@
         <div class="x_panel">
             <div class="x_content">
                 <div class="alert fade in alert-{{$Faturamento->getStatusType()}}" role="alert">
-                    Situação do Fechamento: <b>{{$Faturamento->getStatusText()}}</b>
+                    Situação do Faturamento: <b>{{$Faturamento->getStatusText()}}</b>
                 </div>
                 <div class="profile_details">
                     <div class="well perfil">
 
-                        <h4>{{$Faturamento->getTipoFechamento()}}:
-                            <a target="_blank"
-                               href="{{route('clientes.show', $Faturamento->idcliente)}}"><i>{{$Faturamento->cliente->getType()->nome_principal}}</i></a>
-                            @role('admin')
-                            <a class="btn btn-danger pull-right"
-                               href="{{route('faturamentos.remover',$Faturamento->id)}}">
-                                <i class="fa fa-trash fa-2"></i> Excluir Fechamento</a>
-                            @endrole
-                        </h4>
-                        <ul class="list-unstyled">
-                            <li><i class="fa fa-calendar"></i> Data do Fechamento:
-                                <b>{{$Faturamento->created_at}}</b></li>
-                            <li><i class="fa fa-credit-card"></i> Tipo de Emissão (Técnica):
-                                <b>{{$Faturamento->cliente->tipo_emissao_tecnica->descricao}}</b></li>
-                            <li><i class="fa fa-credit-card"></i> Forma de Pagamento (Técnica):
-                                <b>{{$Faturamento->cliente->forma_pagamento_tecnica->descricao}}</b></li>
-                            <li><i class="fa fa-info"></i> Pagamento: <b
-                                        class="text-{{$Faturamento->getPagoStatusColor()}}">{{$Faturamento->getPagoText()}}</b>
-                            </li>
-                            <li><i class="fa fa-money"></i> Total Pendente: <b
-                                        class="text-danger">{{$Faturamento->getTotalPendenteReal()}}</b>
-                            </li>
-                            <li><i class="fa fa-money"></i> Total Recebido: <b
-                                        class="text-success">{{$Faturamento->getTotalPagoReal()}}</b>
-                            </li>
-                        </ul>
+                        <div class="row">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                <h4>{{$Faturamento->getTipoFaturamento()}}:
+                                    <a target="_blank"
+                                       href="{{route('clientes.show', $Faturamento->idcliente)}}"><i>{{$Faturamento->cliente->getType()->nome_principal}}</i></a>
+                                </h4>
+                                <ul class="list-unstyled">
+                                    <li><i class="fa fa-calendar"></i> Data da Fechamento:
+                                        <b>{{$Faturamento->created_at}}</b></li>
+                                    <li><i class="fa fa-credit-card"></i> Tipo de Emissão (Técnica):
+                                        <b>{{$Faturamento->cliente->tipo_emissao_tecnica->descricao}}</b></li>
+                                    <li><i class="fa fa-credit-card"></i> Forma de Pagamento (Técnica):
+                                        <b>{{$Faturamento->cliente->forma_pagamento_tecnica->descricao}}</b></li>
+                                    <li><i class="fa fa-info"></i> Pagamento: <b
+                                                class="text-{{$Faturamento->getPagoStatusColor()}}">{{$Faturamento->getPagoText()}}</b>
+                                    </li>
+                                    <li><i class="fa fa-money"></i> Total Pendente: <b
+                                                class="text-danger">{{$Faturamento->getTotalPendenteReal()}}</b>
+                                    </li>
+                                    <li><i class="fa fa-money"></i> Total Recebido: <b
+                                                class="text-success">{{$Faturamento->getTotalPagoReal()}}</b>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-xs-12">
+                                @role('admin')
+                                <a class="btn btn-danger pull-right"
+                                   href="{{route('faturamentos.remover',$Faturamento->id)}}">
+                                    <i class="fa fa-trash fa-2"></i> Excluir Faturamento</a>
+                                @endrole
+                                @if($Faturamento->isAberto())
+                                    <a data-toggle="modal"
+                                       data-idfaturamento="{{$Faturamento->id}}"
+                                       data-target="#modalAviso"
+                                       class="btn btn-success pull-right"><i class="fa fa-check fa-2"></i> Finalizar
+                                        Faturamento</a>
+                                @endif
+                            </div>
+                        </div>
 
                         <div class="row">
-                            <div class="col-lg-6 col-md-6 col-xs-6">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
                                 <ul class="list-unstyled">
                                     @if($Faturamento->getStatusNfeHomologacao())
                                         <li>
@@ -113,7 +129,7 @@
                                     @endif
                                 </ul>
                             </div>
-                            <div class="col-lg-6 col-md-6 col-xs-6">
+                            <div class="col-lg-6 col-md-6 col-xs-12">
                                 <ul class="list-unstyled pull-right">
                                     @if($Faturamento->getStatusNfeProducao())
                                         <li>
@@ -231,7 +247,6 @@
 @section('scripts_content')
     {!! Html::script('js/parsley/parsley.min.js') !!}
     <script>
-
         <!-- script consulta NF -->
         $(document).ready(function () {
             $('div#consultaNF').on('show.bs.modal', function (e) {
@@ -384,6 +399,26 @@
 
             });
 
+        });
+
+
+        <!-- script Aviso -->
+        $(document).ready(function () {
+            $('div#modalAviso').on('show.bs.modal', function (e) {
+
+                var $this = $(this);
+                var $origem = $(e.relatedTarget);
+                var idfaturamento = $($origem).data('idfaturamento');
+
+                var $parent = $($this).find('div.modal-content');
+                $($parent).find('div.modal-header h4.modal-title').html('<i class="fa fa-exclamation-triangle"></i> Atenção! Deseja finalizar o Faturamento?');
+                $($parent).find('div.modal-body p')
+                    .html('Certifique que as notas e boletos foram geradas! Verifique também se as mesmas foram enviadas para o cliente!');
+
+                var _URL_ = '{{route('faturamentos.fechar','_ID_')}}';
+                _URL_ = _URL_.replace('_ID_', idfaturamento);
+                $($parent).find('div.modal-footer a').attr('href', _URL_);
+            });
         });
     </script>
 @endsection

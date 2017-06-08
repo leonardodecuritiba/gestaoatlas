@@ -210,15 +210,18 @@
                 var $button = $(event.relatedTarget);
                 var modal = $(this);
                 var $parcela = $($button).data('parcela');
-                console.log($parcela);
                 $(modal).find('input[name=id]').val($parcela.id);
                 $(modal).find('input[name=valor_parcela]').val($($button).data('valor_real'));
                 $(modal).find('input[name=data_vencimento]').val($parcela.data_vencimento);
                 $(modal).find('input[name=idforma_pagamento]').val($parcela.forma_pagamento.descricao);
                 $(modal).find('select[name=idstatus_parcela]').val($parcela.idstatus_parcela).trigger('change');
+
                 if ($parcela.data_pagamento != '') {
                     $(modal).find('input[name=data_pagamento]').val($parcela.data_pagamento);
                 }
+                var _URL_ = '{{route('faturamentos.show','_ID_')}}';
+                _URL_ = _URL_.replace('_ID_', $parcela.faturamento.id);
+                $(modal).find('div.modal-footer a.btn-open').attr('href', _URL_);
             });
         });
     </script>

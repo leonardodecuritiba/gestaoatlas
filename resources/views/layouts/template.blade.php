@@ -12,6 +12,8 @@
 		@yield('style_content')
 		<!-- Custom styling plus plugins -->
 		{!! Html::style('build/css/custom.min.css') !!}
+		{!! Html::style('build/css/modals.css') !!}
+		{{--https://bootdey.com/snippets/view/colored-modals--}}
 		<style>
 			.loading {
 				background: #fff url("{{asset('imgs/ajax-loader.gif')}}") no-repeat center center !important;
@@ -20,6 +22,8 @@
 			.esconda {
 				display: none;
 			}
+
+
 		</style>
 	</head>
 	<body class="nav-md">

@@ -40,10 +40,10 @@
                             <td>{{$Valores->valor_final}}</td>
                             {{--<td>{{$selecao->limite_credito_comercial}}</td>--}}
                             <td>
-                                <a class="btn btn-primary btn-xs"
+                                <a class="btn btn-default btn-xs"
                                    target="_blank"
                                    href="{{route('ordem_servicos.show',$selecao->idordem_servico)}}">
-                                    <i class="fa fa-eye"></i> Abrir</a>
+                                    <i class="fa fa-eye"></i> Visualizar</a>
                                 {{--@role('admin')--}}
                                 {{--<a class="btn btn-danger btn-xs"--}}
                                 {{--data-nome="Ordem de Serviço #{{$selecao->idordem_servico}}"--}}

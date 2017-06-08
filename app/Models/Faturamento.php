@@ -20,7 +20,7 @@ class Faturamento extends Model
 {
 //    const _STATUS_FATURAMENTO_PENDENTE_ = 1;
     const _STATUS_ABERTO_ = 1;//danger
-    const _STATUS_FECHADO_ = 2; //success
+    const _STATUS_FINALIZADO_ = 2; //success
     const _STATUS_QUITADO_ = 3; //success
     public $timestamps = true;
     protected $table = 'faturamentos';
@@ -154,6 +154,14 @@ class Faturamento extends Model
         return (object)$_valores;
     }
 
+    static public function fechar($id)
+    {
+        $Faturamento = self::find($id);
+        return $Faturamento->update([
+            'idstatus_faturamento' => self::_STATUS_FINALIZADO_
+        ]);
+    }
+
     static public function remover($idfechamento)
     {
         $Fechamento = Faturamento::find($idfechamento);
@@ -185,6 +193,11 @@ class Faturamento extends Model
 //            $query->where('idcolaborador', $User->colaborador->idcolaborador);
 //        }
         return $query;
+    }
+
+    public function isAberto()
+    {
+        return ($this->attributes['idstatus_faturamento'] == self::_STATUS_ABERTO_);
     }
 
 
@@ -293,7 +306,7 @@ class Faturamento extends Model
 
     public function faturar()
     {
-        $this->attributes['idstatus_faturamento'] = self::_STATUS_FECHADO_;
+        $this->attributes['idstatus_faturamento'] = self::_STATUS_FINALIZADO_;
         foreach ($this->ordem_servicos as $ordem_servico) {
             $ordem_servico->idsituacao_ordem_servico = OrdemServico::_STATUS_FATURADA_;
             $ordem_servico->save();
@@ -353,7 +366,7 @@ class Faturamento extends Model
         return DataHelper::getPrettyDateTimeToMonth($this->attributes['created_at']);
     }
 
-    public function getTipoFechamento()
+    public function getTipoFaturamento()
     {
         return ($this->centro_custo == 1) ? 'Centro de Custo' : 'Cliente';
     }
@@ -366,10 +379,12 @@ class Faturamento extends Model
     public function getStatusType()
     {
         switch ($this->attributes['idstatus_faturamento']) {
-            case self::_STATUS_FECHADO_:
-                return 'success';
-            default:
+            case self::_STATUS_ABERTO_:
                 return 'warning';
+            case self::_STATUS_FINALIZADO_:
+                return 'danger';
+            case self::_STATUS_QUITADO_:
+                return 'success';
         }
     }
 
@@ -381,9 +396,42 @@ class Faturamento extends Model
      * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
+    public function scopeAbertos($query)
+    {
+        return $query->where('idstatus_faturamento', self::_STATUS_ABERTO_)->orderBy('id');
+    }
+
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFinalizados($query)
+    {
+        return $query->where('idstatus_faturamento', self::_STATUS_FINALIZADO_)->orderBy('id');
+    }
+
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeQuitados($query)
+    {
+        return $query->where('idstatus_faturamento', self::_STATUS_QUITADO_)->orderBy('id');
+    }
+
+    /**
+     * Scope a query to only include popular users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
     public function scopeLastCreated($query)
     {
-        return $query->orderBy('created_at', 'desc')->first();;
+        return $query->orderBy('created_at', 'desc')->first();
     }
 
     /**

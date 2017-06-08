@@ -61,20 +61,27 @@ class FechamentoController extends Controller
             ->select('*', DB::raw('count(*) as qtd_os'));
 
         if ($request->get('centro_custo')) {
-            $Buscas = $query->groupBy('idcentro_custo')
+            $Fechamentos = $query->groupBy('idcentro_custo')
                 ->with('centro_custo')
+                ->get();
+            $Faturamentos = Faturamento::centroCustos()
+                ->abertos()
                 ->get();
             $this->Page->search_results = "Centro de Custos Não Fechados";
         } else {
-            $Buscas = $query->groupBy('idcliente')
+            $Fechamentos = $query->groupBy('idcliente')
                 ->with('cliente')
+                ->get();
+            $Faturamentos = Faturamento::clientes()
+                ->abertos()
                 ->get();
             $this->Page->search_results = "Clientes Não Fechados";
         }
 
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
-            ->with('Buscas', $Buscas);
+            ->with('Fechamentos', $Fechamentos)
+            ->with('Faturamentos', $Faturamentos);
     }
 
     /**
@@ -97,7 +104,7 @@ class FechamentoController extends Controller
             $Valores = OrdemServico::getValoresPosFatoramento($query->get());
             $Buscas = $query->orderBy('idcliente')->get();
 
-//            $Buscas = $query->select('*', DB::raw('count(*) as qtd_os'))
+//            $Fechamentos = $query->select('*', DB::raw('count(*) as qtd_os'))
 //                ->get();
         } else {
             $Buscas = $query->where('idcliente', $id)->get();
@@ -123,20 +130,27 @@ class FechamentoController extends Controller
             ->select('*', DB::raw('count(*) as qtd_os'));
 
         if ($request->get('centro_custo')) {
-            $Buscas = $query->groupBy('idcentro_custo')
+            $Fechamentos = $query->groupBy('idcentro_custo')
                 ->with('centro_custo')
+                ->get();
+            $Faturamentos = Faturamento::centroCustos()
+                ->abertos()
                 ->get();
             $this->Page->search_results = "Centro de Custos Fechados";
         } else {
-            $Buscas = $query->groupBy('idcliente')
+            $Fechamentos = $query->groupBy('idcliente')
                 ->with('cliente')
+                ->get();
+            $Faturamentos = Faturamento::clientes()
+                ->abertos()
                 ->get();
             $this->Page->search_results = "Clientes Fechados";
         }
 
         return view('pages.' . $this->Page->link . '.pos_fechamento.index')
             ->with('Page', $this->Page)
-            ->with('Buscas', $Buscas);
+            ->with('Fechamentos', $Fechamentos)
+            ->with('Faturamentos', $Faturamentos);
     }
 
     /**
@@ -156,20 +170,20 @@ class FechamentoController extends Controller
         if ($request->get('centro_custo')) {
             $query = $query->where('idcentro_custo', $id);
             $Valores = OrdemServico::getValoresPosFatoramento($query->get());
-            $Buscas = $query->orderBy('idcliente')
+            $Fechamentos = $query->orderBy('idcliente')
                 ->get();
 
-//            $Buscas = $query->select('*', DB::raw('count(*) as qtd_os'))
+//            $Fechamentos = $query->select('*', DB::raw('count(*) as qtd_os'))
 //                ->get();
         } else {
-            $Buscas = $query->where('idcliente', $id)->get();
-            $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
+            $Fechamentos = $query->where('idcliente', $id)->get();
+            $Valores = OrdemServico::getValoresPosFatoramento($Fechamentos);
         }
 
         return view('pages.' . $this->Page->link . '.pos_fechamento.show')
             ->with('Page', $this->Page)
             ->with('Valores', $Valores)
-            ->with('Buscas', $Buscas);
+            ->with('Fechamentos', $Fechamentos);
     }
 
 

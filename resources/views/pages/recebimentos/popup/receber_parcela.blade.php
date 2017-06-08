@@ -55,6 +55,7 @@
             <div class="modal-footer">
                 <button class="btn btn-danger pull-left" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar
                 </button>
+                <a target="_blank" class="btn btn-default btn-open pull-left"><i class="fa fa-eye"></i> Faturamento</a>
                 <button class="btn btn-success pull-right"><i class="fa fa-money"></i> Baixar</button>
             </div>
         </div>

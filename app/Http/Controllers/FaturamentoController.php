@@ -38,6 +38,7 @@ class FaturamentoController extends Controller
             'search_results' => "",
             'search_no_results' => "Nenhum Faturamento encontrado!",
             'msg_abr' => 'Faturamento aberto com sucesso!',
+            'msg_fim' => 'Faturamento finalizado com sucesso!',
             'msg_upd' => 'Faturamento atualizado com sucesso!',
             'msg_rem' => 'Faturamento removido com sucesso!',
             'msg_rea' => 'Faturamento reaberto com sucesso!',
@@ -93,15 +94,23 @@ class FaturamentoController extends Controller
         $OrdemServicos = $query->get();
 
         //FECHANDO O.S. PARA FATURAR
-        foreach ($OrdemServicos as $ordem_servico) {
-            $ordem_servico->fechar();
-        }
+//        foreach ($OrdemServicos as $ordem_servico) {
+//            $ordem_servico->fechar();
+//        }
 
         $Faturamento = Faturamento::geraFaturamento($OrdemServicos, $request->get('centro_custo'));
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_abr]);
         return Redirect::route('faturamentos.show', $Faturamento->id);
+    }
+
+    public function fechar($id)
+    {
+        Faturamento::fechar($id);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_fim]);
+        return Redirect::route('faturamentos.show', $id);
     }
 
     public function faturar_pos(Request $request, $centro_custo, $id)
@@ -123,23 +132,6 @@ class FaturamentoController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_abr]);
         return Redirect::route('faturamentos.show', $Faturamento->id);
-    }
-
-    public function faturarPeriodo(Request $request)
-    {
-        $DATA_INICIO = Carbon::createFromFormat('d/m/Y', $request->get('data_inicial'))->format('Y-m-d 23:59:59');//'2017-01-01 00:00:00' (1º dia do mês anterior)
-        $DATA_FIM = Carbon::createFromFormat('d/m/Y', $request->get('data_final'))->format('Y-m-d 23:59:59');// '2017-01-31 23:59:59' (1º dia do mês vigente)
-
-        $OrdemServicos = OrdemServico::whereBetween('data_finalizada', [$DATA_INICIO, $DATA_FIM])
-            ->whereNull('idfaturamento')
-            ->orderBy('idcentro_custo', 'desc')
-            ->get();
-//            ->get(['idordem_servico','idcentro_custo','idcliente']);
-        Faturamento::faturaPeriodo($OrdemServicos);
-
-        session()->forget('mensagem');
-        session(['mensagem' => 'Faturamneto realizado']);
-        return Redirect::route('faturamentos.periodo_index');
     }
 
     public function runByOrdemServicoID($id = NULL)

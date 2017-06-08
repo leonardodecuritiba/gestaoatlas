@@ -13,18 +13,18 @@
 
     <?php
     if (Request::get('centro_custo') == 0) {
-        $ClientePrincipal = $Buscas[0]->cliente->getType();
+        $ClientePrincipal = $Fechamentos[0]->cliente->getType();
     } else {
-        $ClientePrincipal = $Buscas[0]->centro_custo->getType();
+        $ClientePrincipal = $Fechamentos[0]->centro_custo->getType();
     }
     ?>
     <section class="row">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Simulador de Fechamento</h2>
+                <h2>Gerador de Fechamento</h2>
                 <a class="btn btn-success pull-right"
                    href="{{route('faturamentos.faturar_pos',[(Request::get('centro_custo')) ? 1:0,$ClientePrincipal->idcliente])}}">
-                    <i class="fa fa-money fa-2"></i> Faturar</a>
+                    <i class="fa fa-money fa-2"></i> Iniciar Faturaramento</a>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
@@ -42,10 +42,10 @@
 
     <section class="row">
         @if(Request::get('centro_custo')==0)
-            <?php $OrdemServicos = $Buscas; ?>
+            <?php $OrdemServicos = $Fechamentos; ?>
             @include('pages.faturamentos.panels.lists_ordem_servico_valores')
         @else
-            <?php $Clientes = $Buscas; ?>
+            <?php $Clientes = $Fechamentos; ?>
             @include('pages.faturamentos.panels.lists_clientes_ordem_servico_valores')
         @endif
     </section>
