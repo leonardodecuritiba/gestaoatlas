@@ -9,7 +9,7 @@ class StatusFechamento extends Model
 {
     use SoftDeletes;
     public $timestamps = true;
-    protected $table = 'status_fechamento';
+    protected $table = 'status_faturamento';
     protected $primaryKey = 'id';
     protected $fillable = [
         'descricao',
@@ -21,6 +21,6 @@ class StatusFechamento extends Model
     // ************************** HASMANY **********************************
     public function faturamentos()
     {
-        return $this->hasMany('App\Models\Faturamento', 'idstatus_fechamento');
+        return $this->hasMany('App\Models\Faturamento', 'idstatus_faturamento');
     }
 }

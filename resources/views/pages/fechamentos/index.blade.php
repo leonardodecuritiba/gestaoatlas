@@ -7,37 +7,6 @@
     @include('helpers.select2.head')
 @endsection
 @section('page_content')
-
-    {{--<div id="search" class="x_panel animated flipInX">--}}
-    {{--<div class="x_content">--}}
-    {{--<div class="row">--}}
-    {{--<div class="col-md-12 col-sm-12 col-xs-12">--}}
-    {{--{!! Form::open(array('route'=>['fechamentos.index'],--}}
-    {{--'method'=>'GET','id'=>'porid',--}}
-    {{--'class' => 'form-horizontal form-label-left')) !!}--}}
-    {{--<label class="control-label col-md-1 col-sm-1 col-xs-12">Listar:</label>--}}
-    {{--<div class="col-md-3 col-sm-3 col-xs-12">--}}
-    {{--<select name="centro_custo" class="form-control select2_single">--}}
-    {{--<option value="0"--}}
-    {{--@if(Request::has('centro_custo') || Request::get('centro_custo')==0) selected @endif>--}}
-    {{--Clientes--}}
-    {{--</option>--}}
-    {{--<option value="1"--}}
-    {{--@if(Request::has('centro_custo') && Request::get('centro_custo')==1) selected @endif>--}}
-    {{--Centro de Custo--}}
-    {{--</option>--}}
-    {{--</select>--}}
-    {{--</div>--}}
-    {{--<div class="col-md-5 col-sm-5 col-xs-12">--}}
-    {{--<span class="input-group-btn">--}}
-    {{--<button class="btn btn-info" type="submit">Buscar</button>--}}
-    {{--</span>--}}
-    {{--</div>--}}
-    {{--{!! Form::close() !!}--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--</div>--}}
-    {{--</div>--}}
     @if(count($Buscas) > 0)
         <div class="x_panel">
             <div class="x_title">

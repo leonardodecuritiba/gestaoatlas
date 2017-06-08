@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFechamentosTable extends Migration
+class CreateFaturamentosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,8 +18,8 @@ class CreateFechamentosTable extends Migration
             $table->integer('idcliente')->unsigned();
             $table->foreign('idcliente')->references('idcliente')->on('clientes')->onDelete('cascade');
 
-            $table->unsignedInteger('idstatus_fechamento')->nullable();
-            $table->foreign('idstatus_fechamento')->references('id')->on('status_fechamento')->onDelete('SET NULL');
+            $table->unsignedInteger('idstatus_faturamento')->nullable();
+            $table->foreign('idstatus_faturamento')->references('id')->on('status_faturamento')->onDelete('SET NULL');
 
             $table->integer('idpagamento')->unsigned();
             $table->foreign('idpagamento')->references('id')->on('pagamentos')->onDelete('cascade');

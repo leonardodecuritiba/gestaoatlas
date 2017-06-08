@@ -28,7 +28,7 @@ class FaturamentoController extends Controller
     public function __construct()
     {
         $this->Page = (object)[
-            'table' => "fechamentos",
+            'table' => "faturamentos",
             'link' => "faturamentos",
             'primaryKey' => "id",
             'Target' => "Faturamentos",
@@ -60,7 +60,7 @@ class FaturamentoController extends Controller
         } else {
             $Buscas = Faturamento::filter_layout($request->all())->get();
         }
-        $this->Page->extras['status_fechamento'] = StatusFechamento::whereIn('id', $Buscas->pluck('idstatus_fechamento'))->get();
+        $this->Page->extras['status_faturamento'] = StatusFechamento::whereIn('id', $Buscas->pluck('idstatus_faturamento'))->get();
         $this->Page->extras['clientes'] = Cliente::whereIn('idcliente', $Buscas->pluck('idcliente'))->get();
 
         return view('pages.' . $this->Page->link . '.index')

@@ -21,7 +21,7 @@
     <section class="row">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Simulador de Fechamento</h2>
+                <h2>Gerador de Faturamento</h2>
                 <a class="btn btn-success pull-right"
                    href="{{route('faturamentos.faturar',[(Request::get('centro_custo')) ? 1:0,$ClientePrincipal->idcliente])}}">
                     <i class="fa fa-money fa-2"></i> Faturar</a>

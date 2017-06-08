@@ -141,9 +141,9 @@
                                             Parcial de Clientes</a></li>
                                     <li><a href="{{ route('fechamentos.index_parcial',$centro_custo = 1) }}">Faturamento
                                             Parcial de Centro de Custo</a></li>
-                                    <li><a href="{{ route('fechamentos.index_pos')}}">Pós Fechamento</a>
+                                    <li><a href="{{ route('fechamentos.index_pos')}}">Faturamento Pós Fechamento</a>
                                     <li>
-                                    <li><a href="{{ route('faturamentos.index')}}">Listar Faturamentos</a></li>
+                                    <li><a href="{{ route('faturamentos.index')}}">Relatório de Faturamentos</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{ route('recebimentos.index') }}">Recebimentos</a></li>

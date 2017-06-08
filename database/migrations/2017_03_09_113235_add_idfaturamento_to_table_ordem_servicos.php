@@ -14,7 +14,7 @@ class AddIdfechamentoToTableOrdemServicos extends Migration
     {
         Schema::table('ordem_servicos', function (Blueprint $table) {
             $table->integer('idfaturamento')->unsigned()->nullable()->default(NULL);
-            $table->foreign('idfaturamento')->references('id')->on('fechamentos')->onDelete('SET NULL');
+            $table->foreign('idfaturamento')->references('id')->on('faturamentos')->onDelete('SET NULL');
         });
     }
 

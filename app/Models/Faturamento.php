@@ -19,14 +19,15 @@ use Illuminate\Support\Facades\DB;
 class Faturamento extends Model
 {
 //    const _STATUS_FATURAMENTO_PENDENTE_ = 1;
-    const _STATUS_PAGAMENTO_PENDENTE_ = 1;//danger
-    const _STATUS_FATURADO_ = 2; //success
+    const _STATUS_ABERTO_ = 1;//danger
+    const _STATUS_FECHADO_ = 2; //success
+    const _STATUS_QUITADO_ = 3; //success
     public $timestamps = true;
-    protected $table = 'fechamentos';
+    protected $table = 'faturamentos';
     protected $primaryKey = 'id';
     protected $fillable = [
         'idcliente',
-        'idstatus_fechamento',
+        'idstatus_faturamento',
         'idpagamento',
         'idnfe_homologacao',
         'idnfe_producao',
@@ -51,12 +52,12 @@ class Faturamento extends Model
             }
         }
 
-        //fechamentos CLIENTES
+        //faturamentos CLIENTES
         foreach ($faturamento_cl as $ordem_servicos) {
             Faturamento::geraFaturamento($ordem_servicos, 0, $op = 1);
         }
 
-        //fechamentos CENTRO DE CUSTO
+        //faturamentos CENTRO DE CUSTO
         foreach ($faturamento_cc as $ordem_servicos) {
             Faturamento::geraFaturamento($ordem_servicos, 1, $op = 1);
         }
@@ -84,7 +85,7 @@ class Faturamento extends Model
         //ATRIBUIR IDPAGAMENTO AO FECHAMENTO
         $Faturamento = self::create([
             'idcliente' => $Cliente->idcliente,
-            'idstatus_fechamento' => self::_STATUS_PAGAMENTO_PENDENTE_,
+            'idstatus_faturamento' => self::_STATUS_ABERTO_,
             'idpagamento' => $Pagamento->id,
             'centro_custo' => $centro_custo,
         ]);
@@ -174,7 +175,7 @@ class Faturamento extends Model
     {
         $data['situacao'] = (isset($data['situacao'])) ? $data['situacao'] : NULL;
         $query = self::orderBy('created_at', 'desc');
-        if ($data['situacao'] != NULL) $query->where('idstatus_fechamento', $data['situacao']);
+        if ($data['situacao'] != NULL) $query->where('idstatus_faturamento', $data['situacao']);
         if (isset($data['idcliente']) && ($data['idcliente'] != NULL)) $query->where('idcliente', $data['idcliente']);
 //        if (isset($data['data'])) {
 //            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data']));
@@ -292,7 +293,7 @@ class Faturamento extends Model
 
     public function faturar()
     {
-        $this->attributes['idstatus_fechamento'] = self::_STATUS_FATURADO_;
+        $this->attributes['idstatus_faturamento'] = self::_STATUS_FECHADO_;
         foreach ($this->ordem_servicos as $ordem_servico) {
             $ordem_servico->idsituacao_ordem_servico = OrdemServico::_STATUS_FATURADA_;
             $ordem_servico->save();
@@ -364,8 +365,8 @@ class Faturamento extends Model
 
     public function getStatusType()
     {
-        switch ($this->attributes['idstatus_fechamento']) {
-            case self::_STATUS_FATURADO_:
+        switch ($this->attributes['idstatus_faturamento']) {
+            case self::_STATUS_FECHADO_:
                 return 'success';
             default:
                 return 'warning';
@@ -415,7 +416,7 @@ class Faturamento extends Model
 
     public function status()
     {
-        return $this->belongsTo('App\Models\StatusFechamento', 'idstatus_fechamento');
+        return $this->belongsTo('App\Models\StatusFechamento', 'idstatus_faturamento');
     }
 
     public function pagamento()

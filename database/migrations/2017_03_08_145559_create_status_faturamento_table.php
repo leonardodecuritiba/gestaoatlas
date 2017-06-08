@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStatusFechamentoTable extends Migration
+class CreateStatusFaturamentoTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateStatusFechamentoTable extends Migration
      */
     public function up()
     {
-        Schema::create('status_fechamento', function (Blueprint $table) {
+        Schema::create('status_faturamento', function (Blueprint $table) {
             $table->increments('id');
             $table->string('descricao', 100)->unique();
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateStatusFechamentoTable extends Migration
      */
     public function down()
     {
-        Schema::drop('status_fechamento');
+        Schema::drop('status_faturamento');
     }
 }

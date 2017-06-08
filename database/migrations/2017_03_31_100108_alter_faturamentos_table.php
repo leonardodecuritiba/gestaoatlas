@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterFechamentosTable extends Migration
+class AlterFaturamentosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class AlterFechamentosTable extends Migration
      */
     public function up()
     {
-        Schema::table('fechamentos', function (Blueprint $table) {
+        Schema::table('faturamentos', function (Blueprint $table) {
             $table->integer('idnfe_homologacao')->unsigned()->nullable();
             $table->integer('idnfe_producao')->unsigned()->nullable();
             $table->integer('idnfse_homologacao')->unsigned()->nullable();

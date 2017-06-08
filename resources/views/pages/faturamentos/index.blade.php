@@ -27,7 +27,7 @@
                     <div class="col-md-2 col-sm-2 col-xs-12">
                         <select name="situacao" class="form-control select2_single">
                             <option value="">Todos</option>
-                            @foreach($Page->extras['status_fechamento'] as $value)
+                            @foreach($Page->extras['status_faturamento'] as $value)
                                 <option value="{{$value->id}}"
                                         @if(Request::has('situacao') && Request::get('situacao')==$value->id) selected @endif>{{$value->descricao}}</option>
                             @endforeach
