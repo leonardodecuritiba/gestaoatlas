@@ -194,7 +194,7 @@
                     "pageLength": 10,
                     "bLengthChange": false, //used to hide the property
                     "bFilter": false,
-                    "order": [4, "asc"]
+                    "order": [5, "asc"]
                 }
             );
         });
