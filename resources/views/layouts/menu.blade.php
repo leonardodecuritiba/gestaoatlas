@@ -149,8 +149,8 @@
                             <li><a href="{{ route('recebimentos.index') }}">Recebimentos</a></li>
                             <li><a>Notas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#">NFe</a></li>
-                                    <li><a href="#">NFSe</a></li>
+                                    <li><a href="{{route("notas_fiscais.index",'nfe')}}">NFe</a></li>
+                                    <li><a href="{{route("notas_fiscais.index",'nfse')}}">NFSe</a></li>
                                 </ul>
                             </li>
                         </ul>

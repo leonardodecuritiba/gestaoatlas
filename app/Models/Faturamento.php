@@ -30,9 +30,13 @@ class Faturamento extends Model
         'idstatus_faturamento',
         'idpagamento',
         'idnfe_homologacao',
+        'data_nfe_homologacao',
         'idnfe_producao',
+        'data_nfe_producao',
         'idnfse_homologacao',
+        'data_nfse_homologacao',
         'idnfse_producao',
+        'data_nfse_producao',
         'centro_custo'
     ];
 
@@ -369,6 +373,11 @@ class Faturamento extends Model
     public function getTipoFaturamento()
     {
         return ($this->centro_custo == 1) ? 'Centro de Custo' : 'Cliente';
+    }
+
+    public function getDataNF($tipo)
+    {
+        return DataHelper::getPrettyDateTime($this->attributes[$tipo]);
     }
 
     public function getStatusText()

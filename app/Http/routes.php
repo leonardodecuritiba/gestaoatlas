@@ -150,6 +150,9 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('run-faturamento', 'FaturamentoController@run');
 
 
+    //NOTAS FISCAIS
+    Route::get('listar-notas-fiscais/{tipo}', 'NotasFiscaisController@index')->name('notas_fiscais.index');
+
     //RECEBIMENTOS
     Route::resource('recebimentos', 'RecebimentoController');
 
