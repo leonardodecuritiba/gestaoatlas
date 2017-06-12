@@ -32,7 +32,6 @@ class NotasFiscaisController extends Controller
      */
     public function index(Request $request, $tipo)
     {
-        $now = Carbon::now();
         $data_final = NULL;
         $data_inicial = NULL;
         if ($request->has('data_inicial')) {
