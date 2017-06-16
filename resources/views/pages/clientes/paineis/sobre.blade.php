@@ -170,11 +170,11 @@
                         </div>
                         <div class="parcelas @if($Cliente->prazo_pagamento_tecnica->id == 0) esconda @endif">
                             <div class="col-md-2 col-sm-2 col-xs-12">
-                                <a class="btn btn-block btn-default" onclick="addParcela(this)"><i
+                                <a class="btn btn-block btn-default" onclick="addParcela(this,'tecnica')"><i
                                             class="fa fa-plus"></i> Parcela</a>
                             </div>
                             <div class="col-md-2 col-sm-2 col-xs-12">
-                                <a class="btn btn-block btn-default" onclick="remParcela(this)"><i
+                                <a class="btn btn-block btn-default" onclick="remParcela(this,'tecnica')"><i
                                             class="fa fa-minus"></i> Parcela</a>
                             </div>
                         </div>
@@ -277,6 +277,40 @@
                                 </option>
                             </select>
                         </div>
+                        <div class="parcelas @if($Cliente->prazo_pagamento_comercial->id == 0) esconda @endif">
+                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                <a class="btn btn-block btn-default" onclick="addParcela(this,'comercial')"><i
+                                            class="fa fa-plus"></i> Parcela</a>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                <a class="btn btn-block btn-default" onclick="remParcela(this,'comercial')"><i
+                                            class="fa fa-minus"></i> Parcela</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="parcelas @if($Cliente->prazo_pagamento_comercial->id == 0) esconda @endif">
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">1ª Parcela</label>
+                            <div class="col-md-4 col-sm-4 col-xs-12">
+                                <input type="text" class="form-control show-parcelas" name="parcela_comercial[0]"
+                                       value="{{($Cliente->prazo_pagamento_comercial->id == 1)?$Cliente->prazo_pagamento_comercial->extras[0]:''}}">
+                            </div>
+                        </div>
+                        @if(count($Cliente->prazo_pagamento_comercial->extras)>1)
+                            @foreach($Cliente->prazo_pagamento_comercial->extras as $key => $item)
+                                @if($key>=1)
+                                    <div class="form-group">
+                                        <label class="control-label col-md-2 col-sm-2 col-xs-12">{{$key+1}}ª
+                                            Parcela</label>
+                                        <div class="col-md-4 col-sm-4 col-xs-12">
+                                            <input type="text" class="form-control show-parcelas"
+                                                   name="parcela_comercial[{{$key}}]"
+                                                   value="{{$item}}">
+                                        </div>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
