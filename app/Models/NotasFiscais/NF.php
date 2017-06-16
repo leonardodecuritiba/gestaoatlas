@@ -37,6 +37,8 @@ class NF
     public $debug;
     public $_REF_;
     public $_PARAMS_NF_;
+    protected $_EMPRESA_;
+    protected $_FATURAMENTO_;
     protected $_SERVER_;
     protected $_NF_TYPE_;
     protected $_TOKEN_;
@@ -56,7 +58,6 @@ class NF
         } else {
             $URL = $_SERVER_ . "/nfse/" . $ref . "?token=" . $_TOKEN_;
         }
-
 //        return $URL;
 
         $ch = curl_init();
@@ -67,13 +68,20 @@ class NF
 
         $body = curl_exec($ch);
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        $body = Yaml::parse($body);
+
+        if (!isset($body['uri'])) {
+            $body['uri'] = $_SERVER_ . $body['caminho_danfe'];
+        }
+
         $retorno = [
             'url_focus' => $URL,
             'profile' => ($debug) ? 'Homologação' : 'Produção',
             'ref' => $ref,
             'type' => $type,
             'url' => $_SERVER_,
-            'body' => Yaml::parse($body),
+            'body' => $body,
             'status' => $result,
         ];
         return ($retorno);
@@ -111,6 +119,11 @@ class NF
         fwrite($fp, json_encode($this->_PARAMS_NF_));
         fclose($fp);
         return;
+    }
+
+    public function setLink($link)
+    {
+        return $this->_FATURAMENTO_->setUrl($this->_NF_TYPE_, $link);
     }
 
     public function emitir()

@@ -21,9 +21,11 @@
                                         <li><i class="fa fa-info"></i> Chave: <b id="chave_nfe"></b></li>
                                         <li><i class="fa fa-info"></i> Número/Série: <b id="numero_serie"></b></li>
                                         <li>
-                                            <a target="_blank" id="url_pdf" class="btn btn-primary btn-xs"> <i
+                                            <a target="_blank" id="url_pdf" class="btn btn-primary btn-xs"><i
                                                         class="fa fa-file"></i> Abrir PDF</a>
-                                            <a target="_blank" id="url_xml" class="btn btn-primary btn-xs"> <i
+                                        </li>
+                                        <li>
+                                            <a target="_blank" id="url_xml" class="btn btn-primary btn-xs"><i
                                                         class="fa fa-file-text"></i> Abrir XML</a>
                                         </li>
                                     </span>
@@ -33,10 +35,21 @@
                                         <li><i class="fa fa-info"></i> Data Emissão: <b id="data_emissao_"></b></li>
                                         <li><i class="fa fa-info"></i> Número: <b id="numero"></b></li>
                                         <li>
-                                            <a target="_blank" id="url_pdf" class="btn btn-primary btn-xs"> <i
+                                            <a target="_blank" id="url_pdf" class="btn btn-primary btn-xs"><i
                                                         class="fa fa-file"></i> Abrir PDF</a>
-                                            <a target="_blank" id="url_xml" class="btn btn-primary btn-xs"> <i
+                                        </li>
+                                        <li>
+                                            <a target="_blank" id="url_xml" class="btn btn-primary btn-xs"><i
                                                         class="fa fa-file-text"></i> Abrir XML</a>
+                                        </li>
+                                    </span>
+                                    <span id="email" class="esconda">
+                                        <li>
+                                            {!! Form::open(array('route'=>['notas_fiscais.enviar', 'XXX'] ))!!}
+                                            <a class="btn btn-success btn-xs btn-enviar-nota-cliente"><i
+                                                        class="fa fa-envelope"></i> Enviar Para Cliente</a>
+                                            {!!Form::close()!!}
+
                                         </li>
                                     </span>
                                 </ul>
@@ -52,10 +65,10 @@
             </div>
             <div class="modal-footer">
                 <div class="col-xs-12">
-                    <button class="btn btn-danger pull-right" data-dismiss="modal">Fechar</button>
                     <a id="btn-refresh" class="btn btn-success pull-left esconda"><i class="fa fa-refresh"></i> Reenviar</a>
                     <a id="btn-cancel" class="btn btn-warning pull-left esconda"><i class="fa fa-times fa-2"></i>
                         Cancelar</a>
+                    <button class="btn btn-danger pull-right" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
         </div>

@@ -152,6 +152,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     //NOTAS FISCAIS
     Route::get('listar-notas-fiscais/{tipo}', 'NotasFiscaisController@index')->name('notas_fiscais.index');
+    Route::post('enviar-nota-cliente/{idfaturamento}', 'NotasFiscaisController@enviar')->name('notas_fiscais.enviar');
 
     //RECEBIMENTOS
     Route::resource('recebimentos', 'RecebimentoController');

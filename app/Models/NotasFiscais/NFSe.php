@@ -32,8 +32,6 @@ class NFSe extends NF
 //        'discriminacao' => 'SERVI\u00c7OS PRESTADOS EM BALAN\u00c7AS, M\u00cdDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOM\u00c7\u00c3O COMERCIAL \\ INDUSTRIA',
         'codigo_municipio' => '3543402', //cliente
     ];
-    private $_EMPRESA_;
-    private $_FATURAMENTO_;
     private $now;
     private $cabecalho;
     private $prestador;

@@ -22,6 +22,9 @@ class AlterFaturamentosTable extends Migration
             $table->dateTime('data_nfe_producao')->nullable();
             $table->dateTime('data_nfse_homologacao')->nullable();
             $table->dateTime('data_nfse_producao')->nullable();
+
+            $table->string('link_nfe', 200)->nullable();
+            $table->string('link_nfse', 200)->nullable();
         });
     }
 

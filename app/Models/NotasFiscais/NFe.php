@@ -19,8 +19,6 @@ class NFe extends NF
     public $params_fixos = [
         'cest_default' => '0106400',
     ];
-    private $_EMPRESA_;
-    private $_FATURAMENTO_;
     private $now;
     private $cabecalho;
     private $emitente;

@@ -6,6 +6,7 @@ use App\Helpers\DataHelper;
 use App\Models\PrazoPagamento;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Mail;
 
 class Cliente extends Model
 {
@@ -62,6 +63,18 @@ class Cliente extends Model
         $pessoa_juridica_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
             ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
         return self::whereIn('idpjuridica', $pessoa_juridica_ids);
+    }
+
+    public function sendNF($link)
+    {
+        $cliente = [
+            'nome' => $this->nome_responsavel,
+            'email' => $this->email_nota
+        ];
+        return Mail::send('emails.clientes.send_nf', ['link' => $link, 'cliente' => $this], function ($m) use ($cliente) {
+            $m->to('silva.zanin@gmail.com', $cliente['nome'])
+                ->subject('Nota Fiscal');
+        });
     }
 //    public function setPrazoPagamentoTecnicaAttribute($value)
 //    {

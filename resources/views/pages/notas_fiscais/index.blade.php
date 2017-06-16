@@ -3,10 +3,9 @@
     <!-- Datatables -->
     @include('helpers.datatables.head')
     <!-- /Datatables -->
-    <!-- Select2 -->
-    @include('helpers.select2.head')
 @endsection
 @section('page_content')
+    @include('layouts.modals.consulta_nf')
 
     <div id="search" class="x_panel animated flipInX">
         <div class="x_content">
@@ -40,25 +39,25 @@
                     {!! Form::close() !!}
                 </div>
             </div>
-            <div class="ln_solid"></div>
-            <div class="row">
-                <div class="col-md-12 col-sm-12 col-xs-12">
-                    {!! Form::open(array('route'=>['notas_fiscais.index', Request::route('tipo')],
-                        'method'=>'GET','id'=>'porid',
-                        'class' => 'form-horizontal form-label-left')) !!}
-                    <label class="control-label col-md-1 col-sm-1 col-xs-12">ID:</label>
-                    <div class="col-md-2 col-sm-2 col-xs-12">
-                        <input value="{{Request::get('ref')}}" type="text" class="form-control"
-                               name="ref" placeholder="REF">
-                    </div>
-                    <div class="col-md-3 col-sm-3 col-xs-12">
-						<span class="input-group-btn">
-							<button class="btn btn-info" type="submit">Filtrar por REF</button>
-						</span>
-                    </div>
-                    {!! Form::close() !!}
-                </div>
-            </div>
+            {{--<div class="ln_solid"></div>--}}
+            {{--<div class="row">--}}
+            {{--<div class="col-md-12 col-sm-12 col-xs-12">--}}
+            {{--{!! Form::open(array('route'=>['notas_fiscais.index', Request::route('tipo')],--}}
+            {{--'method'=>'GET','id'=>'porid',--}}
+            {{--'class' => 'form-horizontal form-label-left')) !!}--}}
+            {{--<label class="control-label col-md-1 col-sm-1 col-xs-12">ID:</label>--}}
+            {{--<div class="col-md-2 col-sm-2 col-xs-12">--}}
+            {{--<input value="{{Request::get('ref')}}" type="text" class="form-control"--}}
+            {{--name="ref" placeholder="REF">--}}
+            {{--</div>--}}
+            {{--<div class="col-md-3 col-sm-3 col-xs-12">--}}
+            {{--<span class="input-group-btn">--}}
+            {{--<button class="btn btn-info" type="submit">Filtrar por REF</button>--}}
+            {{--</span>--}}
+            {{--</div>--}}
+            {{--{!! Form::close() !!}--}}
+            {{--</div>--}}
+            {{--</div>--}}
         </div>
     </div>
     @if($Buscas->count() > 0)
@@ -98,8 +97,13 @@
                                         ><i class="fa fa-eye"></i> Visualizar Faturamento</a>
                                     </td>
                                     <td>
-                                        <a class="btn btn-primary btn-xs"
-                                        ><i class="fa fa-edit"></i> Abrir {{$Page->extras['nome_nf']}}</a>
+                                        <a data-toggle="modal"
+                                           data-idfaturamento="{{$selecao->id}}"
+                                           data-type="{{$Page->extras['tipo_nf']}}"
+                                           data-target="#consultaNF"
+                                           data-debug="{{$Page->extras['debug']}}"
+                                           class="btn btn-primary btn-xs"><i class="fa fa-edit"></i>
+                                            Abrir {{$Page->extras['nome_nf']}}</a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -115,15 +119,6 @@
     <!-- /page content -->
 @endsection
 @section('scripts_content')
-    <!-- Select2 -->
-    @include('helpers.select2.foot')
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(".select2_single").select2({
-                width: 'resolve'
-            });
-        });
-    </script>
     <!-- Datatables -->
     @include('helpers.datatables.foot')
     <script>
@@ -140,4 +135,6 @@
         });
     </script>
     <!-- /Datatables -->
+    @include('helpers.notas_fiscais.nf')
+
 @endsection

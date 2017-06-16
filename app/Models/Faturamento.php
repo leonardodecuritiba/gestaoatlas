@@ -199,6 +199,16 @@ class Faturamento extends Model
         return $query;
     }
 
+    public function faturar()
+    {
+        $this->attributes['idstatus_faturamento'] = self::_STATUS_FINALIZADO_;
+        foreach ($this->ordem_servicos as $ordem_servico) {
+            $ordem_servico->idsituacao_ordem_servico = OrdemServico::_STATUS_FATURADA_;
+            $ordem_servico->save();
+        }
+        return $this->save();
+    }
+
     public function isAberto()
     {
         return ($this->attributes['idstatus_faturamento'] == self::_STATUS_ABERTO_);
@@ -207,12 +217,24 @@ class Faturamento extends Model
 
     //====================== NF ===========================
 
+    public function sendNfByEmail($link)
+    {
+        return $this->cliente->sendNF($link);
+    }
+
     public function cancelNF($debug, $type)
     {
         $debug = ($debug) ? 'homologacao' : 'producao';
         return $this->update([
             'id' . $type . '_' . $debug => NULL
         ]);
+    }
+
+    public function setUrl($type, $link)
+    {
+//        link_nfe
+//        link_nfse
+        return $this->update(['link_' . $type => $link]);
     }
 
     public function sendNF($debug, $type)
@@ -227,6 +249,7 @@ class Faturamento extends Model
 
         return $this->setNF($debug, $type);
     }
+
 
     public function setNF($debug, $type)
     {
@@ -306,16 +329,6 @@ class Faturamento extends Model
     public function getAparelhoManutencaos()
     {
         return AparelhoManutencao::whereIn('idordem_servico', $this->ordem_servicos->pluck('idordem_servico'))->get();
-    }
-
-    public function faturar()
-    {
-        $this->attributes['idstatus_faturamento'] = self::_STATUS_FINALIZADO_;
-        foreach ($this->ordem_servicos as $ordem_servico) {
-            $ordem_servico->idsituacao_ordem_servico = OrdemServico::_STATUS_FATURADA_;
-            $ordem_servico->save();
-        }
-        return $this->save();
     }
 
     public function getTotalPagoReal()
