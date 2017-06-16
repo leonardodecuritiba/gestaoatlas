@@ -72,7 +72,7 @@ class Cliente extends Model
             'email' => $this->email_nota
         ];
         return Mail::send('emails.clientes.send_nf', ['link' => $link, 'cliente' => $this], function ($m) use ($cliente) {
-            $m->to('silva.zanin@gmail.com', $cliente['nome'])
+            $m->to(['silva.zanin@gmail.com', 'comercial@atlastecnologia.com.br'], $cliente['nome'])
                 ->subject('Nota Fiscal');
         });
     }
