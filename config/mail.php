@@ -55,7 +55,10 @@ return [
     |
     */
 
-    'from' => ['address' => env('MAIL_USERNAME', 'sistemaemteste@gmail.com'), 'name' => env('MAIL_NAME', 'SAC')],
+    'from' => [
+        'address' => env('MAIL_USERNAME', 'sistemaemteste@gmail.com'),
+        'name' => env('MAIL_NAME', 'SAC')
+    ],
 
     /*
     |--------------------------------------------------------------------------

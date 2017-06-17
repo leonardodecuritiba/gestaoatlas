@@ -46,12 +46,14 @@ class Cliente extends Model
         'idtabela_preco_tecnica',
     ];
 
-    // ************************ FUNCTIONS ******************************
+    // ************************ EMAIL-FUNCTIONS ******************************
 
     static public function getInvalidos()
     {
         return self::whereNull('idcolaborador_validador')->whereNull('validated_at')->get();
     }
+
+    // ************************ FUNCTIONS ******************************
 
     static public function getValidosOrdemServico()
     {
@@ -67,15 +69,29 @@ class Cliente extends Model
 
     public function sendNF($link)
     {
+        $transport = Swift_SmtpTransport::newInstance(
+            env('MAIL_HOST'),
+            env('MAIL_PORT'),
+            env('MAIL_ENCRYPTION')
+        );
+
+        $transport->setUsername(env('MAIL_USERNAME_FATURAMENTO'));
+        $transport->setPassword(env('MAIL_PASSWORD_FATURAMENTO'));
+        $email = new Swift_Mailer($transport);
+        Mail::setSwiftMailer($email);
+
         $cliente = [
             'nome' => $this->nome_responsavel,
             'email' => $this->email_nota
         ];
         return Mail::send('emails.clientes.send_nf', ['link' => $link, 'cliente' => $this], function ($m) use ($cliente) {
-            $m->to(['silva.zanin@gmail.com', 'comercial@atlastecnologia.com.br'], $cliente['nome'])
+            $m->from(env('MAIL_USERNAME_FATURAMENTO'), env('MAIL_NAME_FATURAMENTO'));
+            $m->to(['silva.zanin@gmail.com'], $cliente['nome'])
                 ->subject('Nota Fiscal');
         });
+
     }
+
 //    public function setPrazoPagamentoTecnicaAttribute($value)
 //    {
 //        return json_encode($value);

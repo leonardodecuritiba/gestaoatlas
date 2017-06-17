@@ -246,14 +246,28 @@ Route::group(['prefix' => 'teste'], function () {
 });
 //Testando o envio de email
 Route::get('sendemail', function () {
+
+
+    $transport = Swift_SmtpTransport::newInstance(
+        env('MAIL_HOST'),
+        env('MAIL_PORT'),
+        env('MAIL_ENCRYPTION')
+    );
+
+    $transport->setUsername(env('MAIL_USERNAME_FATURAMENTO'));
+    $transport->setPassword(env('MAIL_PASSWORD_FATURAMENTO'));
+    $email = new Swift_Mailer($transport);
+    Mail::setSwiftMailer($email);
+
+
     $user = array(
         'email' => "silva.zanin@gmail.com",
         'name' => "LEO",
         'mensagem' => "olá",
     );
-    Mail::raw($user['mensagem'], function($message) use ($user) {
-        $message->to($user['email'], $user['name'])->subject('Welcome!');
-        $message->from('xxx@gmail.com', 'Atendimento');
+    Mail::raw($user['mensagem'], function ($m) use ($user) {
+        $m->from(env('MAIL_USERNAME_FATURAMENTO'), env('MAIL_NAME_FATURAMENTO'));
+        $m->to($user['email'], $user['name'])->subject('Welcome!');
     });
 
     return "Your email has been sent successfully";
