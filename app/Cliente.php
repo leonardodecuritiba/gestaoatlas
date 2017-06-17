@@ -2,6 +2,8 @@
 
 namespace App;
 
+use \Swift_Mailer;
+use \Swift_SmtpTransport as SmtpTransport;
 use App\Helpers\DataHelper;
 use App\Models\PrazoPagamento;
 use Carbon\Carbon;
@@ -69,7 +71,8 @@ class Cliente extends Model
 
     public function sendNF($link)
     {
-        $transport = Swift_SmtpTransport::newInstance(
+// Setup a new SmtpTransport instance for Gmail
+        $transport = SmtpTransport::newInstance(
             env('MAIL_HOST'),
             env('MAIL_PORT'),
             env('MAIL_ENCRYPTION')
