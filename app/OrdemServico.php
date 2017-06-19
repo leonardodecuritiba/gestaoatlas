@@ -48,6 +48,84 @@ class OrdemServico extends Model
 
     private $valor_desconto, $valor_acrescimo;
 
+    // ******************** FILTROS ********************************
+    static public function filter_layout($data)
+    {
+        $query = self::filter_situacao($data);
+        return (isset($data['centro_custo']) && $data['centro_custo']) ? $query->centroCustos() : $query->clientes();
+    }
+
+    static public function filter_situacao($data)
+    {
+        $data['situacao'] = (isset($data['situacao'])) ? $data['situacao'] : NULL;
+        $query = OrdemServico::orderBy('idordem_servico', 'desc');
+        switch ($data['situacao']) {
+            case self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_);
+                break;
+            case self::_STATUS_FINALIZADA_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_FINALIZADA_);
+                break;
+            case self::_STATUS_ABERTA_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
+                break;
+            case self::_STATUS_FATURADA_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
+                break;
+            case self::_STATUS_FATURAMENTO_PENDENTE_:
+                $query->where('idsituacao_ordem_servico', self::_STATUS_FATURAMENTO_PENDENTE_);
+                break;
+//            default:
+//                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
+//                break;
+        }
+        if (isset($data['data'])) {
+            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data']));
+        }
+
+        $User = Auth::user();
+        if ($User->hasRole('tecnico')) {
+            $query->where('idcolaborador', $User->colaborador->idcolaborador);
+        }
+//        dd($query);
+        return $query;
+    }
+
+    static public function filterByIdTecnicoDate($data)
+    {
+        $query = self::getByIDtecnico($data['idtecnico']);
+        if ($data['data_inicial'] != "") {
+            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data_inicial']));
+        }
+        if ($data['data_final'] != "") {
+            $query->where('created_at', '<=', DataHelper::getPrettyToCorrectDateTime($data['data_final']));
+        }
+        return $query;
+    }
+
+    static public function getByIDtecnico($idtecnico)
+    {
+        if ($idtecnico == 0) {
+            $query = OrdemServico::whereNotNull('idcolaborador');
+        } else {
+            $Tecnico = Tecnico::findOrFail($idtecnico);
+            $query = self::where('idcolaborador', $Tecnico->idcolaborador);
+        }
+        return $query;
+    }
+
+    static public function filter_situacao_centro_custo($data)
+    {
+        $query = self::filter_situacao($data)
+            ->with('centro_custo')
+            ->whereNotNull('idcentro_custo')
+            ->groupBy('idcentro_custo');
+        if (isset($data['idcentro_custo']) && ($data['idcentro_custo'] != "")) {
+            $query->where('idcentro_custo', $data['idcentro_custo']);
+        }
+        return $query;
+    }
+
     // ******************** FUNCTIONS ******************************
 
 
@@ -100,47 +178,6 @@ class OrdemServico extends Model
     }
 
     //VISUALIZAÇÃO NO FATURAMENTOS
-    static public function filter_layout($data)
-    {
-        $query = self::filter_situacao($data);
-        return (isset($data['centro_custo']) && $data['centro_custo']) ? $query->centroCustos() : $query->clientes();
-    }
-
-    static public function filter_situacao($data)
-    {
-        $data['situacao'] = (isset($data['situacao'])) ? $data['situacao'] : NULL;
-        $query = OrdemServico::orderBy('idordem_servico', 'desc');
-        switch ($data['situacao']) {
-            case self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_ATENDIMENTO_EM_ANDAMENTO_);
-                break;
-            case self::_STATUS_FINALIZADA_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_FINALIZADA_);
-                break;
-            case self::_STATUS_ABERTA_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
-                break;
-            case self::_STATUS_FATURADA_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_FATURADA_);
-                break;
-            case self::_STATUS_FATURAMENTO_PENDENTE_:
-                $query->where('idsituacao_ordem_servico', self::_STATUS_FATURAMENTO_PENDENTE_);
-                break;
-//            default:
-//                $query->where('idsituacao_ordem_servico', self::_STATUS_ABERTA_);
-//                break;
-        }
-        if (isset($data['data'])) {
-            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data']));
-        }
-
-        $User = Auth::user();
-        if ($User->hasRole('tecnico')) {
-            $query->where('idcolaborador', $User->colaborador->idcolaborador);
-        }
-//        dd($query);
-        return $query;
-    }
 
     static public function getSituacaoSelect()
     {
@@ -178,29 +215,6 @@ class OrdemServico extends Model
         ];
     }
 
-    static public function filterByIdTecnicoDate($data)
-    {
-        $query = self::getByIDtecnico($data['idtecnico']);
-        if ($data['data_inicial'] != "") {
-            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data_inicial']));
-        }
-        if ($data['data_final'] != "") {
-            $query->where('created_at', '<=', DataHelper::getPrettyToCorrectDateTime($data['data_final']));
-        }
-        return $query;
-    }
-
-    static public function getByIDtecnico($idtecnico)
-    {
-        if ($idtecnico == 0) {
-            $query = OrdemServico::whereNotNull('idcolaborador');
-        } else {
-            $Tecnico = Tecnico::findOrFail($idtecnico);
-            $query = self::where('idcolaborador', $Tecnico->idcolaborador);
-        }
-        return $query;
-    }
-
     static public function centro_custo_os($data)
     {
         $query = self::filter_situacao_cliente($data);
@@ -213,18 +227,6 @@ class OrdemServico extends Model
             ->with('cliente', 'colaborador');
         if (isset($data['idcliente']) && ($data['idcliente'] != "")) {
             $query->where('idcliente', $data['idcliente']);
-        }
-        return $query;
-    }
-
-    static public function filter_situacao_centro_custo($data)
-    {
-        $query = self::filter_situacao($data)
-            ->with('centro_custo')
-            ->whereNotNull('idcentro_custo')
-            ->groupBy('idcentro_custo');
-        if (isset($data['idcentro_custo']) && ($data['idcentro_custo'] != "")) {
-            $query->where('idcentro_custo', $data['idcentro_custo']);
         }
         return $query;
     }
@@ -254,18 +256,6 @@ class OrdemServico extends Model
         return true;
     }
 
-    public function getStatusFinalizada()
-    {
-        return ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_);
-    }
-
-    public function getStatusFechada()
-    {
-//        return !($this->idsituacao_ordem_servico == self::_STATUS_A_FATURAR_ || $this->idsituacao_ordem_servico == self::_STATUS_FATURADA_);
-        return !($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_
-            || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURAMENTO_PENDENTE_);
-    }
-
     public function setFaturamento($idfaturamento)
     {
         $this->attributes['idfaturamento'] = $idfaturamento;
@@ -280,19 +270,29 @@ class OrdemServico extends Model
         return $this->save();
     }
 
-    public function aplicaValores($data)
+    public function fechar()
     {
-        $valor = DataHelper::getReal2Float($data['valor']);
-        if ($data['tipo']) { //acrescimo
-            $max = $this->tecnico->acrescimo_max_float();
-            $this->attributes['acrescimo_tecnico'] = ($valor > $max) ? $max : $valor;
-        } else { //desconto
-            $max = $this->tecnico->desconto_max_float();
-            $this->attributes['desconto_tecnico'] = ($valor > $max) ? $max : $valor;
-        }
-        $this->save();
-        return $this->update_valores();
+        $this->attributes['data_fechada'] = Carbon::now()->toDateTimeString();
+        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FATURAMENTO_PENDENTE_;
+        return $this->save();
+    }
 
+    public function finalizar($request)
+    {
+        if (isset($request['custos_isento'])) {
+            $this->attributes['custos_isento'] = 1;
+            $this->attributes['custos_deslocamento'] = 0;
+            $this->attributes['pedagios'] = 0;
+            $this->attributes['outros_custos'] = 0;
+            $this->update_valores();
+        }
+        $this->attributes['numero_chamado'] = $request['numero_chamado'];
+        $this->attributes['responsavel'] = $request['responsavel'];
+        $this->attributes['responsavel_cpf'] = $request['responsavel_cpf'];
+        $this->attributes['responsavel_cargo'] = $request['responsavel_cargo'];
+        $this->attributes['data_finalizada'] = Carbon::now()->toDateTimeString();
+        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FINALIZADA_;
+        return $this->save();
     }
 
     public function update_valores()
@@ -325,34 +325,18 @@ class OrdemServico extends Model
         return $valor_total;
     }
 
-//    public function getStatus()
-//    {
-//        return $this->situacao->descricao;
-//    }
-
-    public function fechar()
+    public function aplicaValores($data)
     {
-        $this->attributes['data_fechada'] = Carbon::now()->toDateTimeString();
-        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FATURAMENTO_PENDENTE_;
-        return $this->save();
-    }
-
-    public function finalizar($request)
-    {
-        if (isset($request['custos_isento'])) {
-            $this->attributes['custos_isento'] = 1;
-            $this->attributes['custos_deslocamento'] = 0;
-            $this->attributes['pedagios'] = 0;
-            $this->attributes['outros_custos'] = 0;
-            $this->update_valores();
+        $valor = DataHelper::getReal2Float($data['valor']);
+        if ($data['tipo']) { //acrescimo
+            $max = $this->tecnico->acrescimo_max_float();
+            $this->attributes['acrescimo_tecnico'] = ($valor > $max) ? $max : $valor;
+        } else { //desconto
+            $max = $this->tecnico->desconto_max_float();
+            $this->attributes['desconto_tecnico'] = ($valor > $max) ? $max : $valor;
         }
-        $this->attributes['numero_chamado'] = $request['numero_chamado'];
-        $this->attributes['responsavel'] = $request['responsavel'];
-        $this->attributes['responsavel_cpf'] = $request['responsavel_cpf'];
-        $this->attributes['responsavel_cargo'] = $request['responsavel_cargo'];
-        $this->attributes['data_finalizada'] = Carbon::now()->toDateTimeString();
-        $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FINALIZADA_;
-        return $this->save();
+        $this->save();
+        return $this->update_valores();
     }
 
     public function getValoresObj()
@@ -398,6 +382,7 @@ class OrdemServico extends Model
             $valor_total_servicos += $aparelho_manutencao->getTotalServicos();
             $valor_total_pecas += $aparelho_manutencao->getTotalPecas();
             $valor_total_kits += $aparelho_manutencao->getTotalKits();
+
             $valor_desconto_servicos += $aparelho_manutencao->getTotalDescontoServicos();
             $valor_desconto_pecas += $aparelho_manutencao->getTotalDescontoPecas();
             $valor_desconto_kits += $aparelho_manutencao->getTotalDescontoKits();
@@ -435,7 +420,19 @@ class OrdemServico extends Model
     }
 
 
-    // ******************** ACCESSORS ******************************
+    // ******************** STATUS *********************************
+
+    public function getStatusFinalizada()
+    {
+        return ($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FINALIZADA_);
+    }
+
+    public function getStatusFechada()
+    {
+//        return !($this->idsituacao_ordem_servico == self::_STATUS_A_FATURAR_ || $this->idsituacao_ordem_servico == self::_STATUS_FATURADA_);
+        return !($this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURADA_
+            || $this->attributes['idsituacao_ordem_servico'] == self::_STATUS_FATURAMENTO_PENDENTE_);
+    }
 
     public function getStatusText()
     {
@@ -475,6 +472,36 @@ class OrdemServico extends Model
         }
     }
 
+    // ******************** MUTTATTORS ******************************
+
+    public function getResponsavelCpfAttribute($value)
+    {
+        return DataHelper::mask($value, '###.###.###-##');
+    }
+
+    public function setCustosDeslocamentoAttribute($value)
+    {
+        $this->attributes['custos_deslocamento'] = DataHelper::getReal2Float($value);
+    }
+
+    public function setPedagiosAttribute($value)
+    {
+        $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
+    }
+
+    public function setOutrosCustosAttribute($value)
+    {
+        $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
+    }
+
+    public function getDataFinalizadaAttribute($value)
+    {
+        return DataHelper::getPrettyDateTime($value);
+    }
+
+
+    // ******************** ACCESSORS ******************************
+
     public function get_desconto_tecnico_real()
     {
         return DataHelper::getFloat2Real($this->attributes['desconto_tecnico']);
@@ -485,54 +512,39 @@ class OrdemServico extends Model
         return DataHelper::getFloat2Real($this->attributes['acrescimo_tecnico']);
     }
 
-    public function getResponsavelCpfAttribute($value)
+    public function getCustosDeslocamentoReal()
     {
-        return DataHelper::mask($value, '###.###.###-##');
+        return DataHelper::getFloat2RealMoeda($this->attributes['custos_deslocamento']);
     }
 
-    public function getCustosDeslocamentoAttribute($value)
+    public function getPedagiosReal()
     {
-        return DataHelper::getFloat2Real($value);
+        return DataHelper::getFloat2RealMoeda($this->attributes['pedagios']);
     }
 
-    public function setCustosDeslocamentoAttribute($value)
+    public function getOutrosCustosReal()
     {
-        $this->attributes['custos_deslocamento'] = DataHelper::getReal2Float($value);
+        return DataHelper::getFloat2RealMoeda($this->attributes['outros_custos']);
     }
 
-    public function getPedagiosAttribute($value)
+    public function getValorFinalReal()
     {
-        return DataHelper::getFloat2Real($value);
+        return DataHelper::getFloat2RealMoeda($this->attributes['valor_final']);
     }
 
-    public function setPedagiosAttribute($value)
+    public function getDescontoTecnicoReal()
     {
-        $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
+        return DataHelper::getFloat2RealMoeda($this->attributes['desconto_tecnico']);
     }
 
-    public function getOutrosCustosAttribute($value)
+    public function getAcrescimoTecnicoReal()
     {
-        return DataHelper::getFloat2Real($value);
-    }
-
-    public function setOutrosCustosAttribute($value)
-    {
-        $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
-    }
-
-    public function getValorTotalAttribute($value)
-    {
-        return DataHelper::getFloat2Real($value);
+        return DataHelper::getFloat2RealMoeda($this->attributes['acrescimo_tecnico']);
     }
 
     public function getDataAbertura()
     {
         return DataHelper::getPrettyDateTime($this->getAttributeValue('created_at'));
-    }
-
-    public function getDataFinalizadaAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
     }
 
     // ******************** SCOPE ******************************
@@ -569,6 +581,78 @@ class OrdemServico extends Model
     public function aparelho_manutencaos()
     {
         return $this->hasMany('App\AparelhoManutencao', 'idordem_servico');
+    }
+
+    public function aparelho_manutencaos_totais()
+    {
+        return $this->aparelho_manutencaos->map(function ($ap) {
+            //,'kits_utilizados','servico_prestados']
+            $ap->total_servicos = $ap->getTotalServicos();
+            $ap->total_pecas = $ap->getTotalPecas();
+            $ap->total_kits = $ap->getTotalKits();
+            $ap->total_servicos_real = $ap->getTotalServicosReal();
+            $ap->total_pecas_real = $ap->getTotalPecasReal();
+            $ap->total_kits_real = $ap->getTotalKitsReal();
+            return $ap;
+        });
+    }
+
+    public function fechamentoServicosTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->fechamentoServicos()->sum('valor'));
+    }
+
+    public function fechamentoServicos()
+    {
+        return ServicoPrestado::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
+            ->get();
+    }
+
+    public function fechamentoKitsTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->fechamentoKits()
+            ->sum('valor'));
+    }
+
+    public function fechamentoKits()
+    {
+        return KitsUtilizados::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
+            ->get();
+    }
+
+    public function fechamentoPecasTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->fechamentoPecas()
+            ->sum('valor'));
+    }
+
+    public function fechamentoPecas()
+    {
+        return PecasUtilizadas::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
+            ->get();
+    }
+//
+//    public function totais()
+//    {
+//        $totais = $this->aparelho_manutencaos_totais();
+//        $totais = [
+//            'servicos'  => $totais->sum('total_servicos'),
+//            'pecas'     => $totais->sum('total_pecas'),
+//            'kits'      => $totais->sum('total_kits'),
+//        ];
+//        return json_encode([
+//            'total_servicos'        => $totais['servicos'],
+//            'total_pecas'           => $totais['pecas'],
+//            'total_kits'            => $totais['kits'],
+//            'total_servicos_real'   => DataHelper::getFloat2RealMoeda($totais['servicos']),
+//            'total_pecas_real'      => DataHelper::getFloat2RealMoeda($totais['pecas']),
+//            'total_kits_real'       => DataHelper::getFloat2RealMoeda($totais['kits'])
+//        ]);
+//    }
+
+    public function fechamentoValorTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->attributes['valor_total']);
     }
 
     public function aparelho_instrumentos()

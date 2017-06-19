@@ -30,6 +30,7 @@ class AparelhoManutencao extends Model
         }
         return $query->get();
     }
+
     static public function check_instrumento_duplo($idordem_servico, $idinstrumento)
     {
         return parent::where('idordem_servico', $idordem_servico)
@@ -111,30 +112,29 @@ class AparelhoManutencao extends Model
 
     public function getTotalServicosReal()
     {
-        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalServicos());
+        return DataHelper::getFloat2RealMoeda($this->getTotalServicos());
     }
 
     public function getTotalServicos()
     {
-        $total = 0;
-        foreach ($this->servico_prestados as $servico_prestado) {
-            $total += $servico_prestado->valor_total();
-        }
-        return $total;
+        return $this->servico_prestados->sum(function ($p) {
+            return $p->valor * $p->quantidade;
+        });
     }
 
     public function getTotalDescontoServicosReal()
     {
-        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalDescontoServicos());
+        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoServicos());
     }
 
     public function getTotalDescontoServicos()
     {
-        $total = 0;
-        foreach ($this->servico_prestados as $servico_prestado) {
-            $total += $servico_prestado->desconto;
-        }
-        return $total;
+        return $this->servico_prestados->sum('desconto');
+//        $total = 0;
+//        foreach ($this->servico_prestados as $servico_prestado) {
+//            $total += $servico_prestado->desconto;
+//        }
+//        return $total;
     }
 
     // ******************** PEÇAS *********************************
@@ -152,30 +152,29 @@ class AparelhoManutencao extends Model
 
     public function getTotalPecasReal()
     {
-        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalPecas());
+        return DataHelper::getFloat2RealMoeda($this->getTotalPecas());
     }
 
     public function getTotalPecas()
     {
-        $total = 0;
-        foreach ($this->pecas_utilizadas as $pecas_utilizada) {
-            $total += $pecas_utilizada->valor_total();
-        }
-        return $total;
+        return $this->pecas_utilizadas->sum(function ($p) {
+            return $p->valor * $p->quantidade;
+        });
     }
 
     public function getTotalDescontoPecasReal()
     {
-        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalDescontoPecas());
+        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoPecas());
     }
 
     public function getTotalDescontoPecas()
     {
-        $total = 0;
-        foreach ($this->pecas_utilizadas as $pecas_utilizada) {
-            $total += $pecas_utilizada->desconto;
-        }
-        return $total;
+        return $this->pecas_utilizadas->sum('desconto');
+//        $total = 0;
+//        foreach ($this->pecas_utilizadas as $pecas_utilizada) {
+//            $total += $pecas_utilizada->desconto;
+//        }
+//        return $total;
     }
 
     // ******************** KITS **********************************
@@ -193,31 +192,26 @@ class AparelhoManutencao extends Model
 
     public function getTotalKitsReal()
     {
-        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalKits());
+        return DataHelper::getFloat2RealMoeda($this->getTotalKits());
     }
 
     public function getTotalKits()
     {
-        $total = 0;
-        foreach ($this->kits_utilizados as $kits_utilizado) {
-            $total += $kits_utilizado->valor_total();
-        }
-        return $total;
+        return $this->kits_utilizados->sum(function ($p) {
+            return $p->valor * $p->quantidade;
+        });
     }
 
     public function getTotalDescontoKitsReal()
     {
-        return 'R$ ' . DataHelper::getFloat2Real($this->getTotalDescontoKits());
+        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoKits());
     }
 
     public function getTotalDescontoKits()
     {
-        $total = 0;
-        foreach ($this->kits_utilizados as $kits_utilizado) {
-            $total += $kits_utilizado->desconto;
-        }
-        return $total;
+        return $this->kits_utilizados->sum('desconto');
     }
+
     // ******************** **** **********************************
     // ************************************************************
 
@@ -239,8 +233,6 @@ class AparelhoManutencao extends Model
         return $total;
     }
 
-
-
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
     public function selo_instrumentos()
@@ -257,6 +249,7 @@ class AparelhoManutencao extends Model
     {
         return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
     }
+
     public function has_instrumento()
     {
         return ($this->attributes['idinstrumento'] != NULL);

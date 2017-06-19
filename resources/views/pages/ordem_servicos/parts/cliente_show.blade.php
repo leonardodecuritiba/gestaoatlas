@@ -34,49 +34,43 @@
                     </li>
                 @endif
             </ul>
-            <?php $Valores = json_decode($OrdemServico->getValores());?>
-            {{--@include('pages.ordem_servicos.parts.resumo_valores')--}}
             <ul class="list-unstyled product_price">
                 <li><i class="fa fa-money"></i> Total em Serviços: <b class="pull-right"
-                                                                      id="valor_total_servicos">{{$Valores->valor_total_servicos}}</b>
+                                                                      id="valor_total_servicos">{{$OrdemServico->fechamentoServicosTotalReal()}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Total em Peças/Produtos: <b class="pull-right"
-                                                                            id="valor_total_pecas">{{$Valores->valor_total_pecas}}</b>
+                                                                            id="valor_total_pecas">{{$OrdemServico->fechamentoPecasTotalReal()}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Total em Kits: <b class="pull-right"
-                                                                  id="valor_total_kits">{{$Valores->valor_total_kits}}</b>
+                                                                  id="valor_total_kits">{{$OrdemServico->fechamentoKitsTotalReal()}}</b>
                 </li>
-                @if(isset($Valores->valor_desconto))
-                    <li class="red"><i class="fa fa-money"></i> Descontos: <b class="pull-right"
-                                                                              id="valor_total_kits">{{$Valores->valor_desconto}}</b>
-                    </li>
-                @endif
-                @if(isset($Valores->valor_acrescimo))
-                    <li class="blue"><i class="fa fa-money"></i> Acréscimos: <b class="pull-right"
-                                                                                id="valor_total_kits">{{$Valores->valor_acrescimo}}</b>
-                    </li>
-                @endif
+                <li class="red"><i class="fa fa-money"></i> Descontos: <b class="pull-right"
+                                                                          id="valor_descontos">{{$OrdemServico->getDescontoTecnicoReal()}}</b>
+                </li>
+                <li class="blue"><i class="fa fa-money"></i> Acréscimos: <b class="pull-right"
+                                                                            id="valor_acrescimos">{{$OrdemServico->getAcrescimoTecnicoReal()}}</b>
+                </li>
                 <li>
                     <div class="ln_solid"></div>
                 </li>
                 <li><i class="fa fa-money"></i> Valor Total: <b class="pull-right"
-                                                                id="valor_total">{{$Valores->valor_total}}</b>
+                                                                id="valor_total">{{$OrdemServico->fechamentoValorTotalReal()}}</b>
                 </li>
             </ul>
             <ul class="list-unstyled product_price">
                 <li><i class="fa fa-money"></i> Deslocamentos: <b class="pull-right"
-                                                                  id="valor_deslocamento">{{$Valores->valor_deslocamento}}</b>
+                                                                  id="valor_deslocamento">{{$OrdemServico->getCustosDeslocamentoReal()}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Pedágios: <b class="pull-right"
-                                                             id="pedagios">{{$Valores->valor_pedagios}}</b>
+                                                             id="pedagios">{{$OrdemServico->getPedagiosReal()}}</b>
                 </li>
                 <li><i class="fa fa-money"></i> Outros Custos: <b class="pull-right"
-                                                                  id="outros_custos">{{$Valores->valor_outros_custos}}</b>
+                                                                  id="outros_custos">{{$OrdemServico->getOutrosCustosReal()}}</b>
                 </li>
             </ul>
             <ul class="list-unstyled product_price">
                 <li><i class="fa fa-money"></i> Valor Final: <b class="pull-right green"
-                                                                id="valor_final">{{$Valores->valor_final}}</b>
+                                                                id="valor_final">{{$OrdemServico->getValorFinalReal()}}</b>
                 </li>
             </ul>
         </div>

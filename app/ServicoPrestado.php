@@ -10,6 +10,7 @@ class ServicoPrestado extends Model
 //    use SoftDeletes;
     use Valores;
     public $timestamps = true;
+    public $total;
     protected $table = 'servico_prestados';
     protected $primaryKey = 'idservico_prestado';
     protected $fillable = [
@@ -21,6 +22,7 @@ class ServicoPrestado extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
+
     public function valor_original()
     {
         return $this->servico->valor;

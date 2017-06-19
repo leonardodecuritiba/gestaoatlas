@@ -504,8 +504,16 @@ class OrdemServicoController extends Controller
 
     public function imprimir($idordem_servico)
     {
+        $OrdemServico = OrdemServico::find($idordem_servico);
         $PrintHelper = new PrintHelper();
-        return $PrintHelper->printOS($idordem_servico);
+        return $PrintHelper->printOS($OrdemServico);
+    }
+
+    public function exportar($idordem_servico)
+    {
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $PrintHelper = new PrintHelper();
+        return $PrintHelper->exportOS($OrdemServico);
     }
 
 

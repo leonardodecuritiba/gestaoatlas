@@ -91,7 +91,10 @@ Route::group(['middleware' => ['auth']], function() {
     Route::get('ordem_servicos/abrir/{clienteid}', 'OrdemServicoController@abrir')->name('ordem_servicos.abrir'); //Abrir O.S
     Route::get('ordem_servicos/resumo/{idordem_servico}', 'OrdemServicoController@resumo')->name('ordem_servicos.resumo'); //Fechar (RESUMO) O.S
     Route::post('ordem_servicos/finalizar/{idordem_servico}', 'OrdemServicoController@finalizar')->name('ordem_servicos.finalizar'); //Fechar O.S
+
+    Route::get('ordem_servicos/exportar/{idordem_servico}', 'OrdemServicoController@exportar')->name('ordem_servicos.exportar'); //Imprimir O.S
     Route::get('ordem_servicos/imprimir/{idordem_servico}', 'OrdemServicoController@imprimir')->name('ordem_servicos.imprimir'); //Imprimir O.S
+
     Route::get('ordem_servicos/encaminhar/{idordem_servico}', 'OrdemServicoController@encaminhar')->name('ordem_servicos.encaminhar'); //Imprimir O.S
     Route::get('ordem_servicos/destroy/{idordem_servico}', 'OrdemServicoController@destroy')->name('ordem_servicos.destroy'); //Imprimir O.S
     Route::get('ordem_servicos/cliente/{idcliente}', 'OrdemServicoController@get_ordem_servicos_cliente')->name('ordem_servicos.cliente');
@@ -169,7 +172,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('cancel-nf/{idfaturamento}/{debug}/{type}', 'FaturamentoController@cancelNF')->name('faturamentos.nf.cancel');
     Route::get('resend-nf/{idfaturamento}/{debug}/{type}', 'FaturamentoController@resendNF')->name('faturamentos.nf.resend');
     Route::get('nf/consulta/{idfaturamento}/{debug}/{type}', 'FaturamentoController@getNF')->name('faturamentos.nf.get');
-
 
 
     //RELATÓRIOS

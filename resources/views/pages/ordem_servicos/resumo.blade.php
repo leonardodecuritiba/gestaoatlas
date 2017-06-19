@@ -93,11 +93,17 @@
                         <div class="ln_solid"></div>
                         <div class="form-group">
 							@if($OrdemServico->status())
-								<div class="col-md-6 col-sm-6 col-xs-12">
+								<div class="col-md-3 col-sm-3 col-xs-12">
 									<a target="_blank"
 									   href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
 									   class="btn btn-default btn-lg btn-block"><i class="fa fa-print fa-2"></i>
 										Imprimir</a>
+								</div>
+								<div class="col-md-3 col-sm-3 col-xs-12">
+									<a target="_blank"
+									   href="{{route('ordem_servicos.exportar',$OrdemServico->idordem_servico)}}"
+									   class="btn btn-default btn-lg btn-block"><i class="fa fa-download fa-2"></i>
+										Exportar</a>
 								</div>
 								<div class="col-md-6 col-sm-6 col-xs-12">
 									<a href="{{route('ordem_servicos.encaminhar',$OrdemServico->idordem_servico)}}"
@@ -105,17 +111,23 @@
 										Encaminhar</a>
 								</div>
 							@else
-								<div class="col-md-4 col-sm-4 col-xs-12">
+								<div class="col-md-3 col-sm-3 col-xs-12">
 									<a target="_blank"
 									   href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
 									   class="btn btn-default btn-lg btn-block"><i class="fa fa-print fa-2"></i>
 										Imprimir</a>
 								</div>
-								<div class="col-md-4 col-sm-4 col-xs-12">
+								<div class="col-md-3 col-sm-3 col-xs-12">
+									<a target="_blank"
+									   href="{{route('ordem_servicos.exportar',$OrdemServico->idordem_servico)}}"
+									   class="btn btn-default btn-lg btn-block"><i class="fa fa-download fa-2"></i>
+										Exportar</a>
+								</div>
+								<div class="col-md-3 col-sm-3 col-xs-12">
                                     <a href="{{route('ordem_servicos.show',$OrdemServico->idordem_servico)}}"
                                        class="btn btn-primary btn-lg btn-block"><i class="fa fa-arrow-circle-left fa-2"></i> Editar</a>
                                 </div>
-								<div class="col-md-4 col-sm-4 col-xs-12 ">
+								<div class="col-md-3 col-sm-3 col-xs-12 ">
 									<button class="btn btn-success btn-lg btn-block"><i class="fa fa-sign-out fa-2"></i>
 										Finalizar
 									</button>

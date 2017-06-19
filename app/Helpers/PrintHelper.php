@@ -3,14 +3,15 @@
 namespace App\Helpers;
 
 use App\AparelhoManutencao;
-use App\Equipamento;
-use App\Instrumento;
+use App\Models\Empresa;
 use App\OrdemServico;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
+use \Barryvdh\DomPDF\Facade as PDF;
 
 class PrintHelper
 {
+    private $_EMPRESA_;
     private $linha_xls;
     private $data;
     private $insumos;
@@ -18,11 +19,25 @@ class PrintHelper
     private $OrdemServico;
 
     // ******************** FUNCTIONS ******************************
-    public function printOS($idordem_servico)
+
+    static public function printOS(OrdemServico $OrdemServico)
+    {
+        $Empresa = new Empresa();
+        $filename = 'OrdemServico_' . $OrdemServico->idordem_servico . '_' . Carbon::now()->format('H-i_d-m-Y');
+
+
+//        return $OrdemServico->fechamentoServicos();
+//        return view('prints.ordem_servico')->with(['filename' =>$filename, 'OrdemServico' =>$OrdemServico, 'Empresa'=>$Empresa]);
+
+        $pdf = PDF::loadView('prints.ordem_servico', ['filename' => $filename, 'OrdemServico' => $OrdemServico, 'Empresa' => $Empresa]);
+        return $pdf->stream($filename . '.pdf');
+    }
+
+    public function exportOS(OrdemServico $OrdemServico)
     {
 
 //        incluir no cabeçalho ou rodapé seguinte observaçao: .
-        $this->OrdemServico = OrdemServico::find($idordem_servico);
+        $this->OrdemServico = $OrdemServico;
         $Cliente = $this->OrdemServico->cliente;
         $filename = 'OrdemServico_' . $this->OrdemServico->idordem_servico . '_' . Carbon::now()->format('H-i_d-m-Y');
 

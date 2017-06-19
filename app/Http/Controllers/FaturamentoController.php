@@ -22,8 +22,6 @@ use Illuminate\Support\Facades\Redirect;
 class FaturamentoController extends Controller
 {
     private $Page;
-    private $colaborador;
-    private $tecnico;
 
     public function __construct()
     {
