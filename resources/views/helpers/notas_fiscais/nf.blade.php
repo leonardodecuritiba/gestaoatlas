@@ -1,47 +1,48 @@
 <script>
     <!-- script consulta NF -->
     $(document).ready(function () {
+
         $('div#consultaNF').on('show.bs.modal', function (e) {
+            //elementos
             var $this = $(this);
-            var $loading_modal = $($this).find('div.loading');
             var $origem = $(e.relatedTarget);
+            var $loading_modal = $($this).find('div.loading');
             var $listas_nf = $($this).find('ul.listas_nf');
             var $erros_nf = $($this).find('ul.erros_nf');
             var $btn_refresh = $($this).find('div.modal-footer a#btn-refresh');
-            var $btn_cancel = $($this).find('div.modal-footer a#btn-cancel');
+            var $btn_enviar_email = $($this).find('ul.listas_nf span#email');
+            var $btn_cancel = $($this).find('div.modal-footer button#btn-cancel');
+            var $form_cancelamento = $($this).find('div#cancelamento form');
+
+            //data
             var type = $($origem).data('type'); //if is NFe or NFSe
             var debug = $($origem).data('debug'); //if is/not debug
             var idfaturamento = $($origem).data('idfaturamento'); //idfaturamento
 
-            var $btn_enviar_email = $($this).find('ul.listas_nf span#email');
-
+            //hidding all
             $($listas_nf).hide();
             $($erros_nf).hide();
             $($this).hide();
-
             $($btn_refresh).hide();
-            $($btn_refresh).attr('href', '');
             $($btn_cancel).hide();
-            $($btn_cancel).attr('href', '');
+            $($form_cancelamento).hide();
 
+            //get nf data
             var href_ = '';
-            href_ = '{{route('faturamentos.nf.get',['XXX','debug','type'])}}';
-            href_ = href_.replace('XXX', idfaturamento);
-            href_ = href_.replace('debug', debug);
-            href_ = href_.replace('type', type);
+            href_ = '{{route('faturamentos.nf.get',['_ID_','_DEBUG_','_TYPE_'])}}';
+            href_ = href_.replace('_ID_', idfaturamento);
+            href_ = href_.replace('_DEBUG_', debug);
+            href_ = href_.replace('_TYPE_', type);
             console.log(href_);
 
-            var url_refresh = '';
-            url_refresh = '{{route('faturamentos.nf.resend',['XXX','debug','type'])}}';
-            url_refresh = url_refresh.replace('XXX', idfaturamento);
-            url_refresh = url_refresh.replace('debug', debug);
-            url_refresh = url_refresh.replace('type', type);
+            //resend nf
+            $($btn_refresh).attr('href', '');
 
-            var url_cancel = '';
-            url_cancel = '{{route('faturamentos.nf.cancel',['XXX','debug','type'])}}';
-            url_cancel = url_cancel.replace('XXX', idfaturamento);
-            url_cancel = url_cancel.replace('debug', debug);
-            url_cancel = url_cancel.replace('type', type);
+            //cancel nf
+            var url_cancel = $($form_cancelamento).attr('action');
+            url_cancel = url_cancel.replace('_ID_', idfaturamento);
+            url_cancel = url_cancel.replace('_DEBUG_', debug);
+            $($form_cancelamento).attr('action', url_cancel.replace('_TYPE_', type));
 
             $.ajax({
                 url: href_,
@@ -94,7 +95,6 @@
                         switch (STATUS) {
                             case 'autorizado': {
                                 $($btn_cancel).show();
-                                $($btn_cancel).attr('href', url_cancel);
                                 $($parent).find('span#' + TIPO_NF).show();
                                 //autorizado
                                 if (TIPO_NF == 'nfe') {
@@ -118,23 +118,33 @@
                                 break;
                             }
                             case 'erro_autorizacao': {
+                                //refresh nf
+                                var url_refresh = '';
+                                url_refresh = '{{route('faturamentos.nf.resend',['_ID_','_DEBUG_','_TYPE_'])}}';
+                                url_refresh = url_refresh.replace('_ID_', idfaturamento);
+                                url_refresh = url_refresh.replace('_DEBUG_', debug);
+                                url_refresh = url_refresh.replace('_TYPE_', type);
+
                                 $($btn_refresh).show();
                                 $($btn_refresh).attr('href', url_refresh);
                                 $($btn_cancel).show();
-                                $($btn_cancel).attr('href', url_cancel);
+                                break;
+                            }
+                            case 'cancelado': {
+                                //renew nf
+                                var url_renew = '';
+                                url_renew = '{{route('faturamentos.nf.send',['_ID_','_DEBUG_','_TYPE_'])}}';
+                                url_renew = url_renew.replace('_ID_', idfaturamento);
+                                url_renew = url_renew.replace('_DEBUG_', debug);
+                                url_renew = url_renew.replace('_TYPE_', type);
 
-//                                    if (TIPO_NF == 'nfse') {
-//                                        var ERROS = BODY.erros;
-//                                        $($parent).find('b#codigo').html(ERROS.codigo);
-//                                        $($parent).find('b#correcao').html(ERROS.correcao);
-//                                        $($parent).find('b#mensagem').html(ERROS.mensagem);
-//                                    }
+                                $($btn_refresh).show();
+                                $($btn_refresh).attr('href', url_renew);
                                 break;
                             }
                         }
                     } else if (json.status == 404) {
                         $($btn_cancel).show();
-                        $($btn_cancel).attr('href', url_cancel);
 
                         var TIPO_NF = json.type;
                         var REF = json.ref;
@@ -161,7 +171,12 @@
             });
 
         });
-        $('a.btn-enviar-nota-cliente').click(function () {
+        $('div#consultaNF button#btn-cancel').click(function () {
+            var $modal_body = $(this).parents('div.modal-footer').prev();
+            $($modal_body).find('div#cancelamento form').toggle();
+        });
+
+        $('div#consultaNF a.btn-enviar-nota-cliente').click(function () {
             var $this = $(this);
             var $loading_modal = $($this).parents('div#consultaNF').find('div.loading');
             var idfaturamento = $($this).data('idfaturamento');
@@ -191,6 +206,5 @@
                 }
             });
         })
-
     });
 </script>

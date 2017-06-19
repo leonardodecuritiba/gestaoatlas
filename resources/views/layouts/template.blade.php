@@ -59,6 +59,11 @@
 			</div>
 		</div>
 		@include('layouts.foot')
+		<script>
+            $("form.form-ajax").submit(function (e) {
+                e.preventDefault();
+            });
+		</script>
 		@yield('scripts_content')
 	</body>
 </html>

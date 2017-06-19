@@ -89,7 +89,6 @@ class NotasFiscaisController extends Controller
             'code' => $code,
             'status' => $mensagem,
         ];
-
         return new JsonResponse($content, 200);
     }
 }

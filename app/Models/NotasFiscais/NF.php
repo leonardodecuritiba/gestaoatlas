@@ -70,8 +70,7 @@ class NF
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         $body = Yaml::parse($body);
-
-        if (!isset($body['uri'])) {
+        if (($body['status'] != 'processando_autorizacao') && (!isset($body['uri']))) {
             $body['uri'] = $_SERVER_ . $body['caminho_danfe'];
         }
 
@@ -87,21 +86,38 @@ class NF
         return ($retorno);
     }
 
-    static public function cancelar($ref, $debug, $type)
+    static public function cancelar($ref, $debug, $type, $params)
     {
+
         if ($debug) {
-            $_SERVER_ = parent::_URL_HOMOLOGACAO_;
-            $_TOKEN_ = parent::_TOKEN_HOMOLOGACAO_;
+            $_SERVER_ = self::_URL_HOMOLOGACAO_;
+            $_TOKEN_ = self::_TOKEN_HOMOLOGACAO_;
         } else {
-            $_SERVER_ = parent::_URL_PRODUCAO_;
-            $_TOKEN_ = parent::_TOKEN_PRODUCAO_;
+            $_SERVER_ = self::_URL_PRODUCAO_;
+            $_TOKEN_ = self::_TOKEN_PRODUCAO_;
         }
+
+
         $ch = curl_init();
-//        curl_setopt($ch, CURLOPT_URL, "http://homologacao.acrasnfe.acras.com.br/nfse/" . $ref . "?token=" . $token);
-        curl_setopt($ch, CURLOPT_URL, $_SERVER_ . "/" . $type . "/" . $ref . "&token=" . $_TOKEN_);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array());
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        if (!strcmp($type, 'nfe')) {
+            //https://api.focusnfe.com.br/nfe2/cancelar?token=TOKEN&amp;ref=REFERENCIA&amp;justificativa=Justificativa%20para%20o%20cancelamento
+            $URL = $_SERVER_ . "/" . self::_URL_NFe_ . "/cancelar?token=" . $_TOKEN_ . "&ref=" . $ref;
+            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, Yaml::dump($params));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+        } else {
+            //curl_setopt($ch, CURLOPT_URL, "http://homologacao.acrasnfe.acras.com.br/nfse/" . $ref . "?token=" . $token);
+            $URL = $_SERVER_ . "/" . self::_URL_NFSe_ . "/" . $ref . "?token=" . $_TOKEN_;
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array());
+//            curl_setopt($ch, CURLOPT_POSTFIELDS, Yaml::dump($params));
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+        }
+
+        curl_setopt($ch, CURLOPT_URL, $URL);
+
+        $body = curl_exec($ch);
+        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         $retorno = [
             'type' => $type,

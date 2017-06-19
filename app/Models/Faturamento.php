@@ -222,12 +222,11 @@ class Faturamento extends Model
         return $this->cliente->sendNF($link);
     }
 
-    public function cancelNF($debug, $type)
+    public function cancelNF($debug, $type, $data)
     {
         $debug = ($debug) ? 'homologacao' : 'producao';
-        return $this->update([
-            'id' . $type . '_' . $debug => NULL
-        ]);
+        $ref_key = 'id' . $type . '_' . $debug;
+        return NF::cancelar($this->{$ref_key}, $debug, $type, $data);
     }
 
     public function setUrl($type, $link)
@@ -240,16 +239,17 @@ class Faturamento extends Model
     public function sendNF($debug, $type)
     {
         $option = ($debug) ? 'homologacao' : 'producao';
+        $ref_key = $type . '_' . $option;
         $ref_index = Ajuste::getByMetaKey('ref_' . $type . 'index_' . $option);
 //        $this->{'id' . $type . '_' . $option} = $ref_index->meta_value;
         $this->update([
-            'id' . $type . '_' . $option => $ref_index->meta_value
+            'id' . $ref_key => $ref_index->meta_value,
+            'data' . $ref_key => Carbon::now()
         ]);
         $ref_index->incrementa();
 
         return $this->setNF($debug, $type);
     }
-
 
     public function setNF($debug, $type)
     {

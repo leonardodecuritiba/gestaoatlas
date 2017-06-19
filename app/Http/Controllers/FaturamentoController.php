@@ -42,6 +42,7 @@ class FaturamentoController extends Controller
             'msg_upd' => 'Faturamento atualizado com sucesso!',
             'msg_rem' => 'Faturamento removido com sucesso!',
             'msg_rea' => 'Faturamento reaberto com sucesso!',
+            'msg_nf_rem' => 'Pedido de cancelamento da Nota Fiscal enviado com sucesso! Aguarde alguns instantes e consulte novamente para verificar o cancelamento.',
             'titulo_primario' => "",
             'titulo_secundario' => "",
         ];
@@ -176,12 +177,12 @@ class FaturamentoController extends Controller
         return Redirect::route($this->Page->link . '.show', $id);
     }
 
-    public function cancelNF($id, $debug, $type)
+    public function cancelNF(Request $request, $id, $debug, $type)
     {
         $Faturamento = Faturamento::find($id);
-        $Faturamento->cancelNF($debug, $type);
+        $Faturamento->cancelNF($debug, $type, $request->all());
         session()->forget('mensagem');
-        session(['mensagem' => $this->Page->msg_upd]);
+        session(['mensagem' => $this->Page->msg_nf_rem]);
         return Redirect::route($this->Page->link . '.show', $id);
     }
 

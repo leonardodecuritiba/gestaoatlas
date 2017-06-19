@@ -59,6 +59,21 @@
                                     <li><i class="fa fa-info"></i> Mensagem: <b id="mensagem"></b></li>
                                 </ul>
                             </div>
+                            <div id="cancelamento">
+                                {!! Form::open(['route' => ['faturamentos.nf.cancel','_ID_','_DEBUG_','_TYPE_'],
+
+                                    'method' => 'POST', 'data-parsley-validate']) !!}
+                                <label>Justificativa: <span class="required">*</span></label>
+                                <textarea required="required" class="form-control"
+                                          name="justificativa"
+                                          rows="3"
+                                          placeholder="Justificativa de cancelamento"
+                                ></textarea>
+                                <button class="btn btn-danger pull-right"><i class="fa fa-times fa-2"></i>
+                                    Confirmar Cancelamento
+                                </button>
+                                {!! Form::close() !!}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -66,8 +81,9 @@
             <div class="modal-footer">
                 <div class="col-xs-12">
                     <a id="btn-refresh" class="btn btn-success pull-left esconda"><i class="fa fa-refresh"></i> Reenviar</a>
-                    <a id="btn-cancel" class="btn btn-warning pull-left esconda"><i class="fa fa-times fa-2"></i>
-                        Cancelar</a>
+                    <button id="btn-cancel" class="btn btn-warning pull-left esconda"><i class="fa fa-times fa-2"></i>
+                        Cancelar
+                    </button>
                     <button class="btn btn-danger pull-right" data-dismiss="modal">Fechar</button>
                 </div>
             </div>
