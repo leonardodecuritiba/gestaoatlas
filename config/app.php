@@ -173,6 +173,7 @@ return [
 
         Zizaco\Entrust\EntrustServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Jenssegers\Date\DateServiceProvider::class,
@@ -233,7 +234,8 @@ return [
         'SintegraSP' => SintegraPHP\SP\SintegraSP::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'Date' => Jenssegers\Date\Date::class,
-        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class
+        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class,
+        'DomPDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 

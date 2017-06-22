@@ -178,21 +178,23 @@ class Cliente extends Model
         if ($this->attributes['idpjuridica'] != NULL) {
             $retorno = (object)[
                 'idcliente' => $this->idcliente,
-                'tipo_cliente'   => 1,
-                'tipo'           => 'CNPJ',
-                'entidade'       => $this->pessoa_juridica()->first()->cnpj,
+                'tipo_cliente' => 1,
+                'tipo' => 'CNPJ',
+                'entidade' => $this->pessoa_juridica()->first()->cnpj,
                 'nome_principal' => $this->pessoa_juridica()->first()->nome_fantasia,
                 'razao_social' => $this->pessoa_juridica()->first()->razao_social,
+                'ie' => $this->pessoa_juridica()->first()->ie,
                 'documento' => 'CNPJ: ' . $this->pessoa_juridica()->first()->cnpj,
             ];
         } else {
             $retorno = (object)[
                 'idcliente' => $this->idcliente,
-                'tipo_cliente'   => 0,
-                'tipo'           => 'CPF',
-                'entidade'       => $this->pessoa_fisica()->first()->cpf,
+                'tipo_cliente' => 0,
+                'tipo' => 'CPF',
+                'entidade' => $this->pessoa_fisica()->first()->cpf,
                 'nome_principal' => $this->attributes['nome_responsavel'],
                 'razao_social' => $this->attributes['nome_responsavel'],
+                'ie' => '-',
                 'documento' => 'CPF: ' . $this->pessoa_fisica()->first()->cpf,
             ];
         }

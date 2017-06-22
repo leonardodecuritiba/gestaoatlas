@@ -26,7 +26,8 @@ class PrintHelper
         $filename = 'OrdemServico_' . $OrdemServico->idordem_servico . '_' . Carbon::now()->format('H-i_d-m-Y');
 
 
-//        return $OrdemServico->fechamentoServicos();
+//        $aparelhoManutencao = $OrdemServico->aparelho_manutencaos_totais()[1];
+//        return $aparelhoManutencao;
 //        return view('prints.ordem_servico')->with(['filename' =>$filename, 'OrdemServico' =>$OrdemServico, 'Empresa'=>$Empresa]);
 
         $pdf = PDF::loadView('prints.ordem_servico', ['filename' => $filename, 'OrdemServico' => $OrdemServico, 'Empresa' => $Empresa]);

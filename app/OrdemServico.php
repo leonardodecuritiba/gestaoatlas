@@ -593,6 +593,8 @@ class OrdemServico extends Model
             $ap->total_servicos_real = $ap->getTotalServicosReal();
             $ap->total_pecas_real = $ap->getTotalPecasReal();
             $ap->total_kits_real = $ap->getTotalKitsReal();
+            $ap->selo_instrumentos = $ap->selo_instrumentos;
+            $ap->lacre_instrumentos = $ap->lacre_instrumentos;
             return $ap;
         });
     }

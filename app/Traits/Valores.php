@@ -32,18 +32,9 @@ trait Valores
         return ($this->attributes['valor'] * $this->attributes['quantidade']) - $this->attributes['desconto'];
     }
 
-    public function getValorAttribute($value)
+    public function valor_real()
     {
-        return DataHelper::getFloat2Real($value);
+        return DataHelper::getFloat2RealMoeda($this->attributes['valor']);
     }
 
-    public function valor_float()
-    {
-        return $this->getValorFloatAttribute();
-    }
-
-    public function getValorFloatAttribute()
-    {
-        return $this->attributes['valor'];
-    }
 }

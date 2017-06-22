@@ -12,6 +12,7 @@
         "maatwebsite/excel": "~2.1.0",
         "sintegra-php/sp": "dev-develop",
         "barryvdh/laravel-ide-helper": "v2.2.1",
+      "barryvdh/laravel-dompdf": "^0.8.0",
       "eduardokum/laravel-boleto": "^0.5.0",
       "jenssegers/date": "^3.2",
       "niklasravnsborg/laravel-pdf": "^1.5",
