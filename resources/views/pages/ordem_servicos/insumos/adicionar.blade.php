@@ -41,7 +41,7 @@
                                     {{$servico_prestado->quantidade}}
                                 </td>
                                 <td>
-                                    {{$servico_prestado->desconto_real()}}
+                                    {{$servico_prestado->valor_desconto_real()}}
                                 </td>
                                 <td>
                                     {{$servico_prestado->valor_total_real()}}
@@ -148,7 +148,7 @@
                                     {{$peca_utilizada->quantidade}}
                                 </td>
                                 <td>
-                                    {{$peca_utilizada->desconto_real()}}
+                                    {{$peca_utilizada->valor_desconto_real()}}
                                 </td>
                                 <td>
                                     {{$peca_utilizada->valor_total_real()}}
@@ -252,7 +252,7 @@
                                     {{$kit_utilizado->quantidade}}
                                 </td>
                                 <td>
-                                    {{$kit_utilizado->desconto_real()}}
+                                    {{$kit_utilizado->valor_desconto_real()}}
                                 </td>
                                 <td>
                                     {{$kit_utilizado->valor_total_real()}}
