@@ -87,7 +87,7 @@ class AparelhoManutencao extends Model
         }
     }
 
-    // ******************** SERVIÇOS ******************************
+    // ******************** PEÇAS ******************************
     // ************************************************************
 
     public function remove_pecas_utilizadas()
@@ -132,45 +132,13 @@ class AparelhoManutencao extends Model
         return $this->hasMany('App\KitsUtilizados', 'idaparelho_manutencao');
     }
 
-    public function has_servico_prestados()
-    {
-        return ($this->servico_prestados()->count() > 0);
-    }
-
-    // ******************** PEÇAS *********************************
-    // ************************************************************
-
-    public function getTotalServicosReal()
-    {
-        return DataHelper::getFloat2RealMoeda($this->getTotalServicos());
-    }
-
-    public function getTotalServicos()
-    {
-        return $this->servico_prestados->sum(function ($p) {
-            return $p->valor * $p->quantidade;
-        });
-    }
-
-    public function getTotalDescontoServicosReal()
-    {
-        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoServicos());
-    }
-
-    public function getTotalDescontoServicos()
-    {
-        return $this->servico_prestados->sum('desconto');
-//        $total = 0;
-//        foreach ($this->servico_prestados as $servico_prestado) {
-//            $total += $servico_prestado->desconto;
-//        }
-//        return $total;
-    }
-
     public function has_pecas_utilizadas()
     {
         return ($this->pecas_utilizadas()->count() > 0);
     }
+
+    // ******************** SERVIÇOS *********************************
+    // ************************************************************
 
     public function getTotalPecasReal()
     {
@@ -180,12 +148,9 @@ class AparelhoManutencao extends Model
     public function getTotalPecas()
     {
         return $this->pecas_utilizadas->sum(function ($p) {
-            return $p->valor * $p->quantidade;
+            return ($p->valor * $p->quantidade) - $p->desconto;
         });
     }
-
-    // ******************** KITS **********************************
-    // ************************************************************
 
     public function getTotalDescontoPecasReal()
     {
@@ -195,11 +160,36 @@ class AparelhoManutencao extends Model
     public function getTotalDescontoPecas()
     {
         return $this->pecas_utilizadas->sum('desconto');
-//        $total = 0;
-//        foreach ($this->pecas_utilizadas as $pecas_utilizada) {
-//            $total += $pecas_utilizada->desconto;
-//        }
-//        return $total;
+    }
+
+    public function has_servico_prestados()
+    {
+        return ($this->servico_prestados()->count() > 0);
+    }
+
+    public function getTotalServicosReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->getTotalServicos());
+    }
+
+    public function getTotalServicos()
+    {
+        return $this->servico_prestados->sum(function ($p) {
+            return ($p->valor * $p->quantidade) - $p->desconto;
+        });
+    }
+
+    // ******************** KITS **********************************
+    // ************************************************************
+
+    public function getTotalDescontoServicosReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoServicos());
+    }
+
+    public function getTotalDescontoServicos()
+    {
+        return $this->servico_prestados->sum('desconto');
     }
 
     public function has_kits_utilizados()
@@ -215,7 +205,7 @@ class AparelhoManutencao extends Model
     public function getTotalKits()
     {
         return $this->kits_utilizados->sum(function ($p) {
-            return $p->valor * $p->quantidade;
+            return ($p->valor * $p->quantidade) - $p->desconto;
         });
     }
 
@@ -275,15 +265,16 @@ class AparelhoManutencao extends Model
         return $this->instrumento->selo_retirado();
     }
 
-    public function numeracao_lacres_retirados()
+    public function has_selo_retirado()
+    {
+        $lacresInstrumento = $this->selo_retirado();
+        return ($lacresInstrumento != NULL);
+    }
+
+    public function has_lacres_retirados()
     {
         $lacresInstrumento = $this->lacres_retirados();
-        $numeracao = NULL;
-        foreach ($lacresInstrumento as $li) {
-            $lacre = $li->lacre;
-            $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
-        }
-        return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
+        return ($lacresInstrumento != NULL);
     }
 
     public function lacres_retirados()
@@ -291,13 +282,28 @@ class AparelhoManutencao extends Model
         return $this->instrumento->lacres_retirados();
     }
 
+    public function numeracao_lacres_retirados()
+    {
+        $lacresInstrumento = $this->lacres_retirados();
+        $numeracao = NULL;
+        if ($lacresInstrumento != NULL) {
+            foreach ($lacresInstrumento as $li) {
+                $lacre = $li->lacre;
+                $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
+            }
+        }
+        return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
+    }
+
     public function numeracao_lacres_afixados()
     {
         $lacresInstrumento = $this->lacres_afixados();
         $numeracao = NULL;
-        foreach ($lacresInstrumento as $li) {
-            $lacre = $li->lacre;
-            $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
+        if ($lacresInstrumento != NULL) {
+            foreach ($lacresInstrumento as $li) {
+                $lacre = $li->lacre;
+                $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
+            }
         }
         return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
     }

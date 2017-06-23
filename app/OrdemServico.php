@@ -343,12 +343,6 @@ class OrdemServico extends Model
         return $valor_total;
     }
 
-    public function fechamentoPecasTotalFloat()
-    {
-        return $this->fechamentoPecas()->sum(function ($val) {
-            return $val->valor * $val->quantidade;
-        });
-    }
 
 //
 //
@@ -424,19 +418,26 @@ class OrdemServico extends Model
 //        return $this->valores;
 //    }
 
+    public function fechamentoPecasTotalFloat()
+    {
+        return $this->fechamentoPecas()->sum(function ($val) {
+            return ($val->valor * $val->quantidade) - $val->desconto;
+        });
+    }
+
+
+    // ******************** VALORES *********************************
+
     public function fechamentoPecas()
     {
         return PecasUtilizadas::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
             ->get();
     }
 
-
-    // ******************** STATUS *********************************
-
     public function fechamentoServicosTotalFloat()
     {
         return $this->fechamentoServicos()->sum(function ($val) {
-            return $val->valor * $val->quantidade;
+            return ($val->valor * $val->quantidade) - $val->desconto;
         });
     }
 
@@ -449,7 +450,7 @@ class OrdemServico extends Model
     public function fechamentoKitsTotalFloat()
     {
         return $this->fechamentoKits()->sum(function ($val) {
-            return $val->valor * $val->quantidade;
+            return ($val->valor * $val->quantidade) - $val->desconto;
         });
     }
 
@@ -467,6 +468,26 @@ class OrdemServico extends Model
             $this->attributes['pedagios'] +
             $this->attributes['outros_custos'];
         return $this->save();
+    }
+
+    public function fechamentoServicosTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->fechamentoServicosTotalFloat());
+    }
+
+    public function fechamentoKitsTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->fechamentoKitsTotalFloat());
+    }
+
+    public function fechamentoPecasTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->fechamentoPecasTotalFloat());
+    }
+
+    public function fechamentoValorTotalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->attributes['valor_total']);
     }
 
     // ******************** MUTTATTORS ******************************
@@ -652,44 +673,6 @@ class OrdemServico extends Model
             $ap->lacre_instrumentos = $ap->lacre_instrumentos;
             return $ap;
         });
-    }
-
-    public function fechamentoServicosTotalReal()
-    {
-        return DataHelper::getFloat2RealMoeda($this->fechamentoServicosTotalFloat());
-    }
-
-    public function fechamentoKitsTotalReal()
-    {
-        return DataHelper::getFloat2RealMoeda($this->fechamentoKitsTotalFloat());
-    }
-
-    public function fechamentoPecasTotalReal()
-    {
-        return DataHelper::getFloat2RealMoeda($this->fechamentoPecasTotalFloat());
-    }
-//
-//    public function totais()
-//    {
-//        $totais = $this->aparelho_manutencaos_totais();
-//        $totais = [
-//            'servicos'  => $totais->sum('total_servicos'),
-//            'pecas'     => $totais->sum('total_pecas'),
-//            'kits'      => $totais->sum('total_kits'),
-//        ];
-//        return json_encode([
-//            'total_servicos'        => $totais['servicos'],
-//            'total_pecas'           => $totais['pecas'],
-//            'total_kits'            => $totais['kits'],
-//            'total_servicos_real'   => DataHelper::getFloat2RealMoeda($totais['servicos']),
-//            'total_pecas_real'      => DataHelper::getFloat2RealMoeda($totais['pecas']),
-//            'total_kits_real'       => DataHelper::getFloat2RealMoeda($totais['kits'])
-//        ]);
-//    }
-
-    public function fechamentoValorTotalReal()
-    {
-        return DataHelper::getFloat2RealMoeda($this->attributes['valor_total']);
     }
 
     public function aparelho_instrumentos()

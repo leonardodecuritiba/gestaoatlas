@@ -96,19 +96,19 @@
             </div>
         </div>
     </section>
-        @if($OrdemServico->has_aparelho_manutencaos())
-            @foreach($OrdemServico->aparelho_manutencaos as $AparelhoManutencao)
-                <section class="row">
-                    @if($AparelhoManutencao->has_instrumento())
-                        <?php $Instrumento = $AparelhoManutencao->instrumento;?>
-                        @include('pages.ordem_servicos.parts.instrumentos.show')
-                    @else
-                        <?php $Equipamento = $AparelhoManutencao->equipamento;?>
-                        @include('pages.ordem_servicos.parts.equipamentos.show')
-                    @endif
-                </section>
-            @endforeach
-        @endif
+    @if($OrdemServico->has_aparelho_manutencaos())
+        @foreach($OrdemServico->aparelho_manutencaos as $AparelhoManutencao)
+            <section class="row">
+                @if($AparelhoManutencao->has_instrumento())
+                    <?php $Instrumento = $AparelhoManutencao->instrumento;?>
+                    @include('pages.ordem_servicos.parts.instrumentos.show')
+                @else
+                    <?php $Equipamento = $AparelhoManutencao->equipamento;?>
+                    @include('pages.ordem_servicos.parts.equipamentos.show')
+                @endif
+            </section>
+        @endforeach
+    @endif
     {{--<!-- /page content -->--}}
 @endsection
 @section('scripts_content')

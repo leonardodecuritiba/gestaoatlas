@@ -17,7 +17,7 @@ trait Valores
         return ($this->attributes['valor'] * $this->attributes['quantidade']);
     }
 
-    public function desconto_real()
+    public function valor_desconto_real()
     {
         return DataHelper::getFloat2RealMoeda($this->attributes['desconto']);
     }

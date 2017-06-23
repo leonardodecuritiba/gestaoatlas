@@ -152,10 +152,7 @@
 				</div>
 			</div>
 		</div>
-	@else
-		@include('layouts.search.no-results')
 	@endif
-
 	@if(count($OrdemServicosPassadas) > 0)
 		@foreach ($OrdemServicosPassadas as $periodo => $OrdensServicos)
 			<div class="x_panel">

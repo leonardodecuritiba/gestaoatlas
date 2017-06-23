@@ -16,28 +16,42 @@
             <p>
                 {{$AparelhoManutencao->defeito}}
             </p>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <h2>Selo Retirado:</h2>
-                <p class="green">{{$AparelhoManutencao->numeracao_selo_retirado()}}</p>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <h2>Selo Afixado:</h2>
-                <p class="green">{{$AparelhoManutencao->numeracao_selo_afixado()}}</p>
-            </div>
+            @if($AparelhoManutencao->has_selo_retirado())
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2>Selo Retirado:</h2>
+                    <p class="green">{{$AparelhoManutencao->numeracao_selo_retirado()}}</p>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2>Selo Afixado:</h2>
+                    <p class="green">{{$AparelhoManutencao->numeracao_selo_afixado()}}</p>
+                </div>
+            @else
+                <div class="alert-custos_isento alert alert-danger fade in"
+                     role="alert">
+                    <strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong> Nenhum Selo Retirado.
+                </div>
+            @endif
         </div>
         <div class="col-md-6 col-sm-6 col-xs-12">
             <h2>Solução:</h2>
             <p>
                 {{$AparelhoManutencao->solucao}}
             </p>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <h2>Lacres Retirados:</h2>
-                <p class="green">{{$AparelhoManutencao->numeracao_lacres_retirados()}}</p>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <h2>Lacres Afixados:</h2>
-                <p class="green">{{$AparelhoManutencao->numeracao_lacres_afixados()}}</p>
-            </div>
+            @if($AparelhoManutencao->has_selo_retirado())
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2>Lacres Retirados:</h2>
+                    <p class="green">{{$AparelhoManutencao->numeracao_lacres_retirados()}}</p>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <h2>Lacres Afixados:</h2>
+                    <p class="green">{{$AparelhoManutencao->numeracao_lacres_afixados()}}</p>
+                </div>
+            @else
+                <div class="alert-custos_isento alert alert-danger fade in"
+                     role="alert">
+                    <strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong> Nenhum Lacre Retirado.
+                </div>
+            @endif
         </div>
     </section>
 @else
