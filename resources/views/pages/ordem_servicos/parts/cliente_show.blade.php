@@ -16,13 +16,14 @@
                 <li><i class="fa fa-info"></i> Nº da O.S.: <b>{{$OrdemServico->idordem_servico}}</b>
                 </li>
                 <li><i class="fa fa-calendar"></i> Data de Abertura:
-                    <b>{{$OrdemServico->created_at}}</b></li>
+                    <b>{{$OrdemServico->getDataAbertura()}}</b></li>
                 <li><i class="fa fa-warning"></i> Situação:
                     <b>{{$OrdemServico->situacao->descricao}}</b></li>
                 <li><i class="fa fa-user"></i> Colaborador: <b>{{$OrdemServico->colaborador->nome}}</b>
                 </li>
                 @if($OrdemServico->status())
-                    <li><i class="fa fa-calendar-o"></i> Data de Finalização: <b>{{$OrdemServico->data_finalização}}</b>
+                    <li><i class="fa fa-calendar-o"></i> Data de Finalização:
+                        <b>{{$OrdemServico->getDataFinalizada()}}</b>
                     </li>
                     <li><i class="fa fa-info"></i> Nº do chamado: <b>{{$OrdemServico->numero_chamado}}</b></li>
                     <li><i class="fa fa-user"></i> Responsável: <b>{{$OrdemServico->responsavel}}</b></li>

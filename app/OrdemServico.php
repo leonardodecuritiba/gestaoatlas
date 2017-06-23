@@ -573,11 +573,6 @@ class OrdemServico extends Model
         $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
     }
 
-    public function getDataFinalizadaAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
-    }
-
     public function get_desconto_tecnico_real()
     {
         return DataHelper::getFloat2Real($this->attributes['desconto_tecnico']);
@@ -625,6 +620,11 @@ class OrdemServico extends Model
     public function getDataAbertura()
     {
         return DataHelper::getFullPrettyDateTime($this->getAttributeValue('created_at'));
+    }
+
+    public function getDataFinalizada()
+    {
+        return DataHelper::getFullPrettyDateTime($this->attributes['data_finalizada']);
     }
 
     /**

@@ -12,7 +12,7 @@
     <td>I.E:</td>
     <td>{{$ClienteType->ie}}</td>
     <td>Data Fechamento:</td>
-    <td></td>
+    <td>{{$OrdemServico->getDataFinalizada()}}</td>
 </tr>
 <tr>
     <td>Endereço:</td>
