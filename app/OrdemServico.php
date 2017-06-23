@@ -284,7 +284,7 @@ class OrdemServico extends Model
             $this->attributes['custos_deslocamento'] = 0;
             $this->attributes['pedagios'] = 0;
             $this->attributes['outros_custos'] = 0;
-            $this->update_valores();
+//            $this->update_valores();
         }
         $this->attributes['numero_chamado'] = $request['numero_chamado'];
         $this->attributes['responsavel'] = $request['responsavel'];
@@ -293,20 +293,6 @@ class OrdemServico extends Model
         $this->attributes['data_finalizada'] = Carbon::now()->toDateTimeString();
         $this->attributes['idsituacao_ordem_servico'] = self::_STATUS_FINALIZADA_;
         return $this->save();
-    }
-
-    public function update_valores()
-    {
-        $this->attributes['valor_total'] = $this->get_valor_total();
-
-        $this->attributes['valor_final'] =
-            $this->attributes['valor_total'] +
-            $this->attributes['custos_deslocamento'] +
-            $this->attributes['pedagios'] +
-            $this->attributes['outros_custos'];
-
-        $this->save();
-        return 1;
     }
 
     public function get_valor_total()
@@ -325,91 +311,165 @@ class OrdemServico extends Model
         return $valor_total;
     }
 
-    public function aplicaValores($data)
+    public function updateValores($data = NULL)
     {
-        $valor = DataHelper::getReal2Float($data['valor']);
-        if ($data['tipo']) { //acrescimo
-            $max = $this->tecnico->acrescimo_max_float();
-            $this->attributes['acrescimo_tecnico'] = ($valor > $max) ? $max : $valor;
-        } else { //desconto
-            $max = $this->tecnico->desconto_max_float();
-            $this->attributes['desconto_tecnico'] = ($valor > $max) ? $max : $valor;
+        $valor_total = $this->getValorTotal();
+        $acrescimos = $valor_total * ($this->attributes['acrescimo_tecnico'] / 100);
+        $descontos = $valor_total * ($this->attributes['desconto_tecnico'] / 100);
+        if ($data != NULL) {
+            $valor = DataHelper::getReal2Float($data['valor']);
+            if ($data['tipo']) { //acrescimo
+                $max = $this->tecnico->acrescimo_max_float();
+                $valor = ($valor > $max) ? $max : $valor;
+                $this->attributes['acrescimo_tecnico'] = $valor;
+                $acrescimos = $valor_total * ($valor / 100);
+            } else { //desconto
+                $max = $this->tecnico->desconto_max_float();
+                $valor = ($valor > $max) ? $max : $valor;
+                $this->attributes['desconto_tecnico'] = $valor;
+                $descontos = $valor_total * ($valor / 100);
+            }
         }
-        $this->save();
-        return $this->update_valores();
+        $this->attributes['valor_total'] = $valor_total - $descontos + $acrescimos;
+
+        return $this->update_valor_final();
     }
 
-    public function getValoresObj()
+    public function getValorTotal()
     {
-        return json_decode($this->getValores());
+        $valor_total = $this->fechamentoPecasTotalFloat()
+            + $this->fechamentoServicosTotalFloat()
+            + $this->fechamentoKitsTotalFloat();
+        return $valor_total;
     }
 
-    public function getValores()
+    public function fechamentoPecasTotalFloat()
     {
-        $this->update_valores();
-        $this->setValores();
-        if ($this->desconto_tecnico > 0) {
-            $this->valores['valor_desconto'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_float']);
-        }
-        if ($this->acrescimo_tecnico > 0) {
-            $this->valores['valor_acrescimo'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_acrescimo_float']);
-        }
-
-        $this->valores['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_servicos_float']);
-        $this->valores['valor_total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_pecas_float']);
-        $this->valores['valor_total_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_kits_float']);
-
-        $this->valores['valor_desconto_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_servicos_float']);
-        $this->valores['valor_desconto_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_pecas_float']);
-        $this->valores['valor_desconto_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_kits_float']);
-
-        $this->valores['valor_deslocamento'] = 'R$ ' . $this->attributes['custos_deslocamento'];
-        $this->valores['valor_pedagios'] = 'R$ ' . $this->attributes['pedagios'];
-        $this->valores['valor_outros_custos'] = 'R$ ' . $this->attributes['outros_custos'];
-
-        $this->valores['valor_total'] = 'R$ ' . $this->attributes['valor_total'];
-        $this->valores['valor_final'] = 'R$ ' . DataHelper::getFloat2Real($this->attributes['valor_final']);
-        return json_encode($this->valores);
+        return $this->fechamentoPecas()->sum(function ($val) {
+            return $val->valor * $val->quantidade;
+        });
     }
 
-    public function setValores()
+//
+//
+//    public function getValoresObj()
+//    {
+//        return json_decode($this->getValores());
+//    }
+//
+//    public function getValores()
+//    {
+//        $this->update_valores();
+//        $this->setValores();
+//        if ($this->desconto_tecnico > 0) {
+//            $this->valores['valor_desconto'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_float']);
+//        }
+//        if ($this->acrescimo_tecnico > 0) {
+//            $this->valores['valor_acrescimo'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_acrescimo_float']);
+//        }
+//
+//        $this->valores['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_servicos_float']);
+//        $this->valores['valor_total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_pecas_float']);
+//        $this->valores['valor_total_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_kits_float']);
+//
+//        $this->valores['valor_desconto_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_servicos_float']);
+//        $this->valores['valor_desconto_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_pecas_float']);
+//        $this->valores['valor_desconto_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_kits_float']);
+//
+//        $this->valores['valor_deslocamento'] = 'R$ ' . $this->attributes['custos_deslocamento'];
+//        $this->valores['valor_pedagios'] = 'R$ ' . $this->attributes['pedagios'];
+//        $this->valores['valor_outros_custos'] = 'R$ ' . $this->attributes['outros_custos'];
+//
+//        $this->valores['valor_total'] = 'R$ ' . $this->attributes['valor_total'];
+//        $this->valores['valor_final'] = 'R$ ' . DataHelper::getFloat2Real($this->attributes['valor_final']);
+//        return json_encode($this->valores);
+//    }
+//
+//    public function setValores()
+//    {
+//        $valor_total_servicos = $valor_total_pecas = $valor_total_kits = 0;
+//        $valor_desconto_servicos = $valor_desconto_pecas = $valor_desconto_kits = 0;
+//
+//
+//        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+//            $valor_total_servicos += $aparelho_manutencao->getTotalServicos();
+//            $valor_total_pecas += $aparelho_manutencao->getTotalPecas();
+//            $valor_total_kits += $aparelho_manutencao->getTotalKits();
+//
+//            $valor_desconto_servicos += $aparelho_manutencao->getTotalDescontoServicos();
+//            $valor_desconto_pecas += $aparelho_manutencao->getTotalDescontoPecas();
+//            $valor_desconto_kits += $aparelho_manutencao->getTotalDescontoKits();
+//        }
+//        if ($this->desconto_tecnico > 0) {
+//            $this->valores['valor_desconto_float'] = $this->valor_desconto;
+//        }
+//        if ($this->acrescimo_tecnico > 0) {
+//            $this->valores['valor_acrescimo_float'] = $this->valor_acrescimo;
+//        }
+//
+//        $this->valores['valor_desconto_servicos_float'] = $valor_desconto_servicos;
+//        $this->valores['valor_desconto_pecas_float'] = $valor_desconto_pecas;
+//        $this->valores['valor_desconto_kits_float'] = $valor_desconto_kits;
+//
+//        $this->valores['valor_total_servicos_float'] = $valor_total_servicos;
+//        $this->valores['valor_total_pecas_float'] = $valor_total_pecas;
+//        $this->valores['valor_total_kits_float'] = $valor_total_kits;
+//
+//        $this->valores['valor_outros_custos_float'] = $this->attributes['outros_custos'];
+//        $this->valores['valor_deslocamento_float'] = $this->attributes['custos_deslocamento'];
+//        $this->valores['valor_pedagios_float'] = $this->attributes['pedagios'];
+//        $this->valores['valor_outras_despesas_float'] = $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
+//        $this->valores['valor_total_float'] = $this->attributes['valor_total'];
+//        $this->valores['valor_final_float'] = $this->attributes['valor_final'];
+//        return $this->valores;
+//    }
+
+    public function fechamentoPecas()
     {
-        $valor_total_servicos = $valor_total_pecas = $valor_total_kits = 0;
-        $valor_desconto_servicos = $valor_desconto_pecas = $valor_desconto_kits = 0;
-
-
-        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
-            $valor_total_servicos += $aparelho_manutencao->getTotalServicos();
-            $valor_total_pecas += $aparelho_manutencao->getTotalPecas();
-            $valor_total_kits += $aparelho_manutencao->getTotalKits();
-
-            $valor_desconto_servicos += $aparelho_manutencao->getTotalDescontoServicos();
-            $valor_desconto_pecas += $aparelho_manutencao->getTotalDescontoPecas();
-            $valor_desconto_kits += $aparelho_manutencao->getTotalDescontoKits();
-        }
-        if ($this->desconto_tecnico > 0) {
-            $this->valores['valor_desconto_float'] = $this->valor_desconto;
-        }
-        if ($this->acrescimo_tecnico > 0) {
-            $this->valores['valor_acrescimo_float'] = $this->valor_acrescimo;
-        }
-
-        $this->valores['valor_desconto_servicos_float'] = $valor_desconto_servicos;
-        $this->valores['valor_desconto_pecas_float'] = $valor_desconto_pecas;
-        $this->valores['valor_desconto_kits_float'] = $valor_desconto_kits;
-
-        $this->valores['valor_total_servicos_float'] = $valor_total_servicos;
-        $this->valores['valor_total_pecas_float'] = $valor_total_pecas;
-        $this->valores['valor_total_kits_float'] = $valor_total_kits;
-
-        $this->valores['valor_outros_custos_float'] = $this->attributes['outros_custos'];
-        $this->valores['valor_deslocamento_float'] = $this->attributes['custos_deslocamento'];
-        $this->valores['valor_pedagios_float'] = $this->attributes['pedagios'];
-        $this->valores['valor_outras_despesas_float'] = $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
-        $this->valores['valor_total_float'] = $this->attributes['valor_total'];
-        $this->valores['valor_final_float'] = $this->attributes['valor_final'];
-        return $this->valores;
+        return PecasUtilizadas::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
+            ->get();
     }
+
+
+    // ******************** STATUS *********************************
+
+    public function fechamentoServicosTotalFloat()
+    {
+        return $this->fechamentoServicos()->sum(function ($val) {
+            return $val->valor * $val->quantidade;
+        });
+    }
+
+    public function fechamentoServicos()
+    {
+        return ServicoPrestado::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
+            ->get();
+    }
+
+    public function fechamentoKitsTotalFloat()
+    {
+        return $this->fechamentoKits()->sum(function ($val) {
+            return $val->valor * $val->quantidade;
+        });
+    }
+
+    public function fechamentoKits()
+    {
+        return KitsUtilizados::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
+            ->get();
+    }
+
+    public function update_valor_final()
+    {
+        $this->attributes['valor_final'] =
+            $this->attributes['valor_total'] +
+            $this->attributes['custos_deslocamento'] +
+            $this->attributes['pedagios'] +
+            $this->attributes['outros_custos'];
+        return $this->save();
+    }
+
+    // ******************** MUTTATTORS ******************************
 
     public function remover()
     {
@@ -418,9 +478,6 @@ class OrdemServico extends Model
         }
         $this->forceDelete();
     }
-
-
-    // ******************** STATUS *********************************
 
     public function getStatusFinalizada()
     {
@@ -458,6 +515,9 @@ class OrdemServico extends Model
         ) ? 1 : 0;
     }
 
+
+    // ******************** ACCESSORS ******************************
+
     public function getStatusType()
     {
         switch ($this->attributes['idsituacao_ordem_servico']) {
@@ -471,8 +531,6 @@ class OrdemServico extends Model
                 return 'warning';
         }
     }
-
-    // ******************** MUTTATTORS ******************************
 
     public function getResponsavelCpfAttribute($value)
     {
@@ -499,9 +557,6 @@ class OrdemServico extends Model
         return DataHelper::getPrettyDateTime($value);
     }
 
-
-    // ******************** ACCESSORS ******************************
-
     public function get_desconto_tecnico_real()
     {
         return DataHelper::getFloat2Real($this->attributes['desconto_tecnico']);
@@ -517,6 +572,8 @@ class OrdemServico extends Model
         return DataHelper::getFloat2RealMoeda($this->attributes['custos_deslocamento']);
     }
 
+    // ******************** SCOPE ******************************
+
     public function getPedagiosReal()
     {
         return DataHelper::getFloat2RealMoeda($this->attributes['pedagios']);
@@ -527,6 +584,8 @@ class OrdemServico extends Model
         return DataHelper::getFloat2RealMoeda($this->attributes['outros_custos']);
     }
 
+    // ********************** BELONGS ********************************
+
     public function getValorFinalReal()
     {
         return DataHelper::getFloat2RealMoeda($this->attributes['valor_final']);
@@ -534,20 +593,18 @@ class OrdemServico extends Model
 
     public function getDescontoTecnicoReal()
     {
-        return DataHelper::getFloat2RealMoeda($this->attributes['desconto_tecnico']);
+        return DataHelper::getFloat2RealMoeda($this->getValorTotal() * ($this->attributes['desconto_tecnico'] / 100));
     }
 
     public function getAcrescimoTecnicoReal()
     {
-        return DataHelper::getFloat2RealMoeda($this->attributes['acrescimo_tecnico']);
+        return DataHelper::getFloat2RealMoeda($this->getValorTotal() * ($this->attributes['acrescimo_tecnico'] / 100));
     }
 
     public function getDataAbertura()
     {
-        return DataHelper::getPrettyDateTime($this->getAttributeValue('created_at'));
+        return DataHelper::getFullPrettyDateTime($this->getAttributeValue('created_at'));
     }
-
-    // ******************** SCOPE ******************************
 
     /**
      * Scope a query to only include active users.
@@ -570,8 +627,6 @@ class OrdemServico extends Model
     {
         return $query->whereNull('idcentro_custo');
     }
-
-    // ********************** BELONGS ********************************
 
     public function has_aparelho_manutencaos()
     {
@@ -601,37 +656,17 @@ class OrdemServico extends Model
 
     public function fechamentoServicosTotalReal()
     {
-        return DataHelper::getFloat2RealMoeda($this->fechamentoServicos()->sum('valor'));
-    }
-
-    public function fechamentoServicos()
-    {
-        return ServicoPrestado::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
-            ->get();
+        return DataHelper::getFloat2RealMoeda($this->fechamentoServicosTotalFloat());
     }
 
     public function fechamentoKitsTotalReal()
     {
-        return DataHelper::getFloat2RealMoeda($this->fechamentoKits()
-            ->sum('valor'));
-    }
-
-    public function fechamentoKits()
-    {
-        return KitsUtilizados::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
-            ->get();
+        return DataHelper::getFloat2RealMoeda($this->fechamentoKitsTotalFloat());
     }
 
     public function fechamentoPecasTotalReal()
     {
-        return DataHelper::getFloat2RealMoeda($this->fechamentoPecas()
-            ->sum('valor'));
-    }
-
-    public function fechamentoPecas()
-    {
-        return PecasUtilizadas::whereIn('idaparelho_manutencao', $this->aparelho_manutencaos->pluck('idaparelho_manutencao'))
-            ->get();
+        return DataHelper::getFloat2RealMoeda($this->fechamentoPecasTotalFloat());
     }
 //
 //    public function totais()

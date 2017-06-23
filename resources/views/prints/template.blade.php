@@ -114,10 +114,6 @@
             font-weight: bold;
         }
 
-        .linha_total > td {
-            text-align: left !important;
-        }
-
         .sublinhar {
             border-bottom: 1pt solid black !important;
             overflow: hidden;
@@ -127,14 +123,24 @@
             height: 10px;
         }
 
+        .valor, .assinatura {
+            text-align: right !important;
+        }
+
+        .row_cabecalho {
+            text-align: center !important;
+        }
         .assinatura {
             height: 30px;
-            text-align: right;
             vertical-align: bottom !important;
         }
 
         .page-number:before {
             content: counter(page);
+        }
+
+        @page {
+            margin: 2.5em;
         }
     </style>
     @yield('style_content')

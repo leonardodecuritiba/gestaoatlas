@@ -14,7 +14,6 @@
         </tr>
         @include('prints.ordem_servico.cliente')
     </table>
-
     @foreach($OrdemServico->aparelho_manutencaos_totais()  as $aparelhoManutencao)
         @include('prints.ordem_servico.aparelho')
     @endforeach

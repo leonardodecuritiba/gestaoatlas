@@ -20,15 +20,12 @@
                         </thead>
                         <tbody>
                         @foreach($AparelhoManutencao->servico_prestados as $servico_prestado)
-                            <?php
-                            $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                            ?>
                             <tr>
                                 <td>
                                     {{$servico_prestado->servico->nome}}
                                 </td>
                                 <td>
-                                    {{$tabela_preco->preco}}
+                                    {{$servico_prestado->valor_real()}}
                                 </td>
                                 <td>
                                     {{$servico_prestado->quantidade}}
@@ -83,15 +80,12 @@
                         </thead>
                         <tbody>
                         @foreach($AparelhoManutencao->pecas_utilizadas as $peca_utilizada)
-                            <?php
-                            $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                            ?>
                             <tr>
                                 <td>
                                     {{$peca_utilizada->peca->descricao}}
                                 </td>
                                 <td>
-                                    {{$peca_utilizada->valor}}
+                                    {{$peca_utilizada->valor_real()}}
                                 </td>
                                 <td>
                                     {{$peca_utilizada->quantidade}}
@@ -145,15 +139,12 @@
                         </thead>
                         <tbody>
                         @foreach($AparelhoManutencao->kits_utilizados as $kit_utilizado)
-                            <?php
-                            $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                            ?>
                             <tr>
                                 <td>
                                     {{$kit_utilizado->nome()}}
                                 </td>
                                 <td>
-                                    {{$tabela_preco->preco}}
+                                    {{$kit_utilizado->valor_real()}}
                                 </td>
                                 <td>
                                     {{$kit_utilizado->quantidade}}

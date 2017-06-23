@@ -26,8 +26,7 @@ class Selo extends Model
     static public function set_used($idselo)
     {
         $Selo = self::find($idselo);
-        $Selo->used = 1;
-        return $Selo->save();
+        return $Selo->update(['used' => 1]);
     }
 
     static public function selo_exists($numeracao)
@@ -54,13 +53,27 @@ class Selo extends Model
 
     public function getFormatedSelo()
     {
-        return ($this->numeracao != NULL) ? DataHelper::mask($this->numeracao, '##.###.###') : '-';
+        if ($this->isExterno()) {
+            $cod = $this->attributes['numeracao_externa'];
+            return ($cod != NULL) ? $cod : '-';
+        }
+        $cod = $this->attributes['numeracao'];
+        return ($cod != NULL) ? DataHelper::mask($cod, '##.###.###') : '-';
+
     }
 
+    public function isExterno()
+    {
+        return ($this->attributes['numeracao'] == NULL);
+    }
 
     public function getFormatedSeloDV()
     {
-        $cod = $this->numeracao . $this->getDV();
+        if ($this->isExterno()) {
+            $cod = $this->attributes['numeracao_externa'];
+            return ($cod != NULL) ? $cod : '-';
+        }
+        $cod = $this->attributes['numeracao'] . $this->getDV();
         return ($cod != NULL) ? DataHelper::mask($cod, '##.###.###-#') : '-';
     }
 

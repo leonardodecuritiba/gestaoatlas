@@ -4,7 +4,7 @@
     <td>Fantasia:</td>
     <td>{{$ClienteType->nome_principal}}</td>
     <td>Data Abertura:</td>
-    <td>{{$OrdemServico->created_at}}</td>
+    <td>{{$OrdemServico->getDataAbertura()}}</td>
 </tr>
 <tr>
     <td>{{$ClienteType->tipo}}</td>

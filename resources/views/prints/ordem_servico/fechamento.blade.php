@@ -31,33 +31,33 @@
                 <tr class="fundo_titulo_3">
                     <th class="linha_titulo" colspan="7">Outros</th>
                 </tr>
-                <tr>
+                <tr class="row_cabecalho">
                     <th colspan="6">Descrição</th>
                     <th>V. Total</th>
                 </tr>
                 <tr>
                     <td colspan="6">Deslocamento</td>
-                    <th>{{$OrdemServico->getCustosDeslocamentoReal()}}</th>
+                    <td class="valor">{{$OrdemServico->getCustosDeslocamentoReal()}}</td>
                 </tr>
                 <tr>
                     <td colspan="6">Pedágios</td>
-                    <th>{{$OrdemServico->getPedagiosReal()}}</th>
+                    <td class="valor">{{$OrdemServico->getPedagiosReal()}}</td>
                 </tr>
                 <tr>
                     <td colspan="6">Outros Custos</td>
-                    <th>{{$OrdemServico->getOutrosCustosReal()}}</th>
+                    <td class="valor">{{$OrdemServico->getOutrosCustosReal()}}</td>
                 </tr>
                 <tr>
                     <td colspan="6">Descontos</td>
-                    <th>{{$OrdemServico->getDescontoTecnicoReal()}}</th>
+                    <td class="valor">{{$OrdemServico->getDescontoTecnicoReal()}}</td>
                 </tr>
                 <tr>
                     <td colspan="6">Acréscimos</td>
-                    <th>{{$OrdemServico->getAcrescimoTecnicoReal()}}</th>
+                    <td class="valor">{{$OrdemServico->getAcrescimoTecnicoReal()}}</td>
                 </tr>
                 <tr>
                     <th colspan="6">Total da Ordem de Serviço</th>
-                    <th>{{$OrdemServico->getValorFinalReal()}}</th>
+                    <th class="valor">{{$OrdemServico->getValorFinalReal()}}</th>
                 </tr>
             </table>
         </td>

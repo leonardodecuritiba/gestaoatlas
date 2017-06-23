@@ -4,15 +4,15 @@ if ($Instrumento->has_selo_instrumentos()) {
     $selo_afixado = $Instrumento->selo_afixado();
 }
 $lacres_atual = NULL;
-if ($Instrumento->has_lacres_instrumentos()) {
-    $lacres_atual_aux = $Instrumento->lacres_afixados;
-    foreach ($lacres_atual_aux as $lacre) {
-        $lacres_atual[] = [
-            'id' => $lacre->lacre->idlacre,
-            'text' => $lacre->lacre->numeracao
-        ];
-    }
-}
+//if ($Instrumento->has_lacres_instrumentos()) {
+//    $lacres_atual_aux = $Instrumento->lacres_afixados;
+//    foreach ($lacres_atual_aux as $lacre) {
+//        $lacres_atual[] = [
+//            'id' => $lacre->lacre->idlacre,
+//            'text' => $lacre->lacre->numeracao
+//        ];
+//    }
+//}
 ?>
 <div class="x_panel">
     <div class="x_title">
@@ -32,36 +32,11 @@ if ($Instrumento->has_lacres_instrumentos()) {
         <div class="clearfix"></div>
     </div>
     <div class="x_content">
-
-        <section class="row">
-            <div class="col-md-3 col-sm-3 col-xs-12">
-                <div class="profile_img">
-                    <img class="img-responsive avatar-view" src="{{$Instrumento->getFoto()}}">
-                </div>
-            </div>
-            <div class="col-md-9 col-sm-9 col-xs-12">
-                @include('pages.ordem_servicos.parts.instrumentos.descricao')
-            </div>
-        </section>
+        @include('pages.ordem_servicos.parts.instrumentos.selo_lacres')
         <div class="ln_solid"></div>
-        <section class="row animated fadeInDown">
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <h2>Defeito:</h2>
-                <p>{{$AparelhoManutencao->defeito}}</p>
-                <h2>Selo Afixado:</h2>
-                <p class="green">{{$Instrumento->selo_afixado_numeracao() }}</p>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-12">
-                <h2>Solução:</h2>
-                <p>{{$AparelhoManutencao->solucao}}</p>
-                <h2>Lacres Afixados:</h2>
-                <p class="green">{{$Instrumento->lacres_afixados_valores()}}</p>
-            </div>
-        </section>
-        <div class="ln_solid"></div>
-
-        {{--DESCRIÇÃO--}}
-        @if(($AparelhoManutencao->defeito == NULL) && ($AparelhoManutencao->solucao == NULL))
+        @if(($AparelhoManutencao->defeito != NULL) && ($AparelhoManutencao->solucao != NULL))
+            @include('pages.ordem_servicos.insumos.adicionar')
+        @else
             <section class="row">
                 {!! Form::open(['route' => ['aparelho_manutencao.update',$AparelhoManutencao->idaparelho_manutencao],
                     'method' => 'POST',
@@ -176,8 +151,6 @@ if ($Instrumento->has_lacres_instrumentos()) {
                 </div>
                 {!! Form::close() !!}
             </section>
-        @else
-            @include('pages.ordem_servicos.insumos.adicionar')
         @endif
     </div>
 </div>

@@ -23,6 +23,10 @@ class DataHelper
         return number_format($value, 2, ',', '.');
     }
 
+    static public function getFullPrettyDateTime($value)
+    {
+        return ($value != NULL) ? Date::createFromFormat('Y-m-d H:i:s', $value)->format('d/m/Y H:i:s') : $value;
+    }
     static public function getPrettyDateTime($value)
     {
         return ($value != NULL) ? Date::createFromFormat('Y-m-d H:i:s', $value)->format('H:i - d/m/Y') : $value;

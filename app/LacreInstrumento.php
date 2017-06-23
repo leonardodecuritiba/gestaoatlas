@@ -58,5 +58,10 @@ class LacreInstrumento extends Model
     {
         return $this->belongsTo('App\Lacre', 'idlacre');
     }
+
+    public function lacres()
+    {
+        return $this->belongsTo('App\Lacre', 'idlacre');
+    }
     // ************************** HASMANY **********************************
 }

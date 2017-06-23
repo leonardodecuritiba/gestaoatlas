@@ -38,7 +38,7 @@
                     <li>
                         <button class="btn btn-default"
                                 data-toggle="modal"
-                                data-target="#modalPopup">
+                                data-target="#modalOrdemServico">
                             <i class="fa fa-eye fa-2"></i> Visualizar O.S.
                         </button>
                     </li>
@@ -93,18 +93,13 @@
                         </div>
                     </div>
                 </div>
-                {{--@if(count($Instrumentos) > 0)--}}
-                {{--@include('pages.ordem_servicos.parts.aparelho_resultados')--}}
-                {{--@else--}}
-                {{--@include('layouts.search.no-results')--}}
-                {{--@endif--}}
             </div>
         </div>
     </section>
         @if($OrdemServico->has_aparelho_manutencaos())
             @foreach($OrdemServico->aparelho_manutencaos as $AparelhoManutencao)
                 <section class="row">
-                    @if($AparelhoManutencao->idinstrumento != NULL)
+                    @if($AparelhoManutencao->has_instrumento())
                         <?php $Instrumento = $AparelhoManutencao->instrumento;?>
                         @include('pages.ordem_servicos.parts.instrumentos.show')
                     @else

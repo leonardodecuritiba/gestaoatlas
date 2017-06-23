@@ -154,7 +154,7 @@ class OrdemServicoController extends Controller
     {
         //atualizando o valor total da OS
         $OrdemServico = OrdemServico::findOrFail($idordem_servico);
-        $OrdemServico->update_valores();
+        $OrdemServico->updateValores();
         return $this->buscaInstrumentos($request, $idordem_servico);
     }
 
@@ -421,21 +421,30 @@ class OrdemServicoController extends Controller
     public function add_insumos(Request $request, $idordem_servico)
     {
         $idaparelho_manutencao = $request->get('idaparelho_manutencao');
+        $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
         if ($request->has('idservico_id')) {
             $id = $request->get('idservico_id');
             $valor = $request->get('idservico_valor');
             $quantidade = $request->get('idservico_quantidade');
             $desconto = $request->get('idservico_desconto');
             foreach ($id as $i => $v) {
-                $data = [
-                    'idaparelho_manutencao' => $idaparelho_manutencao,
-                    'idservico' => $id[$i],
-                    'valor' => $valor[$i],
-                    'quantidade' => $quantidade[$i],
-                    'desconto' => $desconto[$i],
-                ];
-                ServicoPrestado::create($data);
-//                $total += DataHelper::getReal2Float($valor[$i]);
+                $idinsumo = $id[$i];
+                $insumoUtilizado = $AparelhoManutencao->hasInsumoUtilizadoId($idinsumo, 'servicos');
+                if ($insumoUtilizado != NULL) {
+                    $insumoUtilizado->update([
+                        'quantidade' => $insumoUtilizado->quantidade + $quantidade[$i],
+                        'desconto' => $insumoUtilizado->desconto + $desconto[$i],
+                    ]);
+                } else {
+                    $data = [
+                        'idaparelho_manutencao' => $idaparelho_manutencao,
+                        'idservico' => $id[$i],
+                        'valor' => $valor[$i],
+                        'quantidade' => $quantidade[$i],
+                        'desconto' => $desconto[$i],
+                    ];
+                    ServicoPrestado::create($data);
+                }
             }
         }
         if ($request->has('idpeca_id')) {
@@ -444,14 +453,23 @@ class OrdemServicoController extends Controller
             $quantidade = $request->get('idpeca_quantidade');
             $desconto = $request->get('idpeca_desconto');
             foreach ($id as $i => $v) {
-                $data = [
-                    'idaparelho_manutencao' => $idaparelho_manutencao,
-                    'idpeca' => $id[$i],
-                    'valor' => $valor[$i],
-                    'quantidade' => $quantidade[$i],
-                    'desconto' => $desconto[$i],
-                ];
-                PecasUtilizadas::create($data);
+                $idinsumo = $id[$i];
+                $insumoUtilizado = $AparelhoManutencao->hasInsumoUtilizadoId($idinsumo, 'pecas');
+                if ($insumoUtilizado != NULL) {
+                    $insumoUtilizado->update([
+                        'quantidade' => $insumoUtilizado->quantidade + $quantidade[$i],
+                        'desconto' => $insumoUtilizado->desconto + $desconto[$i],
+                    ]);
+                } else {
+                    $data = [
+                        'idaparelho_manutencao' => $idaparelho_manutencao,
+                        'idpeca' => $id[$i],
+                        'valor' => $valor[$i],
+                        'quantidade' => $quantidade[$i],
+                        'desconto' => $desconto[$i],
+                    ];
+                    PecasUtilizadas::create($data);
+                }
 //                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
@@ -461,14 +479,23 @@ class OrdemServicoController extends Controller
             $quantidade = $request->get('idkit_quantidade');
             $desconto = $request->get('idkit_desconto');
             foreach ($id as $i => $v) {
-                $data = [
-                    'idaparelho_manutencao' => $idaparelho_manutencao,
-                    'idkit' => $id[$i],
-                    'valor' => $valor[$i],
-                    'quantidade' => $quantidade[$i],
-                    'desconto' => $desconto[$i],
-                ];
-                KitsUtilizados::create($data);
+                $idinsumo = $id[$i];
+                $insumoUtilizado = $AparelhoManutencao->hasInsumoUtilizadoId($idinsumo, 'kits');
+                if ($insumoUtilizado != NULL) {
+                    $insumoUtilizado->update([
+                        'quantidade' => $insumoUtilizado->quantidade + $quantidade[$i],
+                        'desconto' => $insumoUtilizado->desconto + $desconto[$i],
+                    ]);
+                } else {
+                    $data = [
+                        'idaparelho_manutencao' => $idaparelho_manutencao,
+                        'idkit' => $id[$i],
+                        'valor' => $valor[$i],
+                        'quantidade' => $quantidade[$i],
+                        'desconto' => $desconto[$i],
+                    ];
+                    KitsUtilizados::create($data);
+                }
 //                $total += DataHelper::getReal2Float($valor[$i]);
             }
         }
@@ -478,7 +505,7 @@ class OrdemServicoController extends Controller
     public function aplicarValores(Request $request, $idordem_servico)
     {
         $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->aplicaValores($request->all());
+        $OrdemServico->updateValores($request->all());
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);
         return Redirect::route('ordem_servicos.resumo', $OrdemServico->idordem_servico);

@@ -11,7 +11,6 @@ use \Barryvdh\DomPDF\Facade as PDF;
 
 class PrintHelper
 {
-    private $_EMPRESA_;
     private $linha_xls;
     private $data;
     private $insumos;
@@ -259,17 +258,12 @@ class PrintHelper
 
                 //********************************************************************************************//
                 //************************** FECHAMENTO ******************************************************//
-                $Fechamento = json_decode($this->OrdemServico->getValores());
-                $this->insumos['total_servicos'] = $Fechamento->valor_total_servicos;
-                $this->insumos['total_pecas'] = $Fechamento->valor_total_pecas;
-                $this->insumos['total_kits'] = $Fechamento->valor_total_kits;
-                if (isset($Fechamento->valor_desconto)) {
-                    $this->insumos['descontos'] = $Fechamento->valor_desconto;
-                }
-                if (isset($Fechamento->valor_acrescimo)) {
-                    $this->insumos['acrescimos'] = $Fechamento->valor_acrescimo;
-                }
-                $this->insumos['acrescimos'] = $Fechamento->valor_total_kits;
+//                $Fechamento = json_decode($this->OrdemServico->getValores());
+                $this->insumos['total_servicos'] = $this->OrdemServico->fechamentoServicosTotalReal();
+                $this->insumos['total_pecas'] = $this->OrdemServico->fechamentoPecasTotalReal();
+                $this->insumos['total_kits'] = $this->OrdemServico->fechamentoKitsTotalReal();
+                $this->insumos['descontos'] = $this->OrdemServico->getDescontoTecnicoReal();
+                $this->insumos['acrescimos'] = $this->OrdemServico->getAcrescimoTecnicoReal();
                 $sheet = $this->setFechamento($sheet);
 
                 //********************************************************************************************//
@@ -277,7 +271,7 @@ class PrintHelper
                 $sheet->row($this->linha_xls, function ($row) {
                     $row->setFontWeight(true);
                 });
-                $sheet->row($this->linha_xls, ['TOTAL  DA ORDEM SERVIÇO', '', '', '', $Fechamento->valor_final]);
+                $sheet->row($this->linha_xls, ['TOTAL  DA ORDEM SERVIÇO', '', '', '', $this->OrdemServico->getValorFinalReal()]);
                 $this->linha_xls += 2;
 
 
@@ -301,7 +295,6 @@ class PrintHelper
                 $sheet->mergeCells('A' . $this->linha_xls . ':G' . ($this->linha_xls));
                 $sheet->row($this->linha_xls, [$this->data['aviso_txt'][1][2]]);
                 $this->linha_xls += 2;
-
 
                 $sheet = self::setCabecalhoCinza($sheet, [
                     'line' => $this->linha_xls,
@@ -415,19 +408,12 @@ class PrintHelper
                 'Endereço: ' . $Instrumento->endereco
             )
         ];
-        if ($Instrumento->has_selo_instrumentos()) {
-            $selo = $Instrumento->selo_afixado()->numeracao;
-        }
-        if ($Instrumento->has_lacres_instrumentos()) {
-            $lacre = $Instrumento->lacres_afixados_valores();
-        }
-
         $selo_lacre = [
             array(
 //                            'Selo retirado: '.$Instrumento->selo_afixado()->numeracao,
-                'Selo Afixado: ', isset($selo) ? $selo : '-',
+                'Selo Afixado: ', $aparelhoManutencao->numeracao_selo_afixado(),
 //                            'Lacres Retirados: '.$Instrumento->selo_afixado()->numeracao,
-                'Lacres Afixados: ', isset($lacre) ? $lacre : '-'
+                'Lacres Afixados: ', $aparelhoManutencao->numeracao_lacres_afixados()
             )
         ];
         $defeitos_solucao = [

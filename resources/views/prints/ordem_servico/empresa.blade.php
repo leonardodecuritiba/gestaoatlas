@@ -1,3 +1,8 @@
+@if ($OrdemServico->status() == 0)
+    <tr class="fundo_titulo">
+        <th class="linha_titulo" colspan="2">ATENÇÃO: Ordem de Serviço não finalizada!</th>
+    </tr>
+@endif
 <tr>
     <td width="60%">Ordem de Serviço - #{{$OrdemServico->idordem_servico}}</td>
     <td width="40%" rowspan="8" style="text-align: right;">

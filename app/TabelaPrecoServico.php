@@ -50,6 +50,17 @@ class TabelaPrecoServico extends Model
     {
         return DataHelper::getFloat2Real($value);
     }
+
+    public function getPrecoReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->attributes['preco_minimo']);
+    }
+
+    public function getPrecoMinimoReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->attributes['preco_minimo']);
+    }
+
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
     public function tabela_preco()

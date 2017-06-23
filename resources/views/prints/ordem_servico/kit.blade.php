@@ -1,14 +1,14 @@
 <tr class="fundo_titulo_3">
     <th class="linha_titulo" colspan="7">Kits</th>
 </tr>
-<tr>
-    <th>Cod</th>
-    <th>Descrição</th>
-    <th>Garantia</th>
-    <th>Garantia Negada</th>
-    <th>V. un</th>
-    <th>Qtde</th>
-    <th>V. Total</th>
+<tr class="row_cabecalho">
+    <th width="8%">Cod</th>
+    <th width="42%">Descrição</th>
+    <th width="8%">Garantia</th>
+    <th width="10%">Gar. Negada</th>
+    <th width="12%">V. un</th>
+    <th width="8%">Qtde</th>
+    <th width="12%">V. Total</th>
 </tr>
 @foreach ($Kits as $selecao)
     <tr>
@@ -16,14 +16,12 @@
         <td>{{$selecao->kit->descricao}}</td>
         <td>-</td>
         <td>-</td>
-        <td>{{$selecao->valor_real()}}</td>
-        <td>{{$selecao->quantidade}}</td>
-        <td>{{$selecao->valor_total_real()}}</td>
+        <td class="valor">{{$selecao->valor_real()}}</td>
+        <td class="valor">{{$selecao->quantidade}}</td>
+        <td class="valor">{{$selecao->valor_total_real()}}</td>
     </tr>
 @endforeach
-<tr>
+<tr class="linha_total">
     <td colspan="4">Total</td>
-    <td>{{$Total}}</td>
-    <td></td>
-    <td></td>
+    <td class="valor">{{$Total}}</td>
 </tr>

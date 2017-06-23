@@ -1,20 +1,7 @@
 <?php
 $Instrumento = $aparelhoManutencao->instrumento;
-if ($Instrumento->has_selo_instrumentos()) {
-    $selo_afixado = $Instrumento->selo_afixado_numeracao();
-    $selo_retirado = '-';
-} else {
-    $selo_afixado = '-';
-    $selo_retirado = '-';
-}
-if ($Instrumento->has_lacres_instrumentos()) {
-    $lacres_afixados = $Instrumento->lacres_afixados_valores();
-    $lacres_retirados = '-';
-} else {
-    $lacres_afixados = '-';
-    $lacres_retirados = '-';
-}
 ?>
+
 <tr class="fundo_titulo_2">
     <th class="linha_titulo" colspan="7">
         Instrumento (#{{$Instrumento->idinstrumento}}) {{$Instrumento->descricao}}
@@ -37,14 +24,14 @@ if ($Instrumento->has_lacres_instrumentos()) {
     <td colspan="2">IP: {{$Instrumento->ip}}</td>
 </tr>
 <tr>
-    <td>Selo Retirado:</td>
-    <td colspan="2">{{$selo_retirado}}</td>
-    <td>Lacres Retirados:</td>
-    <td colspan="3">{{$lacres_retirados}}</td>
+    <th>Selo Retirado:</th>
+    <td colspan="2">{{$aparelhoManutencao->numeracao_selo_retirado()}}</td>
+    <th>Lacres Retirados:</th>
+    <td colspan="3">{{$aparelhoManutencao->numeracao_lacres_retirados()}}</td>
 </tr>
 <tr>
-    <td>Selo Afixado:</td>
-    <td colspan="2">{{$selo_afixado}}</td>
-    <td>Lacres Afixados:</td>
-    <td colspan="3">{{$lacres_afixados}}</td>
+    <th>Selo Afixado:</th>
+    <td colspan="2">{{$aparelhoManutencao->numeracao_selo_afixado()}}</td>
+    <th>Lacres Afixados:</th>
+    <td colspan="3">{{$aparelhoManutencao->numeracao_lacres_afixados()}}</td>
 </tr>

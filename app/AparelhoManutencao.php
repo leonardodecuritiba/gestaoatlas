@@ -76,7 +76,8 @@ class AparelhoManutencao extends Model
 
     }
 
-    // ******************** SERVIÇOS ******************************
+
+    // ******************** INSUMOS *******************************
     // ************************************************************
 
     public function remove_servico_prestados()
@@ -85,6 +86,9 @@ class AparelhoManutencao extends Model
             $servico_prestado->forceDelete();
         }
     }
+
+    // ******************** SERVIÇOS ******************************
+    // ************************************************************
 
     public function remove_pecas_utilizadas()
     {
@@ -100,15 +104,41 @@ class AparelhoManutencao extends Model
         }
     }
 
-    public function has_servico_prestados()
+    public function hasInsumoUtilizadoId($id, $tipo)
     {
-        return ($this->servico_prestados()->count() > 0);
+        switch ($tipo) {
+            case 'servicos':
+                return $this->servico_prestados()->where('idservico', $id)->first();
+            case 'pecas':
+                return $this->pecas_utilizadas()->where('idpeca', $id)->first();
+            case 'kitss':
+                return $this->kits_utilizados()->where('idkit', $id)->first();
+        }
+
     }
 
     public function servico_prestados()
     {
         return $this->hasMany('App\ServicoPrestado', 'idaparelho_manutencao');
     }
+
+    public function pecas_utilizadas()
+    {
+        return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
+    }
+
+    public function kits_utilizados()
+    {
+        return $this->hasMany('App\KitsUtilizados', 'idaparelho_manutencao');
+    }
+
+    public function has_servico_prestados()
+    {
+        return ($this->servico_prestados()->count() > 0);
+    }
+
+    // ******************** PEÇAS *********************************
+    // ************************************************************
 
     public function getTotalServicosReal()
     {
@@ -137,17 +167,9 @@ class AparelhoManutencao extends Model
 //        return $total;
     }
 
-    // ******************** PEÇAS *********************************
-    // ************************************************************
-
     public function has_pecas_utilizadas()
     {
         return ($this->pecas_utilizadas()->count() > 0);
-    }
-
-    public function pecas_utilizadas()
-    {
-        return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
     }
 
     public function getTotalPecasReal()
@@ -161,6 +183,9 @@ class AparelhoManutencao extends Model
             return $p->valor * $p->quantidade;
         });
     }
+
+    // ******************** KITS **********************************
+    // ************************************************************
 
     public function getTotalDescontoPecasReal()
     {
@@ -177,17 +202,9 @@ class AparelhoManutencao extends Model
 //        return $total;
     }
 
-    // ******************** KITS **********************************
-    // ************************************************************
-
     public function has_kits_utilizados()
     {
         return ($this->kits_utilizados()->count() > 0);
-    }
-
-    public function kits_utilizados()
-    {
-        return $this->hasMany('App\KitsUtilizados', 'idaparelho_manutencao');
     }
 
     public function getTotalKitsReal()
@@ -235,6 +252,61 @@ class AparelhoManutencao extends Model
 
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
+
+    public function numeracao_selo_afixado()
+    {
+        $selo = $this->selo_afixado();
+        return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
+    }
+
+    public function selo_afixado()
+    {
+        return $this->instrumento->selo_afixado();
+    }
+
+    public function numeracao_selo_retirado()
+    {
+        $selo = $this->selo_retirado();
+        return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
+    }
+
+    public function selo_retirado()
+    {
+        return $this->instrumento->selo_retirado();
+    }
+
+    public function numeracao_lacres_retirados()
+    {
+        $lacresInstrumento = $this->lacres_retirados();
+        $numeracao = NULL;
+        foreach ($lacresInstrumento as $li) {
+            $lacre = $li->lacre;
+            $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
+        }
+        return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
+    }
+
+    public function lacres_retirados()
+    {
+        return $this->instrumento->lacres_retirados();
+    }
+
+    public function numeracao_lacres_afixados()
+    {
+        $lacresInstrumento = $this->lacres_afixados();
+        $numeracao = NULL;
+        foreach ($lacresInstrumento as $li) {
+            $lacre = $li->lacre;
+            $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
+        }
+        return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
+    }
+
+    public function lacres_afixados()
+    {
+        return $this->instrumento->lacres_afixados();
+    }
+
     public function selo_instrumentos()
     {
         return $this->hasMany('App\SeloInstrumento', 'idaparelho_manutencao');
@@ -256,11 +328,6 @@ class AparelhoManutencao extends Model
     }
 
     public function has_equipamento()
-    {
-        return ($this->attributes['idequipamento'] != NULL);
-    }
-
-    public function has_equipamentos()
     {
         return ($this->attributes['idequipamento'] != NULL);
     }
