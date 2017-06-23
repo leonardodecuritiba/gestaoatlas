@@ -30,6 +30,12 @@ class PrintHelper
 //        return view('prints.ordem_servico')->with(['filename' =>$filename, 'OrdemServico' =>$OrdemServico, 'Empresa'=>$Empresa]);
 
         $pdf = PDF::loadView('prints.ordem_servico', ['filename' => $filename, 'OrdemServico' => $OrdemServico, 'Empresa' => $Empresa]);
+
+
+        $pdf->getDomPDF()->set_option("enable_php", true);
+
+
+
         return $pdf->stream($filename . '.pdf');
     }
 

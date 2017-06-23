@@ -20,5 +20,4 @@
 
     @include('prints.ordem_servico.fechamento')
 
-
 @endsection

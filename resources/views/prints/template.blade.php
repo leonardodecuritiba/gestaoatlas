@@ -140,13 +140,28 @@
         }
 
         @page {
-            margin: 2.5em;
+            margin: 3em 2.5em 2.5em 2.5em;
         }
     </style>
     @yield('style_content')
 </head>
 <body>
 @yield('body_content')
+<script type="text/php">
+        if (isset($pdf)) {
+            $x = 545;
+            $y = 10;
+            $text = "Página {PAGE_NUM} / {PAGE_COUNT}";
+            $font = null;
+            $size = 8;
+            $color = array(0,0,0);
+            $word_space = 0.0;  //  default
+            $char_space = 0.0;  //  default
+            $angle = 0.0;   //  default
+            $pdf->page_text($x, $y, $text, $font, $size, $color, $word_space, $char_space, $angle);
+        }
+
+</script>
 </body>
 </html>
 <style>
