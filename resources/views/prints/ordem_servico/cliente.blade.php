@@ -2,10 +2,10 @@
     <th class="linha_titulo" colspan="6">CLIENTE N° {{$Cliente->idcliente}}</th>
 </tr>
 <tr class="campo">
-    <td width="35%">CLIENTE / RAZÃO SOCIAL</td>
+    <td width="35%">CLIENTE/RAZÃO SOCIAL</td>
     <td colspan="2" width="25%">FANTASIA</td>
     <td>CONTATO</td>
-    <td width="15%">CNPJ / CPF</td>
+    <td width="15%">CNPJ/CPF</td>
     <td width="13%">IE</td>
 </tr>
 <tr>
