@@ -13,8 +13,8 @@ $Equipamento = $aparelhoManutencao->equipamento;
     <td>Nº DE SÉRIE</td>
 </tr>
 <tr>
-    <td>{{$Equipamento->idinstrumento}}</td>
+    <td>{{$Equipamento->idequipamento}}</td>
     <td>{{$Equipamento->descricao}}</td>
     <td>{{$Equipamento->modelo}}</td>
-    <td>{{$Instrumento->numero_serie}}</td>
+    <td>{{$Equipamento->numero_serie}}</td>
 </tr>
