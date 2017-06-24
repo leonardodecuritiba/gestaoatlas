@@ -78,7 +78,7 @@
         .table-condensed > thead > tr > td,
         .table-condensed > tbody > tr > td,
         .table-condensed > tfoot > tr > td {
-            padding: 2px;
+            padding: 1px;
         }
 
         .table td {
@@ -112,6 +112,15 @@
         .linha_total > th, .linha_total > td {
             text-align: right !important;
             font-weight: bold;
+        }
+
+        .campo {
+            font-size: 7px;
+            line-height: 0.9;
+        }
+
+        .campo > td {
+            padding-left: 1px !important;
         }
 
         .sublinhar {

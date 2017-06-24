@@ -1,15 +1,15 @@
 <tr class="fundo_titulo_3">
-    <th class="linha_titulo" colspan="8">Peças</th>
+    <th class="linha_titulo" colspan="8">PEÇAS</th>
 </tr>
-<tr class="row_cabecalho">
-    <th width="7%">Cod</th>
-    <th width="30%">Descrição</th>
-    <th width="7%">Garantia</th>
-    <th width="10%">Gar. Negada</th>
-    <th width="10%">V. un</th>
-    <th width="6%">Qtde</th>
-    <th width="10%">Desconto</th>
-    <th width="10%">V. Total</th>
+<tr class="campo">
+    <th width="7%">CÓD.</th>
+    <th width="30%">DESCRIÇÃO</th>
+    <th width="7%">GARANTIA</th>
+    <th width="10%">GARANTIA NEGADA</th>
+    <th width="10%">V. UN.</th>
+    <th width="6%">QTDE</th>
+    <th width="10%">DESCONTO</th>
+    <th width="10%">V. TOTAL</th>
 </tr>
 @foreach ($Pecas as $selecao)
     <tr>
@@ -24,6 +24,6 @@
     </tr>
 @endforeach
 <tr class="linha_total">
-    <th colspan="7">Total</th>
+    <th colspan="7">TOTAL</th>
     <td class="valor">{{$Total}}</td>
 </tr>

@@ -3,35 +3,44 @@ $Instrumento = $aparelhoManutencao->instrumento;
 ?>
 
 <tr class="fundo_titulo_2">
-    <th class="linha_titulo" colspan="7">
-        Instrumento (#{{$Instrumento->idinstrumento}}) {{$Instrumento->descricao}}
+    <th class="linha_titulo" colspan="8">
+        INSTRUMENTO Nº {{$Instrumento->idinstrumento}}
     </th>
 </tr>
-<tr>
-    <td>Marca: {{$Instrumento->marca->descricao}}</td>
-    <td>Modelo: {{$Instrumento->modelo}}</td>
-    <td>N° de Série: {{$Instrumento->numero_serie}}</td>
-    <td>Patrimônio: {{$Instrumento->patrimonio}}</td>
-    <td>Ano: {{$Instrumento->ano}}</td>
-    <td colspan="2">Inventário: {{$Instrumento->inventario}}</td>
+<tr class="campo">
+    <td width="10%">NÚMERO</td>
+    <td colspan="2">DESCRIÇÃO</td>
+    <td colspan="2">MARCA</td>
+    <td>MODELO</td>
+    <td>Nº DE SÉRIE</td>
+    <td>ANO</td>
 </tr>
 <tr>
-    <td>Portaria: {{$Instrumento->portaria}}</td>
-    <td>Capacidade: {{$Instrumento->capacidade}}</td>
-    <td>Divisão: {{$Instrumento->divisao}}</td>
-    <td>Setor: {{$Instrumento->setor}}</td>
-    <td>Endereço: {{$Instrumento->endereco}}</td>
-    <td colspan="2">IP: {{$Instrumento->ip}}</td>
+    <td>{{$Instrumento->idinstrumento}}</td>
+    <td colspan="2">{{$Instrumento->descricao}}</td>
+    <td colspan="2">{{$Instrumento->marca->descricao}}</td>
+    <td>{{$Instrumento->modelo}}</td>
+    <td>{{$Instrumento->numero_serie}}</td>
+    <td>{{$Instrumento->ano}}</td>
 </tr>
-<tr>
-    <th>Selo Retirado:</th>
-    <td colspan="2">{{$aparelhoManutencao->numeracao_selo_retirado()}}</td>
-    <th>Lacres Retirados:</th>
-    <td colspan="3">{{$aparelhoManutencao->numeracao_lacres_retirados()}}</td>
+<tr class="campo">
+    <td width="10%">PORTARIA</td>
+    <td>CAPACIDADE</td>
+    <td>DIVISÃO</td>
+    <td>INVENTÁRIO</td>
+    <td>PATRIMÔNIO</td>
+    <td>SETOR</td>
+    <td>ENDEREÇO</td>
+    <td>IP</td>
 </tr>
+
 <tr>
-    <th>Selo Afixado:</th>
-    <td colspan="2">{{$aparelhoManutencao->numeracao_selo_afixado()}}</td>
-    <th>Lacres Afixados:</th>
-    <td colspan="3">{{$aparelhoManutencao->numeracao_lacres_afixados()}}</td>
+    <td>{{$Instrumento->portaria}}</td>
+    <td>{{$Instrumento->capacidade}}</td>
+    <td>{{$Instrumento->divisao}}</td>
+    <td>{{$Instrumento->inventario}}</td>
+    <td>{{$Instrumento->patrimonio}}</td>
+    <td>{{$Instrumento->setor}}</td>
+    <td>{{$Instrumento->endereco}}</td>
+    <td>{{$Instrumento->ip}}</td>
 </tr>

@@ -1,9 +1,9 @@
 <tr class="fundo_titulo_3">
-    <th class="linha_titulo" colspan="7">Técnico</th>
+    <th class="linha_titulo" colspan="7">TÉCNICO</th>
 </tr>
-<tr>
-    <th colspan="3">Nome:</th>
-    <th colspan="4">CPF:</th>
+<tr class="campo">
+    <th colspan="3">NOME</th>
+    <th colspan="4">CPF</th>
 </tr>
 <tr>
     <td colspan="3">{{$OrdemServico->colaborador->nome}}</td>
@@ -19,12 +19,12 @@
 </tr>
 
 <tr class="fundo_titulo_3">
-    <th class="linha_titulo" colspan="7">Responsável</th>
+    <th class="linha_titulo" colspan="7">RESPONSÁVEL</th>
 </tr>
-<tr>
-    <th colspan="3">Nome:</th>
-    <th colspan="2">CPF:</th>
-    <th colspan="2">Cargo:</th>
+<tr class="campo">
+    <th colspan="3">NOME</th>
+    <th colspan="2">CPF</th>
+    <th colspan="2">CARGO</th>
 </tr>
 <tr>
     <td colspan="3">{{$OrdemServico->responsavel}}</td>
@@ -35,15 +35,3 @@
     <th colspan="4" class="assinatura">Assinatura:</th>
     <td colspan="3" class="sublinhar"></td>
 </tr>
-
-
-{{--<tr>--}}
-{{--<th class="assinatura">Assinatura:</th>--}}
-{{--<td colspan="3" class="sublinhar"></td>--}}
-{{--<td colspan="2"></td>--}}
-{{--</tr>--}}
-{{--<tr>--}}
-{{--<td></th>--}}
-{{--<td colspan="3">{{$OrdemServico->responsavel}} / {{$OrdemServico->responsavel_cpf}}</td>--}}
-{{--<td colspan="2"></td>--}}
-{{--</tr>--}}

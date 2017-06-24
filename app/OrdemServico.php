@@ -343,81 +343,6 @@ class OrdemServico extends Model
         return $valor_total;
     }
 
-
-//
-//
-//    public function getValoresObj()
-//    {
-//        return json_decode($this->getValores());
-//    }
-//
-//    public function getValores()
-//    {
-//        $this->update_valores();
-//        $this->setValores();
-//        if ($this->desconto_tecnico > 0) {
-//            $this->valores['valor_desconto'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_float']);
-//        }
-//        if ($this->acrescimo_tecnico > 0) {
-//            $this->valores['valor_acrescimo'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_acrescimo_float']);
-//        }
-//
-//        $this->valores['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_servicos_float']);
-//        $this->valores['valor_total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_pecas_float']);
-//        $this->valores['valor_total_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_kits_float']);
-//
-//        $this->valores['valor_desconto_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_servicos_float']);
-//        $this->valores['valor_desconto_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_pecas_float']);
-//        $this->valores['valor_desconto_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_kits_float']);
-//
-//        $this->valores['valor_deslocamento'] = 'R$ ' . $this->attributes['custos_deslocamento'];
-//        $this->valores['valor_pedagios'] = 'R$ ' . $this->attributes['pedagios'];
-//        $this->valores['valor_outros_custos'] = 'R$ ' . $this->attributes['outros_custos'];
-//
-//        $this->valores['valor_total'] = 'R$ ' . $this->attributes['valor_total'];
-//        $this->valores['valor_final'] = 'R$ ' . DataHelper::getFloat2Real($this->attributes['valor_final']);
-//        return json_encode($this->valores);
-//    }
-//
-//    public function setValores()
-//    {
-//        $valor_total_servicos = $valor_total_pecas = $valor_total_kits = 0;
-//        $valor_desconto_servicos = $valor_desconto_pecas = $valor_desconto_kits = 0;
-//
-//
-//        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
-//            $valor_total_servicos += $aparelho_manutencao->getTotalServicos();
-//            $valor_total_pecas += $aparelho_manutencao->getTotalPecas();
-//            $valor_total_kits += $aparelho_manutencao->getTotalKits();
-//
-//            $valor_desconto_servicos += $aparelho_manutencao->getTotalDescontoServicos();
-//            $valor_desconto_pecas += $aparelho_manutencao->getTotalDescontoPecas();
-//            $valor_desconto_kits += $aparelho_manutencao->getTotalDescontoKits();
-//        }
-//        if ($this->desconto_tecnico > 0) {
-//            $this->valores['valor_desconto_float'] = $this->valor_desconto;
-//        }
-//        if ($this->acrescimo_tecnico > 0) {
-//            $this->valores['valor_acrescimo_float'] = $this->valor_acrescimo;
-//        }
-//
-//        $this->valores['valor_desconto_servicos_float'] = $valor_desconto_servicos;
-//        $this->valores['valor_desconto_pecas_float'] = $valor_desconto_pecas;
-//        $this->valores['valor_desconto_kits_float'] = $valor_desconto_kits;
-//
-//        $this->valores['valor_total_servicos_float'] = $valor_total_servicos;
-//        $this->valores['valor_total_pecas_float'] = $valor_total_pecas;
-//        $this->valores['valor_total_kits_float'] = $valor_total_kits;
-//
-//        $this->valores['valor_outros_custos_float'] = $this->attributes['outros_custos'];
-//        $this->valores['valor_deslocamento_float'] = $this->attributes['custos_deslocamento'];
-//        $this->valores['valor_pedagios_float'] = $this->attributes['pedagios'];
-//        $this->valores['valor_outras_despesas_float'] = $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
-//        $this->valores['valor_total_float'] = $this->attributes['valor_total'];
-//        $this->valores['valor_final_float'] = $this->attributes['valor_final'];
-//        return $this->valores;
-//    }
-
     public function fechamentoPecasTotalFloat()
     {
         return $this->fechamentoPecas()->sum(function ($val) {
@@ -716,5 +641,80 @@ class OrdemServico extends Model
         return $this->belongsTo('App\Models\Faturamento', 'idfaturamento');
     }
 
+
+
+//
+//
+//    public function getValoresObj()
+//    {
+//        return json_decode($this->getValores());
+//    }
+//
+//    public function getValores()
+//    {
+//        $this->update_valores();
+//        $this->setValores();
+//        if ($this->desconto_tecnico > 0) {
+//            $this->valores['valor_desconto'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_float']);
+//        }
+//        if ($this->acrescimo_tecnico > 0) {
+//            $this->valores['valor_acrescimo'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_acrescimo_float']);
+//        }
+//
+//        $this->valores['valor_total_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_servicos_float']);
+//        $this->valores['valor_total_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_pecas_float']);
+//        $this->valores['valor_total_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_total_kits_float']);
+//
+//        $this->valores['valor_desconto_servicos'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_servicos_float']);
+//        $this->valores['valor_desconto_pecas'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_pecas_float']);
+//        $this->valores['valor_desconto_kits'] = 'R$ ' . DataHelper::getFloat2Real($this->valores['valor_desconto_kits_float']);
+//
+//        $this->valores['valor_deslocamento'] = 'R$ ' . $this->attributes['custos_deslocamento'];
+//        $this->valores['valor_pedagios'] = 'R$ ' . $this->attributes['pedagios'];
+//        $this->valores['valor_outros_custos'] = 'R$ ' . $this->attributes['outros_custos'];
+//
+//        $this->valores['valor_total'] = 'R$ ' . $this->attributes['valor_total'];
+//        $this->valores['valor_final'] = 'R$ ' . DataHelper::getFloat2Real($this->attributes['valor_final']);
+//        return json_encode($this->valores);
+//    }
+//
+//    public function setValores()
+//    {
+//        $valor_total_servicos = $valor_total_pecas = $valor_total_kits = 0;
+//        $valor_desconto_servicos = $valor_desconto_pecas = $valor_desconto_kits = 0;
+//
+//
+//        foreach ($this->aparelho_manutencaos as $aparelho_manutencao) {
+//            $valor_total_servicos += $aparelho_manutencao->getTotalServicos();
+//            $valor_total_pecas += $aparelho_manutencao->getTotalPecas();
+//            $valor_total_kits += $aparelho_manutencao->getTotalKits();
+//
+//            $valor_desconto_servicos += $aparelho_manutencao->getTotalDescontoServicos();
+//            $valor_desconto_pecas += $aparelho_manutencao->getTotalDescontoPecas();
+//            $valor_desconto_kits += $aparelho_manutencao->getTotalDescontoKits();
+//        }
+//        if ($this->desconto_tecnico > 0) {
+//            $this->valores['valor_desconto_float'] = $this->valor_desconto;
+//        }
+//        if ($this->acrescimo_tecnico > 0) {
+//            $this->valores['valor_acrescimo_float'] = $this->valor_acrescimo;
+//        }
+//
+//        $this->valores['valor_desconto_servicos_float'] = $valor_desconto_servicos;
+//        $this->valores['valor_desconto_pecas_float'] = $valor_desconto_pecas;
+//        $this->valores['valor_desconto_kits_float'] = $valor_desconto_kits;
+//
+//        $this->valores['valor_total_servicos_float'] = $valor_total_servicos;
+//        $this->valores['valor_total_pecas_float'] = $valor_total_pecas;
+//        $this->valores['valor_total_kits_float'] = $valor_total_kits;
+//
+//        $this->valores['valor_outros_custos_float'] = $this->attributes['outros_custos'];
+//        $this->valores['valor_deslocamento_float'] = $this->attributes['custos_deslocamento'];
+//        $this->valores['valor_pedagios_float'] = $this->attributes['pedagios'];
+//        $this->valores['valor_outras_despesas_float'] = $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
+//        $this->valores['valor_total_float'] = $this->attributes['valor_total'];
+//        $this->valores['valor_final_float'] = $this->attributes['valor_final'];
+//        return $this->valores;
+//    }
 
 }
