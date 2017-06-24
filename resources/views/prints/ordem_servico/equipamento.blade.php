@@ -2,12 +2,19 @@
 $Equipamento = $aparelhoManutencao->equipamento;
 ?>
 <tr class="fundo_titulo_2">
-    <th class="linha_titulo" colspan="7">
-        Equipamento (#{{$Equipamento->idequipamento}}) {{$Equipamento->descricao}}
+    <th class="linha_titulo" colspan="4">
+        EQUIPAMENTO Nº {{$Equipamento->idequipamento}}
     </th>
 </tr>
+<tr class="campo">
+    <td width="10%">NÚMERO</td>
+    <td width="50%">DESCRIÇÃO</td>
+    <td width="25%">MODELO</td>
+    <td>Nº DE SÉRIE</td>
+</tr>
 <tr>
-    <td colspan="3">Descrição: {{$Equipamento->descricao}}</td>
-    <td colspan="2">Modelo: {{$Equipamento->modelo}}</td>
-    <td colspan="2">N° de Série: {{$Equipamento->numero_serie}}</td>
+    <td>{{$Equipamento->idinstrumento}}</td>
+    <td>{{$Equipamento->descricao}}</td>
+    <td>{{$Equipamento->modelo}}</td>
+    <td>{{$Instrumento->numero_serie}}</td>
 </tr>
