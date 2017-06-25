@@ -3,12 +3,14 @@
 namespace App;
 
 use App\Helpers\DataHelper;
+use App\Traits\SeloLacreInstrumento;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SeloInstrumento extends Model
 {
+    use SeloLacreInstrumento;
     use SoftDeletes;
     public $timestamps = true;
     protected $table = 'selo_instrumentos';
@@ -27,20 +29,14 @@ class SeloInstrumento extends Model
 
     static public function retirar($idselo)
     {
-        $SeloInstrumento = SeloInstrumento::where('idselo',$idselo)->first();
-        $SeloInstrumento->retirado_em = Carbon::now()->toDateTimeString();
-        return ($SeloInstrumento->save())?$SeloInstrumento:0;
+        return self::tirar($idselo, 'idselo');
     }
 
-    public function getAfixadoEmAttribute($value)
+    public function getNomeTecnico()
     {
-        return DataHelper::getPrettyDateTime($value);
+        return $this->selo->getNomeTecnico();
     }
 
-    public function getRetiradoEmAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
-    }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
 

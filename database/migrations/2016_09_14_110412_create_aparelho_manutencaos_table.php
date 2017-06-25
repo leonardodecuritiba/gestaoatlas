@@ -27,6 +27,7 @@ class CreateAparelhoManutencaosTable extends Migration
 //            $table->unique(array('idordem_servico', 'idinstrumento', 'idequipamento'));
             $table->string('defeito',500);
             $table->string('solucao',500);
+            $table->string('numero_chamado', 50)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

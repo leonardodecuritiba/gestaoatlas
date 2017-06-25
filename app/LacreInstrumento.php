@@ -3,11 +3,13 @@
 namespace App;
 
 use App\Helpers\DataHelper;
+use App\Traits\SeloLacreInstrumento;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class LacreInstrumento extends Model
 {
+    use SeloLacreInstrumento;
     public $timestamps = true;
     protected $table = 'lacre_instrumentos';
     protected $primaryKey = 'idlacre_instrumento';
@@ -23,26 +25,20 @@ class LacreInstrumento extends Model
 
     // ******************** FUNCTIONS ******************************
 
-    static public function retirar($idslacres)
+    static public function tirar($idslacres)
     {
         foreach($idslacres as $lacre){
             //Nesse caso, vamos atualizar o retirado_em
-            $LacreInstrumento = LacreInstrumento::where('idlacre',$lacre->id)->first();
-            $LacreInstrumento->retirado_em = Carbon::now()->toDateTimeString();
-            $LacreInstrumento->save();
+            self::tirar($lacre->id, 'idlacre');
         }
         return 1;
     }
 
-    public function getAfixadoEmAttribute($value)
+    public function getNomeTecnico()
     {
-        return DataHelper::getPrettyDateTime($value);
+        return $this->lacre->getNomeTecnico();
     }
 
-    public function getRetiradoEmAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
-    }
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
 

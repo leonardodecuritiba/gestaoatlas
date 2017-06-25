@@ -106,12 +106,13 @@
                                width="100%">
                             <thead>
                             <tr>
-                                <th colspan="4">Selo</th>
+                                <th colspan="5">Selo</th>
                             </tr>
                             <tr>
+                                <th>#</th>
                                 <th>Afixado em</th>
+                                <th>Retirado em</th>
                                 <th>Técnico</th>
-                                <th>Númeração</th>
                                 <th>Númeração (DV)</th>
                             </tr>
                             </thead>
@@ -128,9 +129,13 @@
                                class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
                                width="100%">
                             <thead>
-                            <tr><th colspan="3">Lacres</th></tr>
                             <tr>
+                                <th colspan="5">Lacres</th>
+                            </tr>
+                            <tr>
+                                <th>#</th>
                                 <th>Afixado em</th>
+                                <th>Retirado em</th>
                                 <th>Técnico</th>
                                 <th>Númeração</th>
                             </tr>
@@ -178,36 +183,39 @@
                                 <th>Modelo</th>
                                 <th>Série</th>
                                 <th>Inventário</th>
-                                <th>Selo Afixado</th>
+                                <th>Selo</th>
+                                <th>Lacres</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($Cliente->instrumentos as $instrumento)
-                                <tr>
-                                    <td>{{$instrumento->idinstrumento}}</td>
-                                    <td><img src="{{$instrumento->getFotoThumb()}}" class="avatar" alt="Avatar"></td>
-                                    <td>{{$instrumento->modelo}}</td>
-                                    <td>{{$instrumento->numero_serie}}</td>
-                                    <td>{{$instrumento->inventario}}</td>
-                                    <td>{{$instrumento->selo_afixado_numeracao()}}</td>
-                                    <td>
-                                        <button class="btn btn-default btn-xs edit-instrumento"
-                                                data-dados="{{$instrumento}}"
-                                                data-selo-afixado="{{$instrumento->selo_instrumento_cliente()}}"
-                                                data-lacres-afixados="{{$instrumento->lacres_instrumento_cliente()}}"
-                                                data-lacres="{{$instrumento->lacres_instrumentos}}"
-                                        ><i class="fa fa-edit"></i> Visualizar / Editar
-                                        </button>
+                        @foreach($Cliente->instrumentos as $instrumento)
+                            <tr>
+                                <td>{{$instrumento->idinstrumento}}</td>
+                                <td><img src="{{$instrumento->getFotoThumb()}}" class="avatar" alt="Avatar"></td>
+                                <td>{{$instrumento->modelo}}</td>
+                                <td>{{$instrumento->numero_serie}}</td>
+                                <td>{{$instrumento->inventario}}</td>
+                                <td>{{$instrumento->numeracao_selo_afixado()}}</td>
+                                <td>{{$instrumento->numeracao_lacres_afixados()}}</td>
+                                <td>
+                                    <button class="btn btn-default btn-xs edit-instrumento"
+                                            data-dados="{{$instrumento}}"
+                                            data-selo-afixado="{{$instrumento->selo_instrumento_cliente()}}"
+                                            data-lacres-afixados="{{$instrumento->lacres_instrumento_cliente()}}"
+                                            data-lacres="{{$instrumento->lacres_instrumentos}}"
+                                    ><i class="fa fa-edit"></i> Visualizar / Editar
+                                    </button>
 
-                                        <button class="btn btn-danger btn-xs"
-                                                data-nome="Patrimônio: {{$instrumento->descricao}}"
-                                                data-href="{{route('instrumentos.destroy',$instrumento->idinstrumento)}}"
-                                                data-toggle="modal"
-                                                data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i> Excluir</button>
-                                    </td>
-                                </tr>
-                            @endforeach
+                                    <button class="btn btn-danger btn-xs"
+                                            data-nome="Patrimônio: {{$instrumento->descricao}}"
+                                            data-href="{{route('instrumentos.destroy',$instrumento->idinstrumento)}}"
+                                            data-toggle="modal"
+                                            data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i> Excluir
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -246,19 +254,22 @@
         console.log($dados);
         var ver_selo_lacre = 0;
 
-        $selo = $(this).data('selo-afixado');
-        if (($selo != null) && ($selo != "")) {
+        $selos = $(this).data('selo-afixado');
+        if (($selos != null) && ($selos != "")) {
             ver_selo_lacre = 1;
-            console.log($selo);
+            console.log($selos);
             $($novo_instrumento_container).find('div#selos-container').find('tbody').empty();
-            $($novo_instrumento_container).find('div#selos-container').find('tbody').append(
-                '<tr>' +
-                '<td>' + $selo.afixado_em + '</td>' +
-                '<td>' + $selo.tecnico + '</td>' +
-                '<td>' + $selo.numeracao + '</td>' +
-                '<td>' + $selo.numeracao_dv + '</td>' +
-                '</tr>'
-            );
+            $($selos).each(function (i, selo) {
+                $($novo_instrumento_container).find('div#selos-container').find('tbody').append(
+                    '<tr>' +
+                    '<td>' + selo.idselo + '</td>' +
+                    '<td>' + selo.afixado_em + '</td>' +
+                    '<td>' + selo.retirado_em + '</td>' +
+                    '<td>' + selo.nome_tecnico + '</td>' +
+                    '<td>' + selo.numeracao_dv + '</td>' +
+                    '</tr>'
+                );
+            });
         }
 
         $lacres = $(this).data('lacres-afixados');
@@ -269,8 +280,10 @@
             $.each($lacres, function (i, lacre) {
                 $($novo_instrumento_container).find('div#lacres-container').find('tbody').append(
                     '<tr>' +
+                    '<td>' + lacre.idlacre + '</td>' +
                     '<td>' + lacre.afixado_em + '</td>' +
-                    '<td>' + lacre.tecnico + '</td>' +
+                    '<td>' + lacre.retirado_em + '</td>' +
+                    '<td>' + lacre.nome_tecnico + '</td>' +
                     '<td>' + lacre.numeracao + '</td>' +
                     '</tr>'
                 );

@@ -25,6 +25,11 @@ class Tecnico extends Model
         return self::where('idtecnico', '<>', $idtecnico)->get();
     }
 
+    public function getNome()
+    {
+        return $this->colaborador->nome;
+    }
+
     public function setDescontoMaxAttribute($value)
     {
         $this->attributes['desconto_max'] = DataHelper::getReal2Float($value);

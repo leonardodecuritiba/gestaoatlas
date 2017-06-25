@@ -202,6 +202,10 @@ Route::group(['prefix' => 'cron-jobs'], function () {
     Route::get('run-faturamento', 'FaturamentoController@run');
 });
 Route::group(['prefix' => 'teste'], function () {
+    Route::get('lacres/{id}', function ($id) {
+        $Instrumento = \App\Instrumento::find($id);
+        return $Instrumento->lacres_instrumento_cliente();
+    });
     Route::get('get-hour', function () {
         return \Carbon\Carbon::now()->toDateTimeString();
     });

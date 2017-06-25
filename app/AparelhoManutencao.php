@@ -18,6 +18,7 @@ class AparelhoManutencao extends Model
         'idequipamento',
         'defeito',
         'solucao',
+        'numero_chamado',
     ];
 
     // ******************** FUNCTIONS ******************************
@@ -243,21 +244,11 @@ class AparelhoManutencao extends Model
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
 
-    public function numeracao_selo_afixado()
-    {
-        $selo = $this->selo_afixado();
-        return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
-    }
+    //SELOS --------
 
-    public function selo_afixado()
+    public function has_selo_retirado()
     {
-        return $this->instrumento->selo_afixado();
-    }
-
-    public function numeracao_selo_retirado()
-    {
-        $selo = $this->selo_retirado();
-        return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
+        return ($this->selo_retirado() != NULL);
     }
 
     public function selo_retirado()
@@ -265,16 +256,26 @@ class AparelhoManutencao extends Model
         return $this->instrumento->selo_retirado();
     }
 
-    public function has_selo_retirado()
+    public function numeracao_selo_afixado()
     {
-        $lacresInstrumento = $this->selo_retirado();
-        return ($lacresInstrumento != NULL);
+        return $this->instrumento->numeracao_selo_afixado();
     }
+
+    public function numeracao_selo_retirado()
+    {
+        return $this->instrumento->numeracao_selo_retirado();
+    }
+
+    public function selo_afixado()
+    {
+        return $this->instrumento->selo_afixado();
+    }
+
+    //LACRES --------
 
     public function has_lacres_retirados()
     {
-        $lacresInstrumento = $this->lacres_retirados();
-        return ($lacresInstrumento != NULL);
+        return ($this->lacres_retirados() != NULL);
     }
 
     public function lacres_retirados()
@@ -282,36 +283,22 @@ class AparelhoManutencao extends Model
         return $this->instrumento->lacres_retirados();
     }
 
-    public function numeracao_lacres_retirados()
-    {
-        $lacresInstrumento = $this->lacres_retirados();
-        $numeracao = NULL;
-        if ($lacresInstrumento != NULL) {
-            foreach ($lacresInstrumento as $li) {
-                $lacre = $li->lacre;
-                $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
-            }
-        }
-        return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
-    }
-
     public function numeracao_lacres_afixados()
     {
-        $lacresInstrumento = $this->lacres_afixados();
-        $numeracao = NULL;
-        if ($lacresInstrumento != NULL) {
-            foreach ($lacresInstrumento as $li) {
-                $lacre = $li->lacre;
-                $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
-            }
-        }
-        return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
+        return $this->instrumento->numeracao_lacres_afixados();
+    }
+
+    public function numeracao_lacres_retirados()
+    {
+        return $this->instrumento->numeracao_lacres_retirados();
     }
 
     public function lacres_afixados()
     {
         return $this->instrumento->lacres_afixados();
     }
+
+    //------------------------------------------------
 
     public function selo_instrumentos()
     {

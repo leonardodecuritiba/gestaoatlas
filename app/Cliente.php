@@ -46,6 +46,8 @@ class Cliente extends Model
         'idemissao_tecnica',
         'limite_credito_tecnica',
         'idtabela_preco_tecnica',
+
+        'numero_chamado',
     ];
 
     // ************************ EMAIL-FUNCTIONS ******************************

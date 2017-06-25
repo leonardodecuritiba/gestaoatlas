@@ -55,6 +55,7 @@ class CreateClientesTable extends Migration
             $table->decimal('pedagios', 11, 2)->default(0); //em R$
             $table->decimal('outros_custos', 11, 2)->default(0); //em R$
             $table->string('nome_responsavel',100)->nullable();
+            $table->boolean('numero_chamado')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
