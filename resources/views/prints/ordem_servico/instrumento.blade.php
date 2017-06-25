@@ -33,7 +33,6 @@ $Instrumento = $aparelhoManutencao->instrumento;
     <td>ENDEREÇO</td>
     <td>IP</td>
 </tr>
-
 <tr>
     <td>{{$Instrumento->portaria}}</td>
     <td>{{$Instrumento->capacidade}}</td>
@@ -43,4 +42,16 @@ $Instrumento = $aparelhoManutencao->instrumento;
     <td>{{$Instrumento->setor}}</td>
     <td>{{$Instrumento->endereco}}</td>
     <td>{{$Instrumento->ip}}</td>
+</tr>
+<tr class="campo">
+    <td colspan="2">SELO RETIRADO</td>
+    <td colspan="2">SELO AFIXADO</td>
+    <td colspan="2">LACRES RETIRADOS</td>
+    <td colspan="2">LACRES AFIXADOS</td>
+</tr>
+<tr>
+    <td colspan="2">{{$Instrumento->numeracao_selo_retirado()}}</td>
+    <td colspan="2">{{$Instrumento->numeracao_selo_afixado()}}</td>
+    <td colspan="2">{{$Instrumento->numeracao_lacres_retirados()}}</td>
+    <td colspan="2">{{$Instrumento->numeracao_lacres_afixados()}}</td>
 </tr>

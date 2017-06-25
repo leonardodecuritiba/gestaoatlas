@@ -6,6 +6,14 @@
             @else
                 @include('prints.ordem_servico.equipamento')
             @endif
+            <tr class="campo">
+                <td colspan="4">DEFEITO</td>
+                <td colspan="4">SOLUÇÃO</td>
+            </tr>
+            <tr>
+                <td colspan="4">{{$aparelhoManutencao->defeito}}</td>
+                <td colspan="4">{{$aparelhoManutencao->solucao}}</td>
+            </tr>
         </table>
     </td>
 </tr>
