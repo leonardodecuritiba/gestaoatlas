@@ -136,7 +136,23 @@ class OrdemServico extends Model
 
         //substr ($string, $start, $length = null) {}
 
-        $Valores = $OrdemServicos->map(function ($os) {
+        $_VALORES = [
+            'valor_desconto_float' => 0,
+            'valor_acrescimo_float' => 0,
+            'valor_desconto_servicos_float' => 0,
+            'valor_desconto_pecas_float' => 0,
+            'valor_desconto_kits_float' => 0,
+            'valor_total_servicos_float' => 0,
+            'valor_total_pecas_float' => 0,
+            'valor_total_kits_float' => 0,
+            'valor_outros_custos_float' => 0,
+            'valor_deslocamento_float' => 0,
+            'valor_pedagios_float' => 0,
+            'valor_outras_despesas_float' => 0,
+            'valor_total_float' => 0,
+            'valor_final_float' => 0,
+        ];
+        $valores = $OrdemServicos->map(function ($os) {
             $total_servicos = $os->fechamentoServicosTotalFloat();
             $total_pecas = $os->fechamentoPecasTotalFloat();
             $total_kits = $os->fechamentoKitsTotalFloat();
@@ -160,15 +176,24 @@ class OrdemServico extends Model
                 'valor_total_float' => $os->valor_total,
                 'valor_final_float' => $os->valor_final,
             ];
-
-            foreach ($valores as $key => $value) {
-                $valores[$key] += floatval($value);
-                $nkey = substr($key, 0, strlen($key) - 6);
-                $valores[$nkey] = DataHelper::getFloat2RealMoeda($value);
-            }
             return $valores;
         });
-        return (object)$Valores[0];
+//        return $valores;
+
+        //fazendo soma
+        foreach ($valores as $val) {
+            foreach ($val as $key => $value) {
+                $_VALORES[$key] += floatval($val[$key]);
+            }
+        }
+
+        //mostrando em reais
+        foreach ($_VALORES as $key => $value) {
+            $nkey = substr($key, 0, strlen($key) - 6);
+            $_VALORES[$nkey] = DataHelper::getFloat2RealMoeda($value);
+        }
+
+        return (object)$_VALORES;
 
 
 //        $_valores = [

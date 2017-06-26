@@ -111,6 +111,7 @@ class FechamentoController extends Controller
             $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
         }
 
+//        return $Valores;
 //        return $Valores->valor_desconto_float;
         return view('pages.' . $this->Page->link . '.show')
             ->with('Page', $this->Page)
