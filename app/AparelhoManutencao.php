@@ -141,9 +141,10 @@ class AparelhoManutencao extends Model
     // ******************** SERVIÇOS *********************************
     // ************************************************************
 
-    public function getTotalPecasReal()
+    public function getTotalPecasReal($total = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->getTotalPecas());
+        $total = ($total == NULL) ? $this->getTotalPecas() : $total;
+        return DataHelper::getFloat2RealMoeda($total);
     }
 
     public function getTotalPecas()
@@ -153,9 +154,10 @@ class AparelhoManutencao extends Model
         });
     }
 
-    public function getTotalDescontoPecasReal()
+    public function getTotalDescontoPecasReal($total = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoPecas());
+        $total = ($total == NULL) ? $this->getTotalDescontoPecas() : $total;
+        return DataHelper::getFloat2RealMoeda($total);
     }
 
     public function getTotalDescontoPecas()
@@ -168,9 +170,10 @@ class AparelhoManutencao extends Model
         return ($this->servico_prestados()->count() > 0);
     }
 
-    public function getTotalServicosReal()
+    public function getTotalServicosReal($total = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->getTotalServicos());
+        $total = ($total == NULL) ? $this->getTotalServicos() : $total;
+        return DataHelper::getFloat2RealMoeda($total);
     }
 
     public function getTotalServicos()
@@ -183,9 +186,10 @@ class AparelhoManutencao extends Model
     // ******************** KITS **********************************
     // ************************************************************
 
-    public function getTotalDescontoServicosReal()
+    public function getTotalDescontoServicosReal($total = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoServicos());
+        $total = ($total == NULL) ? $this->getTotalDescontoServicos() : $total;
+        return DataHelper::getFloat2RealMoeda($total);
     }
 
     public function getTotalDescontoServicos()
@@ -198,9 +202,10 @@ class AparelhoManutencao extends Model
         return ($this->kits_utilizados()->count() > 0);
     }
 
-    public function getTotalKitsReal()
+    public function getTotalKitsReal($total = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->getTotalKits());
+        $total = ($total == NULL) ? $this->getTotalKits() : $total;
+        return DataHelper::getFloat2RealMoeda($total);
     }
 
     public function getTotalKits()
@@ -210,9 +215,10 @@ class AparelhoManutencao extends Model
         });
     }
 
-    public function getTotalDescontoKitsReal()
+    public function getTotalDescontoKitsReal($total = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->getTotalDescontoKits());
+        $total = ($total == NULL) ? $this->getTotalDescontoKits() : $total;
+        return DataHelper::getFloat2RealMoeda($total);
     }
 
     public function getTotalDescontoKits()

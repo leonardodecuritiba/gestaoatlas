@@ -26,18 +26,17 @@
                     </thead>
                     <tbody>
                     @foreach ($OrdemServicos as $selecao)
-                        <?php $Valores = $selecao->getValoresObj(); ?>
                         <tr>
                             <td>
                                 <button class="btn btn-xs btn-{{$selecao->getStatusType()}}"
                                 >{{$selecao->situacao->descricao}}</button>
                             </td>
                             <td>{{$selecao->idordem_servico}}</td>
-                            <td>{{$Valores->valor_total_servicos}}</td>
-                            <td>{{$Valores->valor_total_pecas}}</td>
-                            <td>{{$Valores->valor_deslocamento}}</td>
-                            <td>{{$Valores->valor_pedagios}}</td>
-                            <td>{{$Valores->valor_final}}</td>
+                            <td>{{$selecao->fechamentoServicosTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoPecasTotalReal()}}</td>
+                            <td>{{$selecao->getCustosDeslocamentoReal()}}</td>
+                            <td>{{$selecao->getPedagiosReal()}}</td>
+                            <td>{{$selecao->fechamentoValorTotalReal()}}</td>
                             {{--<td>{{$selecao->limite_credito_comercial}}</td>--}}
                             <td>
                                 <a class="btn btn-default btn-xs"

@@ -101,8 +101,8 @@ class FechamentoController extends Controller
 
         if ($request->get('centro_custo')) {
             $query = $query->where('idcentro_custo', $id);
-            $Valores = OrdemServico::getValoresPosFatoramento($query->get());
             $Buscas = $query->orderBy('idcliente')->get();
+            $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
 
 //            $Fechamentos = $query->select('*', DB::raw('count(*) as qtd_os'))
 //                ->get();
@@ -111,6 +111,7 @@ class FechamentoController extends Controller
             $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
         }
 
+//        return $Valores->valor_desconto_float;
         return view('pages.' . $this->Page->link . '.show')
             ->with('Page', $this->Page)
             ->with('Valores', $Valores)
