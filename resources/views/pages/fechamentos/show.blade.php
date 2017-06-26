@@ -35,7 +35,7 @@
                         <div class="ln_solid"></div>
                     </div>
                 </div>
-                @include('pages.fechamentos.parts.resumo_valores')
+                @include('pages.ordem_servicos.parts.resumo_valores')
             </div>
         </div>
     </section>

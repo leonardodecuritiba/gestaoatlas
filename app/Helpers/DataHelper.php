@@ -8,6 +8,16 @@ use Illuminate\Http\Request;
 class DataHelper
 {
     // ******************** FUNCTIONS ******************************
+    static public function getVectorKeyFloatToReal($values)
+    {
+        foreach ($values as $key => $value) {
+            $values[$key] = floatval($value);
+            $nkey = substr($key, 0, strlen($key) - 6);
+            $values[$nkey] = self::getFloat2RealMoeda($values[$key]);
+        }
+        return $values;
+    }
+
     static public function getFloat2RealMoeda($value)
     {
         return 'R$ ' . number_format($value, 2, ',', '.');

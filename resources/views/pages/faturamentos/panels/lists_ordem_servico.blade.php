@@ -19,6 +19,7 @@
                         <th>Técnico</th>
                         <th>Serviços</th>
                         <th>Peças</th>
+                        <th>Kits</th>
                         <th>Total</th>
                         <th>Cliente</th>
                         <th>Ações</th>
@@ -26,7 +27,6 @@
                     </thead>
                     <tbody>
                     @foreach ($OrdemServicos as $selecao)
-                        <?php $Valores = $selecao->getValoresObj(); ?>
                         <tr>
                             <td>
                                 <button class="btn btn-xs btn-{{$selecao->getStatusType()}}"
@@ -37,9 +37,10 @@
                             <td>{{$selecao->created_at}}</td>
                             <td>{{$selecao->data_finalizada}}</td>
                             <td>{{$selecao->colaborador->nome}}</td>
-                            <td>{{$Valores->valor_total_servicos}}</td>
-                            <td>{{$Valores->valor_total_pecas}}</td>
-                            <td>{{$Valores->valor_final}}</td>
+                            <td>{{$selecao->fechamentoServicosTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoPecasTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoKitsTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoValorTotalReal()}}</td>
                             <td>{{$selecao->cliente->getType()->nome_principal}}</td>
                             <td>
                                 <a class="btn btn-primary btn-xs"

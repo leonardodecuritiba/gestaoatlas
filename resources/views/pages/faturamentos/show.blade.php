@@ -169,7 +169,7 @@
                             </div>
                         </div>
 
-                        <?php $Valores = $Faturamento->getValores();?>
+                        <?php $Valores = $Faturamento->getValoresReal();?>
                         @include('pages.ordem_servicos.parts.resumo_valores')
                     </div>
                 </div>

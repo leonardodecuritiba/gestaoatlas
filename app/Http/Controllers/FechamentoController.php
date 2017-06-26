@@ -102,16 +102,15 @@ class FechamentoController extends Controller
         if ($request->get('centro_custo')) {
             $query = $query->where('idcentro_custo', $id);
             $Buscas = $query->orderBy('idcliente')->get();
-            $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
+            $Valores = OrdemServico::getValoresFechamentoReal($Buscas);
 
 //            $Fechamentos = $query->select('*', DB::raw('count(*) as qtd_os'))
 //                ->get();
         } else {
             $Buscas = $query->where('idcliente', $id)->get();
-            $Valores = OrdemServico::getValoresPosFatoramento($Buscas);
+            $Valores = OrdemServico::getValoresFechamentoReal($Buscas);
         }
 
-//        return $Valores;
         return view('pages.' . $this->Page->link . '.show')
             ->with('Page', $this->Page)
             ->with('Valores', $Valores)
@@ -194,7 +193,6 @@ class FechamentoController extends Controller
             ->with('Page', $this->Page);
     }
 
-
     public function fecharPeriodo(Request $request)
     {
         $DATA_INICIO = Carbon::createFromFormat('d/m/Y', $request->get('data_inicial'))->format('Y-m-d 23:59:59');//'2017-01-01 00:00:00' (1º dia do mês anterior)
@@ -213,7 +211,6 @@ class FechamentoController extends Controller
         session(['mensagem' => 'Fechamento realizado']);
         return Redirect::route('fechamentos.periodo_index');
     }
-
 
 //
 //

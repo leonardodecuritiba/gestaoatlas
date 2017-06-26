@@ -103,7 +103,7 @@ class Faturamento extends Model
         $data = [
             'idpagamento' => $Pagamento->id,
             'idforma_pagamento' => $Cliente->idforma_pagamento_tecnica,
-            'valor_parcela' => $Valores->valor_final_float / $data_parcelas['quantidade'],
+            'valor_parcela' => $Valores['valor_final_float'] / $data_parcelas['quantidade'],
         ];
         Parcela::setParcelas($data, $data_parcelas);
 
@@ -114,31 +114,31 @@ class Faturamento extends Model
     {
 //        return $this->ordem_servicos[0]->aparelho_manutencaos[1]->servico_prestados->sum('valor');
 //        return $this->ordem_servicos[0]->aparelho_manutencaos[1]->getTotalServicos();
-
         //substr ($string, $start, $length = null) {}
-        $_valores = [
-            'valor_desconto_float' => 0,
-            'valor_acrescimo_float' => 0,
-            'valor_desconto_servicos_float' => 0,
-            'valor_desconto_pecas_float' => 0,
-            'valor_desconto_kits_float' => 0,
-            'valor_total_servicos_float' => 0,
-            'valor_total_pecas_float' => 0,
-            'valor_total_kits_float' => 0,
-            'valor_outros_custos_float' => 0,
-            'valor_deslocamento_float' => 0,
-            'valor_pedagios_float' => 0,
-            'valor_outras_despesas_float' => 0,
-            'valor_total_float' => 0,
-            'valor_final_float' => 0,
-        ];
-        foreach ($this->ordem_servicos as $ordem_servico) {
-            $valores = $ordem_servico->setValores();
-            foreach ($valores as $key => $value) {
-                $_valores[$key] += floatval($value);
-            }
-        }
-
+//        $_valores = [
+//            'valor_desconto_float' => 0,
+//            'valor_acrescimo_float' => 0,
+//            'valor_desconto_servicos_float' => 0,
+//            'valor_desconto_pecas_float' => 0,
+//            'valor_desconto_kits_float' => 0,
+//            'valor_total_servicos_float' => 0,
+//            'valor_total_pecas_float' => 0,
+//            'valor_total_kits_float' => 0,
+//            'valor_outros_custos_float' => 0,
+//            'valor_deslocamento_float' => 0,
+//            'valor_pedagios_float' => 0,
+//            'valor_outras_despesas_float' => 0,
+//            'valor_total_float' => 0,
+//            'valor_final_float' => 0,
+//        ];
+//        foreach ($this->ordem_servicos as $ordem_servico) {
+//            $valores = $ordem_servico->setValores();
+//            foreach ($valores as $key => $value) {
+//                $_valores[$key] += floatval($value);
+//            }
+//        }
+//        dd($this->ordem_servicos);
+        $_valores = OrdemServico::getValoresFechamento($this->ordem_servicos);
         switch ($this->cliente->idemissao_tecnica) {
             case TipoEmissaoFaturamento::_TIPO_BOLETO_NFE_NFSE_:
                 $_valores['valor_nfse_float'] = $_valores['valor_outras_despesas_float'] + $_valores['valor_total_servicos_float'];
@@ -151,11 +151,7 @@ class Faturamento extends Model
                 break;
         }
 
-        foreach ($_valores as $key => $value) {
-            $nkey = substr($key, 0, strlen($key) - 6);
-            $_valores[$nkey] = DataHelper::getFloat2RealMoeda($value);
-        }
-        return (object)$_valores;
+        return $_valores;
     }
 
     static public function fechar($id)
@@ -197,6 +193,11 @@ class Faturamento extends Model
 //            $query->where('idcolaborador', $User->colaborador->idcolaborador);
 //        }
         return $query;
+    }
+
+    public function getValoresReal()
+    {
+        return DataHelper::getVectorKeyFloatToReal($this->getValores());
     }
 
     public function faturar()

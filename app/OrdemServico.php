@@ -128,72 +128,20 @@ class OrdemServico extends Model
 
     // ******************** FUNCTIONS ******************************
 
-
-    static public function getValoresPosFatoramento(Collection $OrdemServicos)
+    static public function getValoresFechamentoReal(Collection $OrdemServicos)
     {
+        return DataHelper::getVectorKeyFloatToReal(self::getValoresFechamento($OrdemServicos));
+
+
 //        return $this->ordem_servicos[0]->aparelho_manutencaos[1]->servico_prestados->sum('valor');
 //        return $this->ordem_servicos[0]->aparelho_manutencaos[1]->getTotalServicos();
 
         //substr ($string, $start, $length = null) {}
 
-        $_VALORES = [
-            'valor_desconto_float' => 0,
-            'valor_acrescimo_float' => 0,
-            'valor_desconto_servicos_float' => 0,
-            'valor_desconto_pecas_float' => 0,
-            'valor_desconto_kits_float' => 0,
-            'valor_total_servicos_float' => 0,
-            'valor_total_pecas_float' => 0,
-            'valor_total_kits_float' => 0,
-            'valor_outros_custos_float' => 0,
-            'valor_deslocamento_float' => 0,
-            'valor_pedagios_float' => 0,
-            'valor_outras_despesas_float' => 0,
-            'valor_total_float' => 0,
-            'valor_final_float' => 0,
-        ];
-        $valores = $OrdemServicos->map(function ($os) {
-            $total_servicos = $os->fechamentoServicosTotalFloat();
-            $total_pecas = $os->fechamentoPecasTotalFloat();
-            $total_kits = $os->fechamentoKitsTotalFloat();
 
-            $total_servicos_desconto = $os->fechamentoTotalDescontoServicos();
-            $total_pecas_desconto = $os->fechamentoTotalDescontoPecas();
-            $total_kits_desconto = $os->fechamentoTotalDescontoKits();
-            $valores = [
-                'valor_desconto_float' => $os->valor_desconto,
-                'valor_acrescimo_float' => $os->valor_acrescimo,
-                'valor_desconto_servicos_float' => $total_servicos_desconto,
-                'valor_desconto_pecas_float' => $total_pecas_desconto,
-                'valor_desconto_kits_float' => $total_kits_desconto,
-                'valor_total_servicos_float' => $total_servicos,
-                'valor_total_pecas_float' => $total_pecas,
-                'valor_total_kits_float' => $total_kits,
-                'valor_outros_custos_float' => $os->outros_custos,
-                'valor_deslocamento_float' => $os->custos_deslocamento,
-                'valor_pedagios_float' => $os->pedagios,
-                'valor_outras_despesas_float' => $os->outros_custos + $os->custos_deslocamento + $os->pedagios,
-                'valor_total_float' => $os->valor_total,
-                'valor_final_float' => $os->valor_final,
-            ];
-            return $valores;
-        });
 //        return $valores;
 
         //fazendo soma
-        foreach ($valores as $val) {
-            foreach ($val as $key => $value) {
-                $_VALORES[$key] += floatval($val[$key]);
-            }
-        }
-
-        //mostrando em reais
-        foreach ($_VALORES as $key => $value) {
-            $nkey = substr($key, 0, strlen($key) - 6);
-            $_VALORES[$nkey] = DataHelper::getFloat2RealMoeda($value);
-        }
-
-        return (object)$_VALORES;
 
 
 //        $_valores = [
@@ -271,6 +219,58 @@ class OrdemServico extends Model
             $_valores[$nkey] = DataHelper::getFloat2RealMoeda($value);
         }
         return (object)$_valores;
+    }
+
+    static public function getValoresFechamento(Collection $OrdemServicos)
+    {
+        $_VALORES = [
+            'valor_desconto_float' => 0,
+            'valor_acrescimo_float' => 0,
+            'valor_desconto_servicos_float' => 0,
+            'valor_desconto_pecas_float' => 0,
+            'valor_desconto_kits_float' => 0,
+            'valor_total_servicos_float' => 0,
+            'valor_total_pecas_float' => 0,
+            'valor_total_kits_float' => 0,
+            'valor_outros_custos_float' => 0,
+            'valor_deslocamento_float' => 0,
+            'valor_pedagios_float' => 0,
+            'valor_outras_despesas_float' => 0,
+            'valor_total_float' => 0,
+            'valor_final_float' => 0,
+        ];
+        $valores = $OrdemServicos->map(function ($os) {
+            $total_servicos = $os->fechamentoServicosTotalFloat();
+            $total_pecas = $os->fechamentoPecasTotalFloat();
+            $total_kits = $os->fechamentoKitsTotalFloat();
+
+            $total_servicos_desconto = $os->fechamentoTotalDescontoServicos();
+            $total_pecas_desconto = $os->fechamentoTotalDescontoPecas();
+            $total_kits_desconto = $os->fechamentoTotalDescontoKits();
+            $valores = [
+                'valor_desconto_float' => $os->valor_desconto,
+                'valor_acrescimo_float' => $os->valor_acrescimo,
+                'valor_desconto_servicos_float' => $total_servicos_desconto,
+                'valor_desconto_pecas_float' => $total_pecas_desconto,
+                'valor_desconto_kits_float' => $total_kits_desconto,
+                'valor_total_servicos_float' => $total_servicos,
+                'valor_total_pecas_float' => $total_pecas,
+                'valor_total_kits_float' => $total_kits,
+                'valor_outros_custos_float' => $os->outros_custos,
+                'valor_deslocamento_float' => $os->custos_deslocamento,
+                'valor_pedagios_float' => $os->pedagios,
+                'valor_outras_despesas_float' => $os->outros_custos + $os->custos_deslocamento + $os->pedagios,
+                'valor_total_float' => $os->valor_total,
+                'valor_final_float' => $os->valor_final,
+            ];
+            return $valores;
+        });
+        foreach ($valores as $val) {
+            foreach ($val as $key => $value) {
+                $_VALORES[$key] += floatval($val[$key]);
+            }
+        }
+        return $_VALORES;
     }
 
     //VISUALIZAÇÃO NO FATURAMENTOS
