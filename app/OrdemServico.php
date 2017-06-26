@@ -171,8 +171,8 @@ class OrdemServico extends Model
                 'valor_total_kits_float' => $total_kits,
                 'valor_outros_custos_float' => $os->outros_custos,
                 'valor_deslocamento_float' => $os->custos_deslocamento,
-                'valor_pedagios_float' => $os->valor_pedagios_float,
-                'valor_outras_despesas_float' => $os->outros_custos + $os->custos_deslocamento + $os->valor_pedagios_float,
+                'valor_pedagios_float' => $os->pedagios,
+                'valor_outras_despesas_float' => $os->outros_custos + $os->custos_deslocamento + $os->pedagios,
                 'valor_total_float' => $os->valor_total,
                 'valor_final_float' => $os->valor_final,
             ];
