@@ -111,6 +111,18 @@
 										Encaminhar</a>
 								</div>
 							@else
+                                <div class="alert-custos_isento alert alert-danger fade in"
+                                     role="alert">
+                                    <strong><i class="fa fa-exclamation-triangle"></i> Atenção O.S. não
+                                        Finalizada!</strong>
+                                    A O.S. somente será aceita pelo Financeiro uma vez que assinada e com situação
+                                    FINALIZADA.
+                                    Os canhotos das Marcas de Reparo somente poderão ser fixados em O.S. cuja situação
+                                    seja FINALIZADA.
+                                    O descumprimento acarretará em Advertência ao usuário.
+                                    O mesmo também estará sujeito a arcar com os valores da O.S. em caso de
+                                    descumprimento.
+                                </div>
 								<div class="col-md-3 col-sm-3 col-xs-12">
 									<a target="_blank"
 									   href="{{route('ordem_servicos.imprimir',$OrdemServico->idordem_servico)}}"
