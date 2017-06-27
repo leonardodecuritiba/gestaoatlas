@@ -135,6 +135,17 @@ $lacres_atual = NULL;
                         </div>
                     </div>
                 </section>
+                <div class="form-group">
+                    @if($AparelhoManutencao->numero_chamado != NULL)
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Número do chamado: </label>
+                            <div class="col-md-10 col-sm-10 col-xs-10">
+                                <input type="text" class="form-control"
+                                       value="{{$AparelhoManutencao->numero_chamado}}" disabled/>
+                            </div>
+                        </div>
+                    @endif
+                </div>
                 <div class="form-group col-md-6">
                     <label>Defeitos encontrados: <span class="required">*</span></label>
                     <textarea name="defeito" class="form-control" rows="3"

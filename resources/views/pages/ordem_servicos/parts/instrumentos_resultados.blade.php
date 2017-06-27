@@ -32,8 +32,8 @@
                         <td>{{$instrumento->numero_serie}}</td>
                         <td>
                             <a class="btn btn-primary btn-xs"
-                               data-href="{{route($Page->link.'.instrumentos.adiciona',[$OrdemServico->idordem_servico,$instrumento->idinstrumento])}}"
                                data-tipo="instrumento"
+                               data-numero_chamado="{{$OrdemServico->cliente->numero_chamado}}"
                                data-aparelho="{{$instrumento}}"
                                data-urlfoto="{{$instrumento->getFoto()}}"
                                data-toggle="modal"

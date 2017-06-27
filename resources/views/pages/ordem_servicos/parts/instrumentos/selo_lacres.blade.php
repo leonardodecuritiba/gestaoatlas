@@ -11,6 +11,14 @@
 <div class="ln_solid"></div>
 @if(($AparelhoManutencao->defeito != '') && ($AparelhoManutencao->solucao != ''))
     <section class="row animated fadeInDown">
+        @if($AparelhoManutencao->numero_chamado != NULL)
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <h2>Número do chamado:</h2>
+                <p>
+                    {{$AparelhoManutencao->numero_chamado}}
+                </p>
+            </div>
+        @endif
         <div class="col-md-6 col-sm-6 col-xs-12">
             <h2>Defeito:</h2>
             <p>

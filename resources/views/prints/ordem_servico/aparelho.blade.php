@@ -6,14 +6,27 @@
             @else
                 @include('prints.ordem_servico.equipamento')
             @endif
-            <tr class="campo">
-                <td colspan="4">DEFEITO</td>
-                <td colspan="4">SOLUÇÃO</td>
-            </tr>
-            <tr>
-                <td colspan="4">{{$aparelhoManutencao->defeito}}</td>
-                <td colspan="4">{{$aparelhoManutencao->solucao}}</td>
-            </tr>
+            @if($aparelhoManutencao->numero_chamado != NULL)
+                <tr class="campo">
+                    <td colspan="2">NÚMERO CHAMADO CLIENTE</td>
+                    <td colspan="3">DEFEITO</td>
+                    <td colspan="3">SOLUÇÃO</td>
+                </tr>
+                <tr>
+                    <td colspan="2">{{$aparelhoManutencao->numero_chamado}}</td>
+                    <td colspan="3">{{$aparelhoManutencao->defeito}}</td>
+                    <td colspan="3">{{$aparelhoManutencao->solucao}}</td>
+                </tr>
+            @else
+                <tr class="campo">
+                    <td colspan="4">DEFEITO</td>
+                    <td colspan="4">SOLUÇÃO</td>
+                </tr>
+                <tr>
+                    <td colspan="4">{{$aparelhoManutencao->defeito}}</td>
+                    <td colspan="4">{{$aparelhoManutencao->solucao}}</td>
+                </tr>
+            @endif
         </table>
     </td>
 </tr>

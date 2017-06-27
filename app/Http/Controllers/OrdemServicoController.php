@@ -240,10 +240,12 @@ class OrdemServicoController extends Controller
                 ->withErrors($erro)
                 ->withInput($request->all());
         }
-        AparelhoManutencao::create([
+        $data = [
             'idordem_servico' => $idordem_servico,
-            'idinstrumento' => $idinstrumento
-        ]);
+            'idinstrumento' => $idinstrumento,
+            'numero_chamado' => $request->get('numero_chamado')
+        ];
+        AparelhoManutencao::create($data);
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
         return Redirect::route('ordem_servicos.show', $idordem_servico);
@@ -258,10 +260,12 @@ class OrdemServicoController extends Controller
                 ->withErrors($erro)
                 ->withInput($request->all());
         }
-        AparelhoManutencao::create([
+        $data = [
             'idordem_servico' => $idordem_servico,
-            'idequipamento' => $idequipamento
-        ]);
+            'idequipamento' => $idequipamento,
+            'numero_chamado' => $request->get('numero_chamado')
+        ];
+        AparelhoManutencao::create($data);
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
         return Redirect::route('ordem_servicos.show', $idordem_servico);

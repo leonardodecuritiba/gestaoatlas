@@ -49,10 +49,19 @@
 								<strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong> Esta O.S. está
 								sendo isentada de custos com Deslocamentos, Pedágios e Outros Custos.
 							</div>
-							<label class="control-label col-md-3 col-sm-3 col-xs-12">Nº do Chamado: <span class="required">*</span></label>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-								<input name="numero_chamado" type="text" maxlength="100" class="form-control"
-									   value="{{(isset($OrdemServico))?$OrdemServico->numero_chamado:old('numero_chamado')}}" required>
+							{{--<label class="control-label col-md-3 col-sm-3 col-xs-12">Nº do Chamado: <span class="required">*</span></label>--}}
+							{{--<div class="col-md-6 col-sm-6 col-xs-12">--}}
+							{{--<input name="numero_chamado" type="text" maxlength="100" class="form-control"--}}
+							{{--value="{{(isset($OrdemServico))?$OrdemServico->numero_chamado:old('numero_chamado')}}" required>--}}
+							{{--</div>--}}
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3 col-sm-3 col-xs-12">Nome Responsável: <span
+										class="required">*</span></label>
+							<div class="col-md-7 col-sm-7 col-xs-12">
+								<input name="responsavel" type="text" maxlength="100" class="form-control"
+									   value="{{(isset($OrdemServico))?$OrdemServico->responsavel:old('responsavel')}}"
+									   required>
 							</div>
 							<div class="col-md-2 col-sm-2 col-xs-12">
 								<div class="checkbox">
@@ -62,15 +71,6 @@
 										> Isenção de Custos
 									</label>
 								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-md-3 col-sm-3 col-xs-12">Nome Responsável: <span
-										class="required">*</span></label>
-							<div class="col-md-9 col-sm-9 col-xs-12">
-								<input name="responsavel" type="text" maxlength="100" class="form-control"
-									   value="{{(isset($OrdemServico))?$OrdemServico->responsavel:old('responsavel')}}"
-									   required>
 							</div>
 						</div>
 						<div class="form-group">

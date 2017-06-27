@@ -318,22 +318,26 @@
     </script>
     <script>
         //ABRE MODAL INSTRUMENTO.
+        var $_ID_ORDEM_SERVICO = {{$OrdemServico->idordem_servico}};
         $(document).ready(function () {
             $('div#modalPopupAparelho').on('show.bs.modal', function (e) {
-                $origem = $(e.relatedTarget);
-                aparelho_ = $($origem).data('aparelho');
-                href_ = $($origem).data('href');
-                urlfoto_ = $($origem).data('urlfoto');
+                var $origem = $(e.relatedTarget);
+                var aparelho_ = $($origem).data('aparelho');
+                var cliente_numero_chamado = $($origem).data('numero_chamado');
+                var urlfoto_ = $($origem).data('urlfoto');
                 aparelho_.marca = aparelho_.marca.descricao;
+                console.log(cliente_numero_chamado);
                 console.log(aparelho_);
                 if ($($origem).data('tipo') == 'instrumento') {
                     $(this).find('div.perfil ul.instrumento').show();
-                    titulo = 'Instrumento (#' + aparelho_['idinstrumento'] + ')';
-                    campos = ['marca', 'modelo', 'numero_serie', 'inventario', 'patrimonio', 'ano', 'portaria', 'divisao', 'capacidade', 'ip', 'endereco', 'setor'];
+                    var titulo = 'Instrumento (#' + aparelho_['idinstrumento'] + ')';
+                    var campos = ['marca', 'modelo', 'numero_serie', 'inventario', 'patrimonio', 'ano', 'portaria', 'divisao', 'capacidade', 'ip', 'endereco', 'setor'];
+                    var id = aparelho_['idinstrumento'];
                 } else {
                     $(this).find('div.perfil ul.instrumento').hide();
-                    titulo = 'Equipamento (#' + aparelho_['idequipamento'] + ')';
-                    campos = ['marca', 'modelo', 'numero_serie'];
+                    var titulo = 'Equipamento (#' + aparelho_['idequipamento'] + ')';
+                    var campos = ['marca', 'modelo', 'numero_serie'];
+                    var id = aparelho_['idequipamento'];
                 }
 
                 $(this).find('img').attr('src', urlfoto_);
@@ -343,9 +347,24 @@
                 $this = $(this);
                 $(campos).each(function (i, v) {
                     $($this).find('div.perfil ul b#' + v).html(aparelho_[v]);
-
                 });
-                $(this).find('.btn-ok').attr("href", href_);
+
+                var href_ = $(this).find('form').attr('action');
+                href_ = href_.replace('_ID_', id);
+                href_ = href_.replace('_IDOS_', $_ID_ORDEM_SERVICO)
+
+                var $form = $(this).find('form').attr('action', href_);
+                var $div_numero_chamado = $($form).find('div#numero_chamado');
+
+                if (cliente_numero_chamado) {
+                    //mostrar o campo NUMERO_CHAMADO e deixar como REQUIRED
+                    $($div_numero_chamado).show();
+                    $($div_numero_chamado).find('input').attr('required', true);
+                } else {
+                    $($div_numero_chamado).hide();
+                    $($div_numero_chamado).find('input').attr('required', false);
+                }
+
             });
         });
     </script>

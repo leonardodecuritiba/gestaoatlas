@@ -2,6 +2,10 @@
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
+
+            {!! Form::open(['route' => ['ordem_servicos.instrumentos.adiciona','_IDOS_','_ID_'],
+                'method' => 'POST',
+                'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
             <div class="modal-header">
                 <h2></h2>
             </div>
@@ -34,12 +38,32 @@
                         </div>
                     </div>
                 </div>
+                <div id="numero_chamado" class="esconda">
+                    <div class="form-group">
+                        <div class="alert alert-danger fade in" role="alert">
+                            <strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong>
+                            Caso o nº do chamado lançado esteja incorreto
+                            ou seja nº fictício, o usuário arcará com custos aplicados à esse instrumento/equipamento.
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Nº Chamado: <span
+                                    class="required">*</span></label>
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <input name="numero_chamado" type="text" maxlength="50" class="form-control">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-danger pull-left" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar
                 </button>
-                <a class="btn btn-success btn-ok pull-right"><i class="fa fa-check"></i> Selecionar</a>
+                <button class="btn btn-success btn-ok pull-right"><i class="fa fa-check"></i> Selecionar</button>
             </div>
+            {{Form::close()}}
         </div>
     </div>
 </div>

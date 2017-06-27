@@ -382,7 +382,7 @@ class OrdemServico extends Model
             $this->attributes['outros_custos'] = 0;
 //            $this->update_valores();
         }
-        $this->attributes['numero_chamado'] = $request['numero_chamado'];
+//        $this->attributes['numero_chamado'] = $request['numero_chamado'];
         $this->attributes['responsavel'] = $request['responsavel'];
         $this->attributes['responsavel_cpf'] = $request['responsavel_cpf'];
         $this->attributes['responsavel_cargo'] = $request['responsavel_cargo'];
