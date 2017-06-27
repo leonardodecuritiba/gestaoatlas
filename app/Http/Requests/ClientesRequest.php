@@ -47,6 +47,7 @@ class ClientesRequest extends Request
             'idforma_pagamento_comercial' => 'required',
             'idemissao_comercial' => 'required',
             'prazo_pagamento_comercial' => 'required',
+            'numero_chamado' => 'required',
         ];
         if ($this->get('centro_custo') == '0') {
             $validacao = array_merge($validacao, [

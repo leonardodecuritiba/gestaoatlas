@@ -116,6 +116,19 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">Número Chamado<span
+                                    class="required">*</span></label>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="radio" name="numero_chamado" value="0" class="flat"
+                                           @if($Cliente->numero_chamado == 0) checked="checked" @endif required> Não
+                                    Possui
+                                    <input type="radio" name="numero_chamado" value="1" class="flat"
+                                           @if($Cliente->numero_chamado == 1) checked="checked" @endif required> Possui
+                                </label>
+                            </div>
+                        </div>
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">Tabela de Preço<span
                                     class="required">*</span></label>
                         <div class="col-md-4 col-sm-4 col-xs-12">
@@ -127,6 +140,10 @@
                                 @endforeach
                             </select>
                         </div>
+
+
+                    </div>
+                    <div class="form-group">
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">Tipo de Emissão Faturamento<span
                                     class="required">*</span></label>
                         <div class="col-md-4 col-sm-4 col-xs-12">
@@ -138,12 +155,9 @@
                                 @endforeach
                             </select>
                         </div>
-
-                    </div>
-                    <div class="form-group">
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">Forma de Pagamento<span
                                     class="required">*</span></label>
-                        <div class="col-md-10 col-sm-10 col-xs-12">
+                        <div class="col-md-4 col-sm-4 col-xs-12">
                             <select name="idforma_pagamento_tecnica" class="form-control" required>
                                 <option value="">Escolha a Forma</option>
                                 @foreach($Page->extras['formas_pagamentos'] as $sel)
