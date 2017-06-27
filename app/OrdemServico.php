@@ -685,7 +685,7 @@ class OrdemServico extends Model
 
     public function getDataAbertura()
     {
-        return DataHelper::getFullPrettyDateTime($this->getAttributeValue('created_at'));
+        return DataHelper::getFullPrettyDateTime($this->attributes['created_at']);
     }
 
     public function getDataFinalizada()

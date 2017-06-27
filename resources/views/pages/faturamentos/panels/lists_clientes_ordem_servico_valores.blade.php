@@ -15,9 +15,12 @@
                     <thead>
                     <tr>
                         <th>Cliente</th>
-                        <th>Quantidade O.S</th>
+                        {{--<th>Quantidade O.S</th>--}}
+                        <th>Abertura</th>
+                        <th>Finalização</th>
                         <th>Serviços</th>
                         <th>Peças</th>
+                        <th>Kits</th>
                         <th>Deslocamento</th>
                         <th>Pedágios</th>
                         <th>Total</th>
@@ -28,21 +31,22 @@
                     <tbody>
                     @foreach ($Clientes as $selecao)
                         <?php $clientType = $selecao->cliente->getType(); ?>
-                        <?php $Valores = $selecao->getValoresObj(); ?>
+                        <?php //$Valores = $selecao->getValoresObj(); ?>
                         <tr>
                             <td><a target="_blank"
                                    href="{{route('clientes.show', $clientType->idcliente)}}"><b>{{$clientType->nome_principal}}</b></a>
                             </td>
-                            <td>
-                                {{$selecao->qtd_os}}
-                            </td>
-                            <td>{{$Valores->valor_total_servicos}}</td>
-                            <td>{{$Valores->valor_total_pecas}}</td>
-                            <td>{{$Valores->valor_deslocamento}}</td>
-                            <td>{{$Valores->valor_pedagios}}</td>
-                            <td>{{$Valores->valor_final}}</td>
-                            {{--<td>{{$selecao->limite_credito_comercial}}</td>--}}
-                            {{--<td> ?? </td>--}}
+                            {{--
+                            <td>{{$selecao->qtd_os}}</td>
+                            --}}
+                            <td>{{$selecao->getDataAbertura()}}</td>
+                            <td>{{$selecao->getDataFinalizada()}}</td>
+                            <td>{{$selecao->fechamentoServicosTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoPecasTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoKitsTotalReal()}}</td>
+                            <td>{{$selecao->getCustosDeslocamentoReal()}}</td>
+                            <td>{{$selecao->getPedagiosReal()}}</td>
+                            <td>{{$selecao->fechamentoValorTotalReal()}}</td>
                             <td>
                                 <a class="btn btn-default btn-xs"
                                    target="_blank"

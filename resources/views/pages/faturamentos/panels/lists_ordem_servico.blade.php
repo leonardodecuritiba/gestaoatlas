@@ -14,8 +14,8 @@
                         <th>Situação</th>
                         <th>ID</th>
                         <th>Nº Chamado</th>
-                        <th>Data de Abertura</th>
-                        <th>Data de Finalização</th>
+                        <th>Abertura</th>
+                        <th>Finalização</th>
                         <th>Técnico</th>
                         <th>Serviços</th>
                         <th>Peças</th>
@@ -34,8 +34,8 @@
                             </td>
                             <td>{{$selecao->idordem_servico}}</td>
                             <td>{{$selecao->numero_chamado}}</td>
-                            <td>{{$selecao->created_at}}</td>
-                            <td>{{$selecao->data_finalizada}}</td>
+                            <td>{{$selecao->getDataAbertura()}}</td>
+                            <td>{{$selecao->getDataFinalizada()}}</td>
                             <td>{{$selecao->colaborador->nome}}</td>
                             <td>{{$selecao->fechamentoServicosTotalReal()}}</td>
                             <td>{{$selecao->fechamentoPecasTotalReal()}}</td>
