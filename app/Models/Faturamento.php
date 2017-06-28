@@ -372,9 +372,9 @@ class Faturamento extends Model
         return ($this->pagamento->status) ? 'Quitado' : 'Pagamento Pendente';
     }
 
-    public function getCreatedAtAttribute($value)
+    public function getDataFechamento()
     {
-        return DataHelper::getPrettyDateTime($value);
+        return DataHelper::getPrettyDateTime($this->attributes['created_at']);
     }
 
     public function getCreatedAtMonth()

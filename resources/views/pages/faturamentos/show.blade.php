@@ -58,6 +58,8 @@
                                 </h4>
                                 <ul class="list-unstyled">
                                     <li><i class="fa fa-calendar"></i> Data da Fechamento:
+                                        <b>{{$Faturamento->getDataFechamento()}}</b></li>
+                                    <li><i class="fa fa-calendar"></i> Data da Fechamento:
                                         <b>{{$Faturamento->created_at}}</b></li>
                                     <li><i class="fa fa-credit-card"></i> Tipo de Emissão (Técnica):
                                         <b>{{$Faturamento->cliente->tipo_emissao_tecnica->descricao}}</b></li>
