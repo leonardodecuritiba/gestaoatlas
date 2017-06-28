@@ -101,8 +101,8 @@
                                               target="_blank">{{$Ordem_servico->idordem_servico}}</a></b></td>
                                     <td>{{$Instrumento->inventario}}</td>
                                     <td>{{$Instrumento->numero_serie}}</td>
-                                    <td>{{$Instrumento->selo_afixado_numeracao()}}</td>
-                                    <td>{{$Ordem_servico->created_at}}</td>
+                                    <td>{{$Instrumento->numeracao_selo_afixado()}}</td>
+                                    <td>{{$Ordem_servico->getDataAbertura()}}</td>
                                     <td>
                                         <b><a href="{{route('colaboradores.show', $Ordem_servico->colaborador->idcolaborador)}}"
                                               target="_blank">{{$Ordem_servico->colaborador->nome.' - '.$Ordem_servico->colaborador->rg}}
