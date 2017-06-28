@@ -189,6 +189,8 @@ Route::group(['middleware' => ['auth']], function() {
     Route::group(['prefix' => 'exportar'], function () {
         Route::get('cod_municipio', 'ClientesController@exportarCodMunicipio');
         Route::get('instrumentos', 'InstrumentosController@exportar')->name('instrumentos.exportar');
+        Route::get('instrumentos_base', 'Instrumentos\InstrumentosBasesController@exportar')->name('instrumentos_base.exportar');
+        Route::get('instrumentos_setors', 'Instrumentos\InstrumentosSetorsController@exportar')->name('instrumentos_setor.exportar');
     });
 
     //IMPORTAÇÃO

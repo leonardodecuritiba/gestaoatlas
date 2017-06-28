@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Instrumentos\InstrumentoBase;
 use App\Models\Instrumentos\InstrumentoModelo;
 use Illuminate\Http\Request;
+use App\Models\ExcelFile;
 
 use App\Http\Requests\Instrumentos\InstrumentoBaseRequest;
 
@@ -105,5 +106,38 @@ class InstrumentosBasesController extends Controller
         $data->delete();
         return response()->json(['status' => '1',
             'response' => trans('messages.crud.' . $this->genre . 'DS', ['name' => $this->name[0]])]);
+    }
+
+    public function exportar(ExcelFile $export)
+    {
+        $InstrumentoBase = InstrumentoBase::all();
+        return $export->sheet('sheetName', function ($sheet) use ($InstrumentoBase) {
+
+            $dados = array(
+                'id',
+                'marca/modelo',
+                'descricao',
+                'divisao',
+                'portaria',
+                'capacidade',
+            ); //porcentagem
+
+            $sheet->row(1, $dados);
+            //'idpeca_tributacao',
+//            dd($data_peca);
+
+            $i = 2;
+            foreach ($InstrumentoBase as $selecao) {
+                $sheet->row($i, array(
+                    $selecao->id,
+                    $selecao->modelo->getMarcaModelo(),
+                    $selecao->descricao,
+                    $selecao->divisao,
+                    $selecao->portaria,
+                    $selecao->capacidade,
+                ));
+                $i++;
+            }
+        })->export('xls');
     }
 }

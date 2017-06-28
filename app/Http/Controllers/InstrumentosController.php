@@ -141,20 +141,23 @@ class InstrumentosController extends Controller
 
             $dados = array(
                 'idinstrumento',
-                'numero_serie',
-                'inventario',
-                'ip',
-                'ano',
-                'patrimonio',
-                'endereco',
-                '',
+                'descricao',
                 'marca',
                 'modelo',
-                'setor',
-                'descricao',
+                'ano',
+                'capacidade',
                 'divisao',
                 'portaria',
-                'capacidade',
+                'setor',
+                '-',
+                'numero_serie',
+                'patrimonio',
+                'inventario',
+                'ip',
+                'endereco',
+                '-',
+                'idsetor',
+                'idinstrumentobase'
             ); //porcentagem
 
             $sheet->row(1, $dados);
@@ -165,20 +168,23 @@ class InstrumentosController extends Controller
             foreach ($Instrumentos as $instrumento) {
                 $sheet->row($i, array(
                     $instrumento->idinstrumento,
-                    $instrumento->numero_serie,
-                    $instrumento->inventario,
-                    $instrumento->ip,
-                    $instrumento->ano,
-                    $instrumento->patrimonio,
-                    $instrumento->endereco,
-                    ' ',
+                    $instrumento->descricao,
                     $instrumento->marca->descricao,
                     strtoupper($instrumento->modelo),
-                    strtoupper($instrumento->setor),
-                    strtoupper($instrumento->descricao),
+                    $instrumento->ano,
+                    strtoupper($instrumento->capacidade),
                     strtoupper($instrumento->divisao),
                     $instrumento->portaria,
-                    strtoupper($instrumento->capacidade)
+                    strtoupper($instrumento->setor),
+                    '-',
+                    $instrumento->numero_serie,
+                    $instrumento->patrimonio,
+                    $instrumento->inventario,
+                    $instrumento->ip,
+                    $instrumento->endereco,
+                    '-',
+                    '',
+                    '',
                 ));
                 $i++;
             }

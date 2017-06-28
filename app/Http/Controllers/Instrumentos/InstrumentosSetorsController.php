@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Instrumentos;
 use App\Http\Controllers\Controller;
 use App\Models\Instrumentos\InstrumentoSetor;
 use Illuminate\Http\Request;
+use App\Models\ExcelFile;
 
 use App\Http\Requests\Instrumentos\InstrumentoSetorRequest;
 
@@ -87,5 +88,30 @@ class InstrumentosSetorsController extends Controller
         $data->delete();
         return response()->json(['status' => '1',
             'response' => trans('messages.crud.' . $this->genre . 'DS', ['name' => $this->name[0]])]);
+    }
+
+    public function exportar(ExcelFile $export)
+    {
+        $InstrumentoSetor = InstrumentoSetor::all();
+        return $export->sheet('sheetName', function ($sheet) use ($InstrumentoSetor) {
+
+            $dados = array(
+                'id',
+                'descricao',
+            ); //porcentagem
+
+            $sheet->row(1, $dados);
+            //'idpeca_tributacao',
+//            dd($data_peca);
+
+            $i = 2;
+            foreach ($InstrumentoSetor as $selecao) {
+                $sheet->row($i, array(
+                    $selecao->id,
+                    $selecao->descricao,
+                ));
+                $i++;
+            }
+        })->export('xls');
     }
 }
