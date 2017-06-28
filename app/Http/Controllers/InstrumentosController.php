@@ -170,7 +170,7 @@ class InstrumentosController extends Controller
             foreach ($Instrumentos as $instrumento) {
                 $sheet->row($i, array(
                     $instrumento->idinstrumento,
-                    $instrumento->cliente->getType()->nome_principal . ' / ' . $instrumento->cliente->getType()->razão_social,
+                    $instrumento->cliente->getType()->nome_principal . ' / ' . $instrumento->cliente->getType()->razao_social,
                     $instrumento->cliente->idcliente,
                     $instrumento->descricao,
                     $instrumento->marca->descricao,
