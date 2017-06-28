@@ -170,13 +170,15 @@ class NFSe extends NF
         //# VALOR DE DEDUÇOES ate BASE DE CALCULO= SO SAO USADAS QNDO EMPRESA NAO E SIMPLES. CASO CONTRARIO EM BRANCO OU ZERO.
 
         $valores = $this->_FATURAMENTO_->getValores();
-        $valor_aproximado_tributos = ($valores->valor_nfse_float * $this->servico_params_fixos['porcentagem_tributos_float']) / 100;
+
+
+        $valor_aproximado_tributos = ($valores['valor_nfse_float'] * $this->servico_params_fixos['porcentagem_tributos_float']) / 100;
         $discriminacao = $this->servico_params_fixos['discriminacao'] .
             ' (' . $this->servico_params_fixos['porcentagem_tributos_real'] . ') - ' .
             DataHelper::getFloat2RealMoeda($valor_aproximado_tributos);
         $this->servico = [
-            "valor_liquido" => $valores->valor_nfse_float,
-            "valor_servicos" => $valores->valor_nfse_float,//valor_servicos(*): Valor dos serviços.
+            "valor_liquido" => $valores['valor_nfse_float'],
+            "valor_servicos" => $valores['valor_nfse_float'],//valor_servicos(*): Valor dos serviços.
             "valor_deducoes" => 0,//valor_deducoes: Valor das deduções.
             "valor_pis" => 0,//valor_pis: Valor do PIS.
             "valor_cofins" => 0,//valor_cofins: Valor do COFINS.

@@ -242,13 +242,11 @@ class Faturamento extends Model
         $option = ($debug) ? 'homologacao' : 'producao';
         $ref_key = $type . '_' . $option;
         $ref_index = Ajuste::getByMetaKey('ref_' . $type . 'index_' . $option);
-//        $this->{'id' . $type . '_' . $option} = $ref_index->meta_value;
         $this->update([
             'id' . $ref_key => $ref_index->meta_value,
-            'data' . $ref_key => Carbon::now()
+            'data_' . $ref_key => Carbon::now()->toDateTimeString()
         ]);
         $ref_index->incrementa();
-
         return $this->setNF($debug, $type);
     }
 

@@ -223,9 +223,9 @@ class NFe extends NF
 //            "valor_produtos" => $valores->valor_total_pecas_float, //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
 //            "valor_total" => $valores->valor_total_pecas_float, //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
 
-            "valor_total" => $valores->valor_total_pecas_float, //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
-            "valor_desconto" => $valores->valor_desconto_pecas_float, //Valor total do desconto. (obrigatório) Decimal[13.2] Tag XML vDesc
-            "valor_produtos" => $valores->valor_total_pecas_float + $valores->valor_desconto_pecas_float, //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
+            "valor_total" => $valores['valor_total_pecas_float'], //Valor total da nota fiscal. (obrigatório) Decimal[13.2] Tag XML vNF
+            "valor_desconto" => $valores['valor_desconto_pecas_float'], //Valor total do desconto. (obrigatório) Decimal[13.2] Tag XML vDesc
+            "valor_produtos" => $valores['valor_total_pecas_float'] + $valores['valor_desconto_pecas_float'], //Valor total dos produtos. (obrigatório) Decimal[13.2] Tag XML vProd
         ];
     }
 

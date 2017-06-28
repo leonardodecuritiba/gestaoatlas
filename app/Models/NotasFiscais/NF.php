@@ -70,8 +70,18 @@ class NF
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         $body = Yaml::parse($body);
-        if (($body['status'] != 'processando_autorizacao') && (!isset($body['uri']))) {
-            $body['uri'] = $_SERVER_ . $body['caminho_danfe'];
+
+//        return $body;
+//        erros: [
+//{
+//    codigo: "nfse_nao_encontrada",
+//mensagem: "Nota fiscal não encontrada"
+//}
+//]
+        if (isset($body['status'])) {
+            if (($body['status'] != 'processando_autorizacao') && (!isset($body['uri']))) {
+                $body['uri'] = $_SERVER_ . $body['caminho_danfe'];
+            }
         }
 
         $retorno = [
