@@ -29,7 +29,8 @@ class SeloInstrumento extends Model
 
     static public function retirar($idselo)
     {
-        return self::tirar($idselo, 'idselo');
+        $Data = self::where('idselo', $idselo)->first();
+        return $Data->update(['retirado_em' => Carbon::now()->toDateTimeString()]);
     }
 
     public function getNomeTecnico()

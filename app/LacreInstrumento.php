@@ -29,7 +29,8 @@ class LacreInstrumento extends Model
     {
         foreach($idslacres as $lacre){
             //Nesse caso, vamos atualizar o retirado_em
-            self::tirar($lacre->id, 'idlacre');
+            $Data = self::where('idlacre', $lacre->id)->first();
+            return $Data->update(['retirado_em' => Carbon::now()->toDateTimeString()]);
         }
         return 1;
     }
