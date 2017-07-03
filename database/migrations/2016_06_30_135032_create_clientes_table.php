@@ -44,6 +44,32 @@ class CreateClientesTable extends Migration
             $table->integer('idcolaborador_validador')->unsigned()->nullable();
             $table->foreign('idcolaborador_validador')->references('idcolaborador')->on('colaboradores')->onDelete('cascade');
 
+            //comercial
+            $table->unsignedInteger('idforma_pagamento_comercial')->nullable()->default(NULL);
+            $table->foreign('idforma_pagamento_comercial')->references('idforma_pagamento')->on('formas_pagamentos')->onDelete('SET NULL');
+
+            $table->string('prazo_pagamento_comercial', 100)->nullable()->default(NULL);
+
+            $table->unsignedInteger('idemissao_comercial')->nullable()->default(NULL);
+            $table->foreign('idemissao_comercial')->references('id')->on('tipo_emissao_faturamentos')->onDelete('SET NULL');
+
+            $table->decimal('limite_credito_comercial', 11, 2)->default(0);
+
+            $table->unsignedInteger('idtabela_preco_comercial')->nullable()->default(3);
+            $table->foreign('idtabela_preco_comercial')->references('idtabela_preco')->on('tabela_precos')->onDelete('cascade');
+
+            //tecnica
+            $table->renameColumn('idforma_pagamento', 'idforma_pagamento_tecnica');
+
+            $table->string('prazo_pagamento_tecnica', 100)->nullable()->default(NULL);
+
+            $table->unsignedInteger('idemissao_tecnica')->nullable()->default(NULL);
+            $table->foreign('idemissao_tecnica')->references('id')->on('tipo_emissao_faturamentos')->onDelete('SET NULL');
+
+            $table->renameColumn('limite_credito', 'limite_credito_tecnica');
+
+            $table->renameColumn('idtabela_preco', 'idtabela_preco_tecnica');
+
             $table->timestamp('validated_at')->nullable();
             $table->boolean('centro_custo')->default(0);
             $table->string('email_orcamento',60);
