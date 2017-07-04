@@ -36,7 +36,7 @@
                             <td>{{$selecao->fechamentoPecasTotalReal()}}</td>
                             <td>{{$selecao->getCustosDeslocamentoReal()}}</td>
                             <td>{{$selecao->getPedagiosReal()}}</td>
-                            <td>{{$selecao->fechamentoValorTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoValorFinalReal()}}</td>
                             {{--<td>{{$selecao->limite_credito_comercial}}</td>--}}
                             <td>
                                 <a class="btn btn-default btn-xs"

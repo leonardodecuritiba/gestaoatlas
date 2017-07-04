@@ -15,24 +15,25 @@
             </div>
             <div class="x_content" id="instrumento-container">
                 <div class="form-group">
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Descrição:</label>
+                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Base:</label>
                     <div class="col-md-10 col-sm-10 col-xs-12 form-group has-feedback">
-                        <input name="descricao" type="text" class="form-control" placeholder="Descrição" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Marca:</label>
-                    <div class="col-md-4 col-sm-4 col-xs-12 form-group has-feedback">
-                        <select name="idmarca" class="form-control" required>
-                            <option value="">Escolha uma Marca</option>
-                            @foreach($Page->extras['marcas'] as $sel)
-                                <option value="{{$sel->idmarca}}">{{$sel->descricao}}</option>
+                        <select name="idbase" class="form-control" required>
+                            <option value="">Escolha um Instrumento Base</option>
+                            @foreach($Page->extras['instrumentos_base'] as $sel)
+                                <option value="{{$sel->id}}">{{$sel->getDetalhesBase()}}</option>
                             @endforeach
                         </select>
                     </div>
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Modelo:</label>
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="modelo" type="text" class="form-control" placeholder="Modelo" required>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Setor:</label>
+                    <div class="col-md-10 col-sm-10 col-xs-12 form-group has-feedback">
+                        <select name="idsetor" class="form-control" required>
+                            <option value="">Escolha um Setor</option>
+                            @foreach($Page->extras['setors'] as $sel)
+                                <option value="{{$sel->id}}">{{$sel->descricao}}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -50,26 +51,6 @@
                     <div class="col-md-4 col-sm-4 col-xs-12">
                         <input name="inventario" type="text" class="form-control" placeholder="Inventário" required>
                     </div>
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Portaria:</label>
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="portaria" type="text" class="form-control" placeholder="Portaria" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Divisão:</label>
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="divisao" type="text" class="form-control" placeholder="Divisão" required>
-                    </div>
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Capacidade:</label>
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="capacidade" type="text" class="form-control" placeholder="Capacidade" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Setor:</label>
-                    <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="setor" type="text" class="form-control" placeholder="Setor" required>
-                    </div>
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Patrimônio:</label>
                     <div class="col-md-4 col-sm-4 col-xs-12">
                         <input name="patrimonio" type="text" class="form-control" placeholder="Patrimônio" required>
@@ -86,9 +67,15 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Foto:</label>
-                    <div class="col-md-10 col-sm-10 col-xs-12">
-                        <input name="foto" type="file" class="form-control">
+                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Etiqueta de
+                        Identificação:</label>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <input name="etiqueta_identificacao" type="file" class="form-control">
+                    </div>
+                    <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Etiqueta de
+                        Inventário:</label>
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                        <input name="etiqueta_inventario" type="file" class="form-control">
                     </div>
                 </div>
             </div>
@@ -147,18 +134,18 @@
                 </div>
             </div>
         </div>
-        <section class="row">
-            <div class="form-group">
-                <div class="col-md-6 col-sm-6 col-xs-12 ">
-                    <button type="reset" id="cancel-instrumento" class="btn btn-danger btn-lg btn-block">Cancelar</button>
-                </div>
-                @if(Auth::user()->hasRole(['admin', 'tecnico']) || (!$Cliente->validado()))
-                    <div class="col-md-6 col-sm-6 col-xs-12 ">
-                        <button type="submit" class="btn btn-success btn-lg btn-block">Salvar</button>
-                    </div>
-                @endif
+    <section class="row">
+        <div class="form-group">
+            <div class="col-md-6 col-sm-6 col-xs-12 ">
+                <button type="reset" id="cancel-instrumento" class="btn btn-danger btn-lg btn-block">Cancelar</button>
             </div>
-        </section>
+            @if(Auth::user()->hasRole(['admin', 'tecnico']) || (!$Cliente->validado()))
+                <div class="col-md-6 col-sm-6 col-xs-12 ">
+                    <button type="submit" class="btn btn-success btn-lg btn-block">Salvar</button>
+                </div>
+            @endif
+        </div>
+    </section>
     {{ Form::close() }}
 </section>
 <section class="x_panel" id="resultados-instrumento">
@@ -180,7 +167,7 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Imagem</th>
-                                <th>Modelo</th>
+                                <th>Marca/Modelo</th>
                                 <th>Série</th>
                                 <th>Inventário</th>
                                 <th>Selo</th>
@@ -192,8 +179,8 @@
                         @foreach($Cliente->instrumentos as $instrumento)
                             <tr>
                                 <td>{{$instrumento->idinstrumento}}</td>
-                                <td><img src="{{$instrumento->getFotoThumb()}}" class="avatar" alt="Avatar"></td>
-                                <td>{{$instrumento->modelo}}</td>
+                                <td><img src="{{$instrumento->getThumbFoto()}}" class="avatar" alt="Avatar"></td>
+                                <td>{{$instrumento->getMarcaModelo()}}</td>
                                 <td>{{$instrumento->numero_serie}}</td>
                                 <td>{{$instrumento->inventario}}</td>
                                 <td>{{$instrumento->numeracao_selo_afixado()}}</td>
@@ -201,6 +188,7 @@
                                 <td>
                                     <button class="btn btn-default btn-xs edit-instrumento"
                                             data-dados="{{$instrumento}}"
+                                            data-foto="{{$instrumento->getThumbFoto()}}"
                                             data-selo-afixado="{{$instrumento->selo_instrumento_cliente()}}"
                                             data-lacres-afixados="{{$instrumento->lacres_instrumento_cliente()}}"
                                             data-lacres="{{$instrumento->lacres_instrumentos}}"
@@ -231,7 +219,6 @@
 <script>
     var $novo_instrumento_container      = $('section#novo-instrumento');
     $ACTION_NEW_INSTRUMENTO = "{{route('instrumentos.store')}}";
-    $CAMINHO_FOTO_INSTRUMENTO = "{{asset('/uploads/instrumentos/X')}}";
     $($novo_instrumento_container).find('div.lacres-selos').hide();
     function instrumento_toggle(){
         $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').addClass('hide');
@@ -251,6 +238,7 @@
     $('button.edit-instrumento').click(function(){
         instrumento_toggle();
         $dados = $(this).data('dados');
+        var $foto = $(this).data('foto');
         console.log($dados);
         var ver_selo_lacre = 0;
 
@@ -307,11 +295,9 @@
                 console.log('v-' + v + '-');
                 if(v!='' && v!=null){
                     $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').removeClass('hide');
-                    foto = $CAMINHO_FOTO_INSTRUMENTO.replace('X',v);
-                    console.log(foto);
                     html_foto = '<div class="form-group">'+
                         '<div class="peca_image">' +
-                        '<img width="70%" src="' + foto + '" />' +
+                        '<img width="70%" src="' + $foto + '" />' +
                         '</div>' +
                         '</div>';
                     $($novo_instrumento_container).find('div#campo-fotos').append(html_foto);

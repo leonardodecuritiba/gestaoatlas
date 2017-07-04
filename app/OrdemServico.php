@@ -482,6 +482,11 @@ class OrdemServico extends Model
         return DataHelper::getFloat2RealMoeda($this->attributes['valor_total']);
     }
 
+    public function fechamentoValorFinalReal()
+    {
+        return DataHelper::getFloat2RealMoeda($this->attributes['valor_final']);
+    }
+
     // ******************** /VALORES *********************************
     // ******************** MUTTATTORS ******************************
 
