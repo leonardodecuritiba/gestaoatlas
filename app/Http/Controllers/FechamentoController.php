@@ -169,7 +169,7 @@ class FechamentoController extends Controller
 
         if ($request->get('centro_custo')) {
             $query = $query->where('idcentro_custo', $id);
-            $Valores = OrdemServico::getValoresPosFatoramento($query->get());
+            $Valores = OrdemServico::getValoresFechamentoReal($query->get());
             $Fechamentos = $query->orderBy('idcliente')
                 ->get();
 
@@ -177,7 +177,7 @@ class FechamentoController extends Controller
 //                ->get();
         } else {
             $Fechamentos = $query->where('idcliente', $id)->get();
-            $Valores = OrdemServico::getValoresPosFatoramento($Fechamentos);
+            $Valores = OrdemServico::getValoresFechamentoReal($Fechamentos);
         }
 
         return view('pages.' . $this->Page->link . '.pos_fechamento.show')
