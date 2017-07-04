@@ -46,7 +46,7 @@
                             <td>{{$selecao->fechamentoKitsTotalReal()}}</td>
                             <td>{{$selecao->getCustosDeslocamentoReal()}}</td>
                             <td>{{$selecao->getPedagiosReal()}}</td>
-                            <td>{{$selecao->fechamentoValorTotalReal()}}</td>
+                            <td>{{$selecao->fechamentoValorFinalReal()}}</td>
                             <td>
                                 <a class="btn btn-default btn-xs"
                                    target="_blank"
