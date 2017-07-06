@@ -321,7 +321,7 @@ class Faturamento extends Model
         return PecasUtilizadas::whereIn('idaparelho_manutencao', $ids_aparelhos_manutencao)
             ->with('peca')
             ->groupBy('idpeca')
-            ->select('*', DB::raw('SUM(quantidade) as quantidade_comercial'))
+            ->select('*', DB::raw('SUM(quantidade) as quantidade_comercial, SUM(desconto) as desconto_total'))
             ->get();
     }
 

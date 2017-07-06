@@ -404,7 +404,7 @@ class NFe extends NF
                 //O valor do frete vai ser incluído dentro do produto mesmo (compo é hoje) ou vai depender da O.S?
                 "valor_frete" => $item->peca->peca_tributacao->valor_frete_float(), //Valor do frete. Decimal[13.2] Tag XML vFrete
                 "valor_seguro" => $item->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
-                "valor_desconto" => $item->desconto, //Valor do desconto. Decimal[13.2] Tag XML vSeg
+                "valor_desconto" => $item->desconto_total, //Valor do desconto. Decimal[13.2] Tag XML vSeg
 //                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
 
             ];
