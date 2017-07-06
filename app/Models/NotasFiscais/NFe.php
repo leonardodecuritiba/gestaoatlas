@@ -278,22 +278,6 @@ class NFe extends NF
                 "cfop" => $item->peca->peca_tributacao->cfop->numeracao, //CFOP do produto. (obrigatório) Integer[4] Tag XML CFOP
                 "unidade_comercial" => $item->peca->unidade->codigo, //Unidade comercial. (obrigatório) String[1-6] Tag XML uCom
 
-                //MESMA COISA DO CAMPO quantidade_comercial E unidade_tributave
-
-                "quantidade_comercial" => $item->quantidade_comercial, //Quantidade comercial. (obrigatório) Decimal[11.0-4] Tag XML qCom
-                "valor_unitario_comercial" => $item->valor, //Valor unitário comercial. (obrigatório) Decimal[11.0-10] Tag XML vUnCom
-                "valor_bruto" => $item->quantidade_comercial * $item->valor, //Valor bruto. Deve ser igual ao produto de Valor unitário comercial com quantidade comercial. Decimal[13.2] Tag XML vProd
-//                    "codigo_barras_tributavel" => "**", //Código GTIN/EAN tributável. Integer[0,8,12,13,14] Tag XML cEANTrib
-                "unidade_tributavel" => $item->peca->unidade->codigo, //Unidade tributável. (obrigatório) String[1-6] Tag XML uTrib
-                "quantidade_tributavel" => $item->quantidade_comercial, //Quantidade tributável. (obrigatório) Decimal[11.0-4] Tag XML qTrib
-                "valor_unitario_tributavel" => $item->valor, //Valor unitário tributável. (obrigatório) Decimal[11.0-10] Tag XML vUnTrib
-
-                //O valor do frete vai ser incluído dentro do produto mesmo (compo é hoje) ou vai depender da O.S?
-                "valor_frete" => $item->peca->peca_tributacao->valor_frete_float(), //Valor do frete. Decimal[13.2] Tag XML vFrete
-                "valor_seguro" => $item->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
-                "valor_desconto" => $item->desconto, //Valor do desconto. Decimal[13.2] Tag XML vSeg
-//                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
-
 
                 "inclui_no_total" => "1", //Valor do item (valor_bruto) compõe valor total da NFe (valor_produtos)? (obrigatório) Tag XML indTot
                 //Valores permitidos:
@@ -369,7 +353,7 @@ class NFe extends NF
                 //75: operação de aquisição por substituição tributária
                 //98: outras operações de entrada
                 //99: outras operações
-                "cofins_situacao_tributaria" => $item->peca->peca_tributacao->cofins_situacao_tributaria
+                "cofins_situacao_tributaria" => $item->peca->peca_tributacao->cofins_situacao_tributaria,
 //                    "cofins_situacao_tributaria" => $pecas_utilizada->peca->peca_tributacao->cofins_situacao_tributaria //(obrigatório)
                 //Valores permitidos
                 //01: operação tributável: base de cálculo = valor da operação (alíquota normal - cumulativo/não cumulativo)
@@ -405,6 +389,24 @@ class NFe extends NF
                 //75: operação de aquisição por substituição tributária
                 //98: outras operações de entrada
                 //99: outras operações
+
+
+                //MESMA COISA DO CAMPO quantidade_comercial E unidade_tributave
+
+                "quantidade_comercial" => $item->quantidade_comercial, //Quantidade comercial. (obrigatório) Decimal[11.0-4] Tag XML qCom
+                "valor_unitario_comercial" => $item->valor, //Valor unitário comercial. (obrigatório) Decimal[11.0-10] Tag XML vUnCom
+                "valor_bruto" => $item->quantidade_comercial * $item->valor, //Valor bruto. Deve ser igual ao produto de Valor unitário comercial com quantidade comercial. Decimal[13.2] Tag XML vProd
+//                    "codigo_barras_tributavel" => "**", //Código GTIN/EAN tributável. Integer[0,8,12,13,14] Tag XML cEANTrib
+                "unidade_tributavel" => $item->peca->unidade->codigo, //Unidade tributável. (obrigatório) String[1-6] Tag XML uTrib
+                "quantidade_tributavel" => $item->quantidade_comercial, //Quantidade tributável. (obrigatório) Decimal[11.0-4] Tag XML qTrib
+                "valor_unitario_tributavel" => $item->valor, //Valor unitário tributável. (obrigatório) Decimal[11.0-10] Tag XML vUnTrib
+
+                //O valor do frete vai ser incluído dentro do produto mesmo (compo é hoje) ou vai depender da O.S?
+                "valor_frete" => $item->peca->peca_tributacao->valor_frete_float(), //Valor do frete. Decimal[13.2] Tag XML vFrete
+                "valor_seguro" => $item->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
+                "valor_desconto" => $item->desconto, //Valor do desconto. Decimal[13.2] Tag XML vSeg
+//                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
+
             ];
             $item_n++;
         }

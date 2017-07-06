@@ -20,6 +20,8 @@
                         <th>Serviços</th>
                         <th>Peças</th>
                         <th>Kits</th>
+                        <th>Desc. (Tec)</th>
+                        <th>Acres. (Tec)</th>
                         <th>Total</th>
                         <th>Cliente</th>
                         <th>Ações</th>
@@ -40,6 +42,8 @@
                             <td>{{$selecao->fechamentoServicosTotalReal()}}</td>
                             <td>{{$selecao->fechamentoPecasTotalReal()}}</td>
                             <td>{{$selecao->fechamentoKitsTotalReal()}}</td>
+                            <td>{{$selecao->desconto_tecnico}}</td>
+                            <td>{{$selecao->acrescimo_tecnico}}</td>
                             <td>{{$selecao->fechamentoValorTotalReal()}}</td>
                             <td>{{$selecao->cliente->getType()->nome_principal}}</td>
                             <td>
