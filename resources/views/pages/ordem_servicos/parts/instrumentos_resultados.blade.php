@@ -13,9 +13,9 @@
                     <th>ID</th>
                     <th>Imagem</th>
                     <th>Descrição</th>
-                    <th>Marca</th>
-                    <th>Modelo</th>
                     <th>Nº de Série</th>
+                    <th>Inventário</th>
+                    <th>Setor</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
@@ -23,19 +23,18 @@
                 @foreach($Instrumentos as $instrumento)
                     <tr>
                         <td>{{$instrumento->idinstrumento}}</td>
-                        <td>
-                            <img src="{{$instrumento->getFoto()}}" class="avatar" alt="Avatar">
-                        </td>
-                        <td>{{$instrumento->descricao}}</td>
-                        <td>{{$instrumento->marca->descricao}}</td>
-                        <td>{{$instrumento->modelo}}</td>
+                        <td><img src="{{$instrumento->getThumbFoto()}}" class="avatar" alt="Avatar"></td>
+                        <td>{{$instrumento->getDetalhesBase()}}</td>
                         <td>{{$instrumento->numero_serie}}</td>
+                        <td>{{$instrumento->inventario}}</td>
+                        <td>{{$instrumento->setor->descricao}}</td>
                         <td>
                             <a class="btn btn-primary btn-xs"
                                data-tipo="instrumento"
                                data-numero_chamado="{{$OrdemServico->cliente->numero_chamado}}"
                                data-aparelho="{{$instrumento}}"
-                               data-urlfoto="{{$instrumento->getFoto()}}"
+                               data-detalhes="{{$instrumento->getDetalhesBase()}}"
+                               data-urlfoto="{{$instrumento->getThumbFoto()}}"
                                data-toggle="modal"
                                data-target="#modalPopupAparelho">
                                 <i class="fa fa-eye"></i> Visualizar </a>

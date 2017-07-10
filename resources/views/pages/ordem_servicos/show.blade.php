@@ -325,7 +325,13 @@
                 var aparelho_ = $($origem).data('aparelho');
                 var cliente_numero_chamado = $($origem).data('numero_chamado');
                 var urlfoto_ = $($origem).data('urlfoto');
-                aparelho_.marca = aparelho_.marca.descricao;
+                aparelho_.marca = aparelho_.base.modelo.marca.descricao;
+                aparelho_.modelo = aparelho_.base.modelo.descricao;
+                aparelho_.setor = aparelho_.setor.descricao;
+                aparelho_.descricao = aparelho_.base.descricao;
+                aparelho_.divisao = aparelho_.base.divisao;
+                aparelho_.portaria = aparelho_.base.portaria;
+                aparelho_.capacidade = aparelho_.base.capacidade;
                 console.log(cliente_numero_chamado);
                 console.log(aparelho_);
                 if ($($origem).data('tipo') == 'instrumento') {

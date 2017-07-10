@@ -112,33 +112,8 @@ class Faturamento extends Model
 
     public function getValores()
     {
-//        return $this->ordem_servicos[0]->aparelho_manutencaos[1]->servico_prestados->sum('valor');
-//        return $this->ordem_servicos[0]->aparelho_manutencaos[1]->getTotalServicos();
-        //substr ($string, $start, $length = null) {}
-//        $_valores = [
-//            'valor_desconto_float' => 0,
-//            'valor_acrescimo_float' => 0,
-//            'valor_desconto_servicos_float' => 0,
-//            'valor_desconto_pecas_float' => 0,
-//            'valor_desconto_kits_float' => 0,
-//            'valor_total_servicos_float' => 0,
-//            'valor_total_pecas_float' => 0,
-//            'valor_total_kits_float' => 0,
-//            'valor_outros_custos_float' => 0,
-//            'valor_deslocamento_float' => 0,
-//            'valor_pedagios_float' => 0,
-//            'valor_outras_despesas_float' => 0,
-//            'valor_total_float' => 0,
-//            'valor_final_float' => 0,
-//        ];
-//        foreach ($this->ordem_servicos as $ordem_servico) {
-//            $valores = $ordem_servico->setValores();
-//            foreach ($valores as $key => $value) {
-//                $_valores[$key] += floatval($value);
-//            }
-//        }
-//        dd($this->ordem_servicos);
         $_valores = OrdemServico::getValoresFechamento($this->ordem_servicos);
+
         switch ($this->cliente->idemissao_tecnica) {
             case TipoEmissaoFaturamento::_TIPO_BOLETO_NFE_NFSE_:
                 $_valores['valor_nfse_float'] = $_valores['valor_outras_despesas_float'] + $_valores['valor_total_servicos_float'];
@@ -321,10 +296,13 @@ class Faturamento extends Model
         return PecasUtilizadas::whereIn('idaparelho_manutencao', $ids_aparelhos_manutencao)
             ->with('peca')
             ->groupBy('idpeca')
-            ->select('*', DB::raw('SUM(quantidade) as quantidade_comercial, SUM(desconto) as desconto_total'))
+            ->select('*', DB::raw('
+            SUM(desconto) as desconto_total,
+            SUM(quantidade) as quantidade_comercial, 
+            (SUM(quantidade) * valor) as valor_bruto
+            '))
             ->get();
     }
-
     public function getAparelhoManutencaos()
     {
         return AparelhoManutencao::whereIn('idordem_servico', $this->ordem_servicos->pluck('idordem_servico'))->get();

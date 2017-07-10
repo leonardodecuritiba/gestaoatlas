@@ -15,6 +15,7 @@
                     <thead>
                     <tr>
                         <th>Cliente</th>
+                        <th>O.S.</th>
                         {{--<th>Quantidade O.S</th>--}}
                         <th>Abertura</th>
                         <th>Finalização</th>
@@ -39,6 +40,7 @@
                             {{--
                             <td>{{$selecao->qtd_os}}</td>
                             --}}
+                            <td>{{$selecao->idordem_servico}}</td>
                             <td>{{$selecao->getDataAbertura()}}</td>
                             <td>{{$selecao->getDataFinalizada()}}</td>
                             <td>{{$selecao->fechamentoServicosTotalReal()}}</td>

@@ -19,6 +19,8 @@ class AlterInstrumentosTable extends Migration
             $table->foreign('idbase')->references('id')->on('instrumento_bases')->onDelete('cascade');
             $table->foreign('idsetor')->references('id')->on('instrumento_setors')->onDelete('cascade');
             $table->foreign('idprotecao')->references('id')->on('seguranca_criacaos')->onDelete('cascade');
+            $table->string('etiqueta_inventario', 100)->nullable();
+            $table->string('etiqueta_identificacao', 100)->nullable();
         });
     }
 

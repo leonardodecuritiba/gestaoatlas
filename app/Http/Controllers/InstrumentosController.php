@@ -10,7 +10,9 @@ use Validator;
 use Illuminate\Http\Request;
 
 
+
 use App\Http\Requests;
+use App\Http\Requests\Instrumentos\InstrumentoRequest;
 
 class InstrumentosController extends Controller
 {
@@ -38,48 +40,23 @@ class InstrumentosController extends Controller
         ];
     }
 
-    public function store(Request $request)
+    public function store(InstrumentoRequest $request)
     {
-//        RETURN $request->all();
-        $validator = Validator::make($request->all(), [
-            'idmarca'      => 'required',
-            'descricao'    => 'required',
-            'modelo'       => 'required',
-            'numero_serie' => 'required',
-            'inventario'   => 'required',
-            'patrimonio'   => 'required',
-            'ano'          => 'required',
-            'portaria'     => 'required',
-            'divisao'      => 'required',
-            'capacidade'   => 'required',
-            'ip'           => 'required',
-            'setor'        => 'required'
-        ]);
+        $data = $request->all();
+        return $data;
+        //store Instrumento
+        $img = new ImageController();
+        $data['etiqueta_identificacao'] = $img->store($request->file('etiqueta_identificacao'), $this->Page->link);
+        $data['etiqueta_inventario'] = $img->store($request->file('etiqueta_inventario'), $this->Page->link);
+        $data['idcolaborador_criador'] = $this->idcolaborador;
+        $data['idcolaborador_validador'] = $this->idcolaborador;
+        $data['validated_at'] = Carbon::now()->toDateTimeString();
+        $Instrumento = Instrumento::create($data);
 
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $data = $request->all();
-//            return $data;
-            //store Instrumento
-            if($request->hasfile('foto')){
-                $img = new ImageController();
-                $data['foto'] = $img->store($request->file('foto'), $this->Page->link);
-            } else {
-                $data['foto'] = NULL;
-            }
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->Target . ' adicionado com sucesso!']);
+        return $this->RedirectCliente($Instrumento->idcliente, 'instrumentos');
 
-            $data['idcolaborador_criador']=$this->idcolaborador;
-            $data['idcolaborador_validador']=$this->idcolaborador;
-            $data['validated_at']=Carbon::now()->toDateTimeString();
-            $Instrumento = Instrumento::create($data);
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->Target.' adicionado com sucesso!']);
-            return $this->RedirectCliente($Instrumento->idcliente,'instrumentos');
-        }
     }
 
     public function RedirectCliente($id, $tab = 'instrumentos')
@@ -87,42 +64,24 @@ class InstrumentosController extends Controller
         return redirect()->route('clientes.show', [$id, 'tab' => $tab]);
     }
 
-    public function update(Request $request, $id)
+    public function update(InstrumentoRequest $request, $id)
     {
-        $Instrumento = Instrumento::find($id);
-        $validator = Validator::make($request->all(), [
-            'idmarca'      => 'required',
-            'descricao'    => 'required',
-            'modelo'       => 'required',
-            'numero_serie' => 'required',
-            'inventario'   => 'required',
-            'patrimonio'   => 'required',
-            'ano'          => 'required',
-            'portaria'     => 'required',
-            'divisao'      => 'required',
-            'capacidade'   => 'required',
-            'ip'           => 'required',
-            'setor'        => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->to($this->getRedirectUrl())
-                ->withErrors($validator)
-                ->withInput($request->all());
-        } else {
-            $dataUpdate = $request->all();
-            if($request->hasfile('foto')){
-                $img = new ImageController();
-                $dataUpdate['foto'] = $img->update($request->file('foto'),$this->Page->link,$Instrumento->foto);
-            }
-
-            //update Instrumento
-            $Instrumento->update($dataUpdate);
-
-            session()->forget('mensagem');
-            session(['mensagem' => $this->Page->Target.' atualizado com sucesso!']);
-            return $this->RedirectCliente($Instrumento->idcliente,'instrumentos');
+        $dataUpdate = $request->all();
+        $Instrumento = Instrumento::findOrFail($id);
+        $img = new ImageController();
+        if ($request->hasfile('etiqueta_identificacao')) {
+            $dataUpdate['etiqueta_identificacao'] = $img->update($request->file('etiqueta_identificacao'), $this->Page->link, $Instrumento->etiqueta_identificacao);
         }
+        if ($request->hasfile('etiqueta_inventario')) {
+            $dataUpdate['etiqueta_inventario'] = $img->update($request->file('etiqueta_inventario'), $this->Page->link, $Instrumento->etiqueta_inventario);
+        }
+
+        //update Instrumento
+        $Instrumento->update($dataUpdate);
+
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->Target . ' atualizado com sucesso!']);
+        return $this->RedirectCliente($Instrumento->idcliente, 'instrumentos');
     }
 
     public function destroy($id)
@@ -136,7 +95,7 @@ class InstrumentosController extends Controller
 
     public function exportar(ExcelFile $export)
     {
-        $Instrumentos = Instrumento::all();
+        $Instrumentos = Instrumento::where('id');
         return $export->sheet('sheetName', function ($sheet) use ($Instrumentos) {
 
             $dados = array(
@@ -187,8 +146,8 @@ class InstrumentosController extends Controller
                     $instrumento->ip,
                     $instrumento->endereco,
                     '-',
-                    '',
-                    '',
+                    $instrumento->idsetor,
+                    $instrumento->idbase,
                 ));
                 $i++;
             }

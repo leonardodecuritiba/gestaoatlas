@@ -142,6 +142,7 @@ Route::group(['middleware' => ['auth']], function() {
 
     //FATURAMENTOS
     Route::resource('faturamentos', 'FaturamentoController');
+    Route::get('faturamentos/show_values/{id}', 'FaturamentoController@show_values');
     Route::get('faturamentos/remover/{id}', 'FaturamentoController@remover')->name('faturamentos.remover');
     Route::get('listar-faturamentos', 'FaturamentoController@index')->name('faturamentos.index');
     Route::get('faturamentos/fechar/{id}', 'FaturamentoController@fechar')->name('faturamentos.fechar');

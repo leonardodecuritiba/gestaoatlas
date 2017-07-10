@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\FormaPagamento;
 use App\Marca;
 use App\Models\ExcelFile;
+use App\Models\Instrumentos\InstrumentoBase;
+use App\Models\Instrumentos\InstrumentoSetor;
 use App\Models\PrazoPagamento;
 use App\Models\TipoEmissaoFaturamento;
 use App\Regiao;
@@ -84,6 +86,10 @@ class ClientesController extends Controller
             'regioes'       => Regiao::all(),
             'tabela_precos' => TabelaPreco::all(),
             'marcas'        => Marca::all(),
+
+            'setors' => InstrumentoSetor::all(),
+            'instrumentos_base' => InstrumentoBase::all(),
+
             'formas_pagamentos' => FormaPagamento::all(),
             'tipos_emissao_faturamento' => TipoEmissaoFaturamento::all(),
         ];

@@ -177,6 +177,9 @@ class OrdemServico extends Model
             ];
             return $valores;
         });
+
+//        return $valores;
+
         foreach ($valores as $val) {
             foreach ($val as $key => $value) {
                 $_VALORES[$key] += floatval($val[$key]);

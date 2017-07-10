@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Helpers\ImageHelper;
 use Illuminate\Database\Eloquent\Model;
 
 class Instrumento extends Model
@@ -11,26 +12,42 @@ class Instrumento extends Model
     protected $primaryKey = 'idinstrumento';
     protected $fillable = [
         'idcliente',
-        'idmarca',
-        'idcolaborador_criador',
-        'idcolaborador_validador',
-        'validated_at',
-        'descricao',
-        'modelo',
         'numero_serie',
         'inventario',
         'patrimonio',
         'ano',
-        'portaria',
-        'divisao',
-        'capacidade',
         'ip',
         'endereco',
-        'setor',
-        'foto'
+        'idbase',
+        'idsetor',
+        'idprotecao',
+
+        'etiqueta_identificacao',
+        'etiqueta_inventario'
+//        'idmarca',-
+//        'idcolaborador_criador',-
+//        'idcolaborador_validador',-
+//        'validated_at',-
+//        'descricao',-
+//        'foto'-
+//        'modelo',-
+//        'portaria',-
+//        'divisao',-
+//        'capacidade',-
+//        'setor',-
     ];
 
     // ******************** FUNCTIONS ****************************
+    public function getDetalhesBase()
+    {
+        return $this->base->getDetalhesBase();
+    }
+
+    public function getMarcaModelo()
+    {
+        return $this->base->getMarcaModelo();
+    }
+
     public function has_aparelho_manutencao()
     {
         return ($this->aparelho_manutencao()->count() > 0);
@@ -43,17 +60,50 @@ class Instrumento extends Model
 
     public function getFoto()
     {
-        return ($this->foto != '') ? asset('uploads/' . $this->table . '/' . $this->foto) : asset('imgs/cogs.png');
+        return $this->base->getFoto();
     }
 
-    public function getFotoThumb()
+    public function getThumbFoto()
     {
-        return ($this->foto != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->foto) : asset('imgs/cogs.png');
+        return $this->base->getThumbFoto();
     }
 
-    public function marca()
+    public function getEtiquetas()
     {
-        return $this->belongsTo('App\Marca', 'idmarca');
+        return json_encode([
+            'etiqueta_identificacao' => $this->getEtiquetaIdentificacao(),
+            'etiqueta_inventario' => $this->getEtiquetaInventario(),
+        ]);
+    }
+
+    public function getEtiquetaIdentificacao()
+    {
+        return ($this->etiqueta_identificacao != NULL) ? ImageHelper::getFullPath('instrumentos') . $this->etiqueta_identificacao : $this->etiqueta_identificacao;
+    }
+
+    public function getEtiquetaInventario()
+    {
+        return ($this->etiqueta_inventario != NULL) ? ImageHelper::getFullPath('instrumentos') . $this->etiqueta_inventario : $this->etiqueta_inventario;
+    }
+
+    public function getThumbEtiquetaIdentificacao()
+    {
+        return ($this->etiqueta_identificacao != NULL) ? ImageHelper::getFullThumbPath('instrumentos') . $this->etiqueta_identificacao : $this->etiqueta_identificacao;
+    }
+
+    public function getThumbEtiquetaInventario()
+    {
+        return ($this->etiqueta_inventario != NULL) ? ImageHelper::getFullThumbPath('instrumentos') . $this->etiqueta_inventario : $this->etiqueta_inventario;
+    }
+
+    public function base()
+    {
+        return $this->belongsTo('App\Models\Instrumentos\InstrumentoBase', 'idbase');
+    }
+
+    public function setor()
+    {
+        return $this->belongsTo('App\Models\Instrumentos\InstrumentoSetor', 'idsetor');
     }
 
     public function cliente()

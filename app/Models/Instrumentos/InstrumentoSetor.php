@@ -21,6 +21,6 @@ class InstrumentoSetor extends Model
     // ************************** HASMANY **********************************
     public function instrumentos()
     {
-        return $this->hasMany('App\Instrumentos', 'idbase');
+        return $this->hasMany('App\Instrumentos', 'idsetor');
     }
 }

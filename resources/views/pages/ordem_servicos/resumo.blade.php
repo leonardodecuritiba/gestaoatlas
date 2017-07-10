@@ -131,8 +131,9 @@
 								</div>
 								<div class="col-md-3 col-sm-3 col-xs-12">
 									<a target="_blank"
-									   href="{{route('ordem_servicos.exportar',$OrdemServico->idordem_servico)}}"
-									   class="btn btn-default btn-lg btn-block"><i class="fa fa-download fa-2"></i>
+									   {{--									   href="{{route('ordem_servicos.exportar',$OrdemServico->idordem_servico)}}"--}}
+									   class="btn btn-default btn-lg btn-block" disabled><i
+												class="fa fa-download fa-2"></i>
 										Exportar</a>
 								</div>
 								<div class="col-md-3 col-sm-3 col-xs-12">

@@ -24,6 +24,19 @@ class InstrumentoBase extends Model
         return DataHelper::getPrettyDateTime($value);
     }
 
+    public function getDetalhesBase()
+    {
+        return $this->getMarcaModelo() . ' - ' .
+            $this->attributes['divisao'] . ' - ' .
+            $this->attributes['portaria'] . ' - ' .
+            $this->attributes['capacidade'];
+    }
+
+    public function getMarcaModelo()
+    {
+        return $this->modelo->getMarcaModelo();
+    }
+
     public function getFoto()
     {
         return ($this->foto != NULL) ? ImageHelper::getFullPath('instrumento_bases') . $this->foto : asset('imgs/cogs.png');

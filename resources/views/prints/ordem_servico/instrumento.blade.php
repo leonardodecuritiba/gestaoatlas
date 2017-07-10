@@ -10,16 +10,14 @@ $Instrumento = $aparelhoManutencao->instrumento;
 <tr class="campo">
     <td width="10%">NÚMERO</td>
     <td colspan="2">DESCRIÇÃO</td>
-    <td colspan="2">MARCA</td>
-    <td>MODELO</td>
+    <td colspan="3">MARCA/MODELO</td>
     <td>Nº DE SÉRIE</td>
     <td>ANO</td>
 </tr>
 <tr>
     <td>{{$Instrumento->idinstrumento}}</td>
-    <td colspan="2">{{$Instrumento->descricao}}</td>
-    <td colspan="2">{{$Instrumento->marca->descricao}}</td>
-    <td>{{$Instrumento->modelo}}</td>
+    <td colspan="2">{{$Instrumento->base->descricao}}</td>
+    <td colspan="3">{{$Instrumento->base->getMarcaModelo()}}</td>
     <td>{{$Instrumento->numero_serie}}</td>
     <td>{{$Instrumento->ano}}</td>
 </tr>
@@ -34,12 +32,12 @@ $Instrumento = $aparelhoManutencao->instrumento;
     <td>IP</td>
 </tr>
 <tr>
-    <td>{{$Instrumento->portaria}}</td>
-    <td>{{$Instrumento->capacidade}}</td>
-    <td>{{$Instrumento->divisao}}</td>
+    <td>{{$Instrumento->base->portaria}}</td>
+    <td>{{$Instrumento->base->capacidade}}</td>
+    <td>{{$Instrumento->base->divisao}}</td>
     <td>{{$Instrumento->inventario}}</td>
     <td>{{$Instrumento->patrimonio}}</td>
-    <td>{{$Instrumento->setor}}</td>
+    <td>{{$Instrumento->setor->descricao}}</td>
     <td>{{$Instrumento->endereco}}</td>
     <td>{{$Instrumento->ip}}</td>
 </tr>

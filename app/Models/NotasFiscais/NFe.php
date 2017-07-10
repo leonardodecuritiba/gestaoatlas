@@ -395,7 +395,7 @@ class NFe extends NF
 
                 "quantidade_comercial" => $item->quantidade_comercial, //Quantidade comercial. (obrigatório) Decimal[11.0-4] Tag XML qCom
                 "valor_unitario_comercial" => $item->valor, //Valor unitário comercial. (obrigatório) Decimal[11.0-10] Tag XML vUnCom
-                "valor_bruto" => $item->quantidade_comercial * $item->valor, //Valor bruto. Deve ser igual ao produto de Valor unitário comercial com quantidade comercial. Decimal[13.2] Tag XML vProd
+                "valor_bruto" => $item->valor_bruto, //Valor bruto. Deve ser igual ao produto de Valor unitário comercial com quantidade comercial. Decimal[13.2] Tag XML vProd
 //                    "codigo_barras_tributavel" => "**", //Código GTIN/EAN tributável. Integer[0,8,12,13,14] Tag XML cEANTrib
                 "unidade_tributavel" => $item->peca->unidade->codigo, //Unidade tributável. (obrigatório) String[1-6] Tag XML uTrib
                 "quantidade_tributavel" => $item->quantidade_comercial, //Quantidade tributável. (obrigatório) Decimal[11.0-4] Tag XML qTrib

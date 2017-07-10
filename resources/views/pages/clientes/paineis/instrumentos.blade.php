@@ -49,21 +49,47 @@
                 <div class="form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Inventário:</label>
                     <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="inventario" type="text" class="form-control" placeholder="Inventário" required>
+                        <input name="inventario" type="text" class="form-control" placeholder="Inventário">
                     </div>
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Patrimônio:</label>
                     <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="patrimonio" type="text" class="form-control" placeholder="Patrimônio" required>
+                        <input name="patrimonio" type="text" class="form-control" placeholder="Patrimônio">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">IP:</label>
                     <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="ip" type="text" class="form-control" placeholder="IP" required>
+                        <input name="ip" type="text" class="form-control" placeholder="IP">
                     </div>
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Endereço:</label>
                     <div class="col-md-4 col-sm-4 col-xs-12">
-                        <input name="endereco" type="text" class="form-control" placeholder="Endereço" required>
+                        <input name="endereco" type="text" class="form-control" placeholder="Endereço">
+                    </div>
+                </div>
+                <div class="form-group etiquetas esconda">
+                    <div class="col-md-55 col-md-offset-2">
+                        <div class="thumbnail">
+                            <div class="image view view-first">
+                                <img id="etiqueta_identificacao" style="width: 100%; display: block;"
+                                     src="http://localhost:8000/uploads//instrumento_bases/thumb_866e25cdec21ec2513fe106cc502a140.png"
+                                     alt="image"/>
+                            </div>
+                            <div class="caption">
+                                <p>Etiqueta de Identificação</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-55 col-md-offset-4">
+                        <div class="thumbnail">
+                            <div class="image view view-first">
+                                <img id="etiqueta_inventario" style="width: 100%; display: block;"
+                                     src="http://localhost:8000/uploads//instrumento_bases/thumb_866e25cdec21ec2513fe106cc502a140.png"
+                                     alt="image"/>
+                            </div>
+                            <div class="caption">
+                                <p>Etiqueta de Inventário</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -167,8 +193,8 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Imagem</th>
-                                <th>Marca/Modelo</th>
-                                <th>Série</th>
+                                <th>Descrição</th>
+                                <th>Nº de Série</th>
                                 <th>Inventário</th>
                                 <th>Selo</th>
                                 <th>Lacres</th>
@@ -180,7 +206,7 @@
                             <tr>
                                 <td>{{$instrumento->idinstrumento}}</td>
                                 <td><img src="{{$instrumento->getThumbFoto()}}" class="avatar" alt="Avatar"></td>
-                                <td>{{$instrumento->getMarcaModelo()}}</td>
+                                <td>{{$instrumento->getDetalhesBase()}}</td>
                                 <td>{{$instrumento->numero_serie}}</td>
                                 <td>{{$instrumento->inventario}}</td>
                                 <td>{{$instrumento->numeracao_selo_afixado()}}</td>
@@ -189,6 +215,7 @@
                                     <button class="btn btn-default btn-xs edit-instrumento"
                                             data-dados="{{$instrumento}}"
                                             data-foto="{{$instrumento->getThumbFoto()}}"
+                                            data-etiquetas="{{$instrumento->getEtiquetas()}}"
                                             data-selo-afixado="{{$instrumento->selo_instrumento_cliente()}}"
                                             data-lacres-afixados="{{$instrumento->lacres_instrumento_cliente()}}"
                                             data-lacres="{{$instrumento->lacres_instrumentos}}"
@@ -217,9 +244,12 @@
     </div>
 </section>
 <script>
-    var $novo_instrumento_container      = $('section#novo-instrumento');
+    var $novo_instrumento_container = $('section#novo-instrumento');
+    var $form_instrumento = $($novo_instrumento_container).find('form');
     $ACTION_NEW_INSTRUMENTO = "{{route('instrumentos.store')}}";
+    $FOLDER_INSTRUMENTOS = "{{route('instrumentos.store')}}";
     $($novo_instrumento_container).find('div.lacres-selos').hide();
+
     function instrumento_toggle(){
         $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').addClass('hide');
         $($novo_instrumento_container).find('div#campo-fotos').empty();
@@ -229,16 +259,20 @@
     }
 
     $('button#add-instrumento, button#cancel-instrumento').click(function() {
-        $($novo_instrumento_container).find('form').get(0).setAttribute('action', $ACTION_NEW_INSTRUMENTO);
+        $($form_instrumento).get(0).setAttribute('action', $ACTION_NEW_INSTRUMENTO);
         $($novo_instrumento_container).find('div.instrumento div.x_title small').empty();
         instrumento_toggle();
-        $($novo_instrumento_container).find('form').find('input[name="_method"]').remove();
+        $($form_instrumento).find('input[name="_method"]').remove();
+        $($form_instrumento).find('input[name="etiqueta_identificacao"]').attr('required', true);
+        $($form_instrumento).find('input[name="etiqueta_inventario"]').attr('required', true);
     });
 
     $('button.edit-instrumento').click(function(){
         instrumento_toggle();
+
         $dados = $(this).data('dados');
         var $foto = $(this).data('foto');
+        var $etiquetas = $(this).data('etiquetas');
         console.log($dados);
         var ver_selo_lacre = 0;
 
@@ -281,15 +315,24 @@
 
         $ACTION_EDIT = "{{route('instrumentos.update',0)}}";
         console.log($ACTION_EDIT.replace('/0', '/' + $dados.idinstrumento));
-        $($novo_instrumento_container).find('form').get(0).setAttribute('action', $ACTION_EDIT.replace('/0', '/' + $dados.idinstrumento));
-        $($novo_instrumento_container).find('form').append('<input name="_method" type="hidden" value="PATCH">');
+        $($form_instrumento).get(0).setAttribute('action', $ACTION_EDIT.replace('/0', '/' + $dados.idinstrumento));
+        $($form_instrumento).append('<input name="_method" type="hidden" value="PATCH">');
         $($novo_instrumento_container).find('div.instrumento div.x_title small').html('#' + $dados.idinstrumento);
         html_foto = '';
 
         $.each($dados, function(i,v){
 //            console.log(i + " = " + v);
 //            console.log("input[name="+ i +"] = " + v);
-            if(i!='foto') {
+            if ((i == 'etiqueta_identificacao') || (i == 'etiqueta_inventario')) {
+                if (v == null) {
+                    $($form_instrumento).find('input[name="' + i + '"]').attr('required', true);
+                } else {
+                    $($form_instrumento).find('input[name="' + i + '"]').attr('required', false);
+                    $($novo_instrumento_container).find('div.etiquetas').show();
+                    $($novo_instrumento_container).find('div.etiquetas').find('img#' + i).attr('src', $etiquetas[i]);
+                }
+            }
+            else if (i != 'foto') {
                 $($novo_instrumento_container).find('div#instrumento-container').find(":input[name="+ i +"]").val(v);
             } else {
                 console.log('v-' + v + '-');

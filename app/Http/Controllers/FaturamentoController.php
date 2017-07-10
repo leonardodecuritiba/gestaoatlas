@@ -215,4 +215,16 @@ class FaturamentoController extends Controller
             ->with('Faturamento', $Faturamento);
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show_values($id)
+    {
+        $Faturamento = Faturamento::find($id);
+        return $Faturamento->getAllPecas();
+    }
+
 }

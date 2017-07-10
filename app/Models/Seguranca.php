@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Seguranca extends Model
 {
     public $timestamps = true;
+    protected $table = 'seguranca_criacaos';
     protected $fillable = [
         'idcriador',
         'idvalidador',
