@@ -18,7 +18,7 @@ class ImportInstrumentosSeeder extends Seeder
         $start = microtime(true);
         $filename = 'INSTRUMENTOSexport_28_06_2017-12_03.xls';
         echo "*** Iniciando o Upload (" . $filename . ") ***";
-        $file = storage_path('uploads') . '\import\\' . $filename;
+        $file = storage_path('uploads' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . $filename);
         echo "\n*** Upload completo em " . round((microtime(true) - $start), 3) . "s ***";
         set_time_limit(3600);
 
