@@ -40,9 +40,9 @@ class InstrumentosBasesController extends Controller
         if (isset($request['busca'])) {
             $busca = $request['busca'];
             $Buscas = InstrumentoBase::where('descricao', 'like', '%' . $busca . '%')
-                ->paginate(10);
+                ->get();
         } else {
-            $Buscas = InstrumentoBase::paginate(10);
+            $Buscas = InstrumentoBase::all();
         }
         //instrumento_marcas
         $this->Page->Results = response()->results($Buscas->count(), $this->genre, $this->name);

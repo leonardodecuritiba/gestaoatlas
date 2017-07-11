@@ -325,13 +325,6 @@
                 var aparelho_ = $($origem).data('aparelho');
                 var cliente_numero_chamado = $($origem).data('numero_chamado');
                 var urlfoto_ = $($origem).data('urlfoto');
-                aparelho_.marca = aparelho_.base.modelo.marca.descricao;
-                aparelho_.modelo = aparelho_.base.modelo.descricao;
-                aparelho_.setor = aparelho_.setor.descricao;
-                aparelho_.descricao = aparelho_.base.descricao;
-                aparelho_.divisao = aparelho_.base.divisao;
-                aparelho_.portaria = aparelho_.base.portaria;
-                aparelho_.capacidade = aparelho_.base.capacidade;
                 console.log(cliente_numero_chamado);
                 console.log(aparelho_);
                 if ($($origem).data('tipo') == 'instrumento') {
@@ -339,11 +332,22 @@
                     var titulo = 'Instrumento (#' + aparelho_['idinstrumento'] + ')';
                     var campos = ['marca', 'modelo', 'numero_serie', 'inventario', 'patrimonio', 'ano', 'portaria', 'divisao', 'capacidade', 'ip', 'endereco', 'setor'];
                     var id = aparelho_['idinstrumento'];
+                    aparelho_.marca = aparelho_.base.modelo.marca.descricao;
+                    aparelho_.modelo = aparelho_.base.modelo.descricao;
+                    aparelho_.setor = aparelho_.setor.descricao;
+                    aparelho_.descricao = aparelho_.base.descricao;
+                    aparelho_.divisao = aparelho_.base.divisao;
+                    aparelho_.portaria = aparelho_.base.portaria;
+                    aparelho_.capacidade = aparelho_.base.capacidade;
+                    var _URL_ = "{{route('ordem_servicos.instrumentos.adiciona',['_IDOS_','_ID_'])}}";
                 } else {
                     $(this).find('div.perfil ul.instrumento').hide();
                     var titulo = 'Equipamento (#' + aparelho_['idequipamento'] + ')';
                     var campos = ['marca', 'modelo', 'numero_serie'];
                     var id = aparelho_['idequipamento'];
+                    aparelho_.marca = aparelho_.marca.descricao;
+                    aparelho_.modelo = aparelho_.modelo.descricao;
+                    var _URL_ = "{{route('ordem_servicos.equipamentos.adiciona',['_IDOS_','_ID_'])}}";
                 }
 
                 $(this).find('img').attr('src', urlfoto_);
@@ -355,9 +359,8 @@
                     $($this).find('div.perfil ul b#' + v).html(aparelho_[v]);
                 });
 
-                var href_ = $(this).find('form').attr('action');
-                href_ = href_.replace('_ID_', id);
-                href_ = href_.replace('_IDOS_', $_ID_ORDEM_SERVICO)
+                var href_ = _URL_.replace('_ID_', id);
+                href_ = href_.replace('_IDOS_', $_ID_ORDEM_SERVICO);
 
                 var $form = $(this).find('form').attr('action', href_);
                 var $div_numero_chamado = $($form).find('div#numero_chamado');

@@ -1,11 +1,11 @@
 @extends('layouts.template')
 @section('style_content')
+    <!-- Datatables -->
+    @include('helpers.datatables.head')
+    <!-- /Datatables -->
 <!-- icheck -->
-{!! Html::style('css/icheck/flat/green.css') !!}
+    {!! Html::style('css/icheck/flat/green.css') !!}
     <style>
-        .select2 {
-            width: 100%;
-        }
         .preco {
             font-size: 13px;
             font-weight: 400;
@@ -81,5 +81,21 @@
     <!-- Clientes.js -->
     @include('pages.clientes.scripts.js')
 
+    <!-- Datatables -->
+    @include('helpers.datatables.foot')
+    <script>
+        $(document).ready(function () {
+            $('.dt-responsive').DataTable(
+                {
+                    "language": language_pt_br,
+                    "pageLength": 10,
+                    "bLengthChange": false, //used to hide the property
+                    "bFilter": false,
+                    "order": [0, "desc"]
+                }
+            );
+        });
+    </script>
+    <!-- /Datatables -->
 @endsection
 

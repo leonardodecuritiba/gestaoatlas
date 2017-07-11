@@ -43,11 +43,12 @@ class InstrumentosController extends Controller
     public function store(InstrumentoRequest $request)
     {
         $data = $request->all();
-        return $data;
         //store Instrumento
         $img = new ImageController();
         $data['etiqueta_identificacao'] = $img->store($request->file('etiqueta_identificacao'), $this->Page->link);
-        $data['etiqueta_inventario'] = $img->store($request->file('etiqueta_inventario'), $this->Page->link);
+        if ($request->hasFile('etiqueta_inventario')) {
+            $data['etiqueta_inventario'] = $img->store($request->file('etiqueta_inventario'), $this->Page->link);
+        }
         $data['idcolaborador_criador'] = $this->idcolaborador;
         $data['idcolaborador_validador'] = $this->idcolaborador;
         $data['validated_at'] = Carbon::now()->toDateTimeString();

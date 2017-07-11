@@ -17,7 +17,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Base:</label>
                     <div class="col-md-10 col-sm-10 col-xs-12 form-group has-feedback">
-                        <select name="idbase" class="form-control" required>
+                        <select name="idbase" class="form-control select2_single" required>
                             <option value="">Escolha um Instrumento Base</option>
                             @foreach($Page->extras['instrumentos_base'] as $sel)
                                 <option value="{{$sel->id}}">{{$sel->getDetalhesBase()}}</option>
@@ -28,7 +28,7 @@
                 <div class="form-group">
                     <label class="control-label col-md-2 col-sm-2 col-xs-12" for="first-name">Setor:</label>
                     <div class="col-md-10 col-sm-10 col-xs-12 form-group has-feedback">
-                        <select name="idsetor" class="form-control" required>
+                        <select name="idsetor" class="form-control select2_single" required>
                             <option value="">Escolha um Setor</option>
                             @foreach($Page->extras['setors'] as $sel)
                                 <option value="{{$sel->id}}">{{$sel->descricao}}</option>
@@ -67,11 +67,10 @@
                     </div>
                 </div>
                 <div class="form-group etiquetas esconda">
-                    <div class="col-md-55 col-md-offset-2">
+                    <div id="etiqueta_identificacao" class="col-md-55 col-md-offset-2 esconda">
                         <div class="thumbnail">
                             <div class="image view view-first">
-                                <img id="etiqueta_identificacao" style="width: 100%; display: block;"
-                                     src="http://localhost:8000/uploads//instrumento_bases/thumb_866e25cdec21ec2513fe106cc502a140.png"
+                                <img style="width: 100%; display: block;"
                                      alt="image"/>
                             </div>
                             <div class="caption">
@@ -79,11 +78,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-55 col-md-offset-4">
+                    <div id="etiqueta_inventario" class="col-md-55 col-md-offset-4 esconda">
                         <div class="thumbnail">
                             <div class="image view view-first">
-                                <img id="etiqueta_inventario" style="width: 100%; display: block;"
-                                     src="http://localhost:8000/uploads//instrumento_bases/thumb_866e25cdec21ec2513fe106cc502a140.png"
+                                <img style="width: 100%; display: block;"
                                      alt="image"/>
                             </div>
                             <div class="caption">
@@ -188,7 +186,8 @@
         <div class="row">
             @if($Cliente->has_instrumento())
                 <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                    <table border="0" class="table table-hover">
+                    <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                           width="100%">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -221,7 +220,6 @@
                                             data-lacres="{{$instrumento->lacres_instrumentos}}"
                                     ><i class="fa fa-edit"></i> Visualizar / Editar
                                     </button>
-
                                     <button class="btn btn-danger btn-xs"
                                             data-nome="Patrimônio: {{$instrumento->descricao}}"
                                             data-href="{{route('instrumentos.destroy',$instrumento->idinstrumento)}}"
@@ -261,10 +259,10 @@
     $('button#add-instrumento, button#cancel-instrumento').click(function() {
         $($form_instrumento).get(0).setAttribute('action', $ACTION_NEW_INSTRUMENTO);
         $($novo_instrumento_container).find('div.instrumento div.x_title small').empty();
+        $($novo_instrumento_container).find('div.etiquetas').hide();
         instrumento_toggle();
         $($form_instrumento).find('input[name="_method"]').remove();
         $($form_instrumento).find('input[name="etiqueta_identificacao"]').attr('required', true);
-        $($form_instrumento).find('input[name="etiqueta_inventario"]').attr('required', true);
     });
 
     $('button.edit-instrumento').click(function(){
@@ -323,28 +321,53 @@
         $.each($dados, function(i,v){
 //            console.log(i + " = " + v);
 //            console.log("input[name="+ i +"] = " + v);
-            if ((i == 'etiqueta_identificacao') || (i == 'etiqueta_inventario')) {
-                if (v == null) {
-                    $($form_instrumento).find('input[name="' + i + '"]').attr('required', true);
-                } else {
-                    $($form_instrumento).find('input[name="' + i + '"]').attr('required', false);
-                    $($novo_instrumento_container).find('div.etiquetas').show();
-                    $($novo_instrumento_container).find('div.etiquetas').find('img#' + i).attr('src', $etiquetas[i]);
+            console.log('i-' + i + 'v-' + v);
+            switch (i) {
+                case 'etiqueta_identificacao': {
+                    if (v == null) {
+                        $($form_instrumento).find('input[name="' + i + '"]').attr('required', true);
+                        $($novo_instrumento_container).find('div.etiquetas').find('div#' + i).hide();
+                    } else {
+                        $($form_instrumento).find('input[name="' + i + '"]').attr('required', false);
+                        $($novo_instrumento_container).find('div.etiquetas').show();
+                        var $div = $($novo_instrumento_container).find('div.etiquetas').find('div#' + i).show();
+                        ;
+                        $($div).find('img').attr('src', $etiquetas[i]);
+                    }
+                    break;
                 }
-            }
-            else if (i != 'foto') {
-                $($novo_instrumento_container).find('div#instrumento-container').find(":input[name="+ i +"]").val(v);
-            } else {
-                console.log('v-' + v + '-');
-                if(v!='' && v!=null){
-                    $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').removeClass('hide');
-                    html_foto = '<div class="form-group">'+
-                        '<div class="peca_image">' +
-                        '<img width="70%" src="' + $foto + '" />' +
-                        '</div>' +
-                        '</div>';
-                    $($novo_instrumento_container).find('div#campo-fotos').append(html_foto);
-
+                case 'etiqueta_inventario': {
+                    if (v == null) {
+                        $($novo_instrumento_container).find('div.etiquetas').find('div#' + i).hide();
+                    } else {
+                        $($novo_instrumento_container).find('div.etiquetas').show();
+                        var $div = $($novo_instrumento_container).find('div.etiquetas').find('div#' + i).show();
+                        $($div).find('img').attr('src', $etiquetas[i]);
+                    }
+                    break;
+                }
+                case 'idbase': {
+                    $($novo_instrumento_container).find('div#instrumento-container').find("select[name=" + i + "]").val(v).trigger("change");
+                    break;
+                }
+                case 'idsetor': {
+                    $($novo_instrumento_container).find('div#instrumento-container').find("select[name=" + i + "]").val(v).trigger("change");
+                    break;
+                }
+                case 'base': {
+                    if (v != '' && v != null) {
+                        $($novo_instrumento_container).find('div#campo-fotos').parent('div.x_panel').removeClass('hide');
+                        html_foto = '<div class="form-group">' +
+                            '<div class="peca_image">' +
+                            '<img width="70%" src="' + $foto + '" />' +
+                            '</div>' +
+                            '</div>';
+                        $($novo_instrumento_container).find('div#campo-fotos').append(html_foto);
+                    }
+                    break;
+                }
+                default: {
+                    $($novo_instrumento_container).find('div#instrumento-container').find("input[name=" + i + "]").val(v);
                 }
             }
         });

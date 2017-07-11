@@ -50,9 +50,9 @@ class ClientesController extends Controller
     {
         if (isset($request['busca'])) {
             $busca = $request['busca'];
-            $Buscas = Cliente::getAll($busca)->paginate(10);
+            $Buscas = Cliente::getAll($busca)->get();
         } else {
-            $Buscas = Cliente::paginate(10);
+            $Buscas = Cliente::all();
         }
 
         return view('pages.'.$this->Page->link.'.index')

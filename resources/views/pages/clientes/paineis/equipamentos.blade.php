@@ -75,7 +75,8 @@
         <div class="row">
             @if($Cliente->has_equipamento())
                 <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                    <table border="0" class="table table-hover">
+                    <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                           width="100%">
                         <thead>
                             <tr>
                                 <th>Imagem</th>

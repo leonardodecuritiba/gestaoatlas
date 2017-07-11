@@ -1,4 +1,9 @@
 @extends('layouts.template')
+@section('style_content')
+    <!-- Datatables -->
+    @include('helpers.datatables.head')
+    <!-- /Datatables -->
+@endsection
 @section('page_content')
     <!-- Seach form -->
     @include('layouts.search.form')
@@ -16,7 +21,9 @@
             <div class="x_content">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                        <table border="0" class="table table-hover">
+                        <table id="datatable-responsive"
+                               class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                               width="100%">
                             <thead>
                             <tr>
                                 <th>#</th>
@@ -56,9 +63,6 @@
                             @endforeach
                             </tbody>
                         </table>
-                        <div class="pull-right">
-                            {!! $Buscas->appends(Request::only('busca'))->links() !!}
-                        </div>
                     </div>
                 </div>
             </div>
@@ -67,4 +71,22 @@
         @include('layouts.search.no-results')
     @endif
     <!-- /page content -->
+@endsection
+@section('scripts_content')
+    <!-- Datatables -->
+    @include('helpers.datatables.foot')
+    <script>
+        $(document).ready(function () {
+            $('.dt-responsive').DataTable(
+                {
+                    "language": language_pt_br,
+                    "pageLength": 20,
+                    "bLengthChange": false, //used to hide the property
+                    "bFilter": false,
+                    "order": [0, "desc"]
+                }
+            );
+        });
+    </script>
+    <!-- /Datatables -->
 @endsection
