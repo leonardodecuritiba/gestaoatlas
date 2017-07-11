@@ -109,6 +109,15 @@ class ClientesController extends Controller
             $data['validated_at'] = Carbon::now()->toDateTimeString();
         }
 
+        //store foto
+        if ($request->hasfile('foto')) {
+            $img = new ImageController();
+            $data['foto'] = $img->store($request->file('foto'), $this->Page->link);
+        } else {
+            $data['foto'] = NULL;
+        }
+
+
         //store CONTATO
         $Contato = Contato::create($data);
         $data['idcontato'] = $Contato->idcontato;
@@ -122,14 +131,6 @@ class ClientesController extends Controller
             //store juridica
             $TipoCliente = PessoaJuridica::create($data);
             $data['idpjuridica'] = $TipoCliente->idpjuridica;
-        }
-
-        //store foto
-        if ($request->hasfile('foto')) {
-            $img = new ImageController();
-            $data['foto'] = $img->store($request->file('foto'), $this->Page->link);
-        } else {
-            $data['foto'] = NULL;
         }
 
         //store Cliente
@@ -166,18 +167,18 @@ class ClientesController extends Controller
         $Cliente = Cliente::find($id);
         $dataUpdate = $request->all();
 
+        //update foto
+        if ($request->hasfile('foto')) {
+            $img = new ImageController();
+            $dataUpdate['foto'] = $img->store($request->file('foto'), $this->Page->link);
+        }
+
         if($Cliente->getType()->tipo_cliente==0){
             //update física
             $Cliente->pessoa_fisica->update($dataUpdate);
         } else {
             //update juridica
             $Cliente->pessoa_juridica->update($dataUpdate);
-        }
-
-        //update foto
-        if ($request->hasfile('foto')) {
-            $img = new ImageController();
-            $dataUpdate['foto'] = $img->store($request->file('foto'), $this->Page->link);
         }
 
         //update CLIENTE
