@@ -48,6 +48,7 @@ class OrdemServicoController extends Controller
             'Titulo' => "Ordem de Serviços",
             'search_no_results' => "Nenhuma Ordem de Serviços encontrada!",
             'search_results' => "Ordens de Serviços encontradas",
+            'msg_val' => 'Cliente não validado!',
             'msg_abr' => 'Ordem de Serviços aberta com sucesso!',
             'msg_fec' => 'Ordem de Serviços finalizada com sucesso!',
             'msg_upd' => 'Ordem de Serviços atualizada com sucesso!',
@@ -212,9 +213,9 @@ class OrdemServicoController extends Controller
                     ->from('clientes')
                     ->join('pfisicas', 'pfisicas.idpfisica', '=', 'clientes.idpfisica')
                     ->where('pfisicas.cpf', 'like', '%' . $documento . '%');
-            })->paginate(10);
+            })->get();
         } else {
-            $Buscas = Cliente::getValidosOrdemServico()->paginate(10);
+            $Buscas = Cliente::getValidosOrdemServico()->get();
         }
         return view('pages.' . $this->Page->link . '.busca_cliente')
             ->with('Page', $this->Page)
@@ -223,12 +224,16 @@ class OrdemServicoController extends Controller
 
     public function abrir($clienteid)
     {
-        $Cliente = Cliente::find($clienteid);
-        $OrdemServico = OrdemServico::abrir($Cliente, $this->colaborador->idcolaborador);
+        $Cliente = Cliente::findOrFail($clienteid);
+        if ($Cliente->isValidated()) {
+            $OrdemServico = OrdemServico::abrir($Cliente, $this->colaborador->idcolaborador);
+            session()->forget('mensagem');
+            session(['mensagem' => $this->Page->msg_abr]);
+            return Redirect::route('ordem_servicos.show', $OrdemServico->idordem_servico);
+        } else {
+            return Redirect::route('ordem_servicos.busca')->withErrors($this->Page->msg_val);
 
-        session()->forget('mensagem');
-        session(['mensagem' => $this->Page->msg_abr]);
-        return Redirect::route('ordem_servicos.show', $OrdemServico->idordem_servico);
+        }
     }
 
     public function adicionaInstrumento(Request $request, $idordem_servico, $idinstrumento)

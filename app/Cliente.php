@@ -61,7 +61,8 @@ class Cliente extends Model
 
     static public function getValidosOrdemServico()
     {
-        return self::whereNotNull('idcolaborador_validador')->whereNotNull('validated_at');
+        return self::whereNull('validated_at')
+            ->orWhere('created_at', '<', Carbon::now()->subDay());
     }
 
     static public function getAll($search)
@@ -69,6 +70,15 @@ class Cliente extends Model
         $pessoa_juridica_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
             ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
         return self::whereIn('idpjuridica', $pessoa_juridica_ids);
+    }
+
+    public function isValidated()
+    {
+        if ($this->attributes['validated_at'] == NULL) {
+            $days = Carbon::now()->diffInHours(Carbon::createFromFormat('Y-m-d H:i:s', $this->attributes['created_at']));
+            return ($days <= 24);
+        }
+        return true;
     }
 
     public function sendNF($link)

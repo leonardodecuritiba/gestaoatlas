@@ -1,4 +1,9 @@
 @extends('layouts.template')
+@section('style_content')
+	<!-- Datatables -->
+	@include('helpers.datatables.head')
+	<!-- /Datatables -->
+@endsection
 @section('page_content')
 	@include('pages.ordem_servicos.popup.cliente_show')
 	<!-- Seach form -->
@@ -9,8 +14,8 @@
 				<div class="col-md-12 col-sm-12 col-xs-12 input-group input-group-lg">
 					<input id="buscar" value="{{Request::get('busca')}}" name="busca" type="text" class="form-control" placeholder="{{$Page->Search}}">
 					<span class="input-group-btn">
-            <button class="btn btn-info" type="submit">Buscar</button>
-        </span>
+						<button class="btn btn-info" type="submit">Buscar</button>
+					</span>
 				</div>
 				{!! Form::close() !!}
 			</div>
@@ -27,7 +32,8 @@
 			<div class="x_content">
 				<div class="row">
 					<div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-						<table border="0" class="table table-hover">
+						<table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+							   width="100%">
 							<thead>
 							<tr>
 								<th>ID</th>
@@ -64,11 +70,7 @@
 							@endforeach
 							</tbody>
 						</table>
-						<div class="pull-right">
-							{!! $Buscas->appends(Request::only('busca'))->links() !!}
-						</div>
 					</div>
-					{{--@endforeach--}}
 				</div>
 			</div>
 		</div>
@@ -78,7 +80,23 @@
 	<!-- /page content -->
 @endsection
 @section('scripts_content')
+	@include('helpers.datatables.foot')
+
 	<script>
+        <!--
+        Datatables -->
+        $(document).ready(function () {
+            $('.dt-responsive').DataTable(
+                {
+                    "language": language_pt_br,
+                    "pageLength": 10,
+                    "bLengthChange": false, //used to hide the property
+                    "bFilter": false,
+                    "order": [0, "desc"]
+                }
+            );
+        });
+        <!-- /Datatables -->
 		//ABRE MODAL
 		$(document).ready(function() {
 			$('div#modalPopup').on('show.bs.modal', function(e) {
