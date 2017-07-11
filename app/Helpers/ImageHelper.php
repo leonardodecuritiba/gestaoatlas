@@ -24,7 +24,7 @@ class ImageHelper
 
     static public function getFullPath($folder)
     {
-        return asset(self::PATH_NAME . $folder) . DIRECTORY_SEPARATOR;
+        return asset(self::PATH_NAME . $folder);
     }
 
     static public function GenerateThumbStatic($data)

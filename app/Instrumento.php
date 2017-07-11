@@ -78,22 +78,22 @@ class Instrumento extends Model
 
     public function getEtiquetaIdentificacao()
     {
-        return ($this->etiqueta_identificacao != NULL) ? ImageHelper::getFullPath('instrumentos') . $this->etiqueta_identificacao : $this->etiqueta_identificacao;
+        return ($this->etiqueta_identificacao != NULL) ? ImageHelper::getFullPath('instrumentos') . DIRECTORY_SEPARATOR . $this->etiqueta_identificacao : asset('imgs/cogs.png');
     }
 
     public function getEtiquetaInventario()
     {
-        return ($this->etiqueta_inventario != NULL) ? ImageHelper::getFullPath('instrumentos') . $this->etiqueta_inventario : $this->etiqueta_inventario;
+        return ($this->etiqueta_inventario != NULL) ? ImageHelper::getFullPath('instrumentos') . DIRECTORY_SEPARATOR . $this->etiqueta_inventario : asset('imgs/cogs.png');
     }
 
     public function getThumbEtiquetaIdentificacao()
     {
-        return ($this->etiqueta_identificacao != NULL) ? ImageHelper::getFullThumbPath('instrumentos') . $this->etiqueta_identificacao : asset('imgs/cogs.png');
+        return ($this->etiqueta_identificacao != NULL) ? ImageHelper::getFullThumbPath('instrumentos') . DIRECTORY_SEPARATOR . $this->etiqueta_identificacao : asset('imgs/cogs.png');
     }
 
     public function getThumbEtiquetaInventario()
     {
-        return ($this->etiqueta_inventario != NULL) ? ImageHelper::getFullThumbPath('instrumentos') . $this->etiqueta_inventario : asset('imgs/cogs.png');
+        return ($this->etiqueta_inventario != NULL) ? ImageHelper::getFullThumbPath('instrumentos') . DIRECTORY_SEPARATOR . $this->etiqueta_inventario : asset('imgs/cogs.png');
     }
 
     public function base()
