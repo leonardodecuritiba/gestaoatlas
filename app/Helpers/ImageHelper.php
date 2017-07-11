@@ -19,7 +19,7 @@ class ImageHelper
 
     static public function getFullThumbPath($folder)
     {
-        return self::getFullPath($folder) . self::THUMB_PREFIX;
+        return self::getFullPath($folder) . DIRECTORY_SEPARATOR . self::THUMB_PREFIX;
     }
 
     static public function getFullPath($folder)
