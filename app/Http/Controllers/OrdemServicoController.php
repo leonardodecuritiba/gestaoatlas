@@ -213,9 +213,9 @@ class OrdemServicoController extends Controller
                     ->from('clientes')
                     ->join('pfisicas', 'pfisicas.idpfisica', '=', 'clientes.idpfisica')
                     ->where('pfisicas.cpf', 'like', '%' . $documento . '%');
-            })->get();
+            })->paginate(10);
         } else {
-            $Buscas = Cliente::getValidosOrdemServico()->get();
+            $Buscas = NULL;
         }
         return view('pages.' . $this->Page->link . '.busca_cliente')
             ->with('Page', $this->Page)
