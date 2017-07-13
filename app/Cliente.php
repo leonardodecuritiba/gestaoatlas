@@ -61,6 +61,15 @@ class Cliente extends Model
 
     static public function getValidosOrdemServico()
     {
+        return self::whereNotNull('validated_at')
+            ->orWhere('created_at', '<', Carbon::now()->subDay());
+        
+        return self::whereNotNull('validated_at')
+            ->orWhere(function ($query) {
+                $query->whereNull('validated_at');
+                $query->where('created_at', '<', Carbon::now()->subDay());
+            });
+
         return self::whereNull('validated_at')
             ->orWhere('created_at', '<', Carbon::now()->subDay());
     }
