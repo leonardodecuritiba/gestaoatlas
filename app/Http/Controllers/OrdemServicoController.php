@@ -14,6 +14,8 @@ use App\LacreInstrumento;
 use App\OrdemServico;
 use App\Peca;
 use App\PecasUtilizadas;
+use App\PessoaFisica;
+use App\PessoaJuridica;
 use App\Selo;
 use App\SeloInstrumento;
 use App\Servico;
@@ -199,21 +201,21 @@ class OrdemServicoController extends Controller
         if (isset($request['busca'])) {
             $busca = $request['busca'];
             $documento = preg_replace('#[^0-9]#', '', $busca);
-            $Buscas = Cliente::getValidosOrdemServico()->whereIn('idcliente', function ($query) use ($busca, $documento) {
-                $query->select('clientes.idcliente')
-                    ->from('clientes')
-                    ->join('pjuridicas', 'pjuridicas.idpjuridica', '=', 'clientes.idpjuridica')
-                    ->where('pjuridicas.razao_social', 'like', '%' . $busca . '%')
-                    ->orwhere('pjuridicas.nome_fantasia', 'like', '%' . $busca . '%');
-                if ($documento != '') {
-                    $query = $query->orwhere('pjuridicas.cnpj', 'like', '%' . $documento . '%');
-                }
-            })->orwhereIn('idcliente', function ($query) use ($documento) {
-                $query->select('clientes.idcliente')
-                    ->from('clientes')
-                    ->join('pfisicas', 'pfisicas.idpfisica', '=', 'clientes.idpfisica')
-                    ->where('pfisicas.cpf', 'like', '%' . $documento . '%');
-            })->paginate(10);
+
+            $query = PessoaJuridica::where('razao_social', 'like', '%' . $busca . '%')
+                ->orwhere('nome_fantasia', 'like', '%' . $busca . '%');
+
+            if ($documento != '') {
+                $query = $query->orwhere('pjuridicas.cnpj', 'like', '%' . $documento . '%');
+                $idpfisicas = PessoaFisica::where('cpf', 'like', '%' . $documento . '%')->pluck('idpfisica');
+            }
+
+            $query = Cliente::whereIn('idpjuridica', $query->pluck('idpjuridica'));
+
+            if (isset($idpfisicas)) {
+                $query = $query->orWhereIn('idpfisica', $idpfisicas);
+            }
+            $Buscas = $query->validos()->paginate(10);
         } else {
             $Buscas = NULL;
         }

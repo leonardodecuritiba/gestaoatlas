@@ -63,7 +63,7 @@ class Cliente extends Model
     {
         return self::whereNotNull('validated_at')
             ->orWhere('created_at', '<', Carbon::now()->subDay());
-        
+
         return self::whereNotNull('validated_at')
             ->orWhere(function ($query) {
                 $query->whereNull('validated_at');
@@ -79,6 +79,15 @@ class Cliente extends Model
         $pessoa_juridica_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
             ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
         return self::whereIn('idpjuridica', $pessoa_juridica_ids);
+    }
+
+    public function scopeValidos($query)
+    {
+        return $query->where(function ($q) {
+            $q->whereNotNull('validated_at')
+                ->orWhere('created_at', '<', Carbon::now()->subDay());
+        });
+
     }
 
     public function isValidated()
