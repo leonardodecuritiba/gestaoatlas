@@ -31,6 +31,12 @@ class Selo extends Model
         return (self::where('numeracao', $numeracao)->count() > 0);
     }
 
+    public function scopeNumeracao($query, $numeracao)
+    {
+        return $query->where('numeracao', 'like', '%' . $numeracao . '%')
+            ->orWhere('numeracao_externa', 'like', '%' . $numeracao . '%');
+    }
+
     public function getFormatedSelo()
     {
         if ($this->isExterno()) {

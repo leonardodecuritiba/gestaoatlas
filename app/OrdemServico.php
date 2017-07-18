@@ -91,7 +91,7 @@ class OrdemServico extends Model
         return $query;
     }
 
-    static public function filterByIdTecnicoDate($data)
+    static public function filterSeloIpem($data)
     {
         $query = self::getByIDtecnico($data['idtecnico']);
         if ($data['data_inicial'] != "") {

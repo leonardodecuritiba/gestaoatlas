@@ -181,6 +181,8 @@ return [
         niklasravnsborg\LaravelPdf\PdfServiceProvider::class,
 
         App\Providers\ResponseMacroServiceProvider::class,
+
+        Spatie\Backup\BackupServiceProvider::class,
     ],
 
     /*

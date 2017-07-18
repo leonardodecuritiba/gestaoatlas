@@ -26,8 +26,16 @@ class AparelhoManutencao extends Model
     {
         $query = self::whereNotNull('idinstrumento');
         if (isset($data['idtecnico'])) {
-            $OS = OrdemServico::filterByIdTecnicoDate($data);
+            $OS = OrdemServico::filterSeloIpem($data);
             $query->whereIn('idordem_servico', $OS->pluck('idordem_servico'));
+            if ($data['numeracao'] != "") {
+                $query->whereIn('idaparelho_manutencao',
+                    SeloInstrumento::whereIn('idselo',
+                        Selo::numeracao($data['numeracao'])->pluck('idselo')
+                    )->pluck('idaparelho_manutencao')
+                );
+
+            }
         }
         return $query->get();
     }
