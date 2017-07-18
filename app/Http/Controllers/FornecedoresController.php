@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SegmentoFornecedor;
+use App\Models\Ajustes\RecursosHumanos\Fornecedores\SegmentoFornecedor;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Validator;

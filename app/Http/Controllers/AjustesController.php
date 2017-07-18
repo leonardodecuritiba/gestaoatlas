@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Ajuste;
+use App\Models\Ajustes\Ajuste;
 use Validator;
 use Illuminate\Http\Request;
 

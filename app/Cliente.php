@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Ajustes\Ajuste;
 use \Swift_Mailer;
 use \Swift_SmtpTransport as SmtpTransport;
 use App\Helpers\DataHelper;
@@ -366,7 +367,7 @@ class Cliente extends Model
 
     public function segmento()
     {
-        return $this->hasOne('App\Segmento', 'idsegmento', 'idsegmento');
+        return $this->hasOne('App\Models\Ajustes\RecursosHumanos\Clientes\Segmento', 'idsegmento', 'idsegmento');
     }
 
     public function tabela_preco_tecnica()

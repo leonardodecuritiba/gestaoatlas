@@ -32,7 +32,7 @@
                     @role('admin')
                         <li><a><i class="fa fa-wrench"></i> Ajustes <span class="fa fa-chevron-down"></span></a>
                             <ul class="nav child_menu">
-                                <li><a>Pessoas<span class="fa fa-chevron-down"></span></a>
+                                <li><a>Recursos Humanos<span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a>Clientes<span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
@@ -93,7 +93,7 @@
                             </ul>
                         </li>
                     @endrole
-                    <li><a><i class="fa fa-users"></i> Pessoas <span class="fa fa-chevron-down"></span></a>
+                    <li><a><i class="fa fa-users"></i> Recursos Humanos <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{{ route('clientes.index') }}">Clientes</a></li>
                             @role(['admin','financeiro'])

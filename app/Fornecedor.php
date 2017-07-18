@@ -83,7 +83,7 @@ class Fornecedor extends Model
     }
     public function segmento()
     {
-        return $this->hasOne('App\SegmentoFornecedor', 'idsegmento_fornecedor', 'idsegmento_fornecedor');
+        return $this->hasOne('App\Models\Ajustes\RecursosHumanos\Fornecedores\SegmentoFornecedor', 'idsegmento_fornecedor', 'idsegmento_fornecedor');
     }
     // ********************** BELONGS ********************************
 

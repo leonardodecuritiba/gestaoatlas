@@ -1,25 +1,25 @@
 <?php
 
-namespace App;
+namespace App\Models\Ajustes\RecursosHumanos\Clientes;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SegmentoFornecedor extends Model
+class Segmento extends Model
 {
     use SoftDeletes;
-    protected $table = 'segmentos_fornecedores';
-    protected $primaryKey = 'idsegmento_fornecedor';
     public $timestamps = true;
+    protected $table = 'segmentos';
+    protected $primaryKey = 'idsegmento';
     protected $fillable = [
         'descricao',
     ];
 
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
-    public function fornecedor()
+    public function cliente()
     {
-        return $this->belongsTo('App\Fornecedor', 'idfornecedor');
+        return $this->belongsTo('App\Cliente', 'idcliente');
     }
     // ************************** HASMANY **********************************
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Regiao;
+use App\Models\Ajustes\RecursosHumanos\Clientes\Regiao;
 use Validator;
 use Illuminate\Http\Request;
 

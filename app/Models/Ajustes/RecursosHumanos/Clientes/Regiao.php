@@ -1,16 +1,16 @@
 <?php
 
-namespace App;
+namespace App\Models\Ajustes\RecursosHumanos\Clientes;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Segmento extends Model
+class Regiao extends Model
 {
     use SoftDeletes;
-    protected $table = 'segmentos';
-    protected $primaryKey = 'idsegmento';
     public $timestamps = true;
+    protected $table = 'regioes';
+    protected $primaryKey = 'idregiao';
     protected $fillable = [
         'descricao',
     ];

@@ -8,7 +8,7 @@ use App\Models\NotasFiscais\NFSe;
 
 use App\PecasUtilizadas;
 use App\Scopes\LastCreatedScope;
-use App\Ajuste;
+use App\Models\Ajustes\Ajuste;
 use App\AparelhoManutencao;
 use App\Helpers\DataHelper;
 use App\OrdemServico;

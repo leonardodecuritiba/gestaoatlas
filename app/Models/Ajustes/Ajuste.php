@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Ajustes;
 
 use App\Helpers\DataHelper;
 use Illuminate\Database\Eloquent\Model;

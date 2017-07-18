@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Segmento;
+use App\Models\Ajustes\RecursosHumanos\Clientes\Segmento;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -51,15 +51,6 @@ class SegmentosController extends Controller
             ->with('Page', $this->Page);
     }
 
-    public function show($id)
-    {
-        $this->Page->titulo_primario = "Visualização de ";
-        $Segmento = Segmento::find($id);
-        return view('pages.'.$this->Page->link.'.show')
-            ->with('Segmento', $Segmento)
-            ->with('Page', $this->Page);
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -76,6 +67,15 @@ class SegmentosController extends Controller
             session(['mensagem' => $this->Page->msg_add]);
             return $this->show($Segmento->idsegmento);
         }
+    }
+
+    public function show($id)
+    {
+        $this->Page->titulo_primario = "Visualização de ";
+        $Segmento = Segmento::find($id);
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('Segmento', $Segmento)
+            ->with('Page', $this->Page);
     }
 
     public function update(Request $request, $id)

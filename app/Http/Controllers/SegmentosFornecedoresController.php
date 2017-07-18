@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SegmentoFornecedor;
+use App\Models\Ajustes\RecursosHumanos\Fornecedores\SegmentoFornecedor;
 use Validator;
 use Illuminate\Http\Request;
 
@@ -51,15 +51,6 @@ class SegmentosFornecedoresController extends Controller
             ->with('Page', $this->Page);
     }
 
-    public function show($id)
-    {
-        $this->Page->titulo_primario = "Visualização de ";
-        $SegmentoFornecedor = SegmentoFornecedor::find($id);
-        return view('pages.'.$this->Page->link.'.show')
-            ->with('SegmentoFornecedor', $SegmentoFornecedor)
-            ->with('Page', $this->Page);
-    }
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -76,6 +67,15 @@ class SegmentosFornecedoresController extends Controller
             session(['mensagem' => $this->Page->msg_add]);
             return $this->show($SegmentoFornecedor->idsegmento_fornecedor);
         }
+    }
+
+    public function show($id)
+    {
+        $this->Page->titulo_primario = "Visualização de ";
+        $SegmentoFornecedor = SegmentoFornecedor::find($id);
+        return view('pages.' . $this->Page->link . '.show')
+            ->with('SegmentoFornecedor', $SegmentoFornecedor)
+            ->with('Page', $this->Page);
     }
 
     public function update(Request $request, $id)
