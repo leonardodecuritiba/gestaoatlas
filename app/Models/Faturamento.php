@@ -95,8 +95,12 @@ class Faturamento extends Model
         ]);
 
         //SETAR ORDEM SERVIÇOS COMO FATURADAS
-        foreach ($OrdemServicos as $ordem_servico) {
-            $ordem_servico->setFaturamento($Faturamento->id);
+        if (count($OrdemServicos) > 1) {
+            foreach ($OrdemServicos as $ordem_servico) {
+                $ordem_servico->setFaturamento($Faturamento->id);
+            }
+        } else {
+            $OrdemServicos->setFaturamento($Faturamento->id);
         }
 
         $Valores = $Faturamento->getValores();

@@ -7,7 +7,6 @@ use App\Http\Exports\IpemList\IpemListExport;
 use App\Tecnico;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use niklasravnsborg\LaravelPdf\Facades\Pdf as PDF;
 
 class RelatoriosController extends Controller
 {

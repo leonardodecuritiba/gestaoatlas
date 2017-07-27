@@ -137,6 +137,7 @@ class FaturamentoController extends Controller
     {
         if ($id == NULL) return $id;
         $OrdemServicos = OrdemServico::find($id);
+
         $centro_custo = ($OrdemServicos->idcentro_custo != NULL);
         Faturamento::geraFaturamento($OrdemServicos, $centro_custo);
         session()->forget('mensagem');
