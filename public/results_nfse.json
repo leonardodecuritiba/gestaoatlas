@@ -1,0 +1,52 @@
+{
+  "data_emissao": "2017-06-28T10:19:28-03:00",
+  "status": 1,
+  "natureza_operacao": 1,
+  "regime_especial_tributacao": "6",
+  "optante_simples_nacional": true,
+  "incentivador_cultural": false,
+  "tributacao_rps": "T",
+  "prestador": {
+    "cnpj": "10555180000121",
+    "codigo_municipio": "3543402",
+    "inscricao_municipal": "20033165"
+  },
+  "tomador": {
+    "cnpj": "10336724000164",
+    "razao_social": "NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL",
+    "telefone": "",
+    "email": "paneteriarecantodoce@gmail.com",
+    "endereco": {
+      "logradouro": "AVENIDA FRANCISCO ANTONIO DE ABREU",
+      "tipo_logradouro": "",
+      "numero": "1.128",
+      "bairro": "VILA SANTOS",
+      "codigo_municipio": "3522703",
+      "uf": "SP",
+      "cep": "14900000"
+    }
+  },
+  "servico": {
+    "valor_liquido": 1920.21,
+    "valor_servicos": 1920.21,
+    "valor_deducoes": 0,
+    "valor_pis": 0,
+    "valor_cofins": 0,
+    "valor_inss": 0,
+    "valor_ir": 0,
+    "valor_csll": 0,
+    "iss_retido": 0,
+    "valor_iss": 0,
+    "valor_iss_retido": 0,
+    "outras_retencoes": 0,
+    "base_calculo": 0,
+    "aliquota": 2.5,
+    "desconto_incondicionado": 0,
+    "desconto_condicionado": 0,
+    "item_lista_servico": "14.01",
+    "codigo_tributario_municipio": "14.01.11 \/ 00140111",
+    "discriminacao": "SERVI\u00c7OS PRESTADOS EM BALAN\u00c7AS, M\u00cdDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOMA\u00c7\u00c3O COMERCIAL \\ INDUSTRIAL.\\n\\nVALOR APROXIMADO DOS TRIBUTOS (11,31%) - R$ 217,18",
+    "codigo_municipio": "3543402",
+    "percentual_total_tributos": 0
+  }
+}
