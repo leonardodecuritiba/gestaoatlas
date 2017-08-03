@@ -33,4 +33,14 @@ trait SeloLacre
         $this->idtecnico = $idtecnico;
         return $this->save();
     }
+
+    public function getStatusText()
+    {
+        return ($this->getAttribute('used')) ? 'Usado' : 'Disponível';
+    }
+
+    public function getStatusColor()
+    {
+        return ($this->getAttribute('used')) ? 'danger' : 'success';
+    }
 }

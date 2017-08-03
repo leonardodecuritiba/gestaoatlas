@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\DataHelper;
+use App\Models\Ajustes\Ajuste;
 use Illuminate\Database\Eloquent\Model;
 
 class Tecnico extends Model
@@ -19,6 +20,25 @@ class Tecnico extends Model
     ];
 
     // ************************ FUNCTIONS ******************************
+    /*
+     *
+            $this->Page->constraints = [
+            ];
+     */
+    public function requisicoesSeloLacre()
+    {
+        return $this->colaborador->requisicoes;
+    }
+
+    public function canRequestSelos()
+    {
+        return ($this->selos_disponiveis()->count() < Ajuste::getValueByMetaKey('requests_max_selos'));
+    }
+
+    public function canRequestLacres()
+    {
+        return ($this->lacres_disponiveis()->count() < Ajuste::getValueByMetaKey('requests_max_lacres'));
+    }
 
     static public function outros($idtecnico)
     {

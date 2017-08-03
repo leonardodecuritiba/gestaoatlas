@@ -26,6 +26,12 @@ class Selo extends Model
 
     // ******************** FUNCTIONS ******************************
 
+    static public function assign($data)
+    {
+        return self::whereIn('idselo', $data['valores'])
+            ->update(['idtecnico' => $data['idtecnico']]);
+    }
+
     static public function selo_exists($numeracao)
     {
         return (self::where('numeracao', $numeracao)->count() > 0);

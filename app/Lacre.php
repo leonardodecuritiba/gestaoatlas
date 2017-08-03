@@ -23,6 +23,12 @@ class Lacre extends Model
 
     // ******************** FUNCTIONS ******************************
 
+    static public function assign($ids, $idtecnico)
+    {
+        return self::whereIn('idlacre', $ids)
+            ->update(['idtecnico' => $idtecnico]);
+    }
+
     static public function lacre_exists($numeracao)
     {
         return (self::where('numeracao', $numeracao)->count() > 0);

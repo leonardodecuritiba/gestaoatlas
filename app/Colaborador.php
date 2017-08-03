@@ -119,4 +119,9 @@ class Colaborador extends Model
     {
         return $this->belongsTo('App\Tecnico', 'idcolaborador', 'idcolaborador');
     }
+
+    public function requisicoes()
+    {
+        return $this->hasMany('App\Models\Requests\Request', 'idrequester', 'idcolaborador');
+    }
 }

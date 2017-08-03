@@ -160,11 +160,11 @@
                     @role(['admin','financeiro'])
                     <li><a><i class="fa fa-building"></i> Recursos <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Selos/Lacres</a>
+                            <li><a>Selos/Lacres<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#">Cadastro</a></li>
-                                    <li><a href="#">Gestão</a></li>
-                                    <li><a href="#">Relatório</a></li>
+                                    <li><a href="{{route('selolacres.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('selolacres.requisicoes')}}">Requisições</a></li>
+                                    <li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>
                                 </ul>
                             </li>
                             <li><a href="{{ route('fechamentos.periodo_index') }}">Padrões</a>
@@ -237,6 +237,19 @@
                         </ul>
                     </li>
                     @endrole
+                    @role('tecnico')
+                    <li><a><i class="fa fa-building"></i> Requisições <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{{ route('selolacres.requisicao') }}">Selos/Lacres</a></li>
+                            <li><a href="#">Padrões</a></li>
+                            <li><a href="#">Ferramentas</a></li>
+                            <li><a href="#">Equipamento BKP</a></li>
+                            <li><a href="#">Veículos</a></li>
+                            <li><a href="#">Alimentação</a></li>
+                            <li><a href="#">Peças / Produtos</a></li>
+                        </ul>
+                    </li>
+                    @endrole
                     <li><a><i class="fa fa-line-chart"></i> Relatórios<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             @if(Auth::user()->hasRole(['admin','financeiro']))
@@ -305,14 +318,6 @@
                                     </a>
                                 </li>
                             @endforeach
-                            {{--<li>--}}
-                            {{--<div class="text-center">--}}
-                            {{--<a>--}}
-                            {{--<strong>Ver mais</strong>--}}
-                            {{--<i class="fa fa-angle-right"></i>--}}
-                            {{--</a>--}}
-                            {{--</div>--}}
-                            {{--</li>--}}
                         </ul>
                     @endif
                 </li>

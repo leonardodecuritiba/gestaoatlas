@@ -21,6 +21,11 @@ class Ajuste extends Model
         return self::where('meta_key',$value)->first();
     }
 
+    static public function getValueByMetaKey($value)
+    {
+        return self::getByMetaKey($value)->meta_value;
+    }
+
     public function getCreatedAtAttribute($value)
     {
         return DataHelper::getPrettyDateTime($value);

@@ -37,9 +37,41 @@ Route::group(['middleware' => ['auth']], function() {
 
     Route::resource('colaboradores', 'ColaboradoresController');
     Route::post('pwd/{colaborador}/colaboradores', 'ColaboradoresController@upd_pass')->name('colaboradores.upd_pass');
-    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
-    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
 
+});
+
+/*
+|--------------------------------------------------------------------------
+| Selos/Lacres Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::group(['middleware' => ['auth']], function () {
+
+//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
+
+    Route::resource('selolacres', 'SeloLacreController');
+    Route::post('lancar-selos', 'SeloLacreController@lancarSelos')->name('selolacres.lancar_selos');
+    Route::post('lancar-lacres', 'SeloLacreController@lancarLacres')->name('selolacres.lancar_lacres');
+
+    Route::get('selolacres-requisicoes', 'SeloLacreController@listRequests')->name('selolacres.requisicoes');
+    Route::get('selolacres-relatorios', 'SeloLacreController@getReports')->name('selolacres.relatorio');
+
+    Route::get('selolacres-requisicao', 'SeloLacreController@getFormRequest')->name('selolacres.requisicao');
+    Route::post('selolacres-requerer', 'SeloLacreController@postFormRequest')->name('selolacres.requerer');
+
+
+    //Admin
+    Route::post('selolacres-repasse', 'SeloLacreController@postFormPassRequest')->name('selolacres.repasse');
+    Route::get('selolacres-negar/{id}', 'SeloLacreController@deniedRequest')->name('selolacres.negar');
+
+});
+
+
+Route::group(['middleware' => ['auth']], function () {
     //    Route::get('/', 'AdminController@welcome');
     //    Route::get('/manage', ['middleware' => ['permission:manage-admins'], 'uses' => 'AdminController@manageAdmins']);
     //Ajustes
@@ -119,8 +151,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('kits_utilizados', 'KitsUtilizadosController');
     //ATÉ AQUI
     Route::post('ordem_servicos/add_insumos/{idordem_servico}', 'OrdemServicoController@add_insumos')->name('ordem_servicos.add_insumos');
-
-
 
 
     Route::resource('frotas', 'FrotasController');

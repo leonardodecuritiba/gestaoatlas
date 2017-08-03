@@ -5,20 +5,20 @@
             <h2>{{ucfirst($l)}}s encontrados</h2>
             @role(['admin','financeiro'])
             <ul class="nav navbar-right panel_toolbox">
-                <li>
-                    <button class="btn btn-primary add"
-                            data-option="{{$l}}"
-                            data-toggle="modal"
-                            data-target="#modalAdicionarSeloLacre">
-                        <i class="fa fa-plus-circle fa-2"></i> Lançar {{ucfirst($l).'s'}}</button>
-                </li>
-                <li>
-                    <button class="btn btn-warning add"
-                            data-option="{{$l}}"
-                            data-toggle="modal"
-                            data-target="#modalRepassarSeloLacre">
-                        <i class="fa fa-minus-circle fa-2"></i> Repassar {{ucfirst($l).'s'}}</button>
-                </li>
+                {{--<li>--}}
+                {{--<button class="btn btn-primary add"--}}
+                {{--data-option="{{$l}}"--}}
+                {{--data-toggle="modal"--}}
+                {{--data-target="#modalAdicionarSeloLacre">--}}
+                {{--<i class="fa fa-plus-circle fa-2"></i> Lançar {{ucfirst($l).'s'}}</button>--}}
+                {{--</li>--}}
+                {{--<li>--}}
+                {{--<button class="btn btn-warning add"--}}
+                {{--data-option="{{$l}}"--}}
+                {{--data-toggle="modal"--}}
+                {{--data-target="#modalRepassarSeloLacre">--}}
+                {{--<i class="fa fa-minus-circle fa-2"></i> Repassar {{ucfirst($l).'s'}}</button>--}}
+                {{--</li>--}}
             </ul>
             @endrole
             <div class="clearfix"></div>

@@ -19,7 +19,7 @@
 @endsection
 @section('page_content')
     @if($Colaborador->hasRole('tecnico'))
-        @include('pages.colaboradores.modal.selolacre')
+        {{--        @include('pages.colaboradores.modal.selolacre')--}}
     @endif
     @role(['admin', 'financeiro'])
         @include('pages.colaboradores.modal.pwd')
