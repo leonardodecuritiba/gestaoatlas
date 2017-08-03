@@ -167,71 +167,60 @@
                                     <li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Padrões</a>
+                            <li><a href="#">Padrões</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Ferramentas</a>
+                            <li><a href="#">Ferramentas</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Equipamento BKP</a>
+                            <li><a href="#">Equipamento BKP</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Veículos</a>
+                            <li><a href="#">Veículos</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Alimentação</a>
+                            <li><a href="#">Alimentação</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Peças / Produtos</a>
+                            <li><a href="#">Peças / Produtos</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Void Patrimônio</a>
+                            <li><a href="#">Void Patrimônio</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Void Peças / Produtos</a>
+                            <li><a href="#">Void Peças / Produtos</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>
                                     <li><a href="#">Relatório</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
-
-                            </li>
-                            <li><a href="{{ route('recebimentos.index') }}">Recebimentos</a></li>
-                            <li><a>Notas<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="{{route("notas_fiscais.index",'nfe')}}">NFe</a></li>
-                                    <li><a href="{{route("notas_fiscais.index",'nfse')}}">NFSe</a></li>
                                 </ul>
                             </li>
                         </ul>
