@@ -37,6 +37,15 @@ class SeloLacreController extends Controller
     }
 
 
+    public function index()
+    {
+        $this->Page->extras['selos'] = Selo::all();
+        $this->Page->extras['lacres'] = Lacre::all();
+        $this->Page->titulo_primario = "Listagem de Selos";
+        return view('pages.recursos.selolacres.admin.index')
+            ->with('Page', $this->Page);
+    }
+
     public function create()
     {
         if (EntrustFacade::hasRole('admin')) {
@@ -104,19 +113,11 @@ class SeloLacreController extends Controller
 
     public function listRequests(Request $request)
     {
-//        if (isset($request['busca'])) {
-//            $busca = $request['busca'];
-//            $Buscas = Cfop::where('numeracao', 'like', '%' . $busca . '%')
-//                ->paginate(10);
-//        } else {
-//            $Buscas = Cfop::paginate(10);
-//        }
-        $Buscas = RequestSeloLacre::selos()->get();
+        $this->Page->extras['requests'] = RequestSeloLacre::seloLacres()->get();
         $this->Page->search_no_results = "Nenhuma Requisição encontrada!";
         $this->Page->extras['tecnicos'] = Tecnico::all();
         return view('pages.recursos.selolacres.admin.requests')
-            ->with('Page', $this->Page)
-            ->with('Buscas', $Buscas);
+            ->with('Page', $this->Page);
     }
 
     public function getReports(Request $request)
@@ -129,9 +130,9 @@ class SeloLacreController extends Controller
             ->with('Buscas', $Buscas);
     }
 
-    public function deniedRequest($id)
+    public function deniedRequest(Request $request)
     {
-        $data['id'] = $id;
+        $data = $request->only('id', 'response');
         $data['idmanager'] = $this->colaborador->idcolaborador;
         $mensagem = RequestSeloLacre::deny($data);
         session()->forget('mensagem');

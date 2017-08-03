@@ -65,8 +65,9 @@ Route::group(['middleware' => ['auth']], function () {
 
 
     //Admin
+    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
     Route::post('selolacres-repasse', 'SeloLacreController@postFormPassRequest')->name('selolacres.repasse');
-    Route::get('selolacres-negar/{id}', 'SeloLacreController@deniedRequest')->name('selolacres.negar');
+    Route::post('selolacres-negar', 'SeloLacreController@deniedRequest')->name('selolacres.deny');
 
 });
 

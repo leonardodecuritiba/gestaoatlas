@@ -23,6 +23,7 @@ class CreateRequestsTable extends Migration
             $table->unsignedInteger('idmanager')->nullable();
             $table->foreign('idmanager')->references('idcolaborador')->on('colaboradores')->onDelete('SET NULL');
             $table->mediumText('parameters');
+            $table->mediumText('response')->nullable();
             $table->dateTime('enddate')->nullable();
             $table->timestamps();
             $table->softDeletes();

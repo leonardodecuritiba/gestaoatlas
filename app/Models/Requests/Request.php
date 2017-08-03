@@ -14,9 +14,10 @@ class Request extends Model
     protected $fillable = [
         'idtype',
         'idstatus',
-        'parameters',
         'idrequester',
         'idmanager',
+        'parameters',
+        'response',
         'enddate',
     ];
 
@@ -25,16 +26,6 @@ class Request extends Model
      * FLUX FUNCIONS ==========================================
      * ========================================================
      */
-
-    static public function deny($data)
-    {
-        $data = self::findOrFail($data['id']);
-        $data->update([
-            'idmanager' => $data['idmanager'],
-            'idstatus' => StatusRequest::_STATUS_NEGADA_,
-        ]);
-        return "Requisição de negada com sucesso!";
-    }
 
     static public function openSeloLacreRequest($values)
     {
@@ -59,12 +50,23 @@ class Request extends Model
 
     static public function accept($data)
     {
-        $data = self::findOrFail($data['id']);
-        $data->update([
+        $Data = self::findOrFail($data['id']);
+        $Data->update([
             'idmanager' => $data['idmanager'],
             'idstatus' => StatusRequest::_STATUS_ACEITA_,
         ]);
-        return $data;
+        return $Data;
+    }
+
+    static public function deny($data)
+    {
+        $Data = self::findOrFail($data['id']);
+        $Data->update([
+            'idstatus' => StatusRequest::_STATUS_NEGADA_,
+            'idmanager' => $data['idmanager'],
+            'response' => $data['response'],
+        ]);
+        return "Requisição de negada com sucesso!";
     }
 
     /*
@@ -110,6 +112,17 @@ class Request extends Model
             case TypeRequest::_TYPE_SELOS_:
             case TypeRequest::_TYPE_LACRES_:
                 return 'Quantidade: ' . $parameters->quantidade;
+                break;
+        }
+    }
+
+    public function getResponseText()
+    {
+        switch ($this->getAttribute('idstatus')) {
+            case StatusRequest::_STATUS_NEGADA_:
+                return 'Motivo: ' . $this->getAttribute('response');
+            case StatusRequest::_STATUS_ACEITA_:
+                return '-';
                 break;
         }
     }
@@ -162,6 +175,18 @@ class Request extends Model
     public function scopeSelos($query)
     {
         return $query->where('idtype', TypeRequest::_TYPE_SELOS_);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSeloLacres($query)
+    {
+        return $query->where('idtype', TypeRequest::_TYPE_SELOS_)
+            ->orWhere('idtype', TypeRequest::_TYPE_LACRES_);
     }
 
     /**

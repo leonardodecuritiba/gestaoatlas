@@ -33,6 +33,8 @@ class ConstraintsSeloLacresRequestSeeder extends Seeder
             'email' => 'gestao@atlastecnologia.com.br',
             'password' => bcrypt('123'),
         ]);
+        $role = \App\Role::find(3);
+        $user->attachRole($role);
         $contato = App\Contato::create();
         $colaborador = App\Colaborador::create([
             'idcontato' => $contato->idcontato,

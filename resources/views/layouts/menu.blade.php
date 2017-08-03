@@ -93,78 +93,16 @@
                             </ul>
                         </li>
                     @endrole
-                    <li><a><i class="fa fa-users"></i> Recursos Humanos <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="{{ route('clientes.index') }}">Clientes</a></li>
-                            @role(['admin','financeiro'])
-                            <li><a href="{{ route('colaboradores.index') }}">Colaboradores</a></li>
-                            @role('admin')
-                            <li><a href="{{ route('fornecedores.index') }}">Fornecedores</a></li>
-                            @endrole
-                            @endrole
-                        </ul>
-                    </li>
-                    @role('admin')
-                        <li><a><i class="fa fa-cubes"></i> Insumos <span class="fa fa-chevron-down"></span></a>
-                            <ul class="nav child_menu">
-                                <li><a href="{{ route('pecas.index') }}">Peças/Produtos</a></li>
-                                <li><a href="{{ route('kits.index') }}">Kits</a></li>
-                                <li><a href="{{ route('servicos.index') }}">Serviços</a></li>
-                            </ul>
-                        </li>
-                    @endrole
-                    <li><a><i class="fa fa-cogs"></i> Atividades<span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="#"> Orçamentos</a></li>
-                        </ul>
-                    </li>
-                    <li><a><i class="fa fa-handshake-o"></i> Ordens de Serviços<span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            @role('tecnico')
-                            <li><a href="{{ route('ordem_servicos.busca') }}">Abrir O.S.</a></li>
-                            @endrole
-                            <li><a href="{{ route('ordem_servicos.index') }}">Listar</a></li>
 
-                        </ul>
-                    </li>
-                    @role(['admin','financeiro'])
-                    <li><a><i class="fa fa-money"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            {{--<li>--}}
-                            {{--<a href="{{ route('ordem_servicos.index_centro_custo') }}">O.S. Centro de Custo</a>--}}
-                            {{--</li>--}}
-                            <li><a href="{{ route('fechamentos.periodo_index') }}">Fechamento</a></li>
-                            <li>
-                                <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="{{ route('fechamentos.index_parcial',$centro_custo = 0) }}">Faturamento
-                                            Parcial de Clientes</a></li>
-                                    <li><a href="{{ route('fechamentos.index_parcial',$centro_custo = 1) }}">Faturamento
-                                            Parcial de Centro de Custo</a></li>
-                                    <li><a href="{{ route('fechamentos.index_pos')}}">Faturamento Pós Fechamento</a>
-                                    <li>
-                                    <li><a href="{{ route('faturamentos.index')}}">Relatório de Faturamentos</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="{{ route('recebimentos.index') }}">Recebimentos</a></li>
-                            <li><a>Notas<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="{{route("notas_fiscais.index",'nfe')}}">NFe</a></li>
-                                    <li><a href="{{route("notas_fiscais.index",'nfse')}}">NFSe</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                    @endrole
-
-                    @role(['admin','financeiro'])
+                    @role(['admin','gestor','financeiro'])
                     <li><a><i class="fa fa-building"></i> Recursos <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a>Selos/Lacres<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('selolacres.create')}}">Cadastro</a></li>
                                     <li><a href="{{route('selolacres.requisicoes')}}">Requisições</a></li>
-                                    <li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>
+                                    {{--<li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>--}}
+                                    <li><a href="{{route('selolacres.listagem')}}">Listagem</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">Padrões</a>
@@ -239,6 +177,70 @@
                         </ul>
                     </li>
                     @endrole
+                    <li><a><i class="fa fa-users"></i> Recursos Humanos <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{{ route('clientes.index') }}">Clientes</a></li>
+                            @role(['admin','financeiro'])
+                            <li><a href="{{ route('colaboradores.index') }}">Colaboradores</a></li>
+                            @role('admin')
+                            <li><a href="{{ route('fornecedores.index') }}">Fornecedores</a></li>
+                            @endrole
+                            @endrole
+                        </ul>
+                    </li>
+                    @role('admin')
+                        <li><a><i class="fa fa-cubes"></i> Insumos <span class="fa fa-chevron-down"></span></a>
+                            <ul class="nav child_menu">
+                                <li><a href="{{ route('pecas.index') }}">Peças/Produtos</a></li>
+                                <li><a href="{{ route('kits.index') }}">Kits</a></li>
+                                <li><a href="{{ route('servicos.index') }}">Serviços</a></li>
+                            </ul>
+                        </li>
+                    @endrole
+                    <li><a><i class="fa fa-cogs"></i> Atividades<span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="#"> Orçamentos</a></li>
+                        </ul>
+                    </li>
+                    <li><a><i class="fa fa-handshake-o"></i> Ordens de Serviços<span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            @role('tecnico')
+                            <li><a href="{{ route('ordem_servicos.busca') }}">Abrir O.S.</a></li>
+                            @endrole
+                            <li><a href="{{ route('ordem_servicos.index') }}">Listar</a></li>
+
+                        </ul>
+                    </li>
+                    @role(['admin','financeiro'])
+                    <li><a><i class="fa fa-money"></i> Financeiro <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            {{--<li>--}}
+                            {{--<a href="{{ route('ordem_servicos.index_centro_custo') }}">O.S. Centro de Custo</a>--}}
+                            {{--</li>--}}
+                            <li><a href="{{ route('fechamentos.periodo_index') }}">Fechamento</a></li>
+                            <li>
+                                <a>Faturamentos<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('fechamentos.index_parcial',$centro_custo = 0) }}">Faturamento
+                                            Parcial de Clientes</a></li>
+                                    <li><a href="{{ route('fechamentos.index_parcial',$centro_custo = 1) }}">Faturamento
+                                            Parcial de Centro de Custo</a></li>
+                                    <li><a href="{{ route('fechamentos.index_pos')}}">Faturamento Pós Fechamento</a>
+                                    <li>
+                                    <li><a href="{{ route('faturamentos.index')}}">Relatório de Faturamentos</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="{{ route('recebimentos.index') }}">Recebimentos</a></li>
+                            <li><a>Notas<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{route("notas_fiscais.index",'nfe')}}">NFe</a></li>
+                                    <li><a href="{{route("notas_fiscais.index",'nfse')}}">NFSe</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    @endrole
+
                     <li><a><i class="fa fa-line-chart"></i> Relatórios<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             @if(Auth::user()->hasRole(['admin','financeiro']))
