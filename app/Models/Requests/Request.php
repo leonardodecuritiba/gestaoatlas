@@ -17,6 +17,7 @@ class Request extends Model
         'idstatus',
         'idrequester',
         'idmanager',
+        'reason',
         'parameters',
         'response',
         'enddate',
@@ -28,13 +29,14 @@ class Request extends Model
      * ========================================================
      */
 
-    static public function openSeloLacreRequest($values)
+    static public function openSeloLacreRequest($data)
     {
-        $idrequester = $values['idrequester'];
-        $parameters = $values['parameters'];
+        $idrequester = $data['idrequester'];
+        $parameters = $data['parameters'];
         self::create([
             'idtype' => ($parameters['opcao'] == 'selos') ? TypeRequest::_TYPE_SELOS_ : TypeRequest::_TYPE_LACRES_,
             'idstatus' => StatusRequest::_STATUS_AGUARDANDO_,
+            'reason' => $data['reason'],
             'parameters' => json_encode($parameters),
             'idrequester' => $idrequester,
         ]);
@@ -99,6 +101,7 @@ class Request extends Model
             'type' => $this->getTypeText(),
             'parameters' => $this->getParametersText(),
             'parameters_json' => $this->getAttribute('parameters'),
+            'reason' => $this->getAttribute('reason'),
             'status' => $this->getStatusText(),
             'manager' => $this->getNameManager(),
             'requester' => $this->getNameRequester(),

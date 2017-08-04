@@ -176,9 +176,11 @@ class SeloLacreController extends Controller
 
     public function postFormRequest(Request $request)
     {
-        $data['idrequester'] = $this->colaborador->idcolaborador;
-        $data['parameters'] = $request->only(['opcao', 'quantidade']);
-        $mensagem = RequestSeloLacre::openSeloLacreRequest($data);
+        $mensagem = RequestSeloLacre::openSeloLacreRequest([
+            'idrequester' => $this->colaborador->idcolaborador,
+            'parameters' => $request->only(['opcao', 'quantidade']),
+            'reason' => $request->get('reason'),
+        ]);
         session()->forget('mensagem');
         session(['mensagem' => $mensagem]);
         return redirect()->route('selolacres.requisicao');

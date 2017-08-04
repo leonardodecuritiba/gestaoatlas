@@ -159,6 +159,7 @@
                                     <th>Data</th>
                                     <th>Tipo Requisição</th>
                                     <th>Requisição</th>
+                                    <th>Razão</th>
                                     <th>Gestor</th>
                                     <th>Retorno</th>
                                     <th>Status</th>
@@ -171,6 +172,7 @@
                                         <td>{{$sel->created_at}}</td>
                                         <td>{{$sel->getTypeText()}}</td>
                                         <td>{{$sel->getParametersText()}}</td>
+                                        <td>{{$sel->reason}}</td>
                                         <td>{{$sel->getNameManager()}}</td>
                                         <td>{{$sel->getResponseText()}}</td>
                                         <td>

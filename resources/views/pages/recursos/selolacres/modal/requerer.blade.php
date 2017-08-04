@@ -20,6 +20,14 @@
                                name="quantidade" placeholder="Quantidade" data-parsley-trigger="change" required>
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Razão <span
+                                class="required">*</span></label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <input type="text" class="form-control"
+                               name="reason" placeholder="Razão" required>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-success pull-rigth"><i class="fa fa-check fa-2"></i> Salvar</button>

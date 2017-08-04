@@ -24,6 +24,7 @@
                                     <li><i class="fa fa-info"></i> Data da Requisição: <b id="date">XX</b></li>
                                     <li><i class="fa fa-info"></i> Tipo de Requisição: <b id="type">XX</b></li>
                                     <li><i class="fa fa-info"></i> Detalhamento: <b id="parameters">XX</b></li>
+                                    <li><i class="fa fa-info"></i> Razão: <b id="reason">XX</b></li>
                                     <li><i class="fa fa-info"></i> Status: <b id="status">XX</b></li>
                                     <li><i class="fa fa-info"></i> Gestor: <b id="manager">XX</b></li>
                                 </ul>
@@ -74,6 +75,7 @@
                                     <li><i class="fa fa-info"></i> Data da Requisição: <b id="date">XX</b></li>
                                     <li><i class="fa fa-info"></i> Tipo de Requisição: <b id="type">XX</b></li>
                                     <li><i class="fa fa-info"></i> Detalhamento: <b id="parameters">XX</b></li>
+                                    <li><i class="fa fa-info"></i> Razão: <b id="reason">XX</b></li>
                                     <li><i class="fa fa-info"></i> Status: <b id="status">XX</b></li>
                                     <li><i class="fa fa-info"></i> Gestor: <b id="manager">XX</b></li>
                                 </ul>
@@ -136,9 +138,10 @@
                                     <th>Requerente</th>
                                     <th>Tipo</th>
                                     <th>Detalhes</th>
-                                    <th>Status</th>
+                                    <th>Razão</th>
                                     <th>Retorno</th>
                                     <th>Gestor</th>
+                                    <th>Status</th>
                                     <th>Ação</th>
                                 </tr>
                                 </thead>
@@ -150,11 +153,12 @@
                                         <td>{{$sel->getNameRequester()}}</td>
                                         <td>{{$sel->getTypeText()}}</td>
                                         <td>{{$sel->getParametersText()}}</td>
+                                        <td>{{$sel->reason}}</td>
+                                        <td>{{$sel->getResponseText()}}</td>
+                                        <td>{{$sel->getNameManager()}}</td>
                                         <td>
                                             <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                         </td>
-                                        <td>{{$sel->getResponseText()}}</td>
-                                        <td>{{$sel->getNameManager()}}</td>
                                         <td>
                                             @if($sel->isWaiting())
                                                 <button data-request="{{$sel->getFormatedRequest()}}"

@@ -22,6 +22,7 @@ class CreateRequestsTable extends Migration
             $table->foreign('idrequester')->references('idcolaborador')->on('colaboradores')->onDelete('cascade');
             $table->unsignedInteger('idmanager')->nullable();
             $table->foreign('idmanager')->references('idcolaborador')->on('colaboradores')->onDelete('SET NULL');
+            $table->string('reason', 1000);
             $table->mediumText('parameters');
             $table->mediumText('response')->nullable();
             $table->dateTime('enddate')->nullable();
