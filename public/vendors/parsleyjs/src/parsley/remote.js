@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import Utils from './utils';
+import Base from './base';
 
 import Parsley from './main';
 
@@ -58,7 +60,7 @@ Parsley.addValidator('remote', {
     if (url.indexOf('{value}') > -1) {
       url = url.replace('{value}', encodeURIComponent(value));
     } else {
-      data[instance.$element.attr('name') || instance.$element.attr('id')] = value;
+        data[instance.element.getAttribute('name') || instance.element.getAttribute('id')] = value;
     }
 
     // Merge options passed in from the function with the ones in the attribute
@@ -100,7 +102,7 @@ Parsley.on('form:submit', function () {
   Parsley._remoteCache = {};
 });
 
-window.ParsleyExtend.addAsyncValidator = function () {
-  ParsleyUtils.warnOnce('Accessing the method `addAsyncValidator` through an instance is deprecated. Simply call `Parsley.addAsyncValidator(...)`');
+Base.prototype.addAsyncValidator = function () {
+    Utils.warnOnce('Accessing the method `addAsyncValidator` through an instance is deprecated. Simply call `Parsley.addAsyncValidator(...)`');
   return Parsley.addAsyncValidator(...arguments);
 };

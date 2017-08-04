@@ -124,4 +124,9 @@ class Colaborador extends Model
     {
         return $this->hasMany('App\Models\Requests\Request', 'idrequester', 'idcolaborador');
     }
+
+    public function requisicoes_waiting()
+    {
+        return $this->hasMany('App\Models\Requests\Request', 'idrequester', 'idcolaborador')->waiting();
+    }
 }

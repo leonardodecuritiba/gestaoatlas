@@ -16,9 +16,8 @@
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">Quantidade <span class="required">*</span></label>
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                        <input type="text" class="form-control show-inteiro" min="1"
-                               max="{{\App\Models\Ajustes\Ajuste::getValueByMetaKey('requests_max_selos_req')}}"
-                               name="quantidade" placeholder="Quantidade" required>
+                        <input type="text" class="form-control show-inteiro"
+                               name="quantidade" placeholder="Quantidade" data-parsley-trigger="change" required>
                     </div>
                 </div>
             </div>

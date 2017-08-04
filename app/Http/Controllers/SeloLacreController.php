@@ -130,6 +130,8 @@ class SeloLacreController extends Controller
             ->with('Buscas', $Buscas);
     }
 
+    //Admin/Gestor
+
     public function deniedRequest(Request $request)
     {
         $data = $request->only('id', 'response');
@@ -140,19 +142,6 @@ class SeloLacreController extends Controller
         return redirect()->route('selolacres.requisicoes');
     }
 
-    public function getFormRequest(Request $request)
-    {
-        $Tecnico = $this->colaborador->tecnico;
-        $this->Page->search_no_results = "Nenhuma Requisição encontrada!";
-        $this->Page->extras = [
-            'selos' => $Tecnico->selos,
-            'lacres' => $Tecnico->lacres,
-            'requisicoes' => $Tecnico->requisicoesSeloLacre(),
-        ];
-        return view('pages.recursos.selolacres.tecnico.requisition')
-            ->with('Page', $this->Page);
-    }
-
     public function postFormPassRequest(Request $request)
     {
         $data = $request->only(['id', 'valores']);
@@ -161,6 +150,28 @@ class SeloLacreController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $mensagem]);
         return redirect()->route('selolacres.requisicoes');
+    }
+
+    //Tecnico
+
+    public function getFormRequest(Request $request)
+    {
+        $Tecnico = $this->colaborador->tecnico;
+        $this->Page->search_no_results = "Nenhuma Requisição encontrada!";
+        $max_selos_can_request = $Tecnico->getMaxSelosCanRequest();
+        $max_lacres_can_request = $Tecnico->getMaxLacresCanRequest();
+        $can_request = ($Tecnico->waitingRequisicoesSeloLacre()->count() < 1);
+        $this->Page->extras = [
+            'selos' => $Tecnico->selos,
+            'lacres' => $Tecnico->lacres,
+            'max_selos_can_request' => $max_selos_can_request,
+            'max_lacres_can_request' => $max_lacres_can_request,
+            'can_request_selos' => (($max_selos_can_request > 0) && ($can_request)),
+            'can_request_lacres' => (($max_lacres_can_request > 0) && ($can_request)),
+            'requisicoes' => $Tecnico->requisicoesSeloLacre(),
+        ];
+        return view('pages.recursos.selolacres.tecnico.requisition')
+            ->with('Page', $this->Page);
     }
 
     public function postFormRequest(Request $request)

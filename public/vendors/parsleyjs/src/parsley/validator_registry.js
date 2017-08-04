@@ -1,10 +1,10 @@
 import $ from 'jquery';
-import ParsleyUtils from './utils';
-import ParsleyDefaults from './defaults';
-import ParsleyValidator from './validator';
+import Utils from './utils';
+import Defaults from './defaults';
+import Validator from './validator';
 
-var ParsleyValidatorRegistry = function (validators, catalog) {
-  this.__class__ = 'ParsleyValidatorRegistry';
+var ValidatorRegistry = function (validators, catalog) {
+    this.__class__ = 'ValidatorRegistry';
 
   // Default Parsley locale is en
   this.locale = 'en';
@@ -12,7 +12,7 @@ var ParsleyValidatorRegistry = function (validators, catalog) {
   this.init(validators || {}, catalog || {});
 };
 
-var typeRegexes =  {
+var typeTesters = {
   email: /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i,
 
   // Follow https://www.w3.org/TR/html5/infrastructure.html#floating-point-numbers
@@ -23,6 +23,10 @@ var typeRegexes =  {
   digits: /^\d+$/,
 
   alphanum: /^\w+$/i,
+
+        date: {
+            test: value = > Utils.parse.date(value) !== null
+    },
 
   url: new RegExp(
       "^" +
@@ -59,7 +63,7 @@ var typeRegexes =  {
       "$", 'i'
     )
 };
-typeRegexes.range = typeRegexes.number;
+typeTesters.range = typeTesters.number;
 
 // See http://stackoverflow.com/a/10454560/8279
 var decimalPlaces = num => {
@@ -73,11 +77,42 @@ var decimalPlaces = num => {
        (match[2] ? +match[2] : 0));
 };
 
-ParsleyValidatorRegistry.prototype = {
+// parseArguments('number', ['1', '2']) => [1, 2]
+let parseArguments = (type, args) =
+>
+args.map(Utils.parse[type]);
+// operatorToValidator returns a validating function for an operator function, applied to the given type
+let operatorToValidator = (type, operator) =
+>
+{
+    return (value,...requirementsAndInput
+)
+    =
+>
+    {
+        requirementsAndInput.pop(); // Get rid of `input` argument
+        return operator(value,...parseArguments(type, requirementsAndInput)
+    )
+        ;
+    }
+    ;
+}
+;
+
+let comparisonOperator = operator =
+>
+({
+    validateDate: operatorToValidator('date', operator),
+    validateNumber: operatorToValidator('number', operator),
+    requirementType: operator.length <= 2 ? 'string' : ['string', 'string'], // Support operators with a 1 or 2 requirement(s)
+    priority: 30
+});
+
+ValidatorRegistry.prototype = {
   init: function (validators, catalog) {
     this.catalog = catalog;
     // Copy prototype's validators:
-    this.validators = $.extend({}, this.validators);
+      this.validators = Object.assign({}, this.validators);
 
     for (var name in validators)
       this.addValidator(name, validators[name].fn, validators[name].priority);
@@ -140,9 +175,9 @@ ParsleyValidatorRegistry.prototype = {
   //
   addValidator: function (name, arg1, arg2) {
     if (this.validators[name])
-      ParsleyUtils.warn('Validator "' + name + '" is already defined.');
-    else if (ParsleyDefaults.hasOwnProperty(name)) {
-      ParsleyUtils.warn('"' + name + '" is a restricted keyword and is not a valid validator name.');
+        Utils.warn('Validator "' + name + '" is already defined.');
+    else if (Defaults.hasOwnProperty(name)) {
+        Utils.warn('"' + name + '" is a restricted keyword and is not a valid validator name.');
       return;
     }
     return this._setValidator(...arguments);
@@ -150,7 +185,7 @@ ParsleyValidatorRegistry.prototype = {
 
   updateValidator: function (name, arg1, arg2) {
     if (!this.validators[name]) {
-      ParsleyUtils.warn('Validator "' + name + '" is not already defined.');
+        Utils.warn('Validator "' + name + '" is not already defined.');
       return this.addValidator(...arguments);
     }
     return this._setValidator(...arguments);
@@ -158,7 +193,7 @@ ParsleyValidatorRegistry.prototype = {
 
   removeValidator: function (name) {
     if (!this.validators[name])
-      ParsleyUtils.warn('Validator "' + name + '" is not defined.');
+        Utils.warn('Validator "' + name + '" is not defined.');
 
     delete this.validators[name];
 
@@ -174,7 +209,7 @@ ParsleyValidatorRegistry.prototype = {
       };
     }
     if (!validator.validate) {
-      validator = new ParsleyValidator(validator);
+        validator = new Validator(validator);
     }
     this.validators[name] = validator;
 
@@ -233,12 +268,12 @@ ParsleyValidatorRegistry.prototype = {
       priority: 512
     },
     type: {
-      validateString: function(value, type, {step = '1', base = 0} = {}) {
-        var regex = typeRegexes[type];
-        if (!regex) {
+        validateString: function (value, type, {step = 'any', base = 0} = {}) {
+            var tester = typeTesters[type];
+            if (!tester) {
           throw new Error('validator type `' + type + '` is not supported');
         }
-        if (!regex.test(value))
+            if (!tester.test(value))
           return false;
         if ('number' === type) {
           if (!/^any$/i.test(step || '')) {
@@ -247,7 +282,9 @@ ParsleyValidatorRegistry.prototype = {
             if (decimalPlaces(nb) > decimals) // Value can't have too many decimals
               return false;
             // Be careful of rounding errors by using integers.
-            var toInt = f => { return Math.round(f * Math.pow(10, decimals)); };
+              var toInt = f =
+          >
+              Math.round(f * Math.pow(10, decimals));
             if ((toInt(nb) - toInt(base)) % toInt(step) != 0)
               return false;
           }
@@ -310,27 +347,12 @@ ParsleyValidatorRegistry.prototype = {
       requirementType: ['integer', 'integer'],
       priority: 30
     },
-    min: {
-      validateNumber: function (value, requirement) {
-        return value >= requirement;
-      },
-      requirementType: 'number',
-      priority: 30
-    },
-    max: {
-      validateNumber: function (value, requirement) {
-        return value <= requirement;
-      },
-      requirementType: 'number',
-      priority: 30
-    },
-    range: {
-      validateNumber: function (value, min, max) {
-        return value >= min && value <= max;
-      },
-      requirementType: ['number', 'number'],
-      priority: 30
-    },
+      min: comparisonOperator((value, requirement) = > value >= requirement
+),
+max: comparisonOperator((value, requirement) = > value <= requirement
+),
+range: comparisonOperator((value, min, max) = > value >= min && value <= max
+),
     equalto: {
       validateString: function (value, refOrValue) {
         var $reference = $(refOrValue);
@@ -344,4 +366,4 @@ ParsleyValidatorRegistry.prototype = {
   }
 };
 
-export default ParsleyValidatorRegistry;
+export default ValidatorRegistry;

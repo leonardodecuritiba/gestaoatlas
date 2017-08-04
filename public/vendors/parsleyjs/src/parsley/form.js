@@ -1,10 +1,11 @@
 import $ from 'jquery';
-import ParsleyAbstract from './abstract';
-import ParsleyUtils from './utils';
+import Base from './base';
+import Utils from './utils';
 
-var ParsleyForm = function (element, domOptions, options) {
-  this.__class__ = 'ParsleyForm';
+var Form = function (element, domOptions, options) {
+    this.__class__ = 'Form';
 
+    this.element = element;
   this.$element = $(element);
   this.domOptions = domOptions;
   this.options = options;
@@ -16,18 +17,20 @@ var ParsleyForm = function (element, domOptions, options) {
 
 var statusMapping = {pending: null, resolved: true, rejected: false};
 
-ParsleyForm.prototype = {
+Form.prototype = {
   onSubmitValidate: function (event) {
     // This is a Parsley generated submit event, do not validate, do not prevent, simply exit and keep normal behavior
     if (true === event.parsley)
       return;
 
     // If we didn't come here through a submit button, use the first one in the form
-    var $submitSource = this._$submitSource || this.$element.find('input[type="submit"], button[type="submit"]').first();
-    this._$submitSource = null;
+      var submitSource = this._submitSource || this.$element.find(Utils._SubmitSelector)[0];
+      this._submitSource = null;
     this.$element.find('.parsley-synthetic-submit-button').prop('disabled', true);
-    if ($submitSource.is('[formnovalidate]'))
+      if (submitSource && null !== submitSource.getAttribute('formnovalidate'))
       return;
+
+      window.Parsley._remoteCache = {};
 
     var promise = this.whenValidate({event});
 
@@ -39,31 +42,33 @@ ParsleyForm.prototype = {
       event.stopImmediatePropagation();
       event.preventDefault();
       if ('pending' === promise.state())
-        promise.done(() => { this._submit($submitSource); });
+          promise.done(() = > {this._submit(submitSource);
+    })
+        ;
     }
   },
 
   onSubmitButton: function(event) {
-    this._$submitSource = $(event.target);
+      this._submitSource = event.currentTarget;
   },
   // internal
   // _submit submits the form, this time without going through the validations.
   // Care must be taken to "fake" the actual submit button being clicked.
-  _submit: function ($submitSource) {
+    _submit: function (submitSource) {
     if (false === this._trigger('submit'))
       return;
     // Add submit button's data
-    if ($submitSource) {
+        if (submitSource) {
       var $synthetic = this.$element.find('.parsley-synthetic-submit-button').prop('disabled', false);
       if (0 === $synthetic.length)
         $synthetic = $('<input class="parsley-synthetic-submit-button" type="hidden">').appendTo(this.$element);
       $synthetic.attr({
-        name: $submitSource.attr('name'),
-        value: $submitSource.attr('value')
+          name: submitSource.getAttribute('name'),
+          value: submitSource.getAttribute('value')
       });
     }
 
-    this.$element.trigger($.extend($.Event('submit'), {parsley: true}));
+        this.$element.trigger(Object.assign($.Event('submit'), {parsley: true}));
   },
 
   // Performs validation on fields while triggering events.
@@ -73,7 +78,7 @@ ParsleyForm.prototype = {
   // Consider using `whenValidate` instead.
   validate: function (options) {
     if (arguments.length >= 1 && !$.isPlainObject(options)) {
-      ParsleyUtils.warnOnce('Calling validate on a parsley form without passing arguments as an object is deprecated.');
+        Utils.warnOnce('Calling validate on a parsley form without passing arguments as an object is deprecated.');
       var [group, force, event] = arguments;
       options = {group, force, event};
     }
@@ -83,26 +88,26 @@ ParsleyForm.prototype = {
   whenValidate: function ({group, force, event} = {}) {
     this.submitEvent = event;
     if (event) {
-      this.submitEvent = $.extend({}, event, {preventDefault: () => {
-        ParsleyUtils.warnOnce("Using `this.submitEvent.preventDefault()` is deprecated; instead, call `this.validationResult = false`");
+        this.submitEvent = Object.assign({}, event, {preventDefault: () = > {
+            Utils.warnOnce("Using `this.submitEvent.preventDefault()` is deprecated; instead, call `this.validationResult = false`");
         this.validationResult = false;
       }});
     }
     this.validationResult = true;
 
-    // fire validate event to eventually modify things before very validation
+      // fire validate event to eventually modify things before every validation
     this._trigger('validate');
 
     // Refresh form DOM options and form's fields that could have changed
     this._refreshFields();
 
     var promises = this._withoutReactualizingFormOptions(() => {
-      return $.map(this.fields, field => {
-        return field.whenValidate({force, group});
-      });
+        return $.map(this.fields, field = > field.whenValidate({force, group})
+  )
+      ;
     });
 
-    return $.when(...promises)
+      return Utils.all(promises)
       .done(  () => { this._trigger('success'); })
       .fail(  () => {
         this.validationResult = false;
@@ -119,7 +124,7 @@ ParsleyForm.prototype = {
   // Prefer using `whenValid` instead.
   isValid: function (options) {
     if (arguments.length >= 1 && !$.isPlainObject(options)) {
-      ParsleyUtils.warnOnce('Calling isValid on a parsley form without passing arguments as an object is deprecated.');
+        Utils.warnOnce('Calling isValid on a parsley form without passing arguments as an object is deprecated.');
       var [group, force] = arguments;
       options = {group, force};
     }
@@ -133,11 +138,33 @@ ParsleyForm.prototype = {
     this._refreshFields();
 
     var promises = this._withoutReactualizingFormOptions(() => {
-      return $.map(this.fields, field => {
-        return field.whenValid({group, force});
-      });
+        return $.map(this.fields, field = > field.whenValid({group, force})
+  )
+      ;
     });
-    return $.when(...promises);
+      return Utils.all(promises);
+  },
+
+    // Reset UI
+    reset: function () {
+        // Form case: emit a reset event for each field
+        for (var i = 0; i < this.fields.length; i++)
+            this.fields[i].reset();
+
+        this._trigger('reset');
+    },
+
+    // Destroy Parsley instance (+ UI)
+    destroy: function () {
+        // Field case: emit destroy event to clean UI and then destroy stored instance
+        this._destroyUI();
+
+        // Form case: destroy all its fields and then destroy stored instance
+        for (var i = 0; i < this.fields.length; i++)
+            this.fields[i].destroy();
+
+        this.$element.removeData('Parsley');
+        this._trigger('destroy');
   },
 
   _refreshFields: function () {
@@ -157,16 +184,18 @@ ParsleyForm.prototype = {
       .each((_, element) => {
         var fieldInstance = new window.Parsley.Factory(element, {}, this);
 
-        // Only add valid and not excluded `ParsleyField` and `ParsleyFieldMultiple` children
-        if (('ParsleyField' === fieldInstance.__class__ || 'ParsleyFieldMultiple' === fieldInstance.__class__) && (true !== fieldInstance.options.excluded))
-          if ('undefined' === typeof this.fieldsMappedById[fieldInstance.__class__ + '-' + fieldInstance.__id__]) {
-            this.fieldsMappedById[fieldInstance.__class__ + '-' + fieldInstance.__id__] = fieldInstance;
+      // Only add valid and not excluded `Field` and `FieldMultiple` children
+      if (('Field' === fieldInstance.__class__ || 'FieldMultiple' === fieldInstance.__class__) && (true !== fieldInstance.options.excluded)) {
+          let uniqueId = fieldInstance.__class__ + '-' + fieldInstance.__id__;
+          if ('undefined' === typeof this.fieldsMappedById[uniqueId]) {
+              this.fieldsMappedById[uniqueId] = fieldInstance;
             this.fields.push(fieldInstance);
           }
+      }
       });
 
-      $(oldFields).not(this.fields).each((_, field) => {
-        field._trigger('reset');
+      $.each(Utils.difference(oldFields, this.fields), (_, field) = > {
+          field.reset();
       });
     });
     return this;
@@ -196,4 +225,4 @@ ParsleyForm.prototype = {
 
 };
 
-export default ParsleyForm;
+export default Form;

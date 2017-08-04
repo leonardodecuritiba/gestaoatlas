@@ -25,19 +25,25 @@ class Tecnico extends Model
             $this->Page->constraints = [
             ];
      */
+
     public function requisicoesSeloLacre()
     {
         return $this->colaborador->requisicoes;
     }
 
-    public function canRequestSelos()
+    public function waitingRequisicoesSeloLacre()
     {
-        return ($this->selos_disponiveis()->count() < Ajuste::getValueByMetaKey('requests_max_selos'));
+        return $this->colaborador->requisicoes_waiting;
     }
 
-    public function canRequestLacres()
+    public function getMaxSelosCanRequest()
     {
-        return ($this->lacres_disponiveis()->count() < Ajuste::getValueByMetaKey('requests_max_lacres'));
+        return (Ajuste::getValueByMetaKey('requests_max_selos') - $this->selos_disponiveis()->count());
+    }
+
+    public function getMaxLacresCanRequest()
+    {
+        return (Ajuste::getValueByMetaKey('requests_max_lacres') - $this->lacres_disponiveis()->count());
     }
 
     static public function outros($idtecnico)

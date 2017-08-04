@@ -1,22 +1,27 @@
 import $ from 'jquery';
-import ParsleyUtils from './utils';
-import ParsleyAbstract from './abstract';
-import ParsleyForm from './form';
-import ParsleyField from './field';
-import ParsleyMultiple from './multiple';
+import Utils from './utils';
+import Base from './base';
+import Form from './form';
+import Field from './field';
+import Multiple from './multiple';
 
-var ParsleyFactory = function (element, options, parsleyFormInstance) {
+var Factory = function (element, options, parsleyFormInstance) {
+    this.element = element;
   this.$element = $(element);
 
   // If the element has already been bound, returns its saved Parsley instance
   var savedparsleyFormInstance = this.$element.data('Parsley');
   if (savedparsleyFormInstance) {
 
-    // If the saved instance has been bound without a ParsleyForm parent and there is one given in this call, add it
+      // If the saved instance has been bound without a Form parent and there is one given in this call, add it
     if ('undefined' !== typeof parsleyFormInstance && savedparsleyFormInstance.parent === window.Parsley) {
       savedparsleyFormInstance.parent = parsleyFormInstance;
       savedparsleyFormInstance._resetOptions(savedparsleyFormInstance.options);
     }
+
+      if ('object' === typeof options) {
+          Object.assign(savedparsleyFormInstance.options, options);
+      }
 
     return savedparsleyFormInstance;
   }
@@ -25,32 +30,33 @@ var ParsleyFactory = function (element, options, parsleyFormInstance) {
   if (!this.$element.length)
     throw new Error('You must bind Parsley on an existing element.');
 
-  if ('undefined' !== typeof parsleyFormInstance && 'ParsleyForm' !== parsleyFormInstance.__class__)
-    throw new Error('Parent instance must be a ParsleyForm instance');
+    if ('undefined' !== typeof parsleyFormInstance && 'Form' !== parsleyFormInstance.__class__)
+        throw new Error('Parent instance must be a Form instance');
 
   this.parent = parsleyFormInstance || window.Parsley;
   return this.init(options);
 };
 
-ParsleyFactory.prototype = {
+Factory.prototype = {
   init: function (options) {
     this.__class__ = 'Parsley';
     this.__version__ = '@@version';
-    this.__id__ = ParsleyUtils.generateID();
+      this.__id__ = Utils.generateID();
 
     // Pre-compute options
     this._resetOptions(options);
 
-    // A ParsleyForm instance is obviously a `<form>` element but also every node that is not an input and has the `data-parsley-validate` attribute
-    if (this.$element.is('form') || (ParsleyUtils.checkAttr(this.$element, this.options.namespace, 'validate') && !this.$element.is(this.options.inputs)))
+      // A Form instance is obviously a `<form>` element but also every node that is not an input and has the `data-parsley-validate` attribute
+      if (this.element.nodeName === 'FORM' || (Utils.checkAttr(this.element, this.options.namespace, 'validate') && !this.$element.is(this.options.inputs)))
       return this.bind('parsleyForm');
 
-    // Every other element is bound as a `ParsleyField` or `ParsleyFieldMultiple`
+      // Every other element is bound as a `Field` or `FieldMultiple`
     return this.isMultiple() ? this.handleMultiple() : this.bind('parsleyField');
   },
 
   isMultiple: function () {
-    return (this.$element.is('input[type=radio], input[type=checkbox]')) || (this.$element.is('select') && 'undefined' !== typeof this.$element.attr('multiple'));
+      return ((this.element.type === 'radio' || this.element.type === 'checkbox') ||
+          (this.element.nodeName === 'SELECT' && null !== this.element.getAttribute('multiple')));
   },
 
   // Multiples fields are a real nightmare :(
@@ -61,21 +67,18 @@ ParsleyFactory.prototype = {
     var parsleyMultipleInstance;
 
     // Handle multiple name
-    if (this.options.multiple)
-      ; // We already have our 'multiple' identifier
-    else if ('undefined' !== typeof this.$element.attr('name') && this.$element.attr('name').length)
-      this.options.multiple = name = this.$element.attr('name');
-    else if ('undefined' !== typeof this.$element.attr('id') && this.$element.attr('id').length)
-      this.options.multiple = this.$element.attr('id');
+      this.options.multiple = this.options.multiple ||
+          (name = this.element.getAttribute('name')) ||
+          this.element.getAttribute('id');
 
     // Special select multiple input
-    if (this.$element.is('select') && 'undefined' !== typeof this.$element.attr('multiple')) {
+      if (this.element.nodeName === 'SELECT' && null !== this.element.getAttribute('multiple')) {
       this.options.multiple = this.options.multiple || this.__id__;
       return this.bind('parsleyFieldMultiple');
 
     // Else for radio / checkboxes, we need a `name` or `data-parsley-multiple` to properly bind it
     } else if (!this.options.multiple) {
-      ParsleyUtils.warn('To be bound by Parsley, a radio, a checkbox and a multiple select input must have either a name or a multiple option.', this.$element);
+          Utils.warn('To be bound by Parsley, a radio, a checkbox and a multiple select input must have either a name or a multiple option.', this.$element);
       return this;
     }
 
@@ -83,10 +86,11 @@ ParsleyFactory.prototype = {
     this.options.multiple = this.options.multiple.replace(/(:|\.|\[|\]|\{|\}|\$)/g, '');
 
     // Add proper `data-parsley-multiple` to siblings if we have a valid multiple name
-    if ('undefined' !== typeof name) {
+      if (name) {
       $('input[name="' + name + '"]').each((i, input) => {
-        if ($(input).is('input[type=radio], input[type=checkbox]'))
-          $(input).attr(this.options.namespace + 'multiple', this.options.multiple);
+          if((input.type === 'radio' || input.type === 'checkbox')
+      )
+          input.setAttribute(this.options.namespace + 'multiple', this.options.multiple);
       });
     }
 
@@ -96,7 +100,7 @@ ParsleyFactory.prototype = {
       parsleyMultipleInstance = $($previouslyRelated.get(i)).data('Parsley');
       if ('undefined' !== typeof parsleyMultipleInstance) {
 
-        if (!this.$element.data('ParsleyFieldMultiple')) {
+          if (!this.$element.data('FieldMultiple')) {
           parsleyMultipleInstance.addElement(this.$element);
         }
 
@@ -104,37 +108,37 @@ ParsleyFactory.prototype = {
       }
     }
 
-    // Create a secret ParsleyField instance for every multiple field. It will be stored in `data('ParsleyFieldMultiple')`
-    // And will be useful later to access classic `ParsleyField` stuff while being in a `ParsleyFieldMultiple` instance
+      // Create a secret Field instance for every multiple field. It will be stored in `data('FieldMultiple')`
+      // And will be useful later to access classic `Field` stuff while being in a `FieldMultiple` instance
     this.bind('parsleyField', true);
 
     return parsleyMultipleInstance || this.bind('parsleyFieldMultiple');
   },
 
-  // Return proper `ParsleyForm`, `ParsleyField` or `ParsleyFieldMultiple`
+    // Return proper `Form`, `Field` or `FieldMultiple`
   bind: function (type, doNotStore) {
     var parsleyInstance;
 
     switch (type) {
       case 'parsleyForm':
         parsleyInstance = $.extend(
-          new ParsleyForm(this.$element, this.domOptions, this.options),
-          new ParsleyAbstract(),
+            new Form(this.element, this.domOptions, this.options),
+            new Base(),
           window.ParsleyExtend
         )._bindFields();
         break;
       case 'parsleyField':
         parsleyInstance = $.extend(
-          new ParsleyField(this.$element, this.domOptions, this.options, this.parent),
-          new ParsleyAbstract(),
+            new Field(this.element, this.domOptions, this.options, this.parent),
+            new Base(),
           window.ParsleyExtend
         );
         break;
       case 'parsleyFieldMultiple':
         parsleyInstance = $.extend(
-          new ParsleyField(this.$element, this.domOptions, this.options, this.parent),
-          new ParsleyMultiple(),
-          new ParsleyAbstract(),
+            new Field(this.element, this.domOptions, this.options, this.parent),
+            new Multiple(),
+            new Base(),
           window.ParsleyExtend
         )._init();
         break;
@@ -143,10 +147,10 @@ ParsleyFactory.prototype = {
     }
 
     if (this.options.multiple)
-      ParsleyUtils.setAttr(this.$element, this.options.namespace, 'multiple', this.options.multiple);
+        Utils.setAttr(this.element, this.options.namespace, 'multiple', this.options.multiple);
 
     if ('undefined' !== typeof doNotStore) {
-      this.$element.data('ParsleyFieldMultiple', parsleyInstance);
+        this.$element.data('FieldMultiple', parsleyInstance);
 
       return parsleyInstance;
     }
@@ -154,7 +158,7 @@ ParsleyFactory.prototype = {
     // Store the freshly bound instance in a DOM element for later access using jQuery `data()`
     this.$element.data('Parsley', parsleyInstance);
 
-    // Tell the world we have a new ParsleyForm or ParsleyField instance!
+      // Tell the world we have a new Form or Field instance!
     parsleyInstance._actualizeTriggers();
     parsleyInstance._trigger('init');
 
@@ -162,4 +166,4 @@ ParsleyFactory.prototype = {
   }
 };
 
-export default ParsleyFactory;
+export default Factory;

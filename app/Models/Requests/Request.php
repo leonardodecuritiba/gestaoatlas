@@ -3,6 +3,7 @@
 namespace App\Models\Requests;
 
 use App\Helpers\DataHelper;
+use App\Lacre;
 use App\Selo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -44,7 +45,11 @@ class Request extends Model
     {
         $Request = self::accept($data);
         $data['idtecnico'] = $Request->requester->tecnico->idtecnico;
-        Selo::assign($data);
+        if ($Request->idtype == TypeRequest::_TYPE_SELOS_) {
+            Selo::assign($data);
+        } elseif ($Request->idtype == TypeRequest::_TYPE_LACRES_) {
+            Lacre::assign($data);
+        }
         return "Requisição aceita com sucesso!";
     }
 
@@ -175,6 +180,17 @@ class Request extends Model
     public function scopeSelos($query)
     {
         return $query->where('idtype', TypeRequest::_TYPE_SELOS_);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWaiting($query)
+    {
+        return $query->where('idstatus', StatusRequest::_STATUS_AGUARDANDO_);
     }
 
     /**

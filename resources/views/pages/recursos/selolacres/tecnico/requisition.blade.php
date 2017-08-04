@@ -62,7 +62,7 @@
                                 data-option="selos"
                                 data-toggle="modal"
                                 data-target="#modalRequerer"
-                                @if(!Auth::user()->colaborador->tecnico->canRequestSelos())
+                                @if(!$Page->extras['can_request_selos'])
                                 disabled
                                 @endif
                         ><i class="fa fa-plus fa-2"></i> Requerer
@@ -131,7 +131,7 @@
                                 data-option="lacres"
                                 data-toggle="modal"
                                 data-target="#modalRequerer"
-                                @if(!Auth::user()->colaborador->tecnico->canRequestLacres())
+                                @if(!$Page->extras['can_request_lacres'])
                                 disabled
                                 @endif
                         ><i class="fa fa-plus fa-2"></i> Requerer
@@ -157,9 +157,10 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Data</th>
-                                    <th>Gestor</th>
                                     <th>Tipo Requisição</th>
                                     <th>Requisição</th>
+                                    <th>Gestor</th>
+                                    <th>Retorno</th>
                                     <th>Status</th>
                                 </tr>
                                 </thead>
@@ -168,9 +169,10 @@
                                     <tr>
                                         <td>{{$sel->id}}</td>
                                         <td>{{$sel->created_at}}</td>
-                                        <td>{{$sel->getNameManager()}}</td>
                                         <td>{{$sel->getTypeText()}}</td>
                                         <td>{{$sel->getParametersText()}}</td>
+                                        <td>{{$sel->getNameManager()}}</td>
+                                        <td>{{$sel->getResponseText()}}</td>
                                         <td>
                                             <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                         </td>
@@ -217,8 +219,8 @@
     <!-- /Datatables -->
     <script>
         var MAX = [];
-        MAX['selos'] = '{{\App\Models\Ajustes\Ajuste::getValueByMetaKey('requests_max_selos_req')}}';
-        MAX['lacres'] = '{{\App\Models\Ajustes\Ajuste::getValueByMetaKey('requests_max_lacres_req')}}';
+        MAX['selos'] = parseInt('{{$Page->extras['max_selos_can_request']}}');
+        MAX['lacres'] = parseInt('{{$Page->extras['max_lacres_can_request']}}');
 
         $(document).ready(function () {
             $('div#modalRequerer').on('show.bs.modal', function (e) {
@@ -226,13 +228,13 @@
                 var $content = $(this).find('div.modal-content');
                 $($content).find('div.modal-header h4.modal-title b').html(option_);
                 $($content).find('div.modal-body input[name=opcao]').val(option_);
-//                var $field = $($content).find('div.modal-body input[name=opcao]');
-//                $($field).trigger('input');
-//                $($field).parsley('destroy');
-//                $($field).parsley({
-//                    min: 5,
-//                    max: MAX[option_],
-//                })
+                var $field = $($content).find('div.modal-body input[name=quantidade]');
+                $($field).parents('form').parsley().destroy();
+                $($field).attr({
+                    "min": 1, // values (or variables) here,
+                    "max": MAX[option_],              // substitute your own
+                });
+                $($field).parents('form').parsley();
             });
         });
     </script>

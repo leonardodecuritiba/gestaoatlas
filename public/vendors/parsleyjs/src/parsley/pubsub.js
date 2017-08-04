@@ -1,11 +1,11 @@
 import $ from 'jquery';
-import ParsleyField from './field';
-import ParsleyForm from './form';
-import ParsleyUtils from './utils';
+import Field from './field';
+import Form from './form';
+import Utils from './utils';
 
 var o = $({});
 var deprecated = function () {
-  ParsleyUtils.warnOnce("Parsley's pubsub module is deprecated; use the 'on' and 'off' methods on parsley instances or window.Parsley");
+    Utils.warnOnce("Parsley's pubsub module is deprecated; use the 'on' and 'off' methods on parsley instances or window.Parsley");
 };
 
 // Returns an event handler that calls `fn` with the arguments it expects
@@ -46,7 +46,7 @@ $.listen = function (name, callback) {
 
 $.listenTo = function (instance, name, fn) {
   deprecated();
-  if (!(instance instanceof ParsleyField) && !(instance instanceof ParsleyForm))
+    if (!(instance instanceof Field) && !(instance instanceof Form))
     throw new Error('Must give Parsley instance');
 
   if ('string' !== typeof name || 'function' !== typeof fn)
@@ -64,7 +64,7 @@ $.unsubscribe = function (name, fn) {
 
 $.unsubscribeTo = function (instance, name) {
   deprecated();
-  if (!(instance instanceof ParsleyField) && !(instance instanceof ParsleyForm))
+    if (!(instance instanceof Field) && !(instance instanceof Form))
     throw new Error('Must give Parsley instance');
   instance.off(eventName(name));
 };
@@ -83,7 +83,7 @@ $.unsubscribeAll = function (name) {
 // $.emit is deprecated. Use jQuery events instead.
 $.emit = function (name, instance) {
   deprecated();
-  var instanceGiven = (instance instanceof ParsleyField) || (instance instanceof ParsleyForm);
+    var instanceGiven = (instance instanceof Field) || (instance instanceof Form);
   var args = Array.prototype.slice.call(arguments, instanceGiven ? 2 : 1);
   args.unshift(eventName(name));
   if (!instanceGiven) {
