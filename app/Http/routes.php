@@ -70,6 +70,25 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('selolacres-negar', 'SeloLacreController@deniedRequest')->name('selolacres.deny');
 
 });
+/*
+|--------------------------------------------------------------------------
+| Pattern Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::group(['middleware' => ['auth']], function () {
+
+//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
+
+    Route::resource('patterns', 'Requests\PatternController');
+    Route::get('patterns-requisicoes', 'Requests\PatternController@listRequests')->name('patterns.requisicoes');
+    //Admin
+//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+
+});
 
 
 Route::group(['middleware' => ['auth']], function () {

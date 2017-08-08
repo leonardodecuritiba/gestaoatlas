@@ -100,16 +100,17 @@
                             <li><a>Selos/Lacres<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('selolacres.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('selolacres.listagem')}}">Listagem</a></li>
                                     <li><a href="{{route('selolacres.requisicoes')}}">Requisições</a></li>
                                     {{--<li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>--}}
-                                    <li><a href="{{route('selolacres.listagem')}}">Listagem</a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">Padrões</a>
+                            <li><a>Padrões<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#">Cadastro</a></li>
-                                    <li><a href="#">Gestão</a></li>
-                                    <li><a href="#">Relatório</a></li>
+                                    <li><a href="{{route('patterns.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('patterns.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('patterns.requisicoes')}}">Requisições</a></li>
+                                    {{--<li><a href="#">Relatório</a></li>--}}
                                 </ul>
                             </li>
                             <li><a href="#">Ferramentas</a>
