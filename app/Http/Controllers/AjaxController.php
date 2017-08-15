@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inputs\Vehicle;
 use App\Ncm;
 use App\Tecnico;
 use DB;
@@ -186,6 +187,26 @@ class AjaxController extends Controller
     public function consulta_params(){
         $params = SintegraSP::getParams();
         echo json_encode($params);
+    }
+
+    public function consulta_veiculos_marcas()
+    {
+        return Vehicle::getJsonMarcas(Input::get('tipo'));
+    }
+
+    public function consulta_veiculos_veiculos()
+    {
+        return Vehicle::getJsonVeiculos(Input::get('tipo'), Input::get('idmarca'));
+    }
+
+    public function consulta_veiculos_modelo()
+    {
+        return Vehicle::getJsonModelos(Input::get('tipo'), Input::get('idmarca'), Input::get('idveiculo'));
+    }
+
+    public function consulta_veiculos_veiculo()
+    {
+        return Vehicle::getJsonVeiculo(Input::get('tipo'), Input::get('idmarca'), Input::get('idveiculo'), Input::get('modelo'));
     }
 
 }

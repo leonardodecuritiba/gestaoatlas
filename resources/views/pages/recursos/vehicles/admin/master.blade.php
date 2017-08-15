@@ -1,11 +1,9 @@
 @extends('layouts.template')
+@section('style_content')
+    <!-- Select2 -->
+    @include('helpers.select2.head')
+@endsection
 @section('page_content')
-    <!-- Seach form -->
-    @include('layouts.search.form')
-    <!-- Upmenu form -->
-    <?php $route_importacao = "#";  ?>
-    <?php $route_exportacao = route('servicos.exportar'); ?>
-    @include('layouts.menus.upmenu-reduzido')
     <div class="">
         <div class="page-title">
             <div class="title_left">
@@ -13,10 +11,20 @@
             </div>
         </div>
         <div class="clearfix"></div>
-
-        {!! Form::open(['route' => $Page->link.'.store',
-            'method' => 'POST',
-            'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
+        @if(isset($Data))
+            {{Form::model($Data,
+            array(
+                'route' => array($Page->link.'.update', $Data->id),
+                'method' => 'PATCH',
+                'class' => 'form-horizontal form-label-left',
+                'data-parsley-validate'
+            )
+            )}}
+        @else
+            {!! Form::open(['route' => $Page->link.'.store',
+                'method' => 'POST',
+                'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
+        @endif
         <section class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
@@ -24,10 +32,8 @@
                         <h2>Dados do {{$Page->Target}}</h2>
                         <div class="clearfix"></div>
                     </div>
-                    <div class="x_content div_pai">
-                        <div class="form-horizontal form-label-left">
-                            @include('pages.'.$Page->link.'.forms.form')
-                        </div>
+                    <div class="x_content">
+                        @include($Page->folder.'.admin.form')
                     </div>
                 </div>
             </div>
@@ -36,7 +42,7 @@
             <div class="form-horizontal form-label-left">
                 <div class="form-group">
                     <div class="col-md-6 col-sm-6 col-xs-12 ">
-                        <a href="{{route($Page->link.'.index')}}" class="btn btn-danger btn-lg btn-block">Cancelar</a>
+                        <button type="reset" class="btn btn-danger btn-lg btn-block">Cancelar</button>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-12 ">
                         <button type="submit" class="btn btn-success btn-lg btn-block">Salvar</button>
@@ -51,6 +57,14 @@
 
 @endsection
 @section('scripts_content')
-    <!-- form validation -->
     {!! Html::script('js/parsley/parsley.min.js') !!}
+    @include('helpers.select2.foot')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+    </script>
+
 @endsection

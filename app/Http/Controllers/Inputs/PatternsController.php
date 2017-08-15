@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Requests;
+namespace App\Http\Controllers\Inputs;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pattern;
+use App\Models\Commons\Brand;
+use App\Models\Inputs\Pattern;
 use App\Unidade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Zizaco\Entrust\EntrustFacade;
 
-class PatternController extends Controller
+class PatternsController extends Controller
 {
     private $Page;
     private $colaborador;
@@ -33,10 +34,9 @@ class PatternController extends Controller
         ];
     }
 
-
     public function index()
     {
-        $this->Page->extras['patterns'] = Pattern::with('unity')->get();
+        $this->Page->extras['patterns'] = Pattern::with('brand', 'unity')->get();
         $this->Page->titulo_primario = "Listagem de Padrões";
         return view('pages.recursos.patterns.admin.index')
             ->with('Page', $this->Page);
@@ -45,6 +45,7 @@ class PatternController extends Controller
     public function create()
     {
         $this->Page->extras['unities'] = Unidade::pluck('codigo', 'idunidade');
+        $this->Page->extras['brands'] = Brand::pluck('description', 'id');
         $this->Page->titulo_primario = "Cadastrar ";
         $this->Page->titulo_secundario = "Dados do " . $this->Page->Target;
         return view('pages.recursos.patterns.admin.master')
@@ -55,6 +56,7 @@ class PatternController extends Controller
     {
         $Pattern = Pattern::findOrFail($id);
         $this->Page->extras['unities'] = Unidade::pluck('codigo', 'idunidade');
+        $this->Page->extras['brands'] = Brand::pluck('description', 'id');
         $this->Page->titulo_primario = "Editar ";
         $this->Page->titulo_secundario = "Dados do " . $this->Page->Target;
         return view('pages.recursos.patterns.admin.master')
@@ -71,8 +73,29 @@ class PatternController extends Controller
 
     }
 
+    public function update(Request $request, $id)
+    {
+        $Patern = Pattern::findOrFail($id);
+        $Patern->update($request->all());
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_upd]);
+        return redirect()->route('patterns.index');
+
+    }
+
+    public function destroy($id)
+    {
+        $data = Pattern::find($id);
+        $data->delete();
+        return response()->json(['status' => '1',
+            'response' => $this->Page->msg_rem]);
+    }
+
+
     public function listRequests(Request $request)
     {
+        return redirect()->route('patterns.index');
+
         $this->Page->extras['requests'] = RequestSeloLacre::seloLacres()->get();
         $this->Page->search_no_results = "Nenhuma Requisição encontrada!";
         $this->Page->extras['tecnicos'] = Tecnico::all();

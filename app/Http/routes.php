@@ -30,7 +30,6 @@ Route::group(['middleware' => ['auth']], function() {
     Route::resource('instrumentos', 'InstrumentosController');
     Route::resource('fornecedores', 'FornecedoresController');
     Route::resource('pecas', 'PecasController');
-    Route::get('exportar/pecas', 'PecasController@exportar')->name('pecas.exportar');
 
     //Serviços
     Route::resource('servicos', 'ServicosController');
@@ -83,10 +82,53 @@ Route::group(['middleware' => ['auth']], function () {
 //    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
 //    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
 
-    Route::resource('patterns', 'Requests\PatternController');
-    Route::get('patterns-requisicoes', 'Requests\PatternController@listRequests')->name('patterns.requisicoes');
+    Route::resource('patterns', 'Inputs\PatternsController');
+    Route::get('patterns-requisicoes', 'Inputs\PatternsController@listRequests')->name('patterns.requisicoes');
     //Admin
 //    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+
+});
+/*
+|--------------------------------------------------------------------------
+| Tools Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::group(['middleware' => ['auth']], function () {
+
+//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
+
+    Route::resource('tools', 'Inputs\ToolsController');
+    Route::get('tools-requisicoes', 'Inputs\ToolsController@listRequests')->name('tools.requisicoes');
+    //Admin
+//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+
+});
+/*
+|--------------------------------------------------------------------------
+| Vehicles Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::group(['middleware' => ['auth']], function () {
+
+//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
+
+    Route::resource('vehicles', 'Inputs\VehiclesController');
+    Route::get('vehicles-requisicoes', 'Inputs\VehiclesController@listRequests')->name('vehicles.requisicoes');
+    //Admin
+//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+    Route::get('getJsonMarcas', 'AjaxController@consulta_veiculos_marcas')->name('getJsonMarcas');
+    Route::get('getJsonVeiculos', 'AjaxController@consulta_veiculos_veiculos')->name('getJsonVeiculos');
+    Route::get('getJsonModelo', 'AjaxController@consulta_veiculos_modelo')->name('getJsonModelo');
+    Route::get('getJsonVeiculo', 'AjaxController@consulta_veiculos_veiculo')->name('getJsonVeiculo');
+
 
 });
 
@@ -242,6 +284,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('instrumentos', 'InstrumentosController@exportar')->name('instrumentos.exportar');
         Route::get('instrumentos_base', 'Instrumentos\InstrumentosBasesController@exportar')->name('instrumentos_base.exportar');
         Route::get('instrumentos_setors', 'Instrumentos\InstrumentosSetorsController@exportar')->name('instrumentos_setor.exportar');
+        Route::get('pecas', 'PecasController@exportar')->name('pecas.exportar');
+        Route::get('servicos', 'ServicosController@exportar')->name('servicos.exportar');
     });
 
     //IMPORTAÇÃO

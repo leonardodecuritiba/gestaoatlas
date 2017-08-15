@@ -24,6 +24,7 @@
         $('.show-rg').inputmask({'mask': '99.999.999-9', 'removeMaskOnSubmit': true});
         $('.show-celular').inputmask({'mask': '(99) 99999-9999', 'removeMaskOnSubmit': true});
         $('.show-telefone').inputmask({'mask': '(99) 9999-9999', 'removeMaskOnSubmit': true});
+        $('.show-placa').inputmask({'mask': "aaa-9999", 'removeMaskOnSubmit': true});
     });
 </script>
 
@@ -32,27 +33,18 @@
     function initMaskMoneyFix(selector) {
         $(selector).maskMoney({prefix: 'R$ ', allowNegative: false, thousands: '.', decimal: ',', affixesStay: true});
     }
-    $(document).ready(function () {
-        initMaskMoneyFix($(".show-valor-fixo"));
-    });
     function initMaskMoney(selector) {
         $(selector).maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
     }
-    $(document).ready(function () {
-        initMaskMoney($(".show-valor"));
-    });
-    //    function initMaskMoney(selector) {
-    //        $(selector).maskMoney({allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
-    //    }
-    $(document).ready(function () {
-        initMaskMoney($(".show-valor-noreal"));
-    });
-    function initMaskMoneyDolar(selector) {
-        $(selector).maskMoney({prefix:'$ ', allowNegative: false, thousands:',', decimal:'.', affixesStay: false});
+
+    function initMaskMoneyValorReal(selector) {
+        $(selector).maskMoney({allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
     }
-    $(document).ready(function () {
-        initMaskMoneyDolar($(".show-valor-dolar"));
-    });
+
+    function initMaskMoneyDolar(selector) {
+        $(selector).maskMoney({prefix: '$ ', allowNegative: false, thousands: ',', decimal: '.', affixesStay: false});
+    }
+
     function initMaskMoneyPorcento(selector) {
         $(selector).maskMoney({
             suffix: ' %',
@@ -63,35 +55,29 @@
             affixesStay: false
         });
     }
-    $(document).ready(function () {
-        initMaskMoneyPorcento($(".show-porcento"));
-    });
+
     function initMaskMoneyPeso(selector) {
-        $(selector).maskMoney({suffix:' Kg', allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
+        $(selector).maskMoney({suffix: ' Kg', allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
     }
-    $(document).ready(function () {
-        initMaskMoneyPeso($(".show-peso"));
-    });
+
     function initMaskGarantia(selector) {
-        $(selector).maskMoney({suffix:' meses', precision:0, affixesStay: false});
+        $(selector).maskMoney({suffix: ' meses', precision: 0, affixesStay: false});
     }
-    $(document).ready(function () {
-        initMaskGarantia($(".show-meses"));
-    });
+
     function initMaskMoneyNumero(selector) {
-        $(selector).maskMoney({allowNegative: false, precision: 0,thousands:'', decimal:'', affixesStay: false});
+        $(selector).maskMoney({allowNegative: false, precision: 0, thousands: '', decimal: '', affixesStay: false});
     }
-    $(document).ready(function () {
-        initMaskMoneyNumero($(".show-inteiro"));
-    });
+
     function initMaskMoneyPositivos(selector) {
         $(selector).maskMoney({
-            allowNegative: false, allowZero: false, precision: 0, thousands: '', decimal: '', affixesStay: false
+            allowNegative: false,
+            allowZero: false,
+            precision: 0,
+            thousands: '',
+            decimal: '',
+            affixesStay: false
         });
     }
-    $(document).ready(function () {
-        initMaskMoneyPositivos($(".show-inteiro-positivo"));
-    });
 
     function initMaskMoneyParcelas(selector) {
         $(selector).maskMoney({
@@ -104,8 +90,47 @@
             affixesStay: false
         });
     }
+
+    function initMaskKm(selector) {
+        $(selector).maskMoney({suffix: ' KM', precision: 0, thousands: '', decimal: '', affixesStay: false});
+    }
+
+
+    $(document).ready(function () {
+        initMaskMoneyFix($(".show-valor-fixo"));
+    });
+    $(document).ready(function () {
+        initMaskMoney($(".show-valor"));
+    });
+    $(document).ready(function () {
+        initMaskMoneyValorReal($(".show-valor-real"));
+    });
+    $(document).ready(function () {
+        initMaskMoney($(".show-valor-noreal"));
+    });
+    $(document).ready(function () {
+        initMaskMoneyDolar($(".show-valor-dolar"));
+    });
+    $(document).ready(function () {
+        initMaskMoneyPorcento($(".show-porcento"));
+    });
+    $(document).ready(function () {
+        initMaskGarantia($(".show-meses"));
+    });
+    $(document).ready(function () {
+        initMaskMoneyPeso($(".show-peso"));
+    });
+    $(document).ready(function () {
+        initMaskMoneyNumero($(".show-inteiro"));
+    });
+    $(document).ready(function () {
+        initMaskMoneyPositivos($(".show-inteiro-positivo"));
+    });
     $(document).ready(function () {
         initMaskMoneyParcelas($(".show-parcelas"));
+    });
+    $(document).ready(function () {
+        initMaskKm($(".show-km"));
     });
 </script>
 
@@ -177,6 +202,9 @@
 
 
 <script>
+    $(document).ready(function () {
+        $_LOADING_ = $("div.loading");
+    });
     $(document).ready(function () {
         $('#buscar').keypress(function (e) {
             if (e.which == 13) {

@@ -7,10 +7,10 @@
 @section('page_content')
     <!-- Seach form -->
     <section class="row">
-        @if(count($Page->extras['patterns']) > 0)
+        @if(count($Page->extras['tools']) > 0)
             <div class="x_panel">
                 <div class="x_title">
-                    <h2><b>{{$Page->extras['patterns']->count()}}</b> {{$Page->Targets}} encontrados</h2>
+                    <h2><b>{{$Page->extras['tools']->count()}}</b> {{$Page->Targets}} encontrados</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -22,28 +22,24 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Descrição</th>
+                                    <th>Categoria</th>
                                     <th>Marca</th>
-                                    <th>Medida</th>
+                                    <th>Unidade</th>
                                     <th>Custo</th>
-                                    <th>Custo Cert.</th>
-                                    <th>Certificado</th>
                                     <th>Validade</th>
-                                    <th>Classe</th>
                                     <th>Ações</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($Page->extras['patterns'] as $sel)
+                                @foreach ($Page->extras['tools'] as $sel)
                                     <tr>
                                         <td>{{$sel->id}}</td>
                                         <td>{{$sel->description}}</td>
+                                        <td>{{$sel->getCategoryText()}}</td>
                                         <td>{{$sel->getBrandText()}}</td>
-                                        <td>{{$sel->getMeasure()}}</td>
+                                        <td>{{$sel->getUnityText()}}</td>
                                         <td>{{$sel->getCost()}}</td>
-                                        <td>{{$sel->getCostCertification()}}</td>
-                                        <td>{{$sel->certification}}</td>
                                         <td>{{$sel->expiration}}</td>
-                                        <td>{{$sel->class}}</td>
                                         <td>
                                             <a class="btn btn-primary btn-xs"
                                                href="{{route($Page->link.'.show',$sel->id)}}">

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Inputs;
 
 use App\Helpers\DataHelper;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +12,7 @@ class Pattern extends Model
     public $timestamps = true;
     protected $fillable = [
         'idunit',
+        'idbrand',
         'description',
         'brand',
         'measure',
@@ -35,6 +36,11 @@ class Pattern extends Model
         return DataHelper::getPrettyDate($value);
     }
 
+    public function getMeasureAttribute($value)
+    {
+        return DataHelper::getFloat2Real($value);
+    }
+
     public function getCostAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
@@ -47,7 +53,12 @@ class Pattern extends Model
 
     public function getCostCertification()
     {
-        return DataHelper::getFloat2RealMoeda($this->getAttribute('cost_certification'));
+        return DataHelper::getFloat2RealMoeda($this->attributes['cost_certification']);
+    }
+
+    public function getCost()
+    {
+        return DataHelper::getFloat2RealMoeda($this->attributes['cost']);
     }
 
     public function getMeasure()
@@ -55,9 +66,19 @@ class Pattern extends Model
         return $this->getAttribute('measure') . ' ' . $this->unity->codigo;
     }
 
+    public function getBrandText()
+    {
+        return $this->brand->description;
+    }
+
     public function unity()
     {
         return $this->hasOne('App\Unidade', 'idunidade', 'idunit');
+    }
+
+    public function brand()
+    {
+        return $this->hasOne('App\Models\Commons\Brand', 'id', 'idbrand');
     }
 
 }

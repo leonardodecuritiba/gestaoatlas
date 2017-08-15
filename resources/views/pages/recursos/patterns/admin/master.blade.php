@@ -15,6 +15,7 @@
             {{Form::model($Data,
             array(
                 'route' => array($Page->link.'.update', $Data->id),
+                'method' => 'PATCH',
                 'class' => 'form-horizontal form-label-left',
                 'data-parsley-validate'
             )

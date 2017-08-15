@@ -53,6 +53,14 @@ class Servico extends Model
     }
 
     // ************************** HASMANY **********************************
+    public function tabela_preco_by_name($value)
+    {
+        $id = TabelaPreco::where('descricao', $value)->pluck('idtabela_preco');
+        return $this->hasMany('App\TabelaPrecoServico', 'idservico')
+            ->where('idtabela_preco', $id)
+            ->first();
+    }
+
     public function servico_prestados()
     {
         return $this->hasMany('App\ServicoPrestado', 'idservico');

@@ -109,25 +109,27 @@
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('patterns.create')}}">Cadastro</a></li>
                                     <li><a href="{{route('patterns.index')}}">Listagem</a></li>
-                                    <li><a href="{{route('patterns.requisicoes')}}">Requisições</a></li>
-                                    {{--<li><a href="#">Relatório</a></li>--}}
+                                    <li><a href="{{route('patterns.requisicoes')}}">Requisições <span
+                                                    class="label label-danger pull-right">!</span></a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">Ferramentas</a>
+                            <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#">Cadastro</a></li>
-                                    <li><a href="#">Gestão</a></li>
-                                    <li><a href="#">Relatório</a></li>
+                                    <li><a href="{{route('tools.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('tools.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('tools.requisicoes')}}">Requisições <span
+                                                    class="label label-danger pull-right">!</span></a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Veículos<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{route('vehicles.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('vehicles.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('vehicles.requisicoes')}}">Requisições <span
+                                                    class="label label-danger pull-right">!</span></a></li>
                                 </ul>
                             </li>
                             <li><a href="#">Equipamento BKP</a>
-                                <ul class="nav child_menu">
-                                    <li><a href="#">Cadastro</a></li>
-                                    <li><a href="#">Gestão</a></li>
-                                    <li><a href="#">Relatório</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#">Veículos</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>

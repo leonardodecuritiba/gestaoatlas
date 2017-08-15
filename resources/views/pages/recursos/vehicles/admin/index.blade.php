@@ -7,10 +7,10 @@
 @section('page_content')
     <!-- Seach form -->
     <section class="row">
-        @if(count($Page->extras['patterns']) > 0)
+        @if(count($Page->extras['vehicles']) > 0)
             <div class="x_panel">
                 <div class="x_title">
-                    <h2><b>{{$Page->extras['patterns']->count()}}</b> {{$Page->Targets}} encontrados</h2>
+                    <h2><b>{{$Page->extras['vehicles']->count()}}</b> {{$Page->Targets}} encontrados</h2>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -21,35 +21,37 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Descrição</th>
-                                    <th>Marca</th>
-                                    <th>Medida</th>
-                                    <th>Custo</th>
-                                    <th>Custo Cert.</th>
-                                    <th>Certificado</th>
-                                    <th>Validade</th>
-                                    <th>Classe</th>
+                                    <th>Veículo</th>
+                                    <th>Placa</th>
+                                    <th>Ano</th>
+                                    <th>Renavam</th>
+                                    <th>KM</th>
+                                    <th>Rod. Pneus</th>
+                                    <th>Óleo</th>
+                                    <th>Filtro</th>
+                                    <th>Lavagem</th>
                                     <th>Ações</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($Page->extras['patterns'] as $sel)
+                                @foreach ($Page->extras['vehicles'] as $sel)
                                     <tr>
                                         <td>{{$sel->id}}</td>
-                                        <td>{{$sel->description}}</td>
-                                        <td>{{$sel->getBrandText()}}</td>
-                                        <td>{{$sel->getMeasure()}}</td>
-                                        <td>{{$sel->getCost()}}</td>
-                                        <td>{{$sel->getCostCertification()}}</td>
-                                        <td>{{$sel->certification}}</td>
-                                        <td>{{$sel->expiration}}</td>
-                                        <td>{{$sel->class}}</td>
+                                        <td>{{$sel->veiculo}}</td>
+                                        <td>{{$sel->plate}}</td>
+                                        <td>{{$sel->ano_modelo}}</td>
+                                        <td>{{$sel->renavam}}</td>
+                                        <td>{{$sel->km}}</td>
+                                        <td>{{$sel->oil}}</td>
+                                        <td>{{$sel->tires}}</td>
+                                        <td>{{$sel->filter}}</td>
+                                        <td>{{$sel->wash}}</td>
                                         <td>
                                             <a class="btn btn-primary btn-xs"
                                                href="{{route($Page->link.'.show',$sel->id)}}">
                                                 <i class="fa fa-edit"></i></a>
                                             <button class="btn btn-danger btn-xs"
-                                                    data-nome="Padrão: {{$sel->description}}"
+                                                    data-nome="Veículo: {{$sel->veiculo}}"
                                                     data-href="{{route($Page->link.'.destroy',$sel->id)}}"
                                                     data-toggle="modal"
                                                     data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i>

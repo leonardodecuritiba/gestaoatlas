@@ -4,7 +4,7 @@
 	@include('layouts.search.form')
 	<!-- Upmenu form -->
 	<?php $route_importacao = "#";  ?>
-	<?php $route_exportacao = "#"; ?>
+    <?php $route_exportacao = route('servicos.exportar'); ?>
 	@include('layouts.menus.upmenu-reduzido')
 
 	@if(count($Buscas) > 0)

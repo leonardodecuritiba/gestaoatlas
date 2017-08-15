@@ -16,11 +16,12 @@ class CreatePatternsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('idunit');
             $table->foreign('idunit')->references('idunidade')->on('unidades')->onDelete('cascade');
+            $table->unsignedInteger('idbrand');
+            $table->foreign('idbrand')->references('id')->on('brands')->onDelete('cascade');
             $table->string('description', 100);
-            $table->string('brand', 50);
             $table->decimal('measure', 20, 2);
-            $table->decimal('cost', 20, 2);
-            $table->decimal('cost_certification', 20, 2);
+            $table->decimal('cost', 20, 2)->default(0);
+            $table->decimal('cost_certification', 20, 2)->default(0);
             $table->string('certification', 20);
             $table->string('class', 20);
             $table->date('expiration');
