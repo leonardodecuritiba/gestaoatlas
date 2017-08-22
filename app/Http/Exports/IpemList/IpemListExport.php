@@ -59,7 +59,7 @@ class IpemListExport extends NewExcelFile
                     $Aparelho_manutencao->defeito . ' / ' . $Aparelho_manutencao->solucao,
                     $Instrumento->numero_serie,
                     $Instrumento->inventario,
-                    $Instrumento->selo_afixado_numeracao(),
+	                $Instrumento->numeracao_selo_afixado(),
                     $Instrumento->capacidade
                 ));
                 $i++;

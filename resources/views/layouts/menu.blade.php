@@ -129,11 +129,20 @@
                                                     class="label label-danger pull-right">!</span></a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">Equipamento BKP</a>
+                            <li><a href="#">Instrumentos BKP<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#">Cadastro</a></li>
-                                    <li><a href="#">Gestão</a></li>
-                                    <li><a href="#">Relatório</a></li>
+                                    <li><a href="{{route('instruments.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('instruments.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('instruments.requisicoes')}}">Requisições <span
+                                                    class="label label-danger pull-right">!</span></a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">Equipamentos BKP<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{route('equipments.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('equipments.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('equipments.requisicoes')}}">Requisições <span
+                                                    class="label label-danger pull-right">!</span></a></li>
                                 </ul>
                             </li>
                             <li><a href="#">Alimentação</a>

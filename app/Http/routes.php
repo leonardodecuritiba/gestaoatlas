@@ -129,9 +129,33 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('getJsonModelo', 'AjaxController@consulta_veiculos_modelo')->name('getJsonModelo');
     Route::get('getJsonVeiculo', 'AjaxController@consulta_veiculos_veiculo')->name('getJsonVeiculo');
 
-
 });
-
+/*
+|--------------------------------------------------------------------------
+| Instruments Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+Route::group( [ 'middleware' => [ 'auth' ] ], function () {
+	Route::resource( 'instruments', 'Inputs\InstrumentsController' );
+	Route::get( 'instruments-requisicoes', 'Inputs\InstrumentsController@listRequests' )->name( 'instruments.requisicoes' );
+	//Admin
+//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+} );
+/*
+|--------------------------------------------------------------------------
+| Equipments Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+Route::group( [ 'middleware' => [ 'auth' ] ], function () {
+	Route::resource( 'equipments', 'Inputs\EquipmentsController' );
+	Route::get( 'equipments-requisicoes', 'Inputs\EquipmentsController@listRequests' )->name( 'equipments.requisicoes' );
+	//Admin
+//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+} );
 
 Route::group(['middleware' => ['auth']], function () {
     //    Route::get('/', 'AdminController@welcome');

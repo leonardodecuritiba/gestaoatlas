@@ -31,18 +31,16 @@ class Equipamento extends Model
         return $this->hasMany('App\AparelhoManutencao', 'idequipamento');
     }
 
-    public function getFoto()
+	public function getFoto()
     {
         return ($this->attributes['foto'] != '') ? asset('uploads/' . $this->table . '/' . $this->attributes['foto']) : asset('imgs/cogs.png');
     }
 
-    // ******************** RELASHIONSHIP ******************************
-    // ************************** HAS **********************************
-
-    public function getFotoThumb()
-    {
-        return ($this->attributes['foto'] != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/cogs.png');
-    }
+	public function getFotoThumb() {
+		return ( $this->attributes['foto'] != '' ) ? asset( 'uploads/' . $this->table . '/thumb_' . $this->attributes['foto'] ) : asset( 'imgs/cogs.png' );
+	}
+	// ******************** RELASHIONSHIP ******************************
+	// ************************** HAS **********************************
 
     public function marca()
     {

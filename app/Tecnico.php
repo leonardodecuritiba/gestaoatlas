@@ -26,6 +26,16 @@ class Tecnico extends Model
             ];
      */
 
+
+	static public function getAlltoSelectList() {
+		return self::get()->map( function ( $s ) {
+			return [
+				'id'          => $s->idtecnico,
+				'description' => $s->getNome()
+			];
+		} )->pluck( 'description', 'id' );
+	}
+
     public function requisicoesSeloLacre()
     {
         return $this->colaborador->requisicoes;

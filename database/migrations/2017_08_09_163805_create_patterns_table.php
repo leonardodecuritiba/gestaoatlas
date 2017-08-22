@@ -10,10 +10,11 @@ class CreatePatternsTable extends Migration
      *
      * @return void
      */
-    public function up()
-    {
+	public function up() {
         Schema::create('patterns', function (Blueprint $table) {
             $table->increments('id');
+	        $table->unsignedInteger( 'idtechnician' );
+	        $table->foreign( 'idtechnician' )->references( 'idtecnico' )->on( 'tecnicos' )->onDelete( 'cascade' );
             $table->unsignedInteger('idunit');
             $table->foreign('idunit')->references('idunidade')->on('unidades')->onDelete('cascade');
             $table->unsignedInteger('idbrand');

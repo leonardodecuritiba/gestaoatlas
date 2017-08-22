@@ -24,6 +24,15 @@ class InstrumentoBase extends Model
         return DataHelper::getPrettyDateTime($value);
     }
 
+	static public function getAlltoSelectList() {
+		return self::get()->map( function ( $s ) {
+			return [
+				'id'          => $s->id,
+				'description' => $s->getDetalhesBase()
+			];
+		} )->pluck( 'description', 'id' );
+	}
+
     public function getDetalhesBase()
     {
         return $this->getMarcaModelo() . ' - ' .

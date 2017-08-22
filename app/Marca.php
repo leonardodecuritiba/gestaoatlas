@@ -15,6 +15,16 @@ class Marca extends Model
         'descricao',
     ];
 
+
+	static public function getAlltoSelectList() {
+		return self::get()->map( function ( $s ) {
+			return [
+				'id'          => $s->idmarca,
+				'description' => $s->descricao
+			];
+		} )->pluck( 'description', 'id' );
+	}
+
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
     public function instrumento_modelo()

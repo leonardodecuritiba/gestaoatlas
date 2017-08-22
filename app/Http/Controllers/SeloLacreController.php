@@ -36,7 +36,6 @@ class SeloLacreController extends Controller
         ];
     }
 
-
     public function index()
     {
         $this->Page->extras['selos'] = Selo::all();

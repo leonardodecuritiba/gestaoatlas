@@ -280,6 +280,10 @@ class AparelhoManutencao extends Model
         return $this->instrumento->numeracao_selo_retirado();
     }
 
+	public function numeracao_selo_instrumento_retirado() {
+		return $this->selo_instrumentos;
+	}
+
     public function selo_afixado()
     {
         return $this->instrumento->selo_afixado();

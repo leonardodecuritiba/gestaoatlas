@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 class ImageHelper
 {
-    const PATH_NAME = 'uploads' . DIRECTORY_SEPARATOR;
+	const PATH_NAME = 'uploads';
     const THUMB_PREFIX = 'thumb_';
     public $path;
     public $destinationPath;

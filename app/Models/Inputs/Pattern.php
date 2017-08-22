@@ -11,6 +11,7 @@ class Pattern extends Model
     use SoftDeletes;
     public $timestamps = true;
     protected $fillable = [
+	    'idtechnician',
         'idunit',
         'idbrand',
         'description',
@@ -81,4 +82,7 @@ class Pattern extends Model
         return $this->hasOne('App\Models\Commons\Brand', 'id', 'idbrand');
     }
 
+	public function tecnico() {
+		return $this->belongsTo( 'App\Tecnico', 'idtecnico', 'idtechnician' );
+	}
 }

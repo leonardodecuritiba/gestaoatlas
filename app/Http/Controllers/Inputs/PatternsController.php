@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Commons\Brand;
 use App\Models\Inputs\Pattern;
 use App\Unidade;
+use App\Tecnico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Zizaco\Entrust\EntrustFacade;
@@ -44,6 +45,9 @@ class PatternsController extends Controller
 
     public function create()
     {
+	    if ( EntrustFacade::hasRole( 'admin' ) ) {
+		    $this->Page->extras['technicians'] = Tecnico::getAlltoSelectList();
+	    }
         $this->Page->extras['unities'] = Unidade::pluck('codigo', 'idunidade');
         $this->Page->extras['brands'] = Brand::pluck('description', 'id');
         $this->Page->titulo_primario = "Cadastrar ";
