@@ -1,6 +1,6 @@
 <?php
 $selo_afixado = NULL;
-if ($Instrumento->has_selo_instrumentos()) {
+if ( $Instrumento->has_selo_instrumentos_fixado() ) {
     $selo_afixado = $Instrumento->selo_afixado();
 }
 $lacres_atual = NULL;

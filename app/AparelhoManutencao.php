@@ -24,6 +24,7 @@ class AparelhoManutencao extends Model
     // ******************** FUNCTIONS ******************************
     static public function getRelatorioIpem($data)
     {
+	    return 'NULL';
         $query = self::whereNotNull('idinstrumento');
         if (isset($data['idtecnico'])) {
             $OS = OrdemServico::filterSeloIpem($data);
@@ -32,7 +33,8 @@ class AparelhoManutencao extends Model
                 $query->whereIn('idaparelho_manutencao',
                     SeloInstrumento::whereIn('idselo',
                         Selo::numeracao($data['numeracao'])->pluck('idselo')
-                    )->pluck('idaparelho_manutencao')
+                    )->pluck( 'idaparelho_set' )
+//                    )->pluck('idaparelho_manutencao')
                 );
 
             }
@@ -54,6 +56,7 @@ class AparelhoManutencao extends Model
 
     public function remover()
     {
+	    dd( 'EM FASE DE TESTE' );
         foreach ($this->lacre_instrumentos as $lacre_instrumento) {
             //atualizar used
 //            echo "Removendo lacre: " . $lacre_instrumento->lacre->idlacre . "\n";
@@ -267,6 +270,9 @@ class AparelhoManutencao extends Model
 
     public function selo_retirado()
     {
+	    RETURN '***teste***';
+
+	    return $this->selo_instrumentos_unset->selo_retirado();
         return $this->instrumento->selo_retirado();
     }
 
@@ -286,6 +292,7 @@ class AparelhoManutencao extends Model
 
     public function selo_afixado()
     {
+	    RETURN '***teste***';
         return $this->instrumento->selo_afixado();
     }
 
@@ -298,6 +305,7 @@ class AparelhoManutencao extends Model
 
     public function lacres_retirados()
     {
+	    RETURN '***teste***';
         return $this->instrumento->lacres_retirados();
     }
 
@@ -317,16 +325,34 @@ class AparelhoManutencao extends Model
     }
 
     //------------------------------------------------
+//
+//	public function selo_instrumentos()
+//	{
+//		return $this->hasMany('App\SeloInstrumento', 'idaparelho_manutencao');
+//	}
+//
+//	public function lacre_instrumentos()
+//	{
+//		return $this->hasMany('App\LacreInstrumento', 'idaparelho_manutencao');
+//	}
 
-    public function selo_instrumentos()
+	public function selo_instrumentos_set()
     {
-        return $this->hasMany('App\SeloInstrumento', 'idaparelho_manutencao');
+	    return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
     }
 
-    public function lacre_instrumentos()
+	public function lacre_instrumentos_set()
     {
-        return $this->hasMany('App\LacreInstrumento', 'idaparelho_manutencao');
+	    return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
     }
+
+	public function selo_instrumentos_unset() {
+		return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_unset', 'idaparelho_manutencao' );
+	}
+
+	public function lacre_instrumentos_unset() {
+		return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_unset', 'idaparelho_manutencao' );
+	}
 
     public function valor_pecas_utilizadas()
     {

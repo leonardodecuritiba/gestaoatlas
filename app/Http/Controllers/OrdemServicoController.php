@@ -361,14 +361,9 @@ class OrdemServicoController extends Controller
                         'externo' => 1,
                         'used' => 1,
                     ]);
-                    //Retirar o selo na tabela SeloInstrumento
-                    LacreInstrumento::create([
-                        'idlacre' => $lacre->idlacre,
-                        'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
-                        'idinstrumento' => $AparelhoManutencao->idinstrumento,
-                        'afixado_em' => $now,
-                        'retirado_em' => $now,
-                    ]);
+	                //Afixar/Retirar o lacre na tabela LacreInstrumento
+	                LacreInstrumento::retirarNovo( $AparelhoManutencao, $lacre->idlacre, $now );
+
                 }
             }
 
@@ -377,21 +372,14 @@ class OrdemServicoController extends Controller
 
             //Afixar os lacres na tabela LacreInstrumento
             foreach ($idlacres_afixado as $idlacre_afixado) {
-                LacreInstrumento::create([
-                    'idlacre' => $idlacre_afixado,
-                    'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
-                    'idinstrumento' => $AparelhoManutencao->idinstrumento,
-                    'afixado_em' => $now,
-                ]);
-                Lacre::set_used($idlacre_afixado);
+	            LacreInstrumento::afixar( $AparelhoManutencao, $idlacre_afixado, $now );
             }
             /*** RETIRADA DO SELO ***/
             //Nesse caso quer dizer que o selo está sendo editado pela segunda vez
             if ($request->has('selo_retirado_hidden')) {
                 $selo_retirado = $request->get('selo_retirado_hidden');
-                $selo = Selo::where('numeracao', $selo_retirado)->first();
                 //Nesse caso, criar o SeloInstrumento já existe, vamos atualizar o retirado_em
-                $SeloInstrumento = SeloInstrumento::retirar($selo->idselo);
+	            $SeloInstrumento = SeloInstrumento::retirar( $selo_retirado );
             }
             //Nesse caso o selo é externo ou PRIMEIRA vez
             if ($request->has('selo_outro')) {
@@ -406,25 +394,14 @@ class OrdemServicoController extends Controller
                     'externo' => 1,
                     'used' => 1,
                 ]);
-                //Retirar o selo na tabela SeloInstrumento
-                SeloInstrumento::create([
-                    'idselo' => $selo->idselo,
-                    'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
-                    'idinstrumento' => $AparelhoManutencao->idinstrumento,
-                    'afixado_em' => $now,
-                    'retirado_em' => $now,
-                ]);
+	            //Afixar/Retirar o selo na tabela SeloInstrumento
+	            SeloInstrumento::retirarNovo( $AparelhoManutencao, $lacre->idlacre, $now );
+
             }
             /*** AFIXAÇAO DO SELO ***/
             $idselo_afixado = $request->get('selo_afixado');
             //Afixar o selo na tabela SeloInstrumento
-            Selo::set_used($idselo_afixado);
-            SeloInstrumento::create([
-                'idselo' => $idselo_afixado,
-                'idaparelho_manutencao' => $AparelhoManutencao->idaparelho_manutencao,
-                'idinstrumento' => $AparelhoManutencao->idinstrumento,
-                'afixado_em' => $now,
-            ]);
+	        SeloInstrumento::afixar( $AparelhoManutencao, $idselo_afixado, $now );
         }
         return;
     }

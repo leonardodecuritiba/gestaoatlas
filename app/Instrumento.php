@@ -45,36 +45,30 @@ class Instrumento extends Model
 		return ( $this->aparelho_manutencao()->count() > 0 );
 	}
 
-	public function has_selo_instrumentos() {
-		return ( $this->selo_instrumentos()->count() > 0 );
+	public function has_selo_instrumentos_fixado() {
+		return ( $this->selo_instrumentos_afixado()->count() > 0 );
 	}
 
-	public function has_lacres_instrumentos() {
-		return ( $this->lacres_instrumentos()->count() > 0 );
+	public function has_selo_instrumentos_retirado() {
+		return ( $this->selo_instrumentos_retirado()->count() > 0 );
+	}
+
+	public function has_lacres_instrumentos_afixados() {
+		return ( $this->lacres_instrumentos_afixados()->count() > 0 );
+	}
+
+	public function has_lacres_instrumentos_retirados() {
+		return ( $this->lacres_instrumentos_retirados()->count() > 0 );
 	}
 
 	// ******************** FUNCTIONS ****************************
 
     //SELOS --------
 
-    public function numeracao_selo_afixado()
-    {
-        $selo = $this->selo_afixado();
-        return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
-    }
-
-    public function selo_afixado()
-    {
-        if($this->has_selo_instrumentos()){
-            $SeloInstrumento = $this->selo_instrumentos()->whereNull('retirado_em')->first();
-            return ($SeloInstrumento != NULL) ? $SeloInstrumento->selo : $SeloInstrumento;
-        }
-        return NULL;
-    }
-
-	public function selo_retirado() {
-		if ( $this->has_selo_instrumentos() ) {
-			$SeloInstrumento = $this->selo_instrumentos()->whereNotNull( 'retirado_em' )->first();
+	public function selo_afixado() {
+		if ( $this->has_selo_instrumentos_fixado() ) {
+//            $SeloInstrumento = $this->selo_instrumentos()->whereNull('retirado_em')->first();
+			$SeloInstrumento = $this->selo_instrumentos_afixado()->first();
 
 			return ( $SeloInstrumento != null ) ? $SeloInstrumento->selo : $SeloInstrumento;
 		}
@@ -82,13 +76,30 @@ class Instrumento extends Model
 		return null;
 	}
 
+	public function selo_retirado() {
+		if ( $this->has_selo_instrumentos_retirado() ) {
+//			$SeloInstrumento = $this->selo_instrumentos()->whereNotNull( 'retirado_em' )->first();
+			$SeloInstrumento = $this->selo_instrumentos_retirado()->first();
+
+			return ( $SeloInstrumento != null ) ? $SeloInstrumento->selo : $SeloInstrumento;
+		}
+
+		return null;
+	}
+
+    public function numeracao_selo_afixado()
+    {
+        $selo = $this->selo_afixado();
+        return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
+    }
+
 	public function numeracao_selo_retirado() {
 		$selo = $this->selo_retirado();
-
 		return ( $selo != null ) ? $selo->getFormatedSeloDV() : '-';
 	}
 
 	public function selo_instrumento_cliente() {
+		dd( 'EM FASE DE TESTE' );
 		$selosInstrumento = $this->selo_instrumentos;
 		if ( $selosInstrumento->count() > 0 ) {
 			return $selosInstrumento->map( function ( $s ) {
@@ -106,6 +117,26 @@ class Instrumento extends Model
 
 	//LACRES --------
 
+	public function lacres_afixados() {
+		if ( $this->has_lacres_instrumentos_afixados() ) {
+			$LacresInstrumento = $this->lacres_instrumentos_afixados()->whereNull( 'retirado_em' )->get();
+
+			return $LacresInstrumento;
+		}
+
+		return null;
+	}
+
+	public function lacres_retirados() {
+		if ( $this->has_lacres_instrumentos_retirados() ) {
+			$LacresInstrumento = $this->lacres_instrumentos_retirados()->whereNotNull( 'retirado_em' )->get();
+
+			return $LacresInstrumento;
+		}
+
+		return null;
+	}
+
     public function numeracao_lacres_afixados()
     {
         $lacresInstrumento = $this->lacres_afixados();
@@ -118,25 +149,6 @@ class Instrumento extends Model
         }
         return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
     }
-
-    public function lacres_afixados()
-    {
-        if ($this->has_lacres_instrumentos()) {
-            $LacresInstrumento = $this->lacres_instrumentos()->whereNull('retirado_em')->get();
-            return $LacresInstrumento;
-        }
-        return NULL;
-    }
-
-	public function lacres_retirados() {
-		if ( $this->has_lacres_instrumentos() ) {
-			$LacresInstrumento = $this->lacres_instrumentos()->whereNotNull( 'retirado_em' )->get();
-
-			return $LacresInstrumento;
-		}
-
-		return null;
-	}
 
     public function numeracao_lacres_retirados()
     {
@@ -153,6 +165,7 @@ class Instrumento extends Model
 
     public function lacres_instrumento_cliente()
     {
+	    dd( 'EM FASE DE TESTE' );
         $lacresInstrumento = $this->lacres_instrumentos;
         if ($lacresInstrumento->count() > 0) {
             return $lacresInstrumento->map(function ($l) {
@@ -176,11 +189,19 @@ class Instrumento extends Model
 		return $this->belongsTo( 'App\Cliente', 'idcliente' );
 	}
 
-	public function selo_instrumentos() {
-		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+	public function selo_instrumentos_retirado() {
+		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
 	}
 
-	public function lacres_instrumentos() {
+	public function selo_instrumentos_afixado() {
+		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+	}
+
+	public function lacres_instrumentos_retirados() {
+		return $this->hasMany( 'App\LacreInstrumento', 'idinstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+	}
+
+	public function lacres_instrumentos_afixados() {
 		return $this->hasMany( 'App\LacreInstrumento', 'idinstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
 	}
 

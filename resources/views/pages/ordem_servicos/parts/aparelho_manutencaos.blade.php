@@ -1,10 +1,10 @@
 <?php
 $selo_afixado = NULL;
-if($Instrumento->has_selo_instrumentos()){
+if ( $Instrumento->has_selo_instrumentos_fixado() ) {
     $selo_afixado = $Instrumento->selo_afixado();
 }
 $lacres_atual = NULL;
-if($Instrumento->has_lacres_instrumentos()){
+if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
     $lacres_atual_aux = $Instrumento->lacres_afixados;
     foreach($lacres_atual_aux as $lacre){
         $lacres_atual[] = [
