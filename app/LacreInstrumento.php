@@ -87,15 +87,6 @@ class LacreInstrumento extends Model
 	    return 1;
     }
 
-//    static public function tirar($idslacres)
-//    {
-//        foreach($idslacres as $lacre){
-//            //Nesse caso, vamos atualizar o retirado_em
-//            $Data = self::where('idlacre', $lacre->id)->first();
-//            return $Data->update(['retirado_em' => Carbon::now()->toDateTimeString()]);
-//        }
-//        return 1;
-//    }
 
     public function getNomeTecnico()
     {
@@ -103,24 +94,8 @@ class LacreInstrumento extends Model
     }
 
     // ******************** RELASHIONSHIP ******************************
-    // ********************** BELONGS ********************************
+	// ********************** BELONGS *******************************
 
-	public function aparelho_manutencao_set()
-    {
-	    return $this->belongsTo( 'App\AparelhoManutencao', 'idaparelho_manutencao', 'idaparelho_set' );
-    }
-
-	public function aparelho_manutencao_unset() {
-		return $this->belongsTo( 'App\AparelhoManutencao', 'idaparelho_manutencao', 'idaparelho_unset' );
-	}
-//    public function aparelho_manutencao()
-//    {
-//        return $this->belongsTo('App\AparelhoManutencao', 'idaparelho_manutencao');
-//    }
-    public function instrumento()
-    {
-        return $this->belongsTo('App\Instrumento', 'idinstrumento');
-    }
     public function lacre()
     {
         return $this->belongsTo('App\Lacre', 'idlacre');

@@ -103,19 +103,17 @@ class Instrumento extends Model
 	}
 
 	public function selo_instrumento_cliente() {
-		dd( 'EM FASE DE TESTE' );
 		$selosInstrumento = $this->selo_instrumentos;
 		if ( $selosInstrumento->count() > 0 ) {
 			return $selosInstrumento->map( function ( $s ) {
 				$s->nome_tecnico = $s->selo->getNomeTecnico();
-				$s->retirado_em  = $s->getRetiradoEm();
-				$s->afixado_em   = $s->getAfixadoEm();
+				$s->retirado_em  = $s->getUnsetText();
+				$s->afixado_em   = $s->getSetText();
 				$s->numeracao_dv = $s->selo->getFormatedSeloDV();
 
 				return $s;
 			} );
 		}
-
 		return null;
 	}
 
@@ -179,14 +177,13 @@ class Instrumento extends Model
 
     public function lacres_instrumento_cliente()
     {
-	    dd( 'EM FASE DE TESTE' );
         $lacresInstrumento = $this->lacres_instrumentos;
         if ($lacresInstrumento->count() > 0) {
             return $lacresInstrumento->map(function ($l) {
                 $l->nome_tecnico = $l->lacre->getNomeTecnico();
-                $l->retirado_em = $l->getRetiradoEm();
-                $l->afixado_em = $l->getAfixadoEm();
-                $l->numeracao = $l->lacre->getNumeracao();
+	            $l->retirado_em  = $l->getUnsetText();
+	            $l->afixado_em   = $l->getSetText();
+                $l->numeracao    = $l->lacre->getNumeracao();
                 return $l;
             });
         }
@@ -201,6 +198,14 @@ class Instrumento extends Model
 
 	public function cliente() {
 		return $this->belongsTo( 'App\Cliente', 'idcliente' );
+	}
+
+	public function selo_instrumentos() {
+		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+	}
+	
+	public function lacres_instrumentos() {
+		return $this->hasMany( 'App\LacreInstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
 	}
 
 	public function selo_instrumentos_retirado() {

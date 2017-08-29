@@ -121,8 +121,8 @@
                             </tr>
                             <tr>
                                 <th>#</th>
-                                <th>Afixado em</th>
-                                <th>Retirado em</th>
+                                <th>Afixado em (O.S)</th>
+                                <th>Retirado em (O.S)</th>
                                 <th>Técnico</th>
                                 <th>Númeração (DV)</th>
                             </tr>
@@ -145,8 +145,8 @@
                             </tr>
                             <tr>
                                 <th>#</th>
-                                <th>Afixado em</th>
-                                <th>Retirado em</th>
+                                <th>Afixado em (O.S)</th>
+                                <th>Retirado em (O.S)</th>
                                 <th>Técnico</th>
                                 <th>Númeração</th>
                             </tr>

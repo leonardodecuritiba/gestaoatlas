@@ -3,6 +3,8 @@
 namespace App\Traits;
 
 
+use App\Helpers\ImageHelper;
+
 trait InstrumentsTrait {
 
 	//===================== BASE =====================

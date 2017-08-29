@@ -92,22 +92,6 @@ class SeloInstrumento extends Model
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
 
-//    public function aparelho_manutencao()
-//    {
-//        return $this->belongsTo('App\AparelhoManutencao', 'idaparelho_manutencao');
-//    }
-	public function aparelho_manutencao_set()
-    {
-	    return $this->belongsTo( 'App\AparelhoManutencao', 'idaparelho_manutencao', 'idaparelho_set' );
-    }
-
-	public function aparelho_manutencao_unset() {
-		return $this->belongsTo( 'App\AparelhoManutencao', 'idaparelho_manutencao', 'idaparelho_unset' );
-    }
-    public function instrumento()
-    {
-        return $this->belongsTo('App\Instrumento', 'idinstrumento');
-    }
     public function selo()
     {
         return $this->belongsTo('App\Selo', 'idselo');
