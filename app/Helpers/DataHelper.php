@@ -63,6 +63,10 @@ class DataHelper
         return ($value != NULL) ? Date::createFromFormat('d/m/Y', $value)->format('Y-m-d H:i:s') : $value;
     }
 
+	static public function getPrettyToCarbonZero( $value ) {
+		return ( $value != null ) ? Date::createFromFormat( 'd/m/Y', $value )->setTime( 0, 0, 0 ) : $value;
+	}
+
     static public function setDate($value)
     {
         return (($value != NULL) && ($value != '')) ? Date::createFromFormat('dmY', self::getOnlyNumbers($value))->format('Y-m-d') : NULL;

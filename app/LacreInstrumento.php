@@ -25,21 +25,37 @@ class LacreInstrumento extends Model
 
 
     // ******************** FUNCTIONS ******************************
+	//Extornar lacre
+	public function extorna() {
+		$this->lacre->extorna();
 
-	//Somente Afixar o lacre na tabela LacreInstrumento
-	static public function afixar( AparelhoManutencao $aparelho, $idlacre, $now = null ) {
-		$now = ( $now == null ) ? Carbon::now() : $now;
-		Lacre::set_used( $idlacre );
+		return $this->delete();
+	}
 
-		return LacreInstrumento::create( [
-			'idlacre'          => $idlacre,
-			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
+	//Rafixar lacre
+	public function reafixa() {
+		return $this->update( [
 			'idaparelho_unset' => null,
-			'idinstrumento'    => $aparelho->idinstrumento,
-			'afixado_em'       => $now,
 			'retirado_em'      => null,
 		] );
+	}
 
+	//Somente Afixar o lacre na tabela LacreInstrumento
+	static public function afixar( AparelhoManutencao $aparelho, array $idslacre, $now = null ) {
+		$now = ( $now == null ) ? Carbon::now() : $now;
+		foreach ( $idslacre as $idlacre ) {
+			Lacre::set_used( $idlacre );
+			LacreInstrumento::create( [
+				'idlacre'          => $idlacre,
+				'idaparelho_set'   => $aparelho->idaparelho_manutencao,
+				'idaparelho_unset' => null,
+				'idinstrumento'    => $aparelho->idinstrumento,
+				'afixado_em'       => $now,
+				'retirado_em'      => null,
+			] );
+		}
+
+		return true;
 	}
 
 	//Afixar e Retirar o lacre, neste caso quando é um lacre externo
@@ -59,9 +75,9 @@ class LacreInstrumento extends Model
 	static public function retirar( AparelhoManutencao $aparelho, $idslacres, $now = null )
     {
 	    $now = ( $now == null ) ? Carbon::now() : $now;
-	    foreach ( $idslacres as $lacre ) {
+	    foreach ( $idslacres as $idlacre ) {
 		    //Nesse caso, vamos atualizar o retirado_em
-		    $Data = self::where( 'idlacre', $lacre->id )->first();
+		    $Data = self::where( 'idlacre', $idlacre )->first();
 		    $Data->update( [
 			    'idaparelho_unset' => $aparelho->idaparelho_manutencao,
 			    'retirado_em'      => $now,

@@ -28,6 +28,21 @@ class SeloInstrumento extends Model
 
     // ******************** FUNCTIONS ******************************
 
+	//Extornar selo
+	public function extorna() {
+		$this->selo->extorna();
+
+		return $this->delete();
+	}
+
+	//Rafixar selo
+	public function reafixa() {
+		return $this->update( [
+			'idaparelho_unset' => null,
+			'retirado_em'      => null,
+		] );
+	}
+
 	//Somente Afixar o selo na tabela SeloInstrumento
 	static public function afixar( AparelhoManutencao $aparelho, $idselo, $now = null ) {
 		$now = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
@@ -58,10 +73,10 @@ class SeloInstrumento extends Model
 	}
 
 	//Nesse caso, criar o SeloInstrumento já existe, vamos atualizar o retirado_em
-	static public function retirar( AparelhoManutencao $aparelho, $numeracao, $now = null ) {
+	static public function retirar( AparelhoManutencao $aparelho, $idselo, $now = null ) {
 		$now  = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
-		$Selo = Selo::where( 'numeracao', $numeracao )->first();
-		$Data = self::where( 'idselo', $Selo->idselo )->first();
+//		$Selo = Selo::where( 'numeracao', $idselo )->first();
+		$Data = self::where( 'idselo', $idselo )->first();
 
 		return $Data->update( [
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,

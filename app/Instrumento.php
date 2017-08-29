@@ -66,14 +66,18 @@ class Instrumento extends Model
     //SELOS --------
 
 	public function selo_afixado() {
-		if ( $this->has_selo_instrumentos_fixado() ) {
-//            $SeloInstrumento = $this->selo_instrumentos()->whereNull('retirado_em')->first();
-			$SeloInstrumento = $this->selo_instrumentos_afixado()->first();
+		$SeloInstrumento = $this->selo_instrumentos_afixado->first();
 
-			return ( $SeloInstrumento != null ) ? $SeloInstrumento->selo : $SeloInstrumento;
-		}
+		return ( $SeloInstrumento == null ) ? $SeloInstrumento : $SeloInstrumento->selo;
 
-		return null;
+//		if ( $SeloInstrumento ) {
+////            $SeloInstrumento = $this->selo_instrumentos()->whereNull('retirado_em')->first();
+//			$SeloInstrumento = $this->selo_instrumentos_afixado();
+//
+//			return ( $SeloInstrumento != null ) ? $SeloInstrumento->selo : $SeloInstrumento;
+//		}
+//
+//		return null;
 	}
 
 	public function selo_retirado() {
@@ -116,6 +120,16 @@ class Instrumento extends Model
 	}
 
 	//LACRES --------
+	public function lacres_afixados_list() {
+		$lacres = $this->lacres_afixados();
+
+		return ( $lacres == null ) ? $lacres : $lacres->map( function ( $s ) {
+			return [
+				'id'   => $s->lacre->idlacre,
+				'text' => $s->lacre->numeracao
+			];
+		} );
+	}
 
 	public function lacres_afixados() {
 		if ( $this->has_lacres_instrumentos_afixados() ) {
@@ -190,19 +204,19 @@ class Instrumento extends Model
 	}
 
 	public function selo_instrumentos_retirado() {
-		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' )->whereNotNull( 'idaparelho_unset' )->orderBy( 'retirado_em' );
 	}
 
 	public function selo_instrumentos_afixado() {
-		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+		return $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' )->whereNull( 'idaparelho_unset' )->orderBy( 'retirado_em' );
 	}
 
 	public function lacres_instrumentos_retirados() {
-		return $this->hasMany( 'App\LacreInstrumento', 'idinstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+		return $this->hasMany( 'App\LacreInstrumento', 'idinstrumento', 'idinstrumento' )->whereNotNull( 'idaparelho_unset' )->orderBy( 'retirado_em' );
 	}
 
 	public function lacres_instrumentos_afixados() {
-		return $this->hasMany( 'App\LacreInstrumento', 'idinstrumento', 'idinstrumento' )->orderBy( 'retirado_em' );
+		return $this->hasMany( 'App\LacreInstrumento', 'idinstrumento', 'idinstrumento' )->whereNull( 'idaparelho_unset' )->orderBy( 'retirado_em' );
 	}
 
 	public function aparelho_manutencao() {

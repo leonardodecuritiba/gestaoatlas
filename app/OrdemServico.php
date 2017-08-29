@@ -80,7 +80,7 @@ class OrdemServico extends Model
 //                break;
         }
         if (isset($data['data'])) {
-            $query->where('created_at', '>=', DataHelper::getPrettyToCorrectDateTime($data['data']));
+	        $query->where( 'created_at', '>=', DataHelper::getPrettyToCarbonZero( $data['data'] ) );
         }
 
         $User = Auth::user();

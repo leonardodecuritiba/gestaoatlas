@@ -292,7 +292,7 @@ class OrdemServicoController extends Controller
     {
         $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
         $idordem_servico = $AparelhoManutencao->idordem_servico;
-        $AparelhoManutencao->remover();
+	    $AparelhoManutencao->remover();
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
@@ -301,9 +301,9 @@ class OrdemServicoController extends Controller
 
     public function removeEquipamento($idaparelho_manutencao)
     {
-        $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
-        $idordem_servico = $AparelhoManutencao->idordem_servico;
-        $AparelhoManutencao->remover();
+	    $AparelhoManutencao = AparelhoManutencao::findOrFail( $idaparelho_manutencao );
+	    $AparelhoManutencao->remover();
+	    $idordem_servico = $AparelhoManutencao->idordem_servico;
 
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
@@ -312,17 +312,13 @@ class OrdemServicoController extends Controller
 
     public function updateAparelhoManutencao(Request $request, $idaparelho_manutencao)
     {
-        $AparelhoManutencao = AparelhoManutencao::find($idaparelho_manutencao);
-        $AparelhoManutencao->update([
-            'defeito' => $request->get('defeito'),
-            'solucao' => $request->get('solucao')
-        ]);
-        //atualiza o status da O.S.
-        $AparelhoManutencao->ordem_servico->update([
-            'idsituacao_ordem_servico' => 2
-        ]);
+	    $AparelhoManutencao = AparelhoManutencao::updateOrdemServico( $idaparelho_manutencao, $request->only( [
+		    'defeito',
+		    'solucao'
+	    ] ) );
+//	    $AparelhoManutencao = AparelhoManutencao::findOrFail($idaparelho_manutencao);
         if ($AparelhoManutencao->has_instrumento()) {
-            $this->updateInstrumento($request, $AparelhoManutencao);
+	        $this->updateInstrumento( $request, $AparelhoManutencao );
         }
 
         session()->forget('mensagem');
@@ -334,6 +330,7 @@ class OrdemServicoController extends Controller
     {
         //UPDATE DOS LACRES E SELOS
         //caso não tenha lacre rompido, só atualizar defeito/manutenção
+
         if ($request->has('lacre_rompido')) {
             $now = Carbon::now()->toDateTimeString();
             //Na primeira vez que o técnico for dar manutenção no instrumento, deverá marcar SELO OUTRO e LACRE OUTRO
@@ -343,8 +340,9 @@ class OrdemServicoController extends Controller
             //Nesse caso quer dizer que os lacres está sendo editado pela segunda vez
             if ($request->has('lacres_retirado_hidden')) {
                 $lacres_retirados = json_decode($request->get('lacres_retirado_hidden'));
-                LacreInstrumento::retirar($lacres_retirados);
+	            LacreInstrumento::retirar( $AparelhoManutencao, $lacres_retirados, $now );
             }
+//	        return $request->all();
 //                dd($lacres_retirados);
             //Nesse caso os lacres são externos ou PRIMEIRA vez
             if ($request->has('lacre_outro')) {
@@ -356,10 +354,10 @@ class OrdemServicoController extends Controller
                         dd('ERRO: LACRE JÁ EXISTE');
                     }
                     $lacre = Lacre::create([ // se não existir, inserir e retornar o novo id
-                        'idtecnico' => $this->tecnico->idtecnico,
-                        'numeracao_externa' => $lacre_retirado,
-                        'externo' => 1,
-                        'used' => 1,
+	                    'idtecnico'         => $this->tecnico->idtecnico,
+	                    'numeracao_externa' => $lacre_retirado,
+	                    'externo'           => 1,
+	                    'used'              => 1,
                     ]);
 	                //Afixar/Retirar o lacre na tabela LacreInstrumento
 	                LacreInstrumento::retirarNovo( $AparelhoManutencao, $lacre->idlacre, $now );
@@ -368,18 +366,17 @@ class OrdemServicoController extends Controller
             }
 
             /*** AFIXAÇAO DOS LACRES ***/
-            $idlacres_afixado = $request->get('lacre_afixado');
+	        $idlacres_afixados = $request->get( 'lacre_afixado' );
 
             //Afixar os lacres na tabela LacreInstrumento
-            foreach ($idlacres_afixado as $idlacre_afixado) {
-	            LacreInstrumento::afixar( $AparelhoManutencao, $idlacre_afixado, $now );
-            }
+	        LacreInstrumento::afixar( $AparelhoManutencao, $idlacres_afixados, $now );
+
             /*** RETIRADA DO SELO ***/
             //Nesse caso quer dizer que o selo está sendo editado pela segunda vez
             if ($request->has('selo_retirado_hidden')) {
                 $selo_retirado = $request->get('selo_retirado_hidden');
                 //Nesse caso, criar o SeloInstrumento já existe, vamos atualizar o retirado_em
-	            $SeloInstrumento = SeloInstrumento::retirar( $selo_retirado );
+	            $SeloInstrumento = SeloInstrumento::retirar( $AparelhoManutencao, $selo_retirado, $now );
             }
             //Nesse caso o selo é externo ou PRIMEIRA vez
             if ($request->has('selo_outro')) {
@@ -389,10 +386,10 @@ class OrdemServicoController extends Controller
                     dd('ERRO: SELO JÁ EXISTE');
                 }
                 $selo = Selo::create([ // se não existir, inserir e retornar o novo id
-                    'idtecnico' => $this->tecnico->idtecnico,
-                    'numeracao_externa' => $selo_retirado,
-                    'externo' => 1,
-                    'used' => 1,
+	                'idtecnico'         => $this->tecnico->idtecnico,
+	                'numeracao_externa' => $selo_retirado,
+	                'externo'           => 1,
+	                'used'              => 1,
                 ]);
 	            //Afixar/Retirar o selo na tabela SeloInstrumento
 	            SeloInstrumento::retirarNovo( $AparelhoManutencao, $lacre->idlacre, $now );

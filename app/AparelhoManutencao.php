@@ -22,6 +22,18 @@ class AparelhoManutencao extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
+
+	static public function updateOrdemServico( $id, array $data ) {
+		$AparelhoManutencao = self::findOrFail( $id );
+		//atualiza o status da O.S.
+		$AparelhoManutencao->ordem_servico->update( [
+			'idsituacao_ordem_servico' => 2
+		] );
+		$AparelhoManutencao->update( $data );
+
+		return $AparelhoManutencao;
+	}
+
     static public function getRelatorioIpem($data)
     {
 	    return 'NULL';
@@ -56,24 +68,26 @@ class AparelhoManutencao extends Model
 
     public function remover()
     {
-	    dd( 'EM FASE DE TESTE' );
-        foreach ($this->lacre_instrumentos as $lacre_instrumento) {
-            //atualizar used
-//            echo "Removendo lacre: " . $lacre_instrumento->lacre->idlacre . "\n";
-            $lacre_instrumento->lacre->extorna();
-            //remover lacre_instrumento
-//            echo "Removendo lacre_instrumento: " . $lacre_instrumento->idlacre_instrumento . "\n";
-            $lacre_instrumento->delete();
-        }
-        //Remover os selos
-        foreach ($this->selo_instrumentos as $selo_instrumento) {
-            //atualizar used
-//            echo "Removendo selo: " . $selo_instrumento->selo->idselo . "\n";
-            $selo_instrumento->selo->extorna();
-            //remover selo_instrumento
-//            echo "Removendo selo_instrumento: " . $selo_instrumento->idselo_instrumento . "\n";
-            $selo_instrumento->delete();
-        }
+
+	    //Remover os lacres que foram afixados (nessa O.S.)
+	    foreach ( $this->lacres_instrumento_set as $lacres_instrumento ) {
+		    $lacres_instrumento->extorna();
+	    }
+
+	    //Reaver os lacres antigos que foram desafixados ( nessa O.S.)
+	    foreach ( $this->lacres_instrumento_unset as $lacres_instrumento ) {
+		    $lacres_instrumento->reafixa();
+	    }
+
+	    //Remover o selo que foi afixado (nessa O.S.)
+	    foreach ( $this->selo_instrumento_set as $selo_instrumento ) {
+		    $selo_instrumento->extorna();
+	    }
+
+	    //Reaver o selo antigo que foi desafixado ( nessa O.S.)
+	    foreach ( $this->selo_instrumento_unset as $selo_instrumento ) {
+		    $selo_instrumento->reafixa();
+	    }
 
         //remover serviços
         $this->remove_servico_prestados();
@@ -270,7 +284,7 @@ class AparelhoManutencao extends Model
 
     public function selo_retirado()
     {
-	    RETURN '***teste***';
+	    RETURN 'AparelhoManutencao@selo_retirado ***teste***';
 
 	    return $this->selo_instrumentos_unset->selo_retirado();
         return $this->instrumento->selo_retirado();
@@ -292,7 +306,7 @@ class AparelhoManutencao extends Model
 
     public function selo_afixado()
     {
-	    RETURN '***teste***';
+	    RETURN 'AparelhoManutencao@selo_afixado ***teste***';
         return $this->instrumento->selo_afixado();
     }
 
@@ -305,7 +319,7 @@ class AparelhoManutencao extends Model
 
     public function lacres_retirados()
     {
-	    RETURN '***teste***';
+	    RETURN 'AparelhoManutencao@lacres_retirados ***teste***';
         return $this->instrumento->lacres_retirados();
     }
 
@@ -336,21 +350,21 @@ class AparelhoManutencao extends Model
 //		return $this->hasMany('App\LacreInstrumento', 'idaparelho_manutencao');
 //	}
 
-	public function selo_instrumentos_set()
+	public function selo_instrumento_set()
     {
 	    return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
     }
 
-	public function lacre_instrumentos_set()
+	public function lacres_instrumento_set()
     {
 	    return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
     }
 
-	public function selo_instrumentos_unset() {
+	public function selo_instrumento_unset() {
 		return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_unset', 'idaparelho_manutencao' );
 	}
 
-	public function lacre_instrumentos_unset() {
+	public function lacres_instrumento_unset() {
 		return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_unset', 'idaparelho_manutencao' );
 	}
 
