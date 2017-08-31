@@ -1,8 +1,11 @@
 <?php
 $selo_retirado = $Instrumento->selo_afixado();
 $lacres_retirados_list = $Instrumento->lacres_afixados_list();
-$lacres_retirados = $lacres_retirados_list->toArray();
-$idlacres_retirados = $lacres_retirados_list->pluck( 'id' )->toArray();
+$lacres_retirados = NULL;
+if ( $lacres_retirados_list != NULL ) {
+	$lacres_retirados   = $lacres_retirados_list->toArray();
+	$idlacres_retirados = $lacres_retirados_list->pluck( 'id' )->toArray();
+}
 
 ?>
 <section class="row">
