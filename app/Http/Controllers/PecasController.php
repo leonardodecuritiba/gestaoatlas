@@ -6,6 +6,7 @@ use App\Cfop;
 use App\Cst;
 use App\Grupo;
 use App\Helpers\DataHelper;
+use App\Helpers\ExportHelper;
 use App\Marca;
 use App\Models\ExcelFile;
 use App\NaturezaOperacao;
@@ -16,14 +17,10 @@ use App\TabelaPreco;
 use App\TabelaPrecoPeca;
 use App\Unidade;
 use App\Http\Requests\PecasRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Maatwebsite\Excel\Facades\Excel;
-use Validator;
 use App\Fornecedor;
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
 
 class PecasController extends Controller
 {
@@ -367,6 +364,11 @@ class PecasController extends Controller
             }
         })->export('xls');
     }
+
+
+	public function exportarTabelaPreco( ExcelFile $export ) {
+		return ExportHelper::tabelaPrecoPecas( $export );
+	}
 
     public function RedirectFornecedor($id,$tab='pecas')
     {

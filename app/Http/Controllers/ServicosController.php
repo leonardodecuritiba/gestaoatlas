@@ -4,13 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Grupo;
 use App\Helpers\DataHelper;
+use App\Helpers\ExportHelper;
 use App\Models\ExcelFile;
 use App\Servico;
 use App\TabelaPreco;
 use App\TabelaPrecoServico;
 use App\Unidade;
 use Illuminate\Support\Facades\Redirect;
-use Validator;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -128,40 +128,8 @@ class ServicosController extends Controller
             'response' => $this->Page->msg_rem]);
     }
 
-    public function exportar(ExcelFile $export)
+	public function exportarTabelaPreco( ExcelFile $export )
     {
-        $Servicos = Servico::all();
-        return $export->sheet('sheetName', function ($sheet) use ($Servicos) {
-
-            $data = array(
-                'idservico',
-                'nome',
-                'descricao',
-                'valor',
-                'TABELA GRICKI',
-                'TABELA SAVEGNAGO',
-                'TABELA GERAL',
-                'ABRE MERCADO FRANCA',
-            ); //porcentagem
-
-            $sheet->row(1, $data);
-            //'idpeca_tributacao',
-//            dd($data_peca);
-
-            $i = 2;
-            foreach ($Servicos as $sel) {
-                $sheet->row($i, array(
-                    $sel->idservico,
-                    $sel->nome,
-                    $sel->descricao,
-                    $sel->valor,
-                    $sel->tabela_preco_by_name('TABELA GRICKI')->preco,
-                    $sel->tabela_preco_by_name('TABELA SAVEGNAGO')->preco,
-                    $sel->tabela_preco_by_name('TABELA GERAL')->preco,
-                    ''
-                ));
-                $i++;
-            }
-        })->export('xls');
+	    return ExportHelper::tabelaPrecoServicos( $export );
     }
 }

@@ -311,7 +311,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('instrumentos_base', 'Instrumentos\InstrumentosBasesController@exportar')->name('instrumentos_base.exportar');
         Route::get('instrumentos_setors', 'Instrumentos\InstrumentosSetorsController@exportar')->name('instrumentos_setor.exportar');
         Route::get('pecas', 'PecasController@exportar')->name('pecas.exportar');
-        Route::get('servicos', 'ServicosController@exportar')->name('servicos.exportar');
+	    Route::get( 'servicos-preco', 'ServicosController@exportarTabelaPreco' )->name( 'servicos.exportar' );
+
+
+	    Route::get( 'servicos-preco', 'ServicosController@exportarTabelaPreco' )->name( 'servicos-preco.exportar' );
+	    Route::get( 'pecas-preco', 'PecasController@exportarTabelaPreco' )->name( 'pecas-preco.exportar' );
     });
 
     //IMPORTAÇÃO
