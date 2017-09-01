@@ -78,8 +78,22 @@ class NF
 //mensagem: "Nota fiscal não encontrada"
 //}
 //]
+//{
+//mensagem_sefaz: "Rejeição: Total do Produto / Serviço difere do somatório dos itens",
+//status: "erro_autorizacao",
+//status_sefaz: "564"
+//}
+//	    var TIPO_NF = json.type;
+//	    var REF = json.ref;
+//	    var BODY = json.body;
+//	    var STATUS = BODY.status;
+//	    var URL = json.url;
+//	    var $parent = $($this).find('div.modal-body ul.listas_nf');
+
         if (isset($body['status'])) {
-            if (($body['status'] != 'processando_autorizacao') && (!isset($body['uri']))) {
+	        if ( $body['status'] == "erro_autorizacao" ) {
+		        $body['mensagem'] = $body['mensagem_sefaz'];
+	        } else if ( ( $body['status'] != 'processando_autorizacao' ) && ( ! isset( $body['uri'] ) ) ) {
                 $body['uri'] = $_SERVER_ . $body['caminho_danfe'];
             }
         }
