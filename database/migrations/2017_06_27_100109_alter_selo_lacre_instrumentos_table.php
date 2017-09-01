@@ -36,5 +36,11 @@ class AlterSeloLacreInstrumentosTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
+		Schema::table( 'selo_instrumentos', function ( Blueprint $table ) {
+			$table->renameColumn( 'idaparelho_set', 'idaparelho_manutencao' );
+		} );
+		Schema::table( 'lacre_instrumentos', function ( Blueprint $table ) {
+			$table->renameColumn( 'idaparelho_set', 'idaparelho_manutencao' );
+		} );
 	}
 }

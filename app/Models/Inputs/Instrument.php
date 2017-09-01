@@ -2,6 +2,7 @@
 
 namespace App\Models\Inputs;
 
+use App\Colaborador;
 use App\Traits\InstrumentsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -26,4 +27,7 @@ class Instrument extends Model {
 
 	// ************************** RELASHIONSHIP **********************************
 
+	public function collaborator() {
+		return $this->belongsToMany( Colaborador::class, 'instrument_stocks', 'idinstrument', 'idcolaborador' );
+	}
 }

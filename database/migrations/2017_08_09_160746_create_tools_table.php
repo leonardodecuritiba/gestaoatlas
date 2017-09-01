@@ -22,7 +22,6 @@ class CreateToolsTable extends Migration
             $table->foreign('idunit')->references('idunidade')->on('unidades')->onDelete('cascade');
             $table->string('description', 100)->unique();
             $table->decimal('cost', 20, 2)->default(0);
-            $table->date('expiration');
             $table->timestamps();
             $table->softDeletes();
         });

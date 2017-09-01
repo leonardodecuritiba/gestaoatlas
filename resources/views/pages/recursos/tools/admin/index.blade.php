@@ -26,7 +26,6 @@
                                     <th>Marca</th>
                                     <th>Unidade</th>
                                     <th>Custo</th>
-                                    <th>Validade</th>
                                     <th>Ações</th>
                                 </tr>
                                 </thead>
@@ -39,7 +38,6 @@
                                         <td>{{$sel->getBrandText()}}</td>
                                         <td>{{$sel->getUnityText()}}</td>
                                         <td>{{$sel->getCost()}}</td>
-                                        <td>{{$sel->expiration}}</td>
                                         <td>
                                             <a class="btn btn-primary btn-xs"
                                                href="{{route($Page->link.'.show',$sel->id)}}">

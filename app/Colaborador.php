@@ -4,6 +4,12 @@ namespace App;
 
 use App\Helpers\DataHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Inputs\Equipment;
+use App\Models\Inputs\Instrument;
+use App\Models\Inputs\Pattern;
+use App\Models\Inputs\Stocks\PatternStock;
+use App\Models\Inputs\Tool;
+use App\Models\Inputs\Vehicle;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -129,4 +135,27 @@ class Colaborador extends Model
     {
         return $this->hasMany('App\Models\Requests\Request', 'idrequester', 'idcolaborador')->waiting();
     }
+
+
+	public function patterns() {
+		return $this->hasMany( PatternStock::class, 'idcolaborador' );
+	}
+
+	// ************************** HAS **********************************
+
+	public function tools() {
+		return $this->belongsToMany( Tool::class, 'tool_stocks', 'idcolaborador', 'idtool' );
+	}
+
+	public function vehicles() {
+		return $this->belongsToMany( Vehicle::class, 'vechicle_stocks', 'idcolaborador', 'idvechicle' );
+	}
+
+	public function instruments() {
+		return $this->belongsToMany( Instrument::class, 'instrument_stocks', 'idcolaborador', 'idinstrument' );
+	}
+
+	public function equipments() {
+		return $this->belongsToMany( Equipment::class, 'equipment_stocks', 'idcolaborador', 'idequipment' );
+	}
 }

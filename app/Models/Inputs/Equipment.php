@@ -2,6 +2,7 @@
 
 namespace App\Models\Inputs;
 
+use App\Colaborador;
 use App\Traits\InstrumentsTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -35,4 +36,7 @@ class Equipment extends Model {
 
 	// ************************** RELASHIONSHIP **********************************
 
+	public function collaborator() {
+		return $this->belongsToMany( Colaborador::class, 'equipment_stocks', 'idequipment', 'idcolaborador' );
+	}
 }

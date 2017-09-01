@@ -25,9 +25,9 @@
                                     <th>Marca</th>
                                     <th>Medida</th>
                                     <th>Custo</th>
-                                    <th>Custo Cert.</th>
-                                    <th>Certificado</th>
-                                    <th>Validade</th>
+                                    {{--<th>Custo Cert.</th>--}}
+                                    {{--<th>Certificado</th>--}}
+                                    {{--<th>Validade</th>--}}
                                     <th>Classe</th>
                                     <th>Ações</th>
                                 </tr>
@@ -40,9 +40,9 @@
                                         <td>{{$sel->getBrandText()}}</td>
                                         <td>{{$sel->getMeasure()}}</td>
                                         <td>{{$sel->getCost()}}</td>
-                                        <td>{{$sel->getCostCertification()}}</td>
-                                        <td>{{$sel->certification}}</td>
-                                        <td>{{$sel->expiration}}</td>
+                                        {{--                                        <td>{{$sel->getCostCertification()}}</td>--}}
+                                        {{--<td>{{$sel->certification}}</td>--}}
+                                        {{--<td>{{$sel->expiration}}</td>--}}
                                         <td>{{$sel->class}}</td>
                                         <td>
                                             <a class="btn btn-primary btn-xs"

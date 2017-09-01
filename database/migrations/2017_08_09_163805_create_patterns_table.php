@@ -13,8 +13,6 @@ class CreatePatternsTable extends Migration
 	public function up() {
         Schema::create('patterns', function (Blueprint $table) {
             $table->increments('id');
-	        $table->unsignedInteger( 'idtechnician' );
-	        $table->foreign( 'idtechnician' )->references( 'idtecnico' )->on( 'tecnicos' )->onDelete( 'cascade' );
             $table->unsignedInteger('idunit');
             $table->foreign('idunit')->references('idunidade')->on('unidades')->onDelete('cascade');
             $table->unsignedInteger('idbrand');
@@ -22,10 +20,7 @@ class CreatePatternsTable extends Migration
             $table->string('description', 100);
             $table->decimal('measure', 20, 2);
             $table->decimal('cost', 20, 2)->default(0);
-            $table->decimal('cost_certification', 20, 2)->default(0);
-            $table->string('certification', 20);
-            $table->string('class', 20);
-            $table->date('expiration');
+	        $table->string( 'class', 20 );
             $table->timestamps();
             $table->softDeletes();
         });

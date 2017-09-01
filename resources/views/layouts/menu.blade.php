@@ -175,6 +175,16 @@
                             </li>
                         </ul>
                     </li>
+                    <li><a><i class="fa fa-bars"></i> Estoques <span class="fa fa-chevron-down"></span></a>
+                        <ul class="nav child_menu">
+                            <li><a href="{{ route('patterns.stocks') }}">Padrões</a></li>
+                            <li><a href="{{ route('tools.index') }}">Ferramentas</a></li>
+                            <li><a href="#">Equipamento BKP</a></li>
+                            <li><a href="#">Veículos</a></li>
+                            <li><a href="#">Alimentação</a></li>
+                            <li><a href="#">Peças / Produtos</a></li>
+                        </ul>
+                    </li>
                     @endrole
                     @role('tecnico')
                     <li><a><i class="fa fa-building"></i> Requisições <span class="fa fa-chevron-down"></span></a>

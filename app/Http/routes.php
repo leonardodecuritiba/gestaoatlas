@@ -84,6 +84,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('patterns', 'Inputs\PatternsController');
     Route::get('patterns-requisicoes', 'Inputs\PatternsController@listRequests')->name('patterns.requisicoes');
+	Route::get( 'patterns-stocks', 'Inputs\PatternsController@stocks' )->name( 'patterns.stocks' );
+	Route::match( [ 'POST' ], 'patterns-stocks-store', 'Inputs\PatternsController@stocksStore' )->name( 'patterns.stocksStore' );
     //Admin
 //    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
 
