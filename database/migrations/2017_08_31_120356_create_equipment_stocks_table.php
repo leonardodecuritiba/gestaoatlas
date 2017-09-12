@@ -17,6 +17,7 @@ class CreateEquipmentStocksTable extends Migration {
 			$table->unsignedInteger( 'idcolaborador' );
 			$table->foreign( 'idcolaborador' )->references( 'idcolaborador' )->on( 'colaboradores' )->onDelete( 'cascade' );
 			$table->timestamps();
+			$table->softDeletes();
 		} );
 	}
 

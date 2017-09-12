@@ -3,9 +3,15 @@
 namespace App\Providers;
 
 use App\Kit;
+use App\Models\Inputs\Stocks\ToolStock;
+use App\Models\Inputs\Voids\VoidTool;
+use App\Models\Inputs\Voids\Voidx;
 use App\Observers\KitsObserver;
 use App\Observers\PecasObserver;
 use App\Observers\ServicosObserver;
+use App\Observers\ToolStocksObserver;
+use App\Observers\VoidsObserver;
+use App\Observers\VoidToolsObserver;
 use App\Peca;
 use App\Servico;
 use Carbon\Carbon;
@@ -27,6 +33,13 @@ class AppServiceProvider extends ServiceProvider
         Servico::observe(ServicosObserver::class);
         Peca::observe(PecasObserver::class);
         Kit::observe(KitsObserver::class);
+
+	    Voidx::observe( VoidsObserver::class );
+
+	    //tools
+	    VoidTool::observe( VoidToolsObserver::class );
+	    ToolStock::observe( ToolStocksObserver::class );
+
         Validator::extend('unique_cliente', function ($attribute, $value, $parameters, $validator) {
             // Get the parameters passed to the rule
             // Check the table and return true only if there are no entries matching

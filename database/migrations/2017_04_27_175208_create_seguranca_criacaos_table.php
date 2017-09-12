@@ -20,6 +20,7 @@ class CreateSegurancaCriacaosTable extends Migration
             $table->unsignedInteger('idvalidador')->nullable();
             $table->foreign('idvalidador')->references('idcolaborador')->on('colaboradores')->onDelete('cascade');
 
+	        $table->string( 'verb', 6 )->nullable();
             $table->timestamp('validated_at')->nullable();
             $table->timestamps();
         });

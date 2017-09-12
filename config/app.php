@@ -12,8 +12,8 @@ return [
     |
     */
 
-    'version' => 'v1.0.0',
-    'update' => '16:00 - 02/02',
+	'version' => 'v1.8.0',
+	'update'  => '16:00 - 02/02',
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+	'env' => env('APP_ENV', 'production'),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', false),
+	'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+	'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'timezone' => 'America/Sao_Paulo',
+	'timezone' => 'America/Sao_Paulo',
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => 'pt_BR',
+	'locale' => 'pt_BR',
 
     /*
     |--------------------------------------------------------------------------
@@ -91,7 +91,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'pt-BR',
+	'fallback_locale' => 'pt-BR',
 
     /*
     |--------------------------------------------------------------------------
@@ -104,9 +104,9 @@ return [
     |
     */
 
-    'key' => env('APP_KEY'),
+	'key' => env('APP_KEY'),
 
-    'cipher' => 'AES-256-CBC',
+	'cipher' => 'AES-256-CBC',
 
     /*
     |--------------------------------------------------------------------------
@@ -121,7 +121,7 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'single'),
+	'log' => env('APP_LOG', 'single'),
 
     /*
     |--------------------------------------------------------------------------
@@ -134,7 +134,7 @@ return [
     |
     */
 
-    'providers' => [
+	'providers' => [
 
         /*
          * Laravel Framework Service Providers...
@@ -196,7 +196,7 @@ return [
     |
     */
 
-    'aliases' => [
+	'aliases' => [
 
         'App' => Illuminate\Support\Facades\App::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,

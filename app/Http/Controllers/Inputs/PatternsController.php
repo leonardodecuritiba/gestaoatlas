@@ -53,7 +53,7 @@ class PatternsController extends Controller
 		$this->Page->titulo_primario      = "Listagem de Padrões";
 		$Buscas                           = PatternStock::all();
 
-		return view( 'pages.stocks.index' )
+		return view( 'pages.recursos.stocks.index' )
 			->with( 'Page', $this->Page )
 			->with( 'Buscas', $Buscas );
 	}

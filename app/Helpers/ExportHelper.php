@@ -16,11 +16,12 @@ class ExportHelper {
 			$data_peca = array(
 				'idpeca',
 				'descricao',
+				'custo',
 				'TABELA GRICKI',
 				'TABELA SAVEGNAGO',
 				'ABRE MERCADO FRANCA',
 				'TABELA GERAL',
-				'NOVO',
+				'TONIN',
 			);
 
 			$sheet->row( 1, $data_peca );
@@ -29,11 +30,12 @@ class ExportHelper {
 				$sheet->row( $i, array(
 					$peca->idpeca,
 					$peca->descricao,
-					$peca->tabela_preco_by_name( 'TABELA GRICKI' )->preco,
-					$peca->tabela_preco_by_name( 'TABELA SAVEGNAGO' )->preco,
-					$peca->tabela_preco_by_name( 'ABRE MERCADO FRANCA' )->preco,
-					$peca->tabela_preco_by_name( 'TABELA GERAL' )->preco,
-					''
+					$peca->peca_tributacao->custo_final_float(),
+					$peca->tabela_preco_by_name( 'TABELA GRICKI' )->preco_float(),
+					$peca->tabela_preco_by_name( 'TABELA SAVEGNAGO' )->preco_float(),
+					$peca->tabela_preco_by_name( 'ABRE MERCADO FRANCA' )->preco_float(),
+					$peca->tabela_preco_by_name( 'TABELA GERAL' )->preco_float(),
+					$peca->tabela_preco_by_name( 'TONIN' )->preco_float(),
 				) );
 				$i ++;
 			}
@@ -54,7 +56,7 @@ class ExportHelper {
 				'TABELA SAVEGNAGO',
 				'ABRE MERCADO FRANCA',
 				'TABELA GERAL',
-				'NOVO',
+				'TONIN',
 			);
 
 			$sheet->row( 1, $data );
@@ -64,12 +66,12 @@ class ExportHelper {
 					$sel->idservico,
 					$sel->nome,
 					$sel->descricao,
-					$sel->valor,
-					$sel->tabela_preco_by_name( 'TABELA GRICKI' )->preco,
-					$sel->tabela_preco_by_name( 'TABELA SAVEGNAGO' )->preco,
-					$sel->tabela_preco_by_name( 'ABRE MERCADO FRANCA' )->preco,
-					$sel->tabela_preco_by_name( 'TABELA GERAL' )->preco,
-					''
+					$sel->valor_float(),
+					$sel->tabela_preco_by_name( 'TABELA GRICKI' )->preco_float(),
+					$sel->tabela_preco_by_name( 'TABELA SAVEGNAGO' )->preco_float(),
+					$sel->tabela_preco_by_name( 'ABRE MERCADO FRANCA' )->preco_float(),
+					$sel->tabela_preco_by_name( 'TABELA GERAL' )->preco_float(),
+					$sel->tabela_preco_by_name( 'TONIN' )->preco_float(),
 				) );
 				$i ++;
 			}

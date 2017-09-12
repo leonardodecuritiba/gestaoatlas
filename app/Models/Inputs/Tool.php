@@ -4,6 +4,7 @@ namespace App\Models\Inputs;
 
 use App\Colaborador;
 use App\Helpers\DataHelper;
+use App\Models\Inputs\Stocks\ToolStock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -21,6 +22,21 @@ class Tool extends Model
 
 	// ************************** FUNCTION **********************************
 
+	static public function getAlltoSelectList() {
+		return self::get()->map( function ( $s ) {
+			return [
+				'id'          => $s->id,
+				'description' => $s->getResume()
+			];
+		} )->pluck( 'description', 'id' );
+	}
+
+	public function getResume() {
+		return $this->attributes['description'] . ' - ' .
+		       $this->getCategoryText() . ' - ' .
+		       $this->getBrandText() . ' - ' .
+		       $this->getCost();
+	}
 
 	public function getCostAttribute( $value ) {
 		return DataHelper::getFloat2Real( $value );
@@ -56,7 +72,15 @@ class Tool extends Model
 		return $this->belongsTo('App\Unidade', 'idunit', 'idunidade');
 	}
 
-	public function collaborator() {
-		return $this->belongsToMany( Colaborador::class, 'tool_stocks', 'idtool', 'idcolaborador' );
+	public function stocks() {
+		return $this->hasMany( ToolStock::class );
 	}
+
+
+//
+//	public function collaborator() {
+//		return $this->belongsToMany( Colaborador::class, 'tool_stocks', 'idtool', 'idcolaborador' );
+//	}
+
+
 }

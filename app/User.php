@@ -29,16 +29,19 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+	public function is( $name = null ) {
+		$role = $this->roles->first();
+
+		return ( $name == null ) ? $role : ( $role->name == $name );
+	}
+
     // ******************** RELASHIONSHIP ******************************
     public function colaborador()
     {
         return $this->belongsTo('App\Colaborador', 'iduser', 'iduser');
     }
     // ************************** HAS **********************************
-    public function is()
-    {
-        return $this->roles->first();
-    }
+
 //
 //    public function role_user()
 //    {

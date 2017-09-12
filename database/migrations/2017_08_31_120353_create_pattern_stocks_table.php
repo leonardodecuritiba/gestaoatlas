@@ -22,6 +22,7 @@ class CreatePatternStocksTable extends Migration {
 			$table->decimal( 'certification_cost', 20, 2 )->default( 0 );
 			$table->string( 'certification', 50 );
 			$table->timestamps();
+			$table->softDeletes();
 		} );
 	}
 

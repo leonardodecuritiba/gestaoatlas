@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Helpers;
-use Carbon\Carbon;
 use Jenssegers\Date\Date;
 use Illuminate\Http\Request;
 
 class DataHelper
 {
     // ******************** FUNCTIONS ******************************
+	static public function now() {
+		return Date::now();
+	}
     static public function getVectorKeyFloatToReal($values)
     {
         foreach ($values as $key => $value) {

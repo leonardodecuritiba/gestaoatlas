@@ -95,36 +95,39 @@
                     @endrole
 
                     @role(['admin','gestor','financeiro'])
-                    <li><a><i class="fa fa-building"></i> Recursos <span class="fa fa-chevron-down"></span></a>
+                    <li><a><i class="fa fa-building"></i> Gestão de Recursos <span
+                                    class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a>Selos/Lacres<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('selolacres.create')}}">Cadastro</a></li>
-                                    <li><a href="{{route('selolacres.listagem')}}">Listagem</a></li>
+                                    <li><a href="{{route('selolacres.listagem')}}">Modelos</a></li>
                                     <li><a href="{{route('selolacres.requisicoes')}}">Requisições</a></li>
                                     {{--<li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>--}}
-                                </ul>
-                            </li>
-                            <li><a>Padrões<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    <li><a href="{{route('patterns.create')}}">Cadastro</a></li>
-                                    <li><a href="{{route('patterns.index')}}">Listagem</a></li>
-                                    <li><a href="{{route('patterns.requisicoes')}}">Requisições <span
-                                                    class="label label-danger pull-right">!</span></a></li>
                                 </ul>
                             </li>
                             <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('tools.create')}}">Cadastro</a></li>
-                                    <li><a href="{{route('tools.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('tools.index')}}">Modelos</a></li>
+                                    <li><a href="{{ route('tools.stocks') }}">Estoque</a></li>
                                     <li><a href="{{route('tools.requisicoes')}}">Requisições <span
+                                                    class="label label-danger pull-right">!</span></a></li>
+                                </ul>
+                            </li>
+                            <li><a>Padrões<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{route('patterns.create')}}">Cadastro</a></li>
+                                    <li><a href="{{route('patterns.index')}}">Modelos</a></li>
+                                    <li><a href="{{ route('patterns.stocks') }}">Estoque</a></li>
+                                    <li><a href="{{route('patterns.requisicoes')}}">Requisições <span
                                                     class="label label-danger pull-right">!</span></a></li>
                                 </ul>
                             </li>
                             <li><a href="#">Veículos<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('vehicles.create')}}">Cadastro</a></li>
-                                    <li><a href="{{route('vehicles.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('vehicles.index')}}">Modelos</a></li>
                                     <li><a href="{{route('vehicles.requisicoes')}}">Requisições <span
                                                     class="label label-danger pull-right">!</span></a></li>
                                 </ul>
@@ -132,7 +135,7 @@
                             <li><a href="#">Instrumentos BKP<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('instruments.create')}}">Cadastro</a></li>
-                                    <li><a href="{{route('instruments.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('instruments.index')}}">Modelos</a></li>
                                     <li><a href="{{route('instruments.requisicoes')}}">Requisições <span
                                                     class="label label-danger pull-right">!</span></a></li>
                                 </ul>
@@ -140,7 +143,7 @@
                             <li><a href="#">Equipamentos BKP<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('equipments.create')}}">Cadastro</a></li>
-                                    <li><a href="{{route('equipments.index')}}">Listagem</a></li>
+                                    <li><a href="{{route('equipments.index')}}">Modelos</a></li>
                                     <li><a href="{{route('equipments.requisicoes')}}">Requisições <span
                                                     class="label label-danger pull-right">!</span></a></li>
                                 </ul>
@@ -173,16 +176,6 @@
                                     <li><a href="#">Relatório</a></li>
                                 </ul>
                             </li>
-                        </ul>
-                    </li>
-                    <li><a><i class="fa fa-bars"></i> Estoques <span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            <li><a href="{{ route('patterns.stocks') }}">Padrões</a></li>
-                            <li><a href="{{ route('tools.index') }}">Ferramentas</a></li>
-                            <li><a href="#">Equipamento BKP</a></li>
-                            <li><a href="#">Veículos</a></li>
-                            <li><a href="#">Alimentação</a></li>
-                            <li><a href="#">Peças / Produtos</a></li>
                         </ul>
                     </li>
                     @endrole

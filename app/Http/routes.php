@@ -105,6 +105,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('tools', 'Inputs\ToolsController');
     Route::get('tools-requisicoes', 'Inputs\ToolsController@listRequests')->name('tools.requisicoes');
+	Route::get( 'tools-stocks', 'Inputs\ToolsController@stocks' )->name( 'tools.stocks' );
+	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
     //Admin
 //    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
 
@@ -311,11 +313,11 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('instrumentos_base', 'Instrumentos\InstrumentosBasesController@exportar')->name('instrumentos_base.exportar');
         Route::get('instrumentos_setors', 'Instrumentos\InstrumentosSetorsController@exportar')->name('instrumentos_setor.exportar');
         Route::get('pecas', 'PecasController@exportar')->name('pecas.exportar');
-	    Route::get( 'servicos-preco', 'ServicosController@exportarTabelaPreco' )->name( 'servicos.exportar' );
+	    Route::get( 'servicos', 'ServicosController@exportar' )->name( 'servicos.exportar' );
 
 
-	    Route::get( 'servicos-preco', 'ServicosController@exportarTabelaPreco' )->name( 'servicos-preco.exportar' );
-	    Route::get( 'pecas-preco', 'PecasController@exportarTabelaPreco' )->name( 'pecas-preco.exportar' );
+	    Route::get( 'preco-servicos', 'ServicosController@exportarTabelaPreco' )->name( 'servicos-preco.exportar' );
+	    Route::get( 'preco-pecas', 'PecasController@exportarTabelaPreco' )->name( 'pecas-preco.exportar' );
     });
 
     //IMPORTAÇÃO

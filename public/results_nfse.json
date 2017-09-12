@@ -1,5 +1,5 @@
 {
-  "data_emissao": "2017-06-28T10:19:28-03:00",
+  "data_emissao": "2017-09-04T08:10:41-03:00",
   "status": 1,
   "natureza_operacao": 1,
   "regime_especial_tributacao": "6",
@@ -12,23 +12,23 @@
     "inscricao_municipal": "20033165"
   },
   "tomador": {
-    "cnpj": "10336724000164",
-    "razao_social": "NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL",
-    "telefone": "",
-    "email": "paneteriarecantodoce@gmail.com",
+    "cnpj": "71322150003932",
+    "razao_social": "SAVEGNAGO SUPERMERCADOS LTDA",
+    "telefone": "1639462088",
+    "email": "sonia.felicio@savegnago.com.br",
     "endereco": {
-      "logradouro": "AVENIDA FRANCISCO ANTONIO DE ABREU",
+      "logradouro": "AV. NOSSA SENHORA APARECIDA",
       "tipo_logradouro": "",
-      "numero": "1.128",
-      "bairro": "VILA SANTOS",
-      "codigo_municipio": "3522703",
+      "numero": "2021",
+      "bairro": "SAO JOAO ",
+      "codigo_municipio": "3551702",
       "uf": "SP",
-      "cep": "14900000"
+      "cep": "14170150"
     }
   },
   "servico": {
-    "valor_liquido": 1920.21,
-    "valor_servicos": 1920.21,
+    "valor_liquido": 6296.75,
+    "valor_servicos": 6296.75,
     "valor_deducoes": 0,
     "valor_pis": 0,
     "valor_cofins": 0,
@@ -40,12 +40,12 @@
     "valor_iss_retido": 0,
     "outras_retencoes": 0,
     "base_calculo": 0,
-    "aliquota": 2.5,
+    "aliquota": 3.84,
     "desconto_incondicionado": 0,
     "desconto_condicionado": 0,
     "item_lista_servico": "14.01",
     "codigo_tributario_municipio": "14.01.11 \/ 00140111",
-    "discriminacao": "SERVI\u00c7OS PRESTADOS EM BALAN\u00c7AS, M\u00cdDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOMA\u00c7\u00c3O COMERCIAL \\ INDUSTRIAL.\\n\\nVALOR APROXIMADO DOS TRIBUTOS (11,31%) - R$ 217,18",
+    "discriminacao": "SERVI\u00c7OS PRESTADOS EM BALAN\u00c7AS, M\u00cdDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOMA\u00c7\u00c3O COMERCIAL \\ INDUSTRIAL.\\n\\nVALOR APROXIMADO DOS TRIBUTOS (11,31%) - R$ 712,16",
     "codigo_municipio": "3543402",
     "percentual_total_tributos": 0
   }

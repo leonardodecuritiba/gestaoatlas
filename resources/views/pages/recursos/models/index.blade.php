@@ -11,7 +11,7 @@
 
     <div class="x_panel animated flipInX">
         <div class="x_title">
-            <h2>Cadastrar {{$Page->Target}}</h2>
+            <h2>Novo Estoque de {{$Page->Target}}</h2>
             <div class="clearfix"></div>
         </div>
         <div class="x_content">
@@ -35,7 +35,7 @@
     @if(count($Buscas) > 0)
         <div class="x_panel">
             <div class="x_title">
-                <h2>{{$Page->Targets}} encontrados</h2>
+                <h2>{{count($Buscas) . " " . $Page->Targets}} em estoque</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">

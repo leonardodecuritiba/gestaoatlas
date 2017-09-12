@@ -36,7 +36,6 @@ class AparelhoManutencao extends Model
 
     static public function getRelatorioIpem($data)
     {
-	    return 'NULL';
         $query = self::whereNotNull('idinstrumento');
         if (isset($data['idtecnico'])) {
             $OS = OrdemServico::filterSeloIpem($data);

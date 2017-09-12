@@ -4,6 +4,7 @@ namespace App;
 
 use App\Helpers\DataHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Commons\Voidx;
 use App\Models\Inputs\Equipment;
 use App\Models\Inputs\Instrument;
 use App\Models\Inputs\Pattern;
@@ -31,6 +32,16 @@ class Colaborador extends Model
     ];
 
     // ************************ FUNCTIONS ******************************
+
+	static public function getAlltoSelectList() {
+		return self::get()->map( function ( $s ) {
+			return [
+				'id'          => $s->idcolaborador,
+				'description' => $s->nome . ' - ' . $s->cpf
+			];
+		} )->pluck( 'description', 'id' );
+	}
+
 
     public function setDataNascimentoAttribute($value)
     {
@@ -157,5 +168,9 @@ class Colaborador extends Model
 
 	public function equipments() {
 		return $this->belongsToMany( Equipment::class, 'equipment_stocks', 'idcolaborador', 'idequipment' );
+	}
+
+	public function voids() {
+		return $this->hasMany( Voidx::class, 'creator_id', 'idcolaborador' );
 	}
 }
