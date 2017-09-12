@@ -16,7 +16,7 @@ class VoidsTableSeeder extends Seeder {
 		Auth::loginUsingId( 9, true );
 
 		$start   = microtime( true );
-		$numbers = range( 2, 50 );
+		$numbers = range( 2, 3 );
 		foreach ( $numbers as $n ) {
 			Voidx::create( [ 'number' => $n ] );
 		}
