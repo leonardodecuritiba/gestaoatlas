@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Voidx extends Model {
-	use SoftDeletes;
 	use SecurityTrait;
 	public $timestamps = true;
 	protected $table = 'voids';
@@ -18,10 +17,10 @@ class Voidx extends Model {
 	];
 
 	static public function start( $numbers ) {
+
 		foreach ( $numbers as $n ) {
 			self::create( [ 'number' => $n ] );
 		}
-
 		return;
 	}
 
@@ -31,6 +30,14 @@ class Voidx extends Model {
 
 	static public function setUnused( $id ) {
 		return self::find( $id )->update( [ 'used' => 0 ] );
+	}
+
+	public function getStatusText() {
+		return ( $this->attributes['used'] ) ? 'Usado' : 'Disponível';
+	}
+
+	public function getStatusColor() {
+		return ( $this->attributes['used'] ) ? 'danger' : 'success';
 	}
 
 	// ************************** SCOPE **********************************

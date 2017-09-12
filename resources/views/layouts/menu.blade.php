@@ -106,6 +106,7 @@
                                     {{--<li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>--}}
                                 </ul>
                             </li>
+                            <li><a href="{{route('voids.index')}}">Void Patrimônio</a></li>
                             <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('tools.create')}}">Cadastro</a></li>
@@ -156,13 +157,6 @@
                                 </ul>
                             </li>
                             <li><a href="#">Peças / Produtos</a>
-                                <ul class="nav child_menu">
-                                    <li><a href="#">Cadastro</a></li>
-                                    <li><a href="#">Gestão</a></li>
-                                    <li><a href="#">Relatório</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#">Void Patrimônio</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>

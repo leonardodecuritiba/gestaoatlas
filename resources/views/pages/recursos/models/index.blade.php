@@ -11,15 +11,15 @@
 
     <div class="x_panel animated flipInX">
         <div class="x_title">
-            <h2>Novo Estoque de {{$Page->Target}}</h2>
+            <h2>Novo {{$Page->Target}}</h2>
             <div class="clearfix"></div>
         </div>
         <div class="x_content">
             <div class="row">
-                {!! Form::open(['route' => $Page->extras['type_stock'].'.stocksStore',
+                {!! Form::open(['route' => $Page->extras['type'].'.store',
                     'method' => 'POST',
                     'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
-                @include('pages.stocks.forms.' . $Page->extras['type_stock'])
+                @include($Page->view_folder . '.forms.' . $Page->extras['type'])
                 <div class="form-group">
                     <div class="col-md-6 col-sm-6 col-xs-12 ">
                         <button type="reset" class="btn btn-danger btn-lg btn-block">Cancelar</button>
@@ -35,13 +35,13 @@
     @if(count($Buscas) > 0)
         <div class="x_panel">
             <div class="x_title">
-                <h2>{{count($Buscas) . " " . $Page->Targets}} em estoque</h2>
+                <h2>{{count($Buscas) . " " . $Page->Targets}}</h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                        @include('pages.stocks.lists.'. $Page->extras['type_stock'])
+                        @include($Page->view_folder . '.lists.' . $Page->extras['type'])
                     </div>
                 </div>
             </div>

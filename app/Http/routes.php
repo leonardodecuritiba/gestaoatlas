@@ -109,8 +109,27 @@ Route::group(['middleware' => ['auth']], function () {
 	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
     //Admin
 //    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
-
 });
+/*
+|--------------------------------------------------------------------------
+| Voids Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::group( [ 'middleware' => [ 'auth' ] ], function () {
+
+//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
+
+	Route::resource( 'voids', 'Inputs\Voids\VoidsController' );
+	Route::get( 'tools-requisicoes', 'Inputs\ToolsController@listRequests' )->name( 'tools.requisicoes' );
+	Route::get( 'tools-stocks', 'Inputs\ToolsController@stocks' )->name( 'tools.stocks' );
+	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
+	//Admin
+//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+} );
 /*
 |--------------------------------------------------------------------------
 | Vehicles Routes
