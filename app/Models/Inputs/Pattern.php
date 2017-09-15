@@ -31,22 +31,16 @@ class Pattern extends Model
 		} )->pluck( 'description', 'id' );
 	}
 
-//    public function setExpirationAttribute($value)
-//    {
-//        return $this->attributes['expiration'] = DataHelper::setDate($value);
-//    }
-//
-//    public function getExpirationAttribute($value)
-//    {
-//        return DataHelper::getPrettyDate($value);
-//    }
-//
-//	public function getCostCertificationAttribute($value)
-//	{
-//		return DataHelper::getFloat2Real($value);
-//	}
-//
 
+	public function getResume() {
+		return $this->attributes['description'] . ' - ' .
+		       $this->getBrandText() . ' - ' .
+		       $this->getMeasure();
+	}
+
+	public function getUnityText() {
+		return $this->unity->codigo;
+	}
 
 	public function getMeasureAttribute($value) {
 		return DataHelper::getFloat2Real($value);

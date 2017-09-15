@@ -3,13 +3,17 @@
 namespace App\Providers;
 
 use App\Kit;
+use App\Models\Inputs\Stocks\PatternStock;
 use App\Models\Inputs\Stocks\ToolStock;
+use App\Models\Inputs\Voids\VoidPattern;
 use App\Models\Inputs\Voids\VoidTool;
 use App\Models\Inputs\Voids\Voidx;
 use App\Observers\KitsObserver;
+use App\Observers\PatternStocksObserver;
 use App\Observers\PecasObserver;
 use App\Observers\ServicosObserver;
 use App\Observers\ToolStocksObserver;
+use App\Observers\VoidPatternsObserver;
 use App\Observers\VoidsObserver;
 use App\Observers\VoidToolsObserver;
 use App\Peca;
@@ -39,6 +43,9 @@ class AppServiceProvider extends ServiceProvider
 	    //tools
 	    VoidTool::observe( VoidToolsObserver::class );
 	    ToolStock::observe( ToolStocksObserver::class );
+	    //patterns
+	    VoidPattern::observe( VoidPatternsObserver::class );
+	    PatternStock::observe( PatternStocksObserver::class );
 
         Validator::extend('unique_cliente', function ($attribute, $value, $parameters, $validator) {
             // Get the parameters passed to the rule

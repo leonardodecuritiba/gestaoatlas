@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Commons\Brand;
 use App\Models\Inputs\Pattern;
 use App\Models\Inputs\Stocks\PatternStock;
+use App\Models\Inputs\Voids\Voidx;
 use App\Unidade;
 use App\Tecnico;
 use Illuminate\Http\Request;
@@ -47,11 +48,14 @@ class PatternsController extends Controller
 			->with('Page', $this->Page);
 	}
 
+
 	public function stocks() {
-		$this->Page->extras['patterns']   = Pattern::getAlltoSelectList();
-		$this->Page->extras['type_stock'] = 'patterns';
-		$this->Page->titulo_primario      = "Listagem de Padrões";
-		$Buscas                           = PatternStock::all();
+		$this->Page->extras['patterns']      = Pattern::getAlltoSelectList();
+		$this->Page->extras['type_stock']    = 'patterns';
+		$this->Page->extras['voids']         = Voidx::unuseds()->pluck( 'number', 'id' );
+		$this->Page->extras['colaboradores'] = Colaborador::getAlltoSelectList();
+		$this->Page->titulo_primario         = "Listagem de Padrões";
+		$Buscas                              = PatternStock::all();
 
 		return view( 'pages.recursos.stocks.index' )
 			->with( 'Page', $this->Page )
@@ -59,15 +63,13 @@ class PatternsController extends Controller
 	}
 
 	public function stocksStore( Request $request ) {
-		$data                  = $request->all();
-		$data['idcolaborador'] = 1;
-		PatternStock::create( $data );
+		PatternStock::createWithVoid( $request->all() );
 		session()->forget( 'mensagem' );
 		session( [ 'mensagem' => $this->Page->msg_stock_add ] );
 
-		return redirect()->route( 'patterns.stocks' );
-
+		return redirect()->route( 'tools.stocks' );
 	}
+
 
 	public function create() {
 		$this->Page->extras['unities'] = Unidade::pluck('codigo', 'idunidade');

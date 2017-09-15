@@ -109,7 +109,7 @@ class ToolsController extends Controller
 		$this->Page->extras['type_stock']    = 'tools';
 		$this->Page->extras['voids']         = Voidx::unuseds()->pluck( 'number', 'id' );
 		$this->Page->extras['colaboradores'] = Colaborador::getAlltoSelectList();
-		$this->Page->titulo_primario         = "Listagem de Padrões";
+		$this->Page->titulo_primario         = "Listagem de Ferramentas";
 		$Buscas                              = ToolStock::all();
 
 		return view( 'pages.recursos.stocks.index' )

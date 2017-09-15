@@ -20,7 +20,6 @@ class CreateToolStocksTable extends Migration {
 			$table->foreign( 'owner_id' )->references( 'idcolaborador' )->on( 'colaboradores' )->onDelete( 'SET NULL' );
 			$table->unsignedInteger( 'void_tool_id' )->nullable();
 			$table->foreign( 'void_tool_id' )->references( 'id' )->on( 'void_tools' )->onDelete( 'SET NULL' );
-			$table->date( 'expiration' );
 			$table->decimal( 'cost', 20, 2 )->default( 0 );
 			$table->timestamps();
 			$table->softDeletes();

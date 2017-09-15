@@ -16,8 +16,6 @@ class CreateVoidPatternsTable extends Migration {
 			$table->foreign( 'security_id' )->references( 'id' )->on( 'seguranca_criacaos' )->onDelete( 'SET NULL' );
 			$table->unsignedInteger( 'void_id' );
 			$table->foreign( 'void_id' )->references( 'id' )->on( 'voids' )->onDelete( 'cascade' );
-			$table->unsignedInteger( 'pattern_id' );
-			$table->foreign( 'pattern_id' )->references( 'id' )->on( 'patterns' )->onDelete( 'cascade' );
 			$table->unsignedInteger( 'enabler_id' )->nullable();
 			$table->foreign( 'enabler_id' )->references( 'idcolaborador' )->on( 'colaboradores' )->onDelete( 'SET NULL' );
 			$table->unsignedInteger( 'disabler_id' )->nullable();

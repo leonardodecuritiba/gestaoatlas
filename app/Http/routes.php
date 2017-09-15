@@ -124,9 +124,9 @@ Route::group( [ 'middleware' => [ 'auth' ] ], function () {
 //    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
 
 	Route::resource( 'voids', 'Inputs\Voids\VoidsController' );
-	Route::get( 'tools-requisicoes', 'Inputs\ToolsController@listRequests' )->name( 'tools.requisicoes' );
-	Route::get( 'tools-stocks', 'Inputs\ToolsController@stocks' )->name( 'tools.stocks' );
-	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
+//	Route::get( 'tools-requisicoes', 'Inputs\ToolsController@listRequests' )->name( 'tools.requisicoes' );
+//	Route::get( 'tools-stocks', 'Inputs\ToolsController@stocks' )->name( 'tools.stocks' );
+//	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
 	//Admin
 //    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
 } );
@@ -350,6 +350,11 @@ Route::group(['prefix' => 'cron-jobs'], function () {
     Route::get('run-faturamento', 'FaturamentoController@run');
 });
 Route::group(['prefix' => 'teste'], function () {
+	Route::get( 'sintegra', function () {
+
+
+		return view( 'pages.sintegra.teste' );
+	} );
     Route::get('lacres/{id}', function ($id) {
         $Instrumento = \App\Instrumento::find($id);
         return $Instrumento->lacres_instrumento_cliente();

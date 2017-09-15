@@ -12,11 +12,15 @@ class CreatePatternStocksTable extends Migration {
 	public function up() {
 		Schema::create( 'pattern_stocks', function ( Blueprint $table ) {
 			$table->increments( 'id' );
-			$table->unsignedInteger( 'idpattern' );
-			$table->foreign( 'idpattern' )->references( 'id' )->on( 'patterns' )->onDelete( 'cascade' );
-			$table->unsignedInteger( 'idcolaborador' );
-			$table->foreign( 'idcolaborador' )->references( 'idcolaborador' )->on( 'colaboradores' )->onDelete( 'cascade' );
-			$table->unsignedInteger( 'quantity' );
+			$table->unsignedInteger( 'security_id' )->nullable();
+			$table->foreign( 'security_id' )->references( 'id' )->on( 'seguranca_criacaos' )->onDelete( 'SET NULL' );
+			$table->unsignedInteger( 'pattern_id' );
+			$table->foreign( 'pattern_id' )->references( 'id' )->on( 'patterns' )->onDelete( 'cascade' );
+			$table->unsignedInteger( 'owner_id' )->nullable();
+			$table->foreign( 'owner_id' )->references( 'idcolaborador' )->on( 'colaboradores' )->onDelete( 'SET NULL' );
+			$table->unsignedInteger( 'void_pattern_id' )->nullable();
+			$table->foreign( 'void_pattern_id' )->references( 'id' )->on( 'void_patterns' )->onDelete( 'SET NULL' );
+
 			$table->date( 'expiration' );
 			$table->decimal( 'cost', 20, 2 )->default( 0 );
 			$table->decimal( 'certification_cost', 20, 2 )->default( 0 );

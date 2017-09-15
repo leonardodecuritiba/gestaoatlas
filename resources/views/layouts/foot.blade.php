@@ -31,18 +31,39 @@
 {!! Html::script('js/maskmoney/jquery.maskMoney.min.js') !!}
 <script type="text/javascript">
     function initMaskMoneyFix(selector) {
-        $(selector).maskMoney({prefix: 'R$ ', allowNegative: false, thousands: '.', decimal: ',', affixesStay: true});
+        $(selector).maskMoney({
+            prefix: 'R$ ',
+            allowNegative: false,
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            affixesStay: true
+        });
     }
     function initMaskMoney(selector) {
-        $(selector).maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: false});
+        $(selector).maskMoney({
+            prefix: 'R$ ',
+            allowNegative: false,
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            affixesStay: false
+        });
     }
 
     function initMaskMoneyValorReal(selector) {
-        $(selector).maskMoney({allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
+        $(selector).maskMoney({allowNegative: false, thousands: '.', decimal: ',', precision: 2, affixesStay: false});
     }
 
     function initMaskMoneyDolar(selector) {
-        $(selector).maskMoney({prefix: '$ ', allowNegative: false, thousands: ',', decimal: '.', affixesStay: false});
+        $(selector).maskMoney({
+            prefix: '$ ',
+            allowNegative: false,
+            thousands: ',',
+            decimal: '.',
+            precision: 2,
+            affixesStay: false
+        });
     }
 
     function initMaskMoneyPorcento(selector) {
@@ -57,7 +78,14 @@
     }
 
     function initMaskMoneyPeso(selector) {
-        $(selector).maskMoney({suffix: ' Kg', allowNegative: false, thousands: '.', decimal: ',', affixesStay: false});
+        $(selector).maskMoney({
+            suffix: ' Kg',
+            allowNegative: false,
+            thousands: '.',
+            decimal: ',',
+            precision: 2,
+            affixesStay: false
+        });
     }
 
     function initMaskGarantia(selector) {
@@ -65,7 +93,7 @@
     }
 
     function initMaskMoneyNumero(selector) {
-        $(selector).maskMoney({allowNegative: false, precision: 0, thousands: '', decimal: '', affixesStay: false});
+        $(selector).maskMoney({allowNegative: false, thousands: '', decimal: '', precision: 0, affixesStay: false});
     }
 
     function initMaskMoneyPositivos(selector) {

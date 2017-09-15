@@ -6,7 +6,6 @@
         <th>Descrição</th>
         <th>Responsável</th>
         <th>Void</th>
-        <th>Validade</th>
         <th>Custo</th>
         <th>Ações</th>
     </tr>
@@ -18,7 +17,6 @@
             <td>{{$sel->tool->getResume()}}</td>
             <td>{{$sel->owner->nome}}</td>
             <td>{{$sel->void_tool->void->number}}</td>
-            <td>{{$sel->getExpiration()}}</td>
             <td>{{$sel->getCost()}}</td>
             <td>
                 <a class="btn btn-primary btn-xs"

@@ -4,10 +4,9 @@
     <tr>
         <th>#</th>
         <th>Descrição</th>
-        <th>Collaborador</th>
-        <th>Quantidade</th>
+        <th>Colaborador</th>
+        <th>Void</th>
         <th>Custo</th>
-        <th>Custo Cert.</th>
         <th>Certificado</th>
         <th>Validade</th>
         <th>Ações</th>
@@ -17,23 +16,22 @@
     @foreach ($Buscas as $sel)
         <tr>
             <td>{{$sel->id}}</td>
-            <td>{{$sel->pattern->description}}</td>
-            <td>{{$sel->collaborator->nome}}</td>
-            <td>{{$sel->quantity}}</td>
+            <td>{{$sel->pattern->getResume()}}</td>
+            <td>{{$sel->owner->nome}}</td>
+            <td>{{$sel->void_pattern->void->number}}</td>
             <td>{{$sel->getCost()}}</td>
-            <td>{{$sel->getCostCertification()}}</td>
-            <td>{{$sel->certification}}</td>
+            <td>{{$sel->getCertificationText()}}</td>
             <td>{{$sel->expiration}}</td>
             <td>
                 {{--<a class="btn btn-primary btn-xs"--}}
                 {{--href="{{route($Page->link.'.show',$sel->id)}}">--}}
                 {{--<i class="fa fa-edit"></i></a>--}}
-                {{--<button class="btn btn-danger btn-xs"--}}
-                {{--data-nome="Padrão: {{$sel->description}}"--}}
-                {{--data-href="{{route($Page->link.'.destroy',$sel->id)}}"--}}
-                {{--data-toggle="modal"--}}
-                {{--data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i>--}}
-                {{--</button>--}}
+                <button class="btn btn-danger btn-xs"
+                        data-nome="Padrão: {{$sel->pattern->getResume()}}"
+                        data-href="{{route($Page->link.'.destroy',$sel->id)}}"
+                        data-toggle="modal"
+                        data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i>
+                </button>
             </td>
         </tr>
     @endforeach
@@ -41,10 +39,9 @@
     <tr>
         <th>#</th>
         <th>Descrição</th>
-        <th>Collaborador</th>
-        <th>Quantidade</th>
+        <th>Colaborador</th>
+        <th>Void</th>
         <th>Custo</th>
-        <th>Custo Cert.</th>
         <th>Certificado</th>
         <th>Validade</th>
         <th>Ações</th>

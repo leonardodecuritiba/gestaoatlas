@@ -21,9 +21,10 @@ class ToolStock extends Model {
 		'tool_id',
 		'owner_id',
 		'void_tool_id',
-		'expiration',
 		'cost'
 	];
+
+	// ************************** FUNCTIONS **********************************
 
 
 	public function setVoid( $vold_tool_id ) {
@@ -59,16 +60,8 @@ class ToolStock extends Model {
 		return DataHelper::getFloat2RealMoeda( $this->attributes['cost'] );
 	}
 
-	public function getExpiration() {
-		return DataHelper::getPrettyDate( $this->attributes['expiration'] );
-	}
-
 	public function setCostAttribute( $value ) {
 		return $this->attributes['cost'] = DataHelper::getReal2Float( $value );
-	}
-
-	public function setExpirationAttribute( $value ) {
-		return $this->attributes['expiration'] = DataHelper::setDate( $value );
 	}
 
 	// ************************** RELASHIONSHIP **********************************

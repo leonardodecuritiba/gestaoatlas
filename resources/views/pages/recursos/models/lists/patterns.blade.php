@@ -5,7 +5,6 @@
         <th>#</th>
         <th>Descrição</th>
         <th>Collaborador</th>
-        <th>Quantidade</th>
         <th>Custo</th>
         <th>Custo Cert.</th>
         <th>Certificado</th>
@@ -18,8 +17,7 @@
         <tr>
             <td>{{$sel->id}}</td>
             <td>{{$sel->pattern->description}}</td>
-            <td>{{$sel->collaborator->nome}}</td>
-            <td>{{$sel->quantity}}</td>
+            <td>{{$sel->owner->nome}}</td>
             <td>{{$sel->getCost()}}</td>
             <td>{{$sel->getCostCertification()}}</td>
             <td>{{$sel->certification}}</td>
@@ -42,7 +40,6 @@
         <th>#</th>
         <th>Descrição</th>
         <th>Collaborador</th>
-        <th>Quantidade</th>
         <th>Custo</th>
         <th>Custo Cert.</th>
         <th>Certificado</th>
