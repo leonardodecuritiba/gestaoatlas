@@ -22,12 +22,12 @@
                 {{--<a class="btn btn-primary btn-xs"--}}
                 {{--href="{{route($Page->link.'.show',$sel->id)}}">--}}
                 {{--<i class="fa fa-edit"></i></a>--}}
-                <button class="btn btn-danger btn-xs"
-                        data-nome="Ferramenta: {{$sel->tool->getResume()}}"
-                        data-href="{{route($Page->link.'.destroy',$sel->id)}}"
-                        data-toggle="modal"
-                        data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i>
-                </button>
+                {{--<button class="btn btn-danger btn-xs"--}}
+                {{--data-nome="Ferramenta: {{$sel->tool->getResume()}}"--}}
+                {{--data-href="{{route($Page->link.'.destroy',$sel->id)}}"--}}
+                {{--data-toggle="modal"--}}
+                {{--data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i>--}}
+                {{--</button>--}}
             </td>
         </tr>
     @endforeach
