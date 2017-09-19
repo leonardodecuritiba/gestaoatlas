@@ -11,8 +11,7 @@
             </div>
         </div>
         <div class="clearfix"></div>
-        @if(isset($Data))
-            {{Form::model($Data,
+        {{Form::model($Data,
             array(
                 'route' => array($Page->link.'.update', $Data->id),
                 'method' => 'PATCH',
@@ -20,11 +19,6 @@
                 'data-parsley-validate'
             )
             )}}
-        @else
-            {!! Form::open(['route' => $Page->link.'.store',
-                'method' => 'POST',
-                'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
-        @endif
         <section class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
@@ -33,7 +27,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        @include('pages.recursos.tools.admin.form')
+                        @include($Page->view_folder . '.forms.' . $Page->extras['type'])
                     </div>
                 </div>
             </div>
@@ -51,7 +45,6 @@
             </div>
         </section>
         {{ Form::close() }}
-
     </div>
     <!-- /page content -->
 

@@ -4,8 +4,9 @@
     <tr>
         <th>#</th>
         <th>Descrição</th>
-        <th>Responsável</th>
-        <th>Void</th>
+        <th>Categoria</th>
+        <th>Marca</th>
+        <th>Unidade</th>
         <th>Custo</th>
         <th>Ações</th>
     </tr>
@@ -14,9 +15,10 @@
     @foreach ($Buscas as $sel)
         <tr>
             <td>{{$sel->id}}</td>
-            <td>{{$sel->tool->getResume()}}</td>
-            <td>{{$sel->owner->nome}}</td>
-            <td>{{$sel->void_tool->void->number}}</td>
+            <td>{{$sel->description}}</td>
+            <td>{{$sel->getCategoryText()}}</td>
+            <td>{{$sel->getBrandText()}}</td>
+            <td>{{$sel->getUnityText()}}</td>
             <td>{{$sel->getCost()}}</td>
             <td>
                 <a class="btn btn-primary btn-xs"

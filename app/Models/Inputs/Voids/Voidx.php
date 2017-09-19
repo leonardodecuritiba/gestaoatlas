@@ -24,6 +24,10 @@ class Voidx extends Model {
 		return;
 	}
 
+	public function remove() {
+		return $this->update( [ 'used' => 1 ] );
+	}
+
 	static public function setUsed( $id ) {
 		return self::find( $id )->update( [ 'used' => 1 ] );
 	}

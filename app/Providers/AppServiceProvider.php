@@ -3,15 +3,19 @@
 namespace App\Providers;
 
 use App\Kit;
+use App\Models\Inputs\Pattern;
 use App\Models\Inputs\Stocks\PatternStock;
 use App\Models\Inputs\Stocks\ToolStock;
+use App\Models\Inputs\Tool;
 use App\Models\Inputs\Voids\VoidPattern;
 use App\Models\Inputs\Voids\VoidTool;
 use App\Models\Inputs\Voids\Voidx;
 use App\Observers\KitsObserver;
+use App\Observers\PatternsObserver;
 use App\Observers\PatternStocksObserver;
 use App\Observers\PecasObserver;
 use App\Observers\ServicosObserver;
+use App\Observers\ToolsObserver;
 use App\Observers\ToolStocksObserver;
 use App\Observers\VoidPatternsObserver;
 use App\Observers\VoidsObserver;
@@ -41,9 +45,11 @@ class AppServiceProvider extends ServiceProvider
 	    Voidx::observe( VoidsObserver::class );
 
 	    //tools
+	    Tool::observe( ToolsObserver::class );
 	    VoidTool::observe( VoidToolsObserver::class );
 	    ToolStock::observe( ToolStocksObserver::class );
 	    //patterns
+	    Pattern::observe( PatternsObserver::class );
 	    VoidPattern::observe( VoidPatternsObserver::class );
 	    PatternStock::observe( PatternStocksObserver::class );
 

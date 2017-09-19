@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ToolStocksObserver {
 	/**
-	 * Listen to the User created event.
+	 * Listen to the ToolStock created event.
 	 *
 	 * @param  ToolStock $data
 	 *
@@ -25,4 +25,14 @@ class ToolStocksObserver {
 		$data->security_id = SecurityTrait::setCreate( Auth::user() );
 	}
 
+	/**
+	 * Listen to the ToolStock deleting event.
+	 *
+	 * @param  ToolStock $data
+	 *
+	 * @return void
+	 */
+	public function deleting( ToolStock $data ) {
+		$data->void_tool->delete();
+	}
 }

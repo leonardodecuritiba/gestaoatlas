@@ -4,6 +4,7 @@ namespace App\Models\Inputs;
 
 use App\Colaborador;
 use App\Helpers\DataHelper;
+use App\Models\Inputs\Stocks\PatternStock;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -75,5 +76,9 @@ class Pattern extends Model
 
 	public function collaborators() {
 		return $this->belongsToMany( Colaborador::class, 'pattern_stocks', 'idpattern', 'idcolaborador' );
+	}
+
+	public function stocks() {
+		return $this->hasMany( PatternStock::class );
 	}
 }

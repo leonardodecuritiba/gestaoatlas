@@ -25,4 +25,15 @@ class PatternStocksObserver {
 		$data->security_id = SecurityTrait::setCreate( Auth::user() );
 	}
 
+
+	/**
+	 * Listen to the ToolStock deleting event.
+	 *
+	 * @param  PatternStock $data
+	 *
+	 * @return void
+	 */
+	public function deleting( PatternStock $data ) {
+		$data->void_pattern->delete();
+	}
 }

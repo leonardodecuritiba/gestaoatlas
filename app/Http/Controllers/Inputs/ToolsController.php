@@ -19,13 +19,14 @@ class ToolsController extends Controller
 {
 	private $Page;
 	private $colaborador;
-	private $view_folder = "pages.recursos.tools";
+	private $view_folder = "pages.recursos.models";
 	private $route = "tools";
 
 	public function __construct() {
 		$this->colaborador = Auth::user()->colaborador;
 		$this->Page        = (object)[
 			'link'              => $this->route,
+			'view_folder'       => $this->view_folder,
 			'Target'            => "Ferramenta",
 			'Targets'           => "Ferramentas",
 			'Titulo'            => "Ferramentas",
@@ -42,24 +43,19 @@ class ToolsController extends Controller
 	}
 
 	public function index() {
-		$this->Page->extras['tools'] = Tool::with( 'unity', 'brand', 'category' )->get();
+		$this->Page->extras['categories'] = Category::pluck( 'description', 'id' );
+		$this->Page->extras['unities']    = Unidade::pluck( 'codigo', 'idunidade' );
+		$this->Page->extras['brands']     = Brand::pluck( 'description', 'id' );
+
+		$this->Page->view_folder     = "pages.recursos.models";
 		$this->Page->extras['type']  = 'tools';
-		$this->Page->titulo_primario = "Listagem de Padrões";
+		$this->Page->titulo_primario = "Listagem de Ferramentas";
 
-		return view( $this->view_folder . '.admin.index')
-			->with('Page', $this->Page);
-	}
+		$Buscas = Tool::with( 'unity', 'brand', 'category' )->get();
 
-	public function create() {
-		$this->Page->extras['categories'] = Category::pluck('description', 'id');
-		$this->Page->extras['unities']    = Unidade::pluck('codigo', 'idunidade');
-		$this->Page->extras['brands']     = Brand::pluck('description', 'id');
-		$this->Page->extras['type']       = 'tools';
-		$this->Page->titulo_primario      = "Cadastrar ";
-		$this->Page->titulo_secundario    = "Dados do " . $this->Page->Target;
-
-		return view( $this->view_folder . '.admin.master')
-			->with('Page', $this->Page);
+		return view( $this->Page->view_folder . '.index' )
+			->with( 'Page', $this->Page )
+			->with( 'Buscas', $Buscas );
 	}
 
 	public function show($id) {
@@ -71,7 +67,7 @@ class ToolsController extends Controller
 		$this->Page->titulo_primario      = "Editar ";
 		$this->Page->titulo_secundario    = "Dados do " . $this->Page->Target;
 
-		return view( $this->view_folder . '.admin.master')
+		return view( $this->Page->view_folder . '.master' )
 			->with('Page', $this->Page)
 			->with('Data', $Pattern);
 	}
@@ -98,7 +94,6 @@ class ToolsController extends Controller
 	public function destroy($id) {
 		$data = Tool::findOrFail($id);
 		$data->delete();
-
 		return response()->json([ 'status'   => '1',
 		                          'response' => $this->Page->msg_rem]);
 	}

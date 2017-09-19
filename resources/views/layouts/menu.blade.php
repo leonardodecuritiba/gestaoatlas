@@ -109,7 +109,6 @@
                             <li><a href="{{route('voids.index')}}">Void Patrimônio</a></li>
                             <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{route('tools.create')}}">Cadastro</a></li>
                                     <li><a href="{{route('tools.index')}}">Modelos</a></li>
                                     <li><a href="{{ route('tools.stocks') }}">Estoque</a></li>
                                     <li><a href="{{route('tools.requisicoes')}}">Requisições <span
@@ -118,7 +117,6 @@
                             </li>
                             <li><a>Padrões<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{route('patterns.create')}}">Cadastro</a></li>
                                     <li><a href="{{route('patterns.index')}}">Modelos</a></li>
                                     <li><a href="{{ route('patterns.stocks') }}">Estoque</a></li>
                                     <li><a href="{{route('patterns.requisicoes')}}">Requisições <span

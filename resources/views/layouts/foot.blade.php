@@ -40,6 +40,7 @@
             affixesStay: true
         });
     }
+
     function initMaskMoney(selector) {
         $(selector).maskMoney({
             prefix: 'R$ ',
@@ -170,13 +171,13 @@
     //    calender_style: "picker_4"
     var locale = {
         format: "DD/MM/YYYY",
-                separator: " - ",
-                applyLabel: "Aplicar",
-                cancelLabel: "Cancelar",
-                fromLabel: "De",
-                toLabel: "A",
-                customRangeLabel: "Customizado",
-                daysOfWeek: [
+        separator: " - ",
+        applyLabel: "Aplicar",
+        cancelLabel: "Cancelar",
+        fromLabel: "De",
+        toLabel: "A",
+        customRangeLabel: "Customizado",
+        daysOfWeek: [
             "Dom",
             "Seg",
             "Ter",
@@ -186,20 +187,20 @@
             "Sáb"
         ],
         monthNames: [
-        "Janeiro",
-        "Fevereiro",
-        "Março",
-        "Abril",
-        "Maio",
-        "Junho",
-        "Julho",
-        "Agosto",
-        "Setembro",
-        "Outubro",
-        "Novembro",
-        "Dezembro"
-    ],
-            "firstDay": 1
+            "Janeiro",
+            "Fevereiro",
+            "Março",
+            "Abril",
+            "Maio",
+            "Junho",
+            "Julho",
+            "Agosto",
+            "Setembro",
+            "Outubro",
+            "Novembro",
+            "Dezembro"
+        ],
+        "firstDay": 1
     };
     var dateOptionsToNow = {
         locale: locale,
@@ -222,7 +223,7 @@
         $('.data-every').daterangepicker(dateOptionsEvery);
         $('.data-to-now').daterangepicker(dateOptionsToNow);
         $('.data-from-now').daterangepicker(dateOptionsFromNow);
-        $('.data-every, .data-to-now, .data-from-now').on('apply.daterangepicker', function(ev, picker) {
+        $('.data-every, .data-to-now, .data-from-now').on('apply.daterangepicker', function (ev, picker) {
             $(this).val(picker.startDate.format(locale.format));
         });
     });
@@ -230,9 +231,39 @@
 
 
 <script>
-    $(document).ready(function () {
-        $_LOADING_ = $("div.loading");
-    });
+    var $_LOADING_ = $("div.loading");
+
+    function ajaxRemove($el) {
+        $.ajax({
+            url: href_,
+            type: 'post',
+            data: {"_method": 'delete', "_token": "{{ csrf_token() }}"},
+            dataType: "json",
+
+            beforeSend: function () {
+                $($_LOADING_).show();
+            },
+            complete: function (xhr, textStatus) {
+                $($_LOADING_).hide();
+            },
+            error: function (xhr, textStatus) {
+                console.log('xhr-error: ' + xhr);
+                console.log('textStatus-error: ' + textStatus);
+            },
+            /**/
+            success: function (json) {
+                console.log(json);
+                if (json.status) {
+                    console.log(json.response);
+                    $($el).remove();
+                } else {
+                    alert(json);
+                }
+            }
+        });
+    }
+
+
     $(document).ready(function () {
         $('#buscar').keypress(function (e) {
             if (e.which == 13) {
@@ -241,52 +272,23 @@
             }
         });
     });
-
     <!-- script remoção -->
     $(document).ready(function () {
 
-        $('div#modalRemocao').on('show.bs.modal', function(e) {
+        $('div#modalRemocao').on('show.bs.modal', function (e) {
             $origem = $(e.relatedTarget);
             nome_ = $($origem).data('nome');
             href_ = $($origem).data('href');
             $el = $($origem).data('elemento');
-            $(this).find('.modal-body').html('Você realmente deseja remover <strong>'+nome_ + '</strong> e suas relações? Esta ação é irreversível!');
-            $(this).find('.btn-ok').click(function(){
-
-//                console.log($el);return;
+            $(this).find('.modal-body').html('Você realmente deseja remover <strong>' + nome_ + '</strong> e suas relações? Esta ação é irreversível!');
+            $(this).find('.btn-ok').unbind('click');
+            $(this).find('.btn-ok').click(function () {
                 $('div#modalRemocao').modal('hide');
-                $.ajax({
-                    url: href_,
-                    type: 'post',
-                    data: {"_method": 'delete', "_token": "{{ csrf_token() }}"},
-                    dataType: "json",
-                    /*
-                     beforeSend: function () {
-                     $(".onLoading").show();
-                     },
-                     complete: function (xhr, textStatus) {
-                     $(".onLoading").hide();
-                     },
-                     error: function (xhr, textStatus) {
-                     console.log('xhr-error: ' + xhr);
-                     console.log('textStatus-error: ' + textStatus);
-                     },
-                     */
-                    success: function (json) {
-                        if(json.status){
-                            console.log(json.response);
-
-                            $el = $($origem).closest('tr');
-                            if($el.length == 0){
-                                $el = $($origem).closest('.tr');
-                            }
-                            $($el).remove();
-                        } else {
-                            alert(json.response);
-                        }
-                    }
-                });
-
+                $el = $($origem).closest('tr');
+                if ($el.length == 0) {
+                    $el = $($origem).closest('.tr');
+                }
+                ajaxRemove($el);
             });
         });
     });
@@ -294,19 +296,21 @@
 
 <!-- script ativar/desativar -->
 <script>
-    function ajaxActive($target_,action_){
+    function ajaxActive($target_, action_) {
         var href_ = '{{url('ajax')}}';
-        if(typeof $($target_).data('href') != 'undefined'){
+        if (typeof $($target_).data('href') != 'undefined') {
             href_ = $($target_).data('href');
         }
         $.ajax({
             url: href_,
             type: 'GET',
-            data: {id: $($target_).data('id'),
+            data: {
+                id: $($target_).data('id'),
                 table: $($target_).data('table'),
                 pk: $($target_).data('pk'),
                 sk: $($target_).data('sk'),
-                action: action_},
+                action: action_
+            },
             dataType: "json",
             error: function (xhr, textStatus) {
                 console.log('xhr-error: ' + xhr.responseText);
@@ -314,7 +318,7 @@
             },
             success: function (json) {
                 console.log(json);
-                if(json.status==1) {
+                if (json.status == 1) {
                     if (json.valor == 1) {
                         $($target_).data('value', 1);
                         $($target_).html('<i class="fa fa-eye-slash"></i>Desativar');
@@ -328,9 +332,10 @@
             }
         });
     }
+
     $(document).ready(function () {
-        $('a.btn-active').click(function(){
-            if($(this).data('value')){
+        $('a.btn-active').click(function () {
+            if ($(this).data('value')) {
                 ajaxActive($(this), 'desativar');
             } else {
                 ajaxActive($(this), 'ativar');

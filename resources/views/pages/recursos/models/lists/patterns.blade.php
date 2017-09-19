@@ -4,11 +4,10 @@
     <tr>
         <th>#</th>
         <th>Descrição</th>
-        <th>Collaborador</th>
+        <th>Marca</th>
+        <th>Medida</th>
         <th>Custo</th>
-        <th>Custo Cert.</th>
-        <th>Certificado</th>
-        <th>Validade</th>
+        <th>Classe</th>
         <th>Ações</th>
     </tr>
     </thead>
@@ -16,36 +15,23 @@
     @foreach ($Buscas as $sel)
         <tr>
             <td>{{$sel->id}}</td>
-            <td>{{$sel->pattern->description}}</td>
-            <td>{{$sel->owner->nome}}</td>
+            <td>{{$sel->description}}</td>
+            <td>{{$sel->getBrandText()}}</td>
+            <td>{{$sel->getMeasure()}}</td>
             <td>{{$sel->getCost()}}</td>
-            <td>{{$sel->getCostCertification()}}</td>
-            <td>{{$sel->certification}}</td>
-            <td>{{$sel->expiration}}</td>
+            <td>{{$sel->class}}</td>
             <td>
-                {{--<a class="btn btn-primary btn-xs"--}}
-                {{--href="{{route($Page->link.'.show',$sel->id)}}">--}}
-                {{--<i class="fa fa-edit"></i></a>--}}
-                {{--<button class="btn btn-danger btn-xs"--}}
-                {{--data-nome="Padrão: {{$sel->description}}"--}}
-                {{--data-href="{{route($Page->link.'.destroy',$sel->id)}}"--}}
-                {{--data-toggle="modal"--}}
-                {{--data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i>--}}
-                {{--</button>--}}
+                <a class="btn btn-primary btn-xs"
+                   href="{{route($Page->link.'.show',$sel->id)}}">
+                    <i class="fa fa-edit"></i></a>
+                <button class="btn btn-danger btn-xs"
+                        data-nome="Padrão: {{$sel->description}}"
+                        data-href="{{route($Page->link.'.destroy',$sel->id)}}"
+                        data-toggle="modal"
+                        data-target="#modalRemocao"><i class="fa fa-trash-o fa-sm"></i>
+                </button>
             </td>
         </tr>
     @endforeach
-    <tfoot>
-    <tr>
-        <th>#</th>
-        <th>Descrição</th>
-        <th>Collaborador</th>
-        <th>Custo</th>
-        <th>Custo Cert.</th>
-        <th>Certificado</th>
-        <th>Validade</th>
-        <th>Ações</th>
-    </tr>
-    </tfoot>
     </tbody>
 </table>

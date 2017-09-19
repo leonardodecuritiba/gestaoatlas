@@ -16,15 +16,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Zizaco\Entrust\EntrustFacade;
 
-class PatternsController extends Controller
-{
+class PatternsController extends Controller {
 	private $Page;
 	private $colaborador;
+	private $view_folder = "pages.recursos.models";
+	private $route = "patterns";
 
 	public function __construct() {
 		$this->colaborador = Auth::user()->colaborador;
-		$this->Page        = (object)[
-			'link'              => "patterns",
+		$this->Page        = (object) [
+			'link'              => $this->route,
+			'view_folder'       => $this->view_folder,
 			'Target'            => "Padrão",
 			'Targets'           => "Padrões",
 			'Titulo'            => "Padrões",
@@ -41,11 +43,30 @@ class PatternsController extends Controller
 	}
 
 	public function index() {
-		$this->Page->extras['patterns'] = Pattern::with('brand', 'unity')->get();
-		$this->Page->titulo_primario    = "Listagem de Padrões";
+		$this->Page->extras['unities'] = Unidade::pluck( 'codigo', 'idunidade' );
+		$this->Page->extras['brands']  = Brand::pluck( 'description', 'id' );
+		$this->Page->extras['type']    = $this->route;
+		$this->Page->titulo_primario   = "Listagem de Padrões";
 
-		return view('pages.recursos.patterns.admin.index')
-			->with('Page', $this->Page);
+		$Buscas = Pattern::with( 'brand', 'unity' )->get();
+
+		return view( $this->Page->view_folder . '.index' )
+			->with( 'Page', $this->Page )
+			->with( 'Buscas', $Buscas );
+	}
+
+	public function show( $id ) {
+
+		$Pattern                       = Pattern::findOrFail( $id );
+		$this->Page->extras['unities'] = Unidade::pluck( 'codigo', 'idunidade' );
+		$this->Page->extras['brands']  = Brand::pluck( 'description', 'id' );
+		$this->Page->extras['type']    = $this->route;
+		$this->Page->titulo_primario   = "Editar ";
+		$this->Page->titulo_secundario = "Dados do " . $this->Page->Target;
+
+		return view( $this->Page->view_folder . '.master' )
+			->with( 'Page', $this->Page )
+			->with( 'Data', $Pattern );
 	}
 
 
@@ -67,134 +88,113 @@ class PatternsController extends Controller
 		session()->forget( 'mensagem' );
 		session( [ 'mensagem' => $this->Page->msg_stock_add ] );
 
-		return redirect()->route( 'tools.stocks' );
+		return redirect()->route( $this->route . '.stocks' );
 	}
 
+	public function store( Request $request ) {
+		Pattern::create( $request->all() );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $this->Page->msg_add ] );
 
-	public function create() {
-		$this->Page->extras['unities'] = Unidade::pluck('codigo', 'idunidade');
-		$this->Page->extras['brands']  = Brand::pluck('description', 'id');
-		$this->Page->titulo_primario   = "Cadastrar ";
-		$this->Page->titulo_secundario = "Dados do " . $this->Page->Target;
-
-		return view('pages.recursos.patterns.admin.master')
-			->with('Page', $this->Page);
-	}
-
-	public function show($id) {
-		$Pattern                       = Pattern::findOrFail($id);
-		$this->Page->extras['unities'] = Unidade::pluck('codigo', 'idunidade');
-		$this->Page->extras['brands']  = Brand::pluck('description', 'id');
-		$this->Page->titulo_primario   = "Editar ";
-		$this->Page->titulo_secundario = "Dados do " . $this->Page->Target;
-
-		return view('pages.recursos.patterns.admin.master')
-			->with('Page', $this->Page)
-			->with('Data', $Pattern);
-	}
-
-	public function store(Request $request) {
-		Pattern::create($request->all());
-		session()->forget('mensagem');
-		session(['mensagem' => $this->Page->msg_add]);
-
-		return redirect()->route('patterns.index');
+		return redirect()->route( $this->route . '.index' );
 
 	}
 
-	public function update(Request $request, $id) {
-		$Patern = Pattern::findOrFail($id);
-		$Patern->update($request->all());
-		session()->forget('mensagem');
-		session(['mensagem' => $this->Page->msg_upd]);
+	public function update( Request $request, $id ) {
+		$Patern = Pattern::findOrFail( $id );
+		$Patern->update( $request->all() );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $this->Page->msg_upd ] );
 
-		return redirect()->route('patterns.index');
+		return redirect()->route( $this->route . '.index' );
 	}
 
-	public function destroy($id) {
-		$data = Pattern::find($id);
+	public function destroy( $id ) {
+		$data = Pattern::find( $id );
 		$data->delete();
 
-		return response()->json([ 'status' => '1',
-		                          'response' => $this->Page->msg_rem]);
+		return response()->json( [
+			'status'   => '1',
+			'response' => $this->Page->msg_rem
+		] );
 	}
 
 
-	public function listRequests(Request $request) {
-		return redirect()->route('patterns.index');
+	public function listRequests( Request $request ) {
+		return redirect()->route( $this->route . '.index' );
 
 		$this->Page->extras['requests'] = RequestSeloLacre::seloLacres()->get();
 		$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
 		$this->Page->extras['tecnicos'] = Tecnico::all();
 
-		return view('pages.recursos.selolacres.admin.requests')
-			->with('Page', $this->Page);
+		return view( 'pages.recursos.selolacres.admin.requests' )
+			->with( 'Page', $this->Page );
 	}
 
-	public function getReports(Request $request) {
-		$Buscas                         = NULL;
+	public function getReports( Request $request ) {
+		$Buscas                         = null;
 		$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
 		$this->Page->extras['tecnicos'] = Tecnico::all();
 
-		return view('pages.recursos.selolacres.admin.reports')
-			->with('Page', $this->Page)
-			->with('Buscas', $Buscas);
+		return view( 'pages.recursos.selolacres.admin.reports' )
+			->with( 'Page', $this->Page )
+			->with( 'Buscas', $Buscas );
 	}
 
 	//Admin/Gestor
 
-	public function deniedRequest(Request $request) {
-		$data              = $request->only('id', 'response');
+	public function deniedRequest( Request $request ) {
+		$data              = $request->only( 'id', 'response' );
 		$data['idmanager'] = $this->colaborador->idcolaborador;
-		$mensagem          = RequestSeloLacre::deny($data);
-		session()->forget('mensagem');
-		session(['mensagem' => $mensagem]);
+		$mensagem          = RequestSeloLacre::deny( $data );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
 
-		return redirect()->route('selolacres.requisicoes');
+		return redirect()->route( 'selolacres.requisicoes' );
 	}
 
-	public function postFormPassRequest(Request $request) {
-		$data              = $request->only(['id', 'valores']);
+	public function postFormPassRequest( Request $request ) {
+		$data              = $request->only( [ 'id', 'valores' ] );
 		$data['idmanager'] = $this->colaborador->idcolaborador;
-		$mensagem          = RequestSeloLacre::sendSeloLacreRequest($data);
-		session()->forget('mensagem');
-		session(['mensagem' => $mensagem]);
+		$mensagem          = RequestSeloLacre::sendSeloLacreRequest( $data );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
 
-		return redirect()->route('selolacres.requisicoes');
+		return redirect()->route( 'selolacres.requisicoes' );
 	}
 
 	//Tecnico
 
-	public function getFormRequest(Request $request) {
+	public function getFormRequest( Request $request ) {
 		$Tecnico                       = $this->colaborador->tecnico;
 		$this->Page->search_no_results = "Nenhuma Requisição encontrada!";
 		$max_selos_can_request         = $Tecnico->getMaxSelosCanRequest();
 		$max_lacres_can_request        = $Tecnico->getMaxLacresCanRequest();
-		$can_request                   = ($Tecnico->waitingRequisicoesSeloLacre()->count() < 1);
+		$can_request                   = ( $Tecnico->waitingRequisicoesSeloLacre()->count() < 1 );
 		$this->Page->extras            = [
 			'selos'                  => $Tecnico->selos,
 			'lacres'                 => $Tecnico->lacres,
 			'max_selos_can_request'  => $max_selos_can_request,
 			'max_lacres_can_request' => $max_lacres_can_request,
-			'can_request_selos'      => (($max_selos_can_request > 0) && ($can_request)),
-			'can_request_lacres'     => (($max_lacres_can_request > 0) && ($can_request)),
+			'can_request_selos'      => ( ( $max_selos_can_request > 0 ) && ( $can_request ) ),
+			'can_request_lacres'     => ( ( $max_lacres_can_request > 0 ) && ( $can_request ) ),
 			'requisicoes'            => $Tecnico->requisicoesSeloLacre(),
 		];
 
-		return view('pages.recursos.selolacres.tecnico.requisition')
-			->with('Page', $this->Page);
+		return view( 'pages.recursos.selolacres.tecnico.requisition' )
+			->with( 'Page', $this->Page );
 	}
 
-	public function postFormRequest(Request $request) {
-		$mensagem = RequestSeloLacre::openSeloLacreRequest([
+	public function postFormRequest( Request $request ) {
+		$mensagem = RequestSeloLacre::openSeloLacreRequest( [
 			'idrequester' => $this->colaborador->idcolaborador,
-			'parameters'  => $request->only(['opcao', 'quantidade']),
-			'reason'      => $request->get('reason'),
-		]);
-		session()->forget('mensagem');
-		session(['mensagem' => $mensagem]);
+			'parameters'  => $request->only( [ 'opcao', 'quantidade' ] ),
+			'reason'      => $request->get( 'reason' ),
+		] );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
 
-		return redirect()->route('selolacres.requisicao');
+		return redirect()->route( 'selolacres.requisicao' );
 	}
 
 

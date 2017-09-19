@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 
 class VoidToolsObserver {
 	/**
-	 * Listen to the User created event.
+	 * Listen to the VoidTool created event.
 	 *
 	 * @param  VoidTool $data
 	 *
@@ -25,4 +25,14 @@ class VoidToolsObserver {
 		$data->security_id = SecurityTrait::setCreate( Auth::user() );
 	}
 
+	/**
+	 * Listen to the VoidTool deleting event.
+	 *
+	 * @param  VoidTool $data
+	 *
+	 * @return void
+	 */
+	public function deleting( VoidTool $data ) {
+		$data->void->remove();
+	}
 }
