@@ -292,9 +292,11 @@ class OrdemServico extends Model
     {
         if (isset($request['custos_isento'])) {
             $this->attributes['custos_isento'] = 1;
+            $custos = $this->attributes['custos_deslocamento'] + $this->attributes['pedagios'] + $this->attributes['outros_custos'];
             $this->attributes['custos_deslocamento'] = 0;
             $this->attributes['pedagios'] = 0;
             $this->attributes['outros_custos'] = 0;
+            $this->attributes['valor_final'] = $this->attributes['valor_final'] - $custos;
 //            $this->update_valores();
         }
 //        $this->attributes['numero_chamado'] = $request['numero_chamado'];
