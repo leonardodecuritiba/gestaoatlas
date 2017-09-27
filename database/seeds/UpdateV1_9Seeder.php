@@ -15,17 +15,17 @@ class UpdateV1_9Seeder extends Seeder
 	    $start = microtime( true );
 
 
-//	    $data = [
-//		    //máximo número de lacres que usuário pode ter antes de requisitar novos
-//		    ['meta_key' => 'requests_max_patterns', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
-//		    //máximo número de selos que usuário pode ter antes de requisitar novos
-//		    ['meta_key' => 'requests_max_tools', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
-//		    //máximo número de lacres que usuário pode ter antes de requisitar novos
-//		    ['meta_key' => 'requests_max_patterns_req', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
-//		    //máximo número de selos que usuário pode ter antes de requisitar novos
-//		    ['meta_key' => 'requests_max_tools_req', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
-//	    ];
-//	    \App\Models\Ajustes\Ajuste::insert($data);
+	    $data = [
+		    //máximo número de lacres que usuário pode ter antes de requisitar novos
+		    ['meta_key' => 'requests_max_patterns', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
+		    //máximo número de selos que usuário pode ter antes de requisitar novos
+		    ['meta_key' => 'requests_max_tools', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
+		    //máximo número de lacres que usuário pode ter antes de requisitar novos
+		    ['meta_key' => 'requests_max_patterns_req', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
+		    //máximo número de selos que usuário pode ter antes de requisitar novos
+		    ['meta_key' => 'requests_max_tools_req', 'meta_value' => '10', 'created_at' => \Carbon\Carbon::now()->toDateTimeString()],
+	    ];
+	    \App\Models\Ajustes\Ajuste::insert($data);
 
 //	    $this->call( StatusRequestSeeder::class );
 //	    $this->call( TypeRequestSeeder::class );
