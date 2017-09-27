@@ -93,53 +93,12 @@ class OrdemServicoController extends Controller
                 }
                 $OrdemServicosPassadas = $Search;
             }
-//            return $Search->toArray();
         }
-//        return $OrdemServicosMesAtual;
-//        return $OrdemServicosPassadas;
-//        return $OrdemServicosMesAtual;
-
-//        $Search = $Search->map(function($item){
-//            $item->id = 0;
-//            return $item;
-//        });
-//        foreach ($Search as $key => $search){
-//            print_r($key);
-//            print_r('<pre>');
-//            print_r($search);
-//            print_r('</pre>');
-//        }
-//        exit;
-//        return 0;
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('OrdemServicosMesAtual', $OrdemServicosMesAtual)
             ->with('OrdemServicosPassadas', $OrdemServicosPassadas);
     }
-
-//    public function index_centro_custo(Request $request)
-//    {
-//        $this->Page->extras['situacao_ordem_servico'] = OrdemServico::getSituacaoSelect();
-//
-//        $query = self::filter_situacao($data)
-//            ->with('centro_custo')
-//            ->whereNotNull('idcentro_custo')
-//            ->groupBy('idcentro_custo');
-//        if ($request->has('idcentro_custo') && ($request->get('idcentro_custo') != "")) {
-//            $query->where('idcentro_custo', $request->get('idcentro_custo'));
-//        }
-//        return $query;
-//
-//
-////        $data['idcentro_custo']
-//
-//        $Buscas = OrdemServico::filter_situacao_centro_custo($request->all())->get();
-//        $Buscas = Cliente::whereIn('idcliente', $Buscas->pluck('idcentro_custo'))->get();
-//        $this->Page->extras['centro_custos'] = $Buscas;
-//        return view('pages.' . $this->Page->link . '.index_centro_custo')
-//            ->with('Page', $this->Page)
-//            ->with('Buscas', $Buscas);
-//    }
 
     public function show_centro_custo(Request $request)
     {
@@ -171,16 +130,6 @@ class OrdemServicoController extends Controller
             $Kits = Kit::all();
             $Instrumentos = $OrdemServico->cliente->instrumentos;
             $Equipamentos = $OrdemServico->cliente->equipamentos;
-//            if (isset($request['busca'])) {
-//                $busca = $request['busca'];
-//                $documento = preg_replace('#[^0-9]#', '', $busca);
-//                $Buscas = $OrdemServico->cliente->instrumentos()
-//                    ->where('idmarca', 'like', '%' . $busca . '%')
-//                    ->orwhere('numero_serie', 'like', '%' . $documento . '%')
-//                    ->orwhere('descricao', 'like', '%' . $busca . '%')->get();
-//            } else {
-//                $Buscas = $OrdemServico->cliente->instrumentos;
-//            }
             return view('pages.' . $this->Page->link . '.show')
                 ->with('Page', $this->Page)
                 ->with('OrdemServico', $OrdemServico)

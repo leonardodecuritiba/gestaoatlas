@@ -4,6 +4,7 @@ namespace App;
 
 use App\Helpers\DataHelper;
 use App\Models\Ajustes\Ajuste;
+use App\Models\Requests\TypeRequest;
 use Illuminate\Database\Eloquent\Model;
 
 class Tecnico extends Model
@@ -38,25 +39,75 @@ class Tecnico extends Model
 
     public function requisicoesSeloLacre()
     {
-        return $this->colaborador->requisicoes;
+	    return $this->requisicoes('selo_lacres');
+    }
+    public function requisicoes($type)
+    {
+	    switch($type){
+		    case 'selo_lacres' :
+			    return $this->colaborador->requisicoes->whereIn('idtype',[TypeRequest::_TYPE_SELOS_, TypeRequest::_TYPE_LACRES_]);
+			    break;
+		    case 'patterns' :
+			    return $this->colaborador->requisicoes->where('idtype',TypeRequest::_TYPE_PADROES_);
+			    break;
+		    case 'tools' :
+			    return $this->colaborador->requisicoes->where('idtype',TypeRequest::_TYPE_FERRAMENTAS_);
+			    break;
+	    }
     }
 
     public function waitingRequisicoesSeloLacre()
     {
-        return $this->colaborador->requisicoes_waiting;
+        return $this->waitingRequisicoes('selo_lacres');
+    }
+
+    public function waitingRequisicoes($type)
+    {
+    	switch($type){
+		    case 'selo_lacres' :
+			    return $this->colaborador->requisicoes_waiting->whereIn('idtype',[TypeRequest::_TYPE_SELOS_, TypeRequest::_TYPE_LACRES_]);
+		    	break;
+		    case 'patterns' :
+			    return $this->colaborador->requisicoes_waiting->where('idtype',TypeRequest::_TYPE_PADROES_);
+		    	break;
+		    case 'tools' :
+			    return $this->colaborador->requisicoes_waiting->where('idtype',TypeRequest::_TYPE_FERRAMENTAS_);
+		    	break;
+	    }
     }
 
     public function getMaxSelosCanRequest()
     {
-        return (Ajuste::getValueByMetaKey('requests_max_selos') - $this->selos_disponiveis()->count());
+	    return $this->getMaxCanRequest('selos');
     }
 
     public function getMaxLacresCanRequest()
     {
-        return (Ajuste::getValueByMetaKey('requests_max_lacres') - $this->lacres_disponiveis()->count());
+        return $this->getMaxCanRequest('lacres');
     }
 
-    static public function outros($idtecnico)
+
+	public function getMaxCanRequest($type)
+	{
+		switch ($type){
+			case 'lacres':
+				return (Ajuste::getValueByMetaKey('requests_max_lacres') - $this->lacres_disponiveis()->count());
+				break;
+			case 'selos':
+				return (Ajuste::getValueByMetaKey('requests_max_selos') - $this->selos_disponiveis()->count());
+				break;
+			case 'patterns':
+				return (Ajuste::getValueByMetaKey('requests_max_patterns') - $this->patterns()->count());
+				break;
+			case 'tools':
+				return (Ajuste::getValueByMetaKey('requests_max_tools') - $this->tools()->count());
+				break;
+		}
+
+	}
+
+
+	static public function outros($idtecnico)
     {
         return self::where('idtecnico', '<>', $idtecnico)->get();
     }
@@ -183,4 +234,13 @@ class Tecnico extends Model
     {
         return $this->belongsTo('App\Colaborador', 'idcolaborador');
     }
+
+	public function patterns()
+	{
+		return $this->colaborador->patterns;
+	}
+	public function tools()
+	{
+		return $this->colaborador->tools;
+	}
 }

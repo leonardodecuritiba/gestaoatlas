@@ -56,38 +56,18 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('lancar-selos', 'SeloLacreController@lancarSelos')->name('selolacres.lancar_selos');
     Route::post('lancar-lacres', 'SeloLacreController@lancarLacres')->name('selolacres.lancar_lacres');
 
+    //REQUISIÇÕES
     Route::get('selolacres-requisicoes', 'SeloLacreController@listRequests')->name('selolacres.requisicoes');
     Route::get('selolacres-relatorios', 'SeloLacreController@getReports')->name('selolacres.relatorio');
 
-    Route::get('selolacres-requisicao', 'SeloLacreController@getFormRequest')->name('selolacres.requisicao');
-    Route::post('selolacres-requerer', 'SeloLacreController@postFormRequest')->name('selolacres.requerer');
-
-
-    //Admin
+	//REQUISIÇÕES - ADMIM
     Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
     Route::post('selolacres-repasse', 'SeloLacreController@postFormPassRequest')->name('selolacres.repasse');
     Route::post('selolacres-negar', 'SeloLacreController@deniedRequest')->name('selolacres.deny');
 
-});
-/*
-|--------------------------------------------------------------------------
-| Pattern Routes
-|--------------------------------------------------------------------------
-|
-|
-*/
-
-Route::group(['middleware' => ['auth']], function () {
-
-//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
-//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
-
-    Route::resource('patterns', 'Inputs\PatternsController');
-    Route::get('patterns-requisicoes', 'Inputs\PatternsController@listRequests')->name('patterns.requisicoes');
-	Route::get( 'patterns-stocks', 'Inputs\PatternsController@stocks' )->name( 'patterns.stocks' );
-	Route::match( [ 'POST' ], 'patterns-stocks-store', 'Inputs\PatternsController@stocksStore' )->name( 'patterns.stocksStore' );
-    //Admin
-//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+	//REQUISIÇÕES -TÉCNICO
+	Route::get('selolacres-requisicao', 'SeloLacreController@getFormRequest')->name('selolacres.requisicao');
+	Route::post('selolacres-requerer', 'SeloLacreController@postFormRequest')->name('selolacres.requerer');
 
 });
 /*
@@ -103,13 +83,46 @@ Route::group(['middleware' => ['auth']], function () {
 //    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
 //    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
 
-    Route::resource('tools', 'Inputs\ToolsController');
-    Route::get('tools-requisicoes', 'Inputs\ToolsController@listRequests')->name('tools.requisicoes');
+	Route::resource('tools', 'Inputs\ToolsController');
 	Route::get( 'tools-stocks', 'Inputs\ToolsController@stocks' )->name( 'tools.stocks' );
 	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
-    //Admin
-//    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
+
+	//REQUISIÇÕES - ADMIM
+	Route::get('tools-requisicoes', 'Inputs\ToolsController@listRequests')->name('tools.requisicoes');
+	Route::post('tools-repasse', 'Inputs\ToolsController@postFormPassRequest')->name('tools.repasse');
+	Route::post('tools-negar', 'Inputs\ToolsController@deniedRequest')->name('tools.deny');
+
+	//REQUISIÇÕES -TÉCNICO
+	Route::get('tools-requisicao', 'Inputs\ToolsController@getFormRequest')->name('tools.requisicao');
+	Route::post('tools-requerer', 'Inputs\ToolsController@postFormRequest')->name('tools.requerer');
 });
+/*
+|--------------------------------------------------------------------------
+| Pattern Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::group(['middleware' => ['auth']], function () {
+
+//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
+
+    Route::resource('patterns', 'Inputs\PatternsController');
+	Route::get( 'patterns-stocks', 'Inputs\PatternsController@stocks' )->name( 'patterns.stocks' );
+	Route::match( [ 'POST' ], 'patterns-stocks-store', 'Inputs\PatternsController@stocksStore' )->name( 'patterns.stocksStore' );
+
+	//REQUISIÇÕES - ADMIM
+	Route::get('patterns-requisicoes', 'Inputs\PatternsController@listRequests')->name('patterns.requisicoes');
+	Route::post('patterns-repasse', 'Inputs\PatternsController@postFormPassRequest')->name('patterns.repasse');
+	Route::post('patterns-negar', 'Inputs\PatternsController@deniedRequest')->name('patterns.deny');
+
+	//REQUISIÇÕES -TÉCNICO
+	Route::get('patterns-requisicao', 'Inputs\PatternsController@getFormRequest')->name('patterns.requisicao');
+	Route::post('patterns-requerer', 'Inputs\PatternsController@postFormRequest')->name('patterns.requerer');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Voids Routes

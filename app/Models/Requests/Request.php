@@ -29,6 +29,70 @@ class Request extends Model
      * ========================================================
      */
 
+	/*
+	 * PATTERNS ===============================================
+	 */
+	static public function openToolsRequest($data)
+	{
+		$idrequester = $data['idrequester'];
+		$parameters = $data['parameters'];
+		self::create([
+			'idtype' => TypeRequest::_TYPE_FERRAMENTAS_,
+			'idstatus' => StatusRequest::_STATUS_AGUARDANDO_,
+			'reason' => $data['reason'],
+			'parameters' => json_encode($parameters),
+			'idrequester' => $idrequester,
+		]);
+		return "Requisição de " . $parameters['opcao'] . " aberta com sucesso!";
+	}
+
+	static public function sendToolsRequest($data)
+	{
+		dd('sendToolsRequest');
+		$Request = self::accept($data);
+		$data['idtecnico'] = $Request->requester->tecnico->idtecnico;
+		if ($Request->idtype == TypeRequest::_TYPE_SELOS_) {
+			Selo::assign($data);
+		} elseif ($Request->idtype == TypeRequest::_TYPE_LACRES_) {
+			Lacre::assign($data);
+		}
+		return "Requisição aceita com sucesso!";
+	}
+
+	/*
+	 * PATTERNS ===============================================
+	 */
+	static public function openPatternsRequest($data)
+	{
+		$idrequester = $data['idrequester'];
+		$parameters = $data['parameters'];
+		self::create([
+			'idtype' => TypeRequest::_TYPE_PADROES_,
+			'idstatus' => StatusRequest::_STATUS_AGUARDANDO_,
+			'reason' => $data['reason'],
+			'parameters' => json_encode($parameters),
+			'idrequester' => $idrequester,
+		]);
+		return "Requisição de " . $parameters['opcao'] . " aberta com sucesso!";
+	}
+
+	static public function sendPatternsRequest($data)
+	{
+		dd('sendPatternsRequest');
+		$Request = self::accept($data);
+		$data['idtecnico'] = $Request->requester->tecnico->idtecnico;
+		if ($Request->idtype == TypeRequest::_TYPE_SELOS_) {
+			Selo::assign($data);
+		} elseif ($Request->idtype == TypeRequest::_TYPE_LACRES_) {
+			Lacre::assign($data);
+		}
+		return "Requisição aceita com sucesso!";
+	}
+
+    /*
+     * SELO-LACRE =============================================
+     */
+
     static public function openSeloLacreRequest($data)
     {
         $idrequester = $data['idrequester'];
@@ -55,6 +119,11 @@ class Request extends Model
         return "Requisição aceita com sucesso!";
     }
 
+
+	/*
+	 * DEFAULT =============================================
+	 */
+
     static public function accept($data)
     {
         $Data = self::findOrFail($data['id']);
@@ -73,7 +142,7 @@ class Request extends Model
             'idmanager' => $data['idmanager'],
             'response' => $data['response'],
         ]);
-        return "Requisição de negada com sucesso!";
+        return "Requisição negada com sucesso!";
     }
 
     /*
@@ -217,6 +286,28 @@ class Request extends Model
     public function scopeLacres($query)
     {
         return $query->where('idtype', TypeRequest::_TYPE_LACRES_);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeTools($query)
+    {
+        return $query->where('idtype', TypeRequest::_TYPE_FERRAMENTAS_);
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopePatterns($query)
+    {
+        return $query->where('idtype', TypeRequest::_TYPE_PADROES_);
     }
 
     /*

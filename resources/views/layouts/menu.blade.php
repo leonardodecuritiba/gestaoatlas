@@ -98,6 +98,7 @@
                     <li><a><i class="fa fa-building"></i> Gestão de Recursos <span
                                     class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
+                            <li><a href="{{route('voids.index')}}">Void Patrimônio</a></li>
                             <li><a>Selos/Lacres<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('selolacres.create')}}">Cadastro</a></li>
@@ -106,21 +107,18 @@
                                     {{--<li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>--}}
                                 </ul>
                             </li>
-                            <li><a href="{{route('voids.index')}}">Void Patrimônio</a></li>
                             <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('tools.index')}}">Modelos</a></li>
                                     <li><a href="{{ route('tools.stocks') }}">Estoque</a></li>
-                                    <li><a href="{{route('tools.requisicoes')}}">Requisições <span
-                                                    class="label label-danger pull-right">!</span></a></li>
+                                    <li><a href="{{route('tools.requisicoes')}}">Requisições</a></li>
                                 </ul>
                             </li>
                             <li><a>Padrões<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('patterns.index')}}">Modelos</a></li>
                                     <li><a href="{{ route('patterns.stocks') }}">Estoque</a></li>
-                                    <li><a href="{{route('patterns.requisicoes')}}">Requisições <span
-                                                    class="label label-danger pull-right">!</span></a></li>
+                                    <li><a href="{{route('patterns.requisicoes')}}">Requisições</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">Veículos<span class="fa fa-chevron-down"></span></a>
@@ -175,8 +173,8 @@
                     <li><a><i class="fa fa-building"></i> Requisições <span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             <li><a href="{{ route('selolacres.requisicao') }}">Selos/Lacres</a></li>
-                            <li><a href="#">Padrões</a></li>
-                            <li><a href="#">Ferramentas</a></li>
+                            <li><a href="{{ route('patterns.requisicao') }}">Padrões</a></li>
+                            <li><a href="{{ route('tools.requisicao') }}">Ferramentas</a></li>
                             <li><a href="#">Equipamento BKP</a></li>
                             <li><a href="#">Veículos</a></li>
                             <li><a href="#">Alimentação</a></li>

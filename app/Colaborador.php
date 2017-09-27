@@ -9,6 +9,7 @@ use App\Models\Inputs\Equipment;
 use App\Models\Inputs\Instrument;
 use App\Models\Inputs\Pattern;
 use App\Models\Inputs\Stocks\PatternStock;
+use App\Models\Inputs\Stocks\ToolStock;
 use App\Models\Inputs\Tool;
 use App\Models\Inputs\Vehicle;
 use Carbon\Carbon;
@@ -149,14 +150,14 @@ class Colaborador extends Model
 
 
 	public function patterns() {
-		return $this->hasMany( PatternStock::class, 'idcolaborador' );
+		return $this->hasMany( PatternStock::class, 'owner_id',  'idcolaborador');
 	}
-
-	// ************************** HAS **********************************
 
 	public function tools() {
-		return $this->belongsToMany( Tool::class, 'tool_stocks', 'idcolaborador', 'idtool' );
+		return $this->hasMany( ToolStock::class, 'owner_id',  'idcolaborador');
 	}
+	// ************************** HAS **********************************
+
 
 	public function vehicles() {
 		return $this->belongsToMany( Vehicle::class, 'vechicle_stocks', 'idcolaborador', 'idvechicle' );

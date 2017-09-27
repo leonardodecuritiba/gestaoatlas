@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Inputs;
 
 use App\Colaborador;
+use App\Models\Requests\Request as RequestTools;
 use App\Http\Controllers\Controller;
 use App\Models\Commons\Brand;
 use App\Models\Inputs\Stocks\ToolStock;
 use App\Models\Inputs\Tool;
 use App\Models\Inputs\Tool\ToolCategory as Category;
 use App\Models\Inputs\Voids\Voidx;
+use App\Tecnico;
 use App\Unidade;
 use App\User;
 use Illuminate\Http\Request;
@@ -32,6 +34,7 @@ class ToolsController extends Controller
 			'Titulo'            => "Ferramentas",
 			'extras'            => [],
 			'constraints'       => [],
+			'search_results'    => "Ferramentas encontradas!",
 			'search_no_results' => "Nenhuma Ferramenta encontrada!",
 			'msg_add'           => 'Ferramenta adicionada com sucesso!',
 			'msg_upd'           => 'Ferramenta atualizada com sucesso!',
@@ -121,81 +124,82 @@ class ToolsController extends Controller
 	}
 
 
-	public function listRequests(Request $request) {
-		return redirect()->route('patterns.index');
 
-		$this->Page->extras['requests'] = RequestSeloLacre::seloLacres()->get();
-		$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
-		$this->Page->extras['tecnicos'] = Tecnico::all();
 
-		return view('pages.recursos.selolacres.admin.requests')
-			->with('Page', $this->Page);
+
+
+	//Tecnico
+	public function getFormRequest( Request $request ) {
+		$Tecnico                       = $this->colaborador->tecnico;
+		$this->Page->search_no_results = "Nenhuma Requisição encontrada!";
+		$max_can_request               = $Tecnico->getMaxCanRequest('tools');
+		$can_request                   = ( $Tecnico->waitingRequisicoes('tools')->count() < 1 );
+		$this->Page->extras            = [
+			'return'            => $Tecnico->tools(),
+			'max_can_request'  => $max_can_request,
+			'can_request'      => ( ( $max_can_request > 0 ) && ( $can_request ) ),
+			'requisicoes'      => $Tecnico->requisicoes('tools'),
+			'type'             => $this->route,
+		];
+
+		return view( 'pages.recursos.requests.tecnico.index' )
+			->with( 'Page', $this->Page );
+	}
+	public function postFormRequest( Request $request ) {
+		$mensagem = RequestTools::openToolsRequest( [
+			'idrequester' => $this->colaborador->idcolaborador,
+			'parameters'  => $request->only( [ 'opcao', 'quantidade' ] ),
+			'reason'      => $request->get( 'reason' ),
+		] );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
+		return redirect()->route( 'tools.requisicao' );
 	}
 
-	public function getReports(Request $request) {
-		$Buscas                         = NULL;
-		$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
-		$this->Page->extras['tecnicos'] = Tecnico::all();
 
-		return view('pages.recursos.selolacres.admin.reports')
-			->with('Page', $this->Page)
-			->with('Buscas', $Buscas);
+	//Admin
+	public function listRequests( Request $request ) {
+		$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
+		$this->Page->extras = [
+			'requests'  => RequestTools::tools()->get(),
+			'tecnicos'  => Tecnico::all(),
+			'type'      => $this->route,
+		];
+		return view( 'pages.recursos.requests.admin.index' )
+			->with( 'Page', $this->Page );
 	}
 
 	//Admin/Gestor
-
-	public function deniedRequest(Request $request) {
-		$data              = $request->only('id', 'response');
+	public function deniedRequest( Request $request ) {
+		$data              = $request->only( 'id', 'response' );
 		$data['idmanager'] = $this->colaborador->idcolaborador;
-		$mensagem          = RequestSeloLacre::deny($data);
-		session()->forget('mensagem');
-		session(['mensagem' => $mensagem]);
-
-		return redirect()->route('selolacres.requisicoes');
+		$mensagem          = RequestTools::deny( $data );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
+		return redirect()->route( 'tools.requisicoes' );
 	}
 
-	public function postFormPassRequest(Request $request) {
-		$data              = $request->only(['id', 'valores']);
+/*
+	public function getReports( Request $request ) {
+		$Buscas                         = null;
+		$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
+		$this->Page->extras['tecnicos'] = Tecnico::all();
+
+		return view( 'pages.recursos.tools.admin.reports' )
+			->with( 'Page', $this->Page )
+			->with( 'Buscas', $Buscas );
+	}
+*/
+
+	public function postFormPassRequest( Request $request ) {
+		RETURN $request->all();
+		$data              = $request->only( [ 'id', 'valores' ] );
 		$data['idmanager'] = $this->colaborador->idcolaborador;
-		$mensagem          = RequestSeloLacre::sendSeloLacreRequest($data);
-		session()->forget('mensagem');
-		session(['mensagem' => $mensagem]);
+		$mensagem          = RequestTools::sendSeloLacreRequest( $data );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
 
-		return redirect()->route('selolacres.requisicoes');
-	}
-
-	//Tecnico
-
-	public function getFormRequest(Request $request) {
-		$Tecnico                       = $this->colaborador->tecnico;
-		$this->Page->search_no_results = "Nenhuma Requisição encontrada!";
-		$max_selos_can_request         = $Tecnico->getMaxSelosCanRequest();
-		$max_lacres_can_request        = $Tecnico->getMaxLacresCanRequest();
-		$can_request                   = ($Tecnico->waitingRequisicoesSeloLacre()->count() < 1);
-		$this->Page->extras            = [
-			'selos'                  => $Tecnico->selos,
-			'lacres'                 => $Tecnico->lacres,
-			'max_selos_can_request'  => $max_selos_can_request,
-			'max_lacres_can_request' => $max_lacres_can_request,
-			'can_request_selos'      => (($max_selos_can_request > 0) && ($can_request)),
-			'can_request_lacres'     => (($max_lacres_can_request > 0) && ($can_request)),
-			'requisicoes'            => $Tecnico->requisicoesSeloLacre(),
-		];
-
-		return view('pages.recursos.selolacres.tecnico.requisition')
-			->with('Page', $this->Page);
-	}
-
-	public function postFormRequest(Request $request) {
-		$mensagem = RequestSeloLacre::openSeloLacreRequest([
-			'idrequester' => $this->colaborador->idcolaborador,
-			'parameters'  => $request->only(['opcao', 'quantidade']),
-			'reason'      => $request->get('reason'),
-		]);
-		session()->forget('mensagem');
-		session(['mensagem' => $mensagem]);
-
-		return redirect()->route('selolacres.requisicao');
+		return redirect()->route( 'tools.requisicoes' );
 	}
 
 
