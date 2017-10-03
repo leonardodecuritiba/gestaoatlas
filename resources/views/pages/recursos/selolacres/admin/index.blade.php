@@ -6,108 +6,199 @@
 @endsection
 @section('page_content')
     <!-- Seach form -->
-    <section class="row">
-        <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInDown">
-            <div class="x_panel">
-                @if(count($Page->extras['selos']) > 0)
-                    <div class="x_title">
-                        <h2><b>{{$Page->extras['selos']->count()}}</b> Selos encontrados</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                                <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
-                                       width="100%">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Data</th>
-                                        <th>Técnico</th>
-                                        <th>Nº</th>
-                                        <th>Nº Externo</th>
-                                        <th>Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($Page->extras['selos'] as $sel)
-                                        <tr>
-                                            <td>{{$sel->idselo}}</td>
-                                            <td>{{$sel->created_at}}</td>
-                                            <td>{{$sel->getNomeTecnico()}}</td>
-                                            <td>{{$sel->getFormatedSeloDV()}}</td>
-                                            <td>{{$sel->numeracao_externa}}</td>
-                                            <td>
-                                                <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="x_content">
-                        <div class="row jumbotron">
-                            <h1>Ops!</h1>
-                            <h2>Nenhum Selo Encontrado</h2>
-                        </div>
-                    </div>
-                @endif
+    <section id="search" class="x_panel animated flipInX">
+        <div class="x_content">
+            {!! Form::open(array('route'=>'selolacres.listagem',
+                'method'=>'GET','id'=>'search',
+                'class' => 'form-horizontal form-label-left')) !!}
+            <div class="row">
+
+                {!! Html::decode(Form::label('tipo', 'TIPO',
+                    array('class' => 'control-label col-md-2 col-sm-2 col-xs-12'))) !!}
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                    {{Form::select('tipo', ['Selo', 'Lacre'], old('tipo'), ['class'=>'form-control select2_single', 'required'])}}
+                </div>
+
+                <label class="control-label col-md-1 col-sm-1 col-xs-12">NUMERAÇÃO:</label>
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                    <input value="{{Request::get('numeracao')}}" type="text" class="form-control"
+                           name="numeracao" placeholder="NUMERAÇÃO">
+                </div>
+
+                {!! Html::decode(Form::label('origem', 'ORIGEM',
+                    array('class' => 'control-label col-md-1 col-sm-1 col-xs-12'))) !!}
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    {{Form::select('origem', $Page->extras['tecnicos'], old('origem'), ['class'=>'form-control select2_single', 'required'])}}
+                </div>
             </div>
-        </div>
-        <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInDown">
-            <div class="x_panel">
-                @if(count($Page->extras['lacres']) > 0)
-                    <div class="x_title">
-                        <h2><b>{{$Page->extras['lacres']->count()}}</b> Lacres encontrados</h2>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="row">
-                            <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                                <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
-                                       width="100%">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Data</th>
-                                        <th>Técnico</th>
-                                        <th>Nº</th>
-                                        <th>Nº Externo</th>
-                                        <th>Status</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @foreach ($Page->extras['lacres'] as $sel)
-                                        <tr>
-                                            <td>{{$sel->idlacre}}</td>
-                                            <td>{{$sel->created_at}}</td>
-                                            <td>{{$sel->getNomeTecnico()}}</td>
-                                            <td>{{$sel->numeracao}}</td>
-                                            <td>{{$sel->numeracao_externa}}</td>
-                                            <td>
-                                                <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="x_content">
-                        <div class="row jumbotron">
-                            <h1>Ops!</h1>
-                            <h2>Nenhum Lacre Encontrado</h2>
-                        </div>
-                    </div>
-                @endif
+            <div class="ln_solid"></div>
+            <div class="row">
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">CNPJ:</label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <input value="{{Request::get('cnpj')}}" type="text" class="form-control"
+                           name="cnpj" placeholder="CNPJ" disabled="">
+                </div>
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">ID:</label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <input value="{{Request::get('idordem_servico')}}" type="text" class="form-control"
+                           name="idordem_servico" placeholder="ID da Ordem de Serviço" disabled>
+                </div>
             </div>
+            <div class="ln_solid"></div>
+            <div class="row">
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">Nº SÉRIE:</label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <input value="{{Request::get('numero_serie')}}" type="text" class="form-control"
+                           name="numero_serie" placeholder="Nº SÉRIE" disabled>
+                </div>
+                <label class="control-label col-md-2 col-sm-2 col-xs-12">Nº INVENTÁRIO:</label>
+                <div class="col-md-4 col-sm-4 col-xs-12">
+                    <input value="{{Request::get('numero_inventario')}}" type="text" class="form-control"
+                           name="numero_inventario" placeholder="Nº INVENTÁRIO" disabled>
+                </div>
+            </div>
+            <div class="ln_solid"></div>
+            <div class="row">
+                    <span class=" pull-right">
+                        <button class="btn btn-info" type="submit">Filtrar</button>
+                    </span>
+            </div>
+            {!! Form::close() !!}
         </div>
     </section>
+    @if(Request::has('tipo'))
+        <section class="row">
+            @if(Request::get('tipo') == 0)
+                <div class="x_panel animated fadeInDown">
+                    @if(count($Page->extras['selos']) > 0)
+                        <div class="x_title">
+                            <h2><b>{{$Page->extras['selos']->count()}}</b> Selos encontrados</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
+                                    <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                                           width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Data</th>
+                                            <th>Técnico</th>
+                                            <th>Nº</th>
+                                            <th>Nº Externo</th>
+                                            <th>Cliente</th>
+                                            <th>O.S.</th>
+                                            <th>Nº Série</th>
+                                            <th>Nº Inventário</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($Page->extras['selos'] as $sel)
+                                            <tr>
+                                                <td>{{$sel->idselo}}</td>
+                                                <td>{{$sel->created_at}}</td>
+                                                <td>{{$sel->nome_tecnico}}</td>
+                                                <td>{{$sel->selo_formatado}}</td>
+                                                <td>{{$sel->numeracao_externa}}</td>
+                                                <td>{{$sel->cliente_documento}}</td>
+                                                <td>
+                                                    @if($sel->id_os!=NULL)
+                                                        <a class="btn btn-default btn-xs" target="_blank"
+                                                           href="{{route('ordem_servicos.show',$sel->id_os)}}">
+                                                            <i class="fa fa-eye"></i> {{$sel->id_os}}</a>
+                                                    @endif
+                                                </td>
+                                                <td>{{$sel->n_serie}}</td>
+                                                <td>{{$sel->n_inventario}}</td>
+                                                <td>
+                                                    <span class="btn btn-xs btn-{{$sel->status_color}}">{{$sel->status_text}}</span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Data</th>
+                                            <th>Técnico</th>
+                                            <th>Nº</th>
+                                            <th>Nº Externo</th>
+                                            <th>Cliente</th>
+                                            <th>O.S.</th>
+                                            <th>Nº Série</th>
+                                            <th>Nº Inventário</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="x_content">
+                            <div class="row jumbotron">
+                                <h1>Ops!</h1>
+                                <h2>Nenhum Selo Encontrado</h2>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endif
+            @if(Request::get('tipo') == 1)
+                <div class="x_panel animated fadeInDown">
+                    @if(count($Page->extras['lacres']) > 0)
+                        <div class="x_title">
+                            <h2><b>{{$Page->extras['lacres']->count()}}</b> Lacres encontrados</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <div class="row">
+                                <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
+                                    <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                                           width="100%">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Data</th>
+                                            <th>Técnico</th>
+                                            <th>Nº</th>
+                                            <th>Nº Externo</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($Page->extras['lacres'] as $sel)
+                                            <tr>
+                                                <td>{{$sel->idlacre}}</td>
+                                                <td>{{$sel->created_at}}</td>
+                                                <td>{{$sel->getNomeTecnico()}}</td>
+                                                <td>{{$sel->numeracao}}</td>
+                                                <td>{{$sel->numeracao_externa}}</td>
+                                                <td>
+                                                    <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="x_content">
+                            <div class="row jumbotron">
+                                <h1>Ops!</h1>
+                                <h2>Nenhum Lacre Encontrado</h2>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+        </section>
+    @endif
     <!-- /page content -->
 @endsection
 @section('scripts_content')

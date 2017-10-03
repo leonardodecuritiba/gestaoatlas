@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\DataHelper;
+use App\Models\Inputs\Instrument;
 use App\Traits\SeloLacreInstrumento;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -95,6 +96,20 @@ class SeloInstrumento extends Model
     public function selo()
     {
         return $this->belongsTo('App\Selo', 'idselo');
+    }
+
+    public function instrumento()
+    {
+        return $this->belongsTo(Instrumento::class, 'idinstrumento','idinstrumento');
+    }
+
+    public function aparelho_set()
+    {
+        return $this->belongsTo(AparelhoManutencao::class, 'idaparelho_set','idaparelho_manutencao');
+    }
+    public function aparelho_unset()
+    {
+        return $this->belongsTo(AparelhoManutencao::class, 'idaparelho_unset','idaparelho_manutencao');
     }
     // ************************** HASMANY **********************************
 }

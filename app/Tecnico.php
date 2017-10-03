@@ -29,6 +29,7 @@ class Tecnico extends Model
 
 
 	static public function getAlltoSelectList() {
+
 		return self::get()->map( function ( $s ) {
 			return [
 				'id'          => $s->idtecnico,

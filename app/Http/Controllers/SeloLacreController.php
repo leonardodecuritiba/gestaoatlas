@@ -36,11 +36,22 @@ class SeloLacreController extends Controller
         ];
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $this->Page->extras['selos'] = Selo::all();
-        $this->Page->extras['lacres'] = Lacre::all();
-        $this->Page->titulo_primario = "Listagem de Selos";
+	    $this->Page->extras['selos'] = NULL;
+	    $this->Page->extras['lacres'] = NULL;
+    	if($request->has('tipo')){
+	        if($request->get('tipo')){
+			    $this->Page->extras['lacres'] = Lacre::all();
+		        $this->Page->titulo_primario = "Listagem de Lacres";
+		        $this->Page->search_no_results =  "Nenhum Lacre encontrado!";
+		    } else {
+		        $this->Page->extras['selos'] = Selo::getAllListagem($request->all());
+		        $this->Page->titulo_primario = "Listagem de Selos";
+		        $this->Page->search_no_results =  "Nenhum Selo encontrado!";
+	        }
+	    }
+	    $this->Page->extras['tecnicos'] = Tecnico::getAlltoSelectList();
         return view('pages.recursos.selolacres.admin.index')
             ->with('Page', $this->Page);
     }

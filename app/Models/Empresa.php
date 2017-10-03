@@ -16,15 +16,16 @@ class Empresa
     public $cnae_fiscal = '0000465';
     public $regime_tributario = '1';
 
-    public $logradouro = 'Av. Clovis Bevilaqua';
-    public $numero = '1301';
-    public $bairro = 'Jardim Bandeirantes';
-    public $cidade = 'Ribeirão Preto';
+    public $logradouro = 'R. Antonio Leite Penteado';
+    public $numero = '38';
+    public $bairro = 'Jardim Veronica';
+    public $cidade = 'São Paulo';
     public $estado = 'SP';
-    public $cep = '14090350';
-    public $telefone = '1630118448';
-    public $celular = '16982632900';
-    public $email_os = 'os@atlastecnologia.com.br';
+    public $cep = '03816000';
+//    public $telefone = '1630118448';
+    public $telefone = '16982630403';
+    public $celular = '16982632600';
+    public $email_os = 'chamado@atlastecnologia.com.br';
 
     public $modalidade_frete = '0';
     public $icms_servico = '0.00';

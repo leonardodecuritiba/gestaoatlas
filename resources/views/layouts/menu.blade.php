@@ -101,10 +101,9 @@
                             <li><a href="{{route('voids.index')}}">Void Patrimônio</a></li>
                             <li><a>Selos/Lacres<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{route('selolacres.create')}}">Cadastro</a></li>
-                                    <li><a href="{{route('selolacres.listagem')}}">Modelos</a></li>
-                                    <li><a href="{{route('selolacres.requisicoes')}}">Requisições</a></li>
-                                    {{--<li><a href="{{route('selolacres.relatorio')}}">Relatório</a></li>--}}
+                                    <li><a href="{{route('selolacres.create')}}">Gestão</a></li>
+                                    <li><a href="{{route('selolacres.listagem')}}">Histórico / Relatórios</a></li>
+                                    <li><a href="{{route('selolacres.requisicoes')}}">Rastreio de Operações</a></li>
                                 </ul>
                             </li>
                             <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
