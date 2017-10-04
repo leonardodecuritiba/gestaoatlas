@@ -42,6 +42,7 @@ class PrintHelper
     public function exportOS(OrdemServico $OrdemServico)
     {
 
+	    $Empresa = new Empresa();
 //        incluir no cabeçalho ou rodapé seguinte observaçao: .
         $this->OrdemServico = $OrdemServico;
         $Cliente = $this->OrdemServico->cliente;
@@ -49,15 +50,15 @@ class PrintHelper
 
         $atlas = array(
             'endereco' => 'Rua Triunfo, 400',
-            'bairro' => 'Santa Cruz',
-            'cidade' => 'Ribeirão Preto',
-            'cep' => '14020-670',
-            'cnpj' => '10.555.180/0001-21',
-            'razao_social' => 'MACEDO AUTOMAÇAO COMERCIAL LTDA',
-            'ie' => '797.146.934.117',
-            'n_autorizacao' => '10002180',
-            'fone' => '(16)3011-8448',
-            'email' => 'os@atlastecnologia.com.br');
+            'bairro'        => $Empresa->bairro,
+            'cidade'        => $Empresa->cidade,
+            'cep'           => $Empresa->cep,
+            'cnpj'          => $Empresa->cnpjFormatted(),
+            'razao_social'  => $Empresa->razao_social,
+            'ie'            => $Empresa->ieFormatted(),
+            'n_autorizacao' => $Empresa->n_autorizacao,
+            'fone'          => $Empresa->getPhoneAndCellPhone(),//'(16)3011-8448',
+            'email'         => $Empresa->email_os,//'os@atlastecnologia.com.br');
         $empresa = array(
             'nome' => 'ORDEM DE SERVIÇO - #' . $this->OrdemServico->idordem_servico,
             'descricao' => 'Manutenção e venda de equipamentos de automação comercial',

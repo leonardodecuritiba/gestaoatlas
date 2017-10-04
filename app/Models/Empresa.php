@@ -72,4 +72,8 @@ class Empresa
     {
         return DataHelper::mask($this->celular, '(##)####-####');
     }
+    public function getPhoneAndCellPhone()
+    {
+        return DataHelper::mask($this->telefone, '(##)####-####') . '/' . DataHelper::mask($this->celular, '(##)####-####');
+    }
 }

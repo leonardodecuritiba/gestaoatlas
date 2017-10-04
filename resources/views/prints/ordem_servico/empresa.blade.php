@@ -25,7 +25,7 @@
     <td>{{$Empresa->getFullAddress()}}</td>
 </tr>
 <tr>
-    <td>Fone: {{$Empresa->getCellPhone()}}</td>
+    <td>Fone: {{$Empresa->getPhoneAndCellPhone()}}</td>
 </tr>
 <tr>
     <td>E-mail: {{$Empresa->email_os}}</td>
