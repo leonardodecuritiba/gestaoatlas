@@ -6,6 +6,7 @@ use App\Helpers\DataHelper;
 
 class Empresa
 {
+
     public $cnpj = '10555180000121';
     public $ie = '797146934117';
     public $im = '20033165';
@@ -19,9 +20,9 @@ class Empresa
     public $logradouro = 'R. Antonio Leite Penteado';
     public $numero = '38';
     public $bairro = 'Jardim Veronica';
-    public $cidade = 'São Paulo';
+    public $cidade = 'Ribeirão Preto';
     public $estado = 'SP';
-    public $cep = '03816000';
+    public $cep = '14021499';
 //    public $telefone = '1630118448';
     public $telefone = '16982630403';
     public $celular = '16982632600';
