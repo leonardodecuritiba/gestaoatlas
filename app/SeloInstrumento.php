@@ -95,7 +95,7 @@ class SeloInstrumento extends Model
 
     public function selo()
     {
-        return $this->belongsTo('App\Selo', 'idselo');
+        return $this->belongsTo(Selo::class, 'idselo');
     }
 
     public function instrumento()

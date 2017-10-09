@@ -36,12 +36,12 @@
                 <label class="control-label col-md-2 col-sm-2 col-xs-12">CNPJ:</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <input value="{{Request::get('cnpj')}}" type="text" class="form-control"
-                           name="cnpj" placeholder="CNPJ" disabled="">
+                           name="cnpj" placeholder="CNPJ">
                 </div>
                 <label class="control-label col-md-2 col-sm-2 col-xs-12">ID:</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <input value="{{Request::get('idordem_servico')}}" type="text" class="form-control"
-                           name="idordem_servico" placeholder="ID da Ordem de Serviço" disabled>
+                           name="idordem_servico" placeholder="ID da Ordem de Serviço">
                 </div>
             </div>
             <div class="ln_solid"></div>
@@ -49,12 +49,12 @@
                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Nº SÉRIE:</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <input value="{{Request::get('numero_serie')}}" type="text" class="form-control"
-                           name="numero_serie" placeholder="Nº SÉRIE" disabled>
+                           name="numero_serie" placeholder="Nº SÉRIE">
                 </div>
                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Nº INVENTÁRIO:</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
-                    <input value="{{Request::get('numero_inventario')}}" type="text" class="form-control"
-                           name="numero_inventario" placeholder="Nº INVENTÁRIO" disabled>
+                    <input value="{{Request::get('inventario')}}" type="text" class="form-control"
+                           name="inventario" placeholder="Nº INVENTÁRIO">
                 </div>
             </div>
             <div class="ln_solid"></div>
@@ -84,11 +84,12 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Data</th>
-                                            <th>Técnico</th>
+                                            <th>Origem</th>
                                             <th>Nº</th>
                                             <th>Nº Externo</th>
                                             <th>Cliente</th>
-                                            <th>O.S.</th>
+                                            <th>Fixado</th>
+                                            <th>Retirado</th>
                                             <th>Nº Série</th>
                                             <th>Nº Inventário</th>
                                             <th>Status</th>
@@ -100,14 +101,21 @@
                                                 <td>{{$sel->idselo}}</td>
                                                 <td>{{$sel->created_at}}</td>
                                                 <td>{{$sel->nome_tecnico}}</td>
-                                                <td>{{$sel->selo_formatado}}</td>
+                                                <td>{{$sel->numero_formatado}}</td>
                                                 <td>{{$sel->numeracao_externa}}</td>
                                                 <td>{{$sel->cliente_documento}}</td>
                                                 <td>
-                                                    @if($sel->id_os!=NULL)
+                                                    @if($sel->idos_set!=NULL)
                                                         <a class="btn btn-default btn-xs" target="_blank"
-                                                           href="{{route('ordem_servicos.show',$sel->id_os)}}">
-                                                            <i class="fa fa-eye"></i> {{$sel->id_os}}</a>
+                                                           href="{{route('ordem_servicos.show',$sel->idos_set)}}">
+                                                            <i class="fa fa-eye"></i> {{$sel->idos_set}}</a>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($sel->idos_unset!=NULL)
+                                                        <a class="btn btn-default btn-xs" target="_blank"
+                                                           href="{{route('ordem_servicos.show',$sel->idos_unset)}}">
+                                                            <i class="fa fa-eye"></i> {{$sel->idos_unset}}</a>
                                                     @endif
                                                 </td>
                                                 <td>{{$sel->n_serie}}</td>
@@ -122,11 +130,12 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Data</th>
-                                            <th>Técnico</th>
+                                            <th>Origem</th>
                                             <th>Nº</th>
                                             <th>Nº Externo</th>
                                             <th>Cliente</th>
-                                            <th>O.S.</th>
+                                            <th>Fixado</th>
+                                            <th>Retirado</th>
                                             <th>Nº Série</th>
                                             <th>Nº Inventário</th>
                                             <th>Status</th>
@@ -162,9 +171,14 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Data</th>
-                                            <th>Técnico</th>
+                                            <th>Origem</th>
                                             <th>Nº</th>
                                             <th>Nº Externo</th>
+                                            <th>Cliente</th>
+                                            <th>Fixado</th>
+                                            <th>Retirado</th>
+                                            <th>Nº Série</th>
+                                            <th>Nº Inventário</th>
                                             <th>Status</th>
                                         </tr>
                                         </thead>
@@ -173,15 +187,47 @@
                                             <tr>
                                                 <td>{{$sel->idlacre}}</td>
                                                 <td>{{$sel->created_at}}</td>
-                                                <td>{{$sel->getNomeTecnico()}}</td>
-                                                <td>{{$sel->numeracao}}</td>
+                                                <td>{{$sel->nome_tecnico}}</td>
+                                                <td>{{$sel->numero_formatado}}</td>
                                                 <td>{{$sel->numeracao_externa}}</td>
+                                                <td>{{$sel->cliente_documento}}</td>
                                                 <td>
-                                                    <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
+                                                    @if($sel->idos_set!=NULL)
+                                                        <a class="btn btn-default btn-xs" target="_blank"
+                                                           href="{{route('ordem_servicos.show',$sel->idos_set)}}">
+                                                            <i class="fa fa-eye"></i> {{$sel->idos_set}}</a>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if($sel->idos_unset!=NULL)
+                                                        <a class="btn btn-default btn-xs" target="_blank"
+                                                           href="{{route('ordem_servicos.show',$sel->idos_unset)}}">
+                                                            <i class="fa fa-eye"></i> {{$sel->idos_unset}}</a>
+                                                    @endif
+                                                </td>
+                                                <td>{{$sel->n_serie}}</td>
+                                                <td>{{$sel->n_inventario}}</td>
+                                                <td>
+                                                    <span class="btn btn-xs btn-{{$sel->status_color}}">{{$sel->status_text}}</span>
                                                 </td>
                                             </tr>
                                         @endforeach
                                         </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Data</th>
+                                            <th>Origem</th>
+                                            <th>Nº</th>
+                                            <th>Nº Externo</th>
+                                            <th>Cliente</th>
+                                            <th>Fixado</th>
+                                            <th>Retirado</th>
+                                            <th>Nº Série</th>
+                                            <th>Nº Inventário</th>
+                                            <th>Status</th>
+                                        </tr>
+                                        </tfoot>
                                     </table>
                                 </div>
                             </div>

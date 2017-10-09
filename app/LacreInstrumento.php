@@ -98,12 +98,27 @@ class LacreInstrumento extends Model
 
     public function lacre()
     {
-        return $this->belongsTo('App\Lacre', 'idlacre');
+	    return $this->belongsTo(Lacre::class, 'idlacre');
     }
 
     public function lacres()
     {
-        return $this->belongsTo('App\Lacre', 'idlacre');
+        return $this->belongsTo(Lacre::class, 'idlacre');
     }
+
+	public function instrumento()
+	{
+		return $this->belongsTo(Instrumento::class, 'idinstrumento','idinstrumento');
+	}
+
+	public function aparelho_set()
+	{
+		return $this->belongsTo(AparelhoManutencao::class, 'idaparelho_set','idaparelho_manutencao');
+	}
+
+	public function aparelho_unset()
+	{
+		return $this->belongsTo(AparelhoManutencao::class, 'idaparelho_unset','idaparelho_manutencao');
+	}
     // ************************** HASMANY **********************************
 }

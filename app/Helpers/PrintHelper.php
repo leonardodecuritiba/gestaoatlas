@@ -58,7 +58,7 @@ class PrintHelper
             'ie'            => $Empresa->ieFormatted(),
             'n_autorizacao' => $Empresa->n_autorizacao,
             'fone'          => $Empresa->getPhoneAndCellPhone(),//'(16)3011-8448',
-            'email'         => $Empresa->email_os,//'os@atlastecnologia.com.br');
+            'email'         => $Empresa->email_os);//'os@atlastecnologia.com.br');
         $empresa = array(
             'nome' => 'ORDEM DE SERVIÇO - #' . $this->OrdemServico->idordem_servico,
             'descricao' => 'Manutenção e venda de equipamentos de automação comercial',

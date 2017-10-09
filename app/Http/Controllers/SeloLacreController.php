@@ -42,7 +42,7 @@ class SeloLacreController extends Controller
 	    $this->Page->extras['lacres'] = NULL;
     	if($request->has('tipo')){
 	        if($request->get('tipo')){
-			    $this->Page->extras['lacres'] = Lacre::all();
+			    $this->Page->extras['lacres'] = Lacre::getAllListagem($request->all());
 		        $this->Page->titulo_primario = "Listagem de Lacres";
 		        $this->Page->search_no_results =  "Nenhum Lacre encontrado!";
 		    } else {
@@ -52,6 +52,7 @@ class SeloLacreController extends Controller
 	        }
 	    }
 	    $this->Page->extras['tecnicos'] = Tecnico::getAlltoSelectList();
+	    $this->Page->extras['tecnicos']->prepend("Todos");
         return view('pages.recursos.selolacres.admin.index')
             ->with('Page', $this->Page);
     }

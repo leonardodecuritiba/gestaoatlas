@@ -7,6 +7,7 @@ use App\Traits\SeloLacre;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Selo extends Model
 {
@@ -80,41 +81,94 @@ class Selo extends Model
 
     static public function getAllListagem($filters)
     {
-    	$selo = new self();
-	    $selos_query = $selo->newQuery();
+    	$self = new self();
+	    $query = $self->newQuery();
     	if(isset($filters['numeracao'])){
 		    $filters['numeracao'] = DataHelper::getOnlyNumbers($filters['numeracao']);
-		    $selos_query->where('numeracao', 'like','%' .$filters['numeracao']. '%');
+		    $query->where('numeracao', 'like','%' .$filters['numeracao']. '%');
 	    }
     	if(isset($filters['origem'])){
-		    $selos_query->where('idtecnico', $filters['origem']);
+    		if($filters['origem']>0){
+			    $query->where('idtecnico', $filters['origem']);
+		    }
 	    }
-//    	if(isset($filters['cnpj'])){
-//		    $filters['cnpj'] = DataHelper::getOnlyNumbers($filters['cnpj']);
-//    		return $p = PessoaJuridica::where('cnpj', $filters['cnpj'])->get();
-//		    $selos_query->where('idtecnico', $filters['origem']);
-//	    }
+	    if(isset($filters['cnpj'])){
+		    if($filters['cnpj']!='') {
+			    $filters['cnpj'] = DataHelper::getOnlyNumbers( $filters['cnpj'] );
+			    $ids             = DB::table( 'selo_instrumentos' )
+			                         ->join( 'aparelho_manutencaos', function ( $join ) {
+				                         $join->on( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' )
+				                              ->orOn( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' );
+			                         } )
+			                         ->join( 'ordem_servicos', 'ordem_servicos.idordem_servico', '=', 'aparelho_manutencaos.idordem_servico' )
+			                         ->join( 'clientes', 'clientes.idcliente', '=', 'ordem_servicos.idcliente' )
+			                         ->join( 'pjuridicas', 'pjuridicas.idpjuridica', '=', 'clientes.idpjuridica' )
+			                         ->select( 'selo_instrumentos.idselo' )
+			                         ->where( 'pjuridicas.cnpj', 'like', '%' . $filters['cnpj'] . '%' )
+			                         ->pluck( 'idselo' );
+			    $query->whereIn( 'idselo', $ids );
+		    }
+	    }
 
-        return $selos_query->get()->map(function($s){
-        	$selo_instrumento = $s->selo_instrumento;
+	    if(isset($filters['idordem_servico'])){
+		    if($filters['idordem_servico']!='') {
+			    $ids             = DB::table( 'selo_instrumentos' )
+			                         ->join( 'aparelho_manutencaos', function ( $join ) {
+				                         $join->on( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' )
+				                              ->orOn( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' );
+			                         })
+				                     ->where('aparelho_manutencaos.idordem_servico',$filters['idordem_servico'])
+			                         ->pluck( 'idselo' );
+			    $query->whereIn( 'idselo', $ids );
+		    }
+	    }
 
-	        if($selo_instrumento!=NULL){
-	        	$instrumento = $selo_instrumento->instrumento;
+	    if(isset($filters['numero_serie'])){
+		    if($filters['numero_serie']!='') {
+			    $filters['numero_serie'] = DataHelper::getOnlyNumbers($filters['numero_serie']);
+			    $ids             = DB::table( 'selo_instrumentos' )
+			                         ->join( 'aparelho_manutencaos', function ( $join ) {
+				                         $join->on( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' )
+				                              ->orOn( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' );
+			                         })
+			                         ->join('instrumentos' , 'aparelho_manutencaos.idinstrumento', '=', 'instrumentos.idinstrumento')
+			                         ->where('instrumentos.numero_serie', 'like','%' .$filters['numero_serie']. '%')
+			                         ->pluck( 'idselo' );
+			    $query->whereIn( 'idselo', $ids );
+		    }
+	    }
+
+	    if(isset($filters['inventario'])){
+		    if($filters['inventario']!='') {
+			    $filters['inventario'] = DataHelper::getOnlyNumbers($filters['inventario']);
+			    $ids             = DB::table( 'selo_instrumentos' )
+			                         ->join( 'aparelho_manutencaos', function ( $join ) {
+				                         $join->on( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' )
+				                              ->orOn( 'aparelho_manutencaos.idaparelho_manutencao', '=', 'selo_instrumentos.idaparelho_set' );
+			                         })
+			                         ->join('instrumentos' , 'aparelho_manutencaos.idinstrumento', '=', 'instrumentos.idinstrumento')
+			                         ->where('instrumentos.inventario', 'like','%' .$filters['inventario']. '%')
+			                         ->pluck( 'idselo' );
+			    $query->whereIn( 'idselo', $ids );
+		    }
+	    }
+
+        return $query->get()->map(function($s){
+        	$x_instrumento = $s->selo_instrumento;
+
+	        if($x_instrumento!=NULL){
+	        	$instrumento = $x_instrumento->instrumento;
 	        	$cliente = $instrumento->cliente->getType();
-		        $s->id_os               = $selo_instrumento->aparelho_set->idordem_servico;
+
+		        $s->idos_set            = ($x_instrumento->idaparelho_set != NULL) ? $x_instrumento->aparelho_set->idordem_servico : NULL;
+		        $s->idos_unset          = ($x_instrumento->idaparelho_unset != NULL) ? $x_instrumento->aparelho_unset->idordem_servico : NULL;
 		        $s->n_serie             = $instrumento->numero_serie;
 		        $s->n_inventario        = $instrumento->inventario;
 		        $s->cliente_documento   = $cliente->documento;
-	        } else {
-		        $s->id_os               = '-';
-		        $s->n_serie             = '-';
-		        $s->n_inventario        = '-';
-		        $s->cnpj                = '-';
-		        $s->cliente_documento   = '-';
 	        }
 
         	$s->nome_tecnico    = $s->getNomeTecnico();
-        	$s->selo_formatado  = $s->getFormatedSeloDV();
+        	$s->numero_formatado= $s->getFormatedSeloDV();
         	$s->status_color    = $s->getStatusColor();
         	$s->status_text     = $s->getStatusText();
         	return $s;
