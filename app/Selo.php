@@ -22,10 +22,22 @@ class Selo extends Model
         'numeracao_externa',
         'externo',
         'used',
+        'declared',
     ];
 
 
     // ******************** FUNCTIONS ******************************
+
+    static public function set_declared($id)
+    {
+        return self::findOrFail($id)
+            ->update(['declared' => Carbon::now()]);
+    }
+    static public function set_undeclared($id)
+    {
+        return self::findOrFail($id)
+            ->update(['declared' => NULL]);
+    }
 
     static public function assign($data)
     {
@@ -174,6 +186,7 @@ class Selo extends Model
         	return $s;
         });
     }
+
 
     public function getDV()
     {

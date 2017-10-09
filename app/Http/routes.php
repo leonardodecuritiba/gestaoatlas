@@ -329,6 +329,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     //RELATÓRIOS
     Route::get('relatorios/ipem', 'RelatoriosController@ipem')->name('relatorios.ipem');
+    Route::get('relatorios/declarar', 'AjaxController@changeSeloDeclare')->name('relatorios.ipem.declarar');
     Route::get('relatorios/ipem/imprimir', 'RelatoriosController@ipemPrint')->name('relatorios.ipem.print');
 
 

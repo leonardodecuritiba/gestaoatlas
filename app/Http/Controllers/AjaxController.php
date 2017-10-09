@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\SintegraHelper;
 use App\Models\Inputs\Vehicle;
 use App\Ncm;
+use App\Selo;
 use App\Tecnico;
 use DB;
 use Illuminate\Http\Request;
@@ -202,6 +203,25 @@ class AjaxController extends Controller
 		return Vehicle::getJsonVeiculo(Input::get('tipo'), Input::get('idmarca'), Input::get('idveiculo'), Input::get('modelo'));
 	}
 
+
+	//declare Selo
+	public function changeSeloDeclare() {
+		$id         = Input::get('id');
+		$declared   = Input::get('declared');
+		if($declared){
+			Selo::set_undeclared($id);
+			return response()->json([ 'status' => '1',
+			                          'response' => 'Selo não declarado com sucesso!',
+			                          'valor'    => 1
+			]);
+		} else {
+			Selo::set_declared($id);
+			return response()->json([ 'status' => '1',
+			                          'response' => 'Selo declarado com sucesso!',
+			                          'valor'    => 0
+			]);
+		}
+	}
 }
 
 

@@ -67,7 +67,6 @@ class Instrumento extends Model
 
 	public function selo_afixado() {
 		$SeloInstrumento = $this->selo_instrumentos_afixado->first();
-
 		return ( $SeloInstrumento == null ) ? $SeloInstrumento : $SeloInstrumento->selo;
 
 //		if ( $SeloInstrumento ) {
@@ -94,8 +93,9 @@ class Instrumento extends Model
     public function numeracao_selo_afixado()
     {
         $selo = $this->selo_afixado();
-        return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
+	    return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
     }
+
 
 	public function numeracao_selo_retirado() {
 		$selo = $this->selo_retirado();
