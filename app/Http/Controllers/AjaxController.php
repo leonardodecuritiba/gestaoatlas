@@ -41,12 +41,18 @@ class AjaxController extends Controller
 	}
 
 	public function getSelosDisponiveis() {
+//		return Input::all();
 		$value     = Input::has('value') ? Input::get('value') : '';
 		$idtecnico = Input::has('idtecnico') ? Input::get('idtecnico') : NULL;
 		$Tecnico   = ($idtecnico == NULL) ? Auth::user()->colaborador->tecnico : Tecnico::findOrFail($idtecnico);
-		$data      = $Tecnico->selos_disponiveis()->where('numeracao', 'like', $value . "%")->get();
-
-		return $this->selectReturn('idselo', $data);
+		if($Tecnico!=NULL){
+			$data      = $Tecnico->selos_disponiveis();
+			if(Input::has('value')){
+				$data->where('numeracao', 'like', $value . "%");
+			}
+			return $this->selectReturn('idselo', $data->get());
+		}
+		return $Tecnico;
 	}
 
 	public function getLacresDisponiveis() {

@@ -139,9 +139,9 @@
                                     <tr>
                                         <td>{{$selecao->id}}</td>
                                         <td>
-                                            <button class="label label-{{$selecao->getStatusColor()}}">
+                                            <span class="label label-{{$selecao->getStatusColor()}}">
                                                 {{$selecao->getStatusText()}}
-                                            </button>
+                                            </span>
                                         </td>
                                         <td><a target="_blank"
                                                href="{{route('clientes.show', $clientType->idcliente)}}"><b>{{$clientType->nome_principal}}</b></a>

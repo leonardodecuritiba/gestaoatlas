@@ -38,7 +38,7 @@
                                                 <td>{{$sel->numeracao}}</td>
                                                 <td>{{$sel->numeracao_externa}}</td>
                                                 <td>
-                                                    <button class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</button>
+                                                    <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -107,7 +107,7 @@
                                                 <td>{{$sel->numeracao}}</td>
                                                 <td>{{$sel->numeracao_externa}}</td>
                                                 <td>
-                                                    <button class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</button>
+                                                    <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -157,11 +157,13 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Data</th>
-                                    <th>Tipo Requisição</th>
-                                    <th>Requisição</th>
+                                    <th>Requerente</th>
+                                    <th>Tipo</th>
+                                    <th>Detalhes</th>
+                                    <th>Valores</th>
                                     <th>Razão</th>
-                                    <th>Gestor</th>
                                     <th>Retorno</th>
+                                    <th>Gestor</th>
                                     <th>Status</th>
                                 </tr>
                                 </thead>
@@ -170,17 +172,39 @@
                                     <tr>
                                         <td>{{$sel->id}}</td>
                                         <td>{{$sel->created_at}}</td>
+                                        <td>{{$sel->getNameRequester()}}</td>
                                         <td>{{$sel->getTypeText()}}</td>
                                         <td>{{$sel->getParametersText()}}</td>
+                                        <td>
+                                            @forelse($sel->getParametersValoresText() as $val)
+                                                <span class="label label-info">{{$val}}</span>
+                                            @empty
+                                                -
+                                            @endforelse
+                                        </td>
                                         <td>{{$sel->reason}}</td>
-                                        <td>{{$sel->getNameManager()}}</td>
                                         <td>{{$sel->getResponseText()}}</td>
+                                        <td>{{$sel->getNameManager()}}</td>
                                         <td>
                                             <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                         </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Data</th>
+                                    <th>Requerente</th>
+                                    <th>Tipo</th>
+                                    <th>Detalhes</th>
+                                    <th>Valores</th>
+                                    <th>Razão</th>
+                                    <th>Retorno</th>
+                                    <th>Gestor</th>
+                                    <th>Status</th>
+                                </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>

@@ -207,9 +207,9 @@
                             @foreach ($Faturamento->pagamento->parcelas as $selecao)
                                 <tr>
                                     <td>
-                                        <button class="label label-{{$selecao->getStatusColor()}}">
+                                        <span class="label label-{{$selecao->getStatusColor()}}">
                                             {{$selecao->getStatusText()}}
-                                        </button>
+                                        </span>
                                     </td>
                                     <td>{{$selecao->id}}</td>
                                     <td>{{$selecao->getNumeroParcela()}}</td>

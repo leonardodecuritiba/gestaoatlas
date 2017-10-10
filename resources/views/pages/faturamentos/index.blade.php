@@ -101,9 +101,9 @@
                                 <tr>
                                     <td>{{$selecao->id}}</td>
                                     <td>
-                                        <button class="label label-{{$selecao->getStatusType()}}">
+                                        <span class="label label-{{$selecao->getStatusType()}}">
                                             {{$selecao->getStatusText()}}
-                                        </button>
+                                        </span>
                                     </td>
                                     <td>{{$selecao->cliente->forma_pagamento_tecnica->descricao}}</td>
                                     <td>{{$selecao->getCreatedAtMonth()}}</td>

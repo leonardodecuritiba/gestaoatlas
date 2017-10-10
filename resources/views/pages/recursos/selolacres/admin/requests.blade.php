@@ -9,7 +9,7 @@
     <div class="row esconda">
         <div class="x_panel" id="formRequestNegar">
             <div class="x_title">
-                <h2>Negar requisição de Selos</h2>
+                <h2>Negar requisição de <b>Selos</b></h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
@@ -60,61 +60,80 @@
     <div class="row esconda">
         <div class="x_panel" id="formRequestConfirmar">
             <div class="x_title">
-                <h2>Confirmar requisição de Selos</h2>
+                <h2>Confirmar requisição de <b>Selos</b></h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInDown">
-                    <div class="profile_details">
-                        <div class="well">
-                            <div class="perfil">
-                                <h4>Requerente: <b>XX</b>
-                                </h4>
-                                <ul class="list-unstyled">
-                                    <li><i class="fa fa-info"></i> ID: <b id="id">XX</b></li>
-                                    <li><i class="fa fa-info"></i> Data da Requisição: <b id="date">XX</b></li>
-                                    <li><i class="fa fa-info"></i> Tipo de Requisição: <b id="type">XX</b></li>
-                                    <li><i class="fa fa-info"></i> Detalhamento: <b id="parameters">XX</b></li>
-                                    <li><i class="fa fa-info"></i> Razão: <b id="reason">XX</b></li>
-                                    <li><i class="fa fa-info"></i> Status: <b id="status">XX</b></li>
-                                    <li><i class="fa fa-info"></i> Gestor: <b id="manager">XX</b></li>
-                                </ul>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInDown">
+                        <div class="profile_details">
+                            <div class="well">
+                                <div class="perfil">
+                                    <h4>Requerente: <b>XX</b>
+                                    </h4>
+                                    <ul class="list-unstyled">
+                                        <li><i class="fa fa-info"></i> ID: <b id="id">XX</b></li>
+                                        <li><i class="fa fa-info"></i> Data da Requisição: <b id="date">XX</b></li>
+                                        <li><i class="fa fa-info"></i> Tipo de Requisição: <b id="type">XX</b></li>
+                                        <li><i class="fa fa-info"></i> Detalhamento: <b id="parameters">XX</b></li>
+                                        <li><i class="fa fa-info"></i> Razão: <b id="reason">XX</b></li>
+                                        <li><i class="fa fa-info"></i> Status: <b id="status">XX</b></li>
+                                        <li><i class="fa fa-info"></i> Gestor: <b id="manager">XX</b></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInDown">
+                        {!! Form::open(['route' => ['selolacres.repasse'],
+                    'id'    => 'form-selolacre',
+                    'method' => 'POST',
+                    'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
+                        <input type="hidden" name="id">
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Origem <span class="required">*</span></label>
+                            <div class="col-md-8 col-sm-8 col-xs-12">
+                                <select class="select2_single form-control" name="idorigem" tabindex="-1">
+                                    @foreach($Page->extras['tecnicos'] as $tecnico)
+                                        <option value="{{$tecnico->idtecnico}}">{{$tecnico->colaborador->nome}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-2 col-xs-12">
+                                <span class="btn btn-info btn-block pull-right btn-busca">Buscar</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-2 col-sm-2 col-xs-12">Valores: <span
+                                        class="required">*</span></label>
+                            <div class="col-md-10 col-sm-10 col-xs-12">
+                                <select name="valores[]" class="select2_multiple-ajax form-control" multiple tabindex="-1"
+                                        placeholder="Selo afixados" required
+                                        data-parsley-errors-container="#select-errors"></select>
+                                <div id="select-errors"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success btn-lg pull-right"><i class="fa fa-check fa-2"></i> Confirmar
+                            </button>
+                            <a class="btn btn-danger btn-lg pull-right btn-cancel"><i class="fa fa-times fa-2"></i> Cancelar</a>
+                        </div>
+                        {!! Form::close() !!}
+                    </div>
                 </div>
-                <div class="col-md-6 col-sm-6 col-xs-12 animated fadeInDown">
-                    {!! Form::open(['route' => ['selolacres.repasse'],
-                'id'    => 'form-selolacre',
-                'method' => 'POST',
-                'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
-                    <input type="hidden" name="id">
-                    <div class="form-group">
-                        <label class="control-label col-md-2 col-sm-2 col-xs-12">Origem <span class="required">*</span></label>
-                        <div class="col-md-10 col-sm-10 col-xs-12">
-                            <select class="select2_single form-control" name="idorigem" tabindex="-1">
-                                @foreach($Page->extras['tecnicos'] as $tecnico)
-                                    <option value="{{$tecnico->idtecnico}}">{{$tecnico->colaborador->nome}}</option>
-                                @endforeach
-                            </select>
-                        </div>
+            </div>
+        </div>
+    </div>
+    <div class="row esconda">
+        <div class="x_panel" id="resultsAjax">
+            <div class="x_title">
+                <h2><b>Selos</b> Disponíveis</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
+                    <div class="profile_details valores">
                     </div>
-                    <div class="form-group">
-                        <label class="control-label col-md-2 col-sm-2 col-xs-12">Valores: <span
-                                    class="required">*</span></label>
-                        <div class="col-md-10 col-sm-10 col-xs-12">
-                            <select name="valores[]" class="select2_multiple-ajax form-control" multiple tabindex="-1"
-                                    placeholder="Selo afixados" required
-                                    data-parsley-errors-container="#select-errors"></select>
-                            <div id="select-errors"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button class="btn btn-success btn-lg pull-right"><i class="fa fa-check fa-2"></i> Confirmar
-                        </button>
-                        <a class="btn btn-danger btn-lg pull-right btn-cancel"><i class="fa fa-times fa-2"></i> Cancelar</a>
-                    </div>
-                    {!! Form::close() !!}
                 </div>
             </div>
         </div>
@@ -244,10 +263,12 @@
     <script type="text/javascript">
         var $_FORM_REQUEST_CONFIRMAR_ = "div#formRequestConfirmar";
         var $_FORM_REQUEST_NEGAR_ = "div#formRequestNegar";
+        var $_RESULTS_AJAX_ = "div#resultsAjax";
         var $_RESULTS_ = "div#results";
         var URL_AJAX = [];
         URL_AJAX['SELOS'] = "{{route('getSelosDisponiveis')}}";
         URL_AJAX['LACRES'] = "{{route('getLacresDisponiveis')}}";
+        var $DATA ={};
         var remoteDataConfigSelos = {
             width: 'resolve',
             ajax: {
@@ -286,34 +307,83 @@
         $(document).ready(function () {
             $(".btn-confirm").click(function () {
                 var $data = $(this).data('request');
-                $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').show();
-                $($_FORM_REQUEST_NEGAR_).parents('div.row').hide();
-                $($_RESULTS_).hide();
                 setDataRequest($data, $_FORM_REQUEST_CONFIRMAR_);
+                $DATA.url = URL_AJAX[$data.type];
+                $DATA.type = $data.type;
+                $DATA.max = JSON.parse($data.parameters_json).quantidade;
                 remoteDataConfigSelos.ajax.url = URL_AJAX[$data.type];
                 remoteDataConfigSelos.maximumSelectionLength = JSON.parse($data.parameters_json).quantidade;
+
+                $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').show();
+                $($_FORM_REQUEST_CONFIRMAR_).find('div.x_title h2 b').html($DATA.type);
+                $($_FORM_REQUEST_NEGAR_).parents('div.row').hide();
+                $($_FORM_REQUEST_NEGAR_).find('div.x_title h2 b').html($DATA.type);
+                $($_RESULTS_AJAX_).parents('div.row').show();
+                $($_RESULTS_AJAX_).find('div.x_title h2 b').html($DATA.type);
+                $($_RESULTS_).hide();
                 $(".select2_multiple-ajax").select2(remoteDataConfigSelos);
             });
         });
+
         $(".btn-deny").click(function () {
             var $data = $(this).data('request');
             $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').hide();
             $($_FORM_REQUEST_NEGAR_).parents('div.row').show();
+            $($_RESULTS_AJAX_).parents('div.row').hide();
             $($_RESULTS_).hide();
             setDataRequest($data, $_FORM_REQUEST_NEGAR_);
             $(".select2_multiple-ajax").val(null).trigger("change");
         });
+
         $(".btn-cancel").click(function () {
             $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').hide();
             $($_FORM_REQUEST_NEGAR_).parents('div.row').hide();
+            $($_RESULTS_AJAX_).parents('div.row').hide();
             $($_RESULTS_).show();
             $(".select2_multiple-ajax").val(null).trigger("change");
         });
+
         //seleção do selos
         $('select[name=idorigem]').on("select2:select", function () {
             //achar parent, pegar próximo td e escrever o valor
             var $sel = $(this).find(":selected");
             $(".select2_multiple-ajax").val(null).trigger("change");
+        });
+
+        $(document).ready(function () {
+            $(".btn-busca").click(function () {
+                var origem = $('select[name=idorigem]').find(":selected");
+                //fazer busca
+                $('div.valores').empty();
+                $.ajax({
+                    url: $DATA.url,
+                    type: 'get',
+                    data: {"idtecnico": origem.val()},
+                    dataType: "json",
+
+                    beforeSend: function () {
+                        $($_LOADING_).show();
+                    },
+                    complete: function (xhr, textStatus) {
+                        $($_LOADING_).hide();
+                    },
+                    error: function (xhr, textStatus) {
+                        console.log('xhr-error: ' + xhr);
+                        console.log('textStatus-error: ' + textStatus);
+                    },
+                    success: function (json) {
+                        console.log(json);
+                        if (json!=null) {
+                            $(json).each(function(i,v){
+                                $('div.valores').append('<button data-id="' + v.id + '" class="btn btn-success">' + v.text + '</button>');
+                            })
+                        } else {
+                            $('div.valores').append('<div class="row jumbotron"><h1>Ops!</h1><h2>' + $DATA.type +  ' não encontrados. Selecione outra Origem!</h2></div>');
+                        }
+                    }
+                });
+
+            });
         });
     </script>
     <!-- /SELOS -->

@@ -28,7 +28,7 @@
                                         <td>{{$sel->numeracao}}</td>
                                         <td>{{$sel->numeracao_externa}}</td>
                                         <td>
-                                            <button class="label label-{{$sel->getStatusColor()}} btn-xs">{{$sel->getStatusText()}}</button>
+                                            <span class="label label-{{$sel->getStatusColor()}} btn-xs">{{$sel->getStatusText()}}</span>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -97,7 +97,7 @@
                                         <td>{{$sel->numeracao}}</td>
                                         <td>{{$sel->numeracao_externa}}</td>
                                         <td>
-                                            <button class="label label-{{$sel->getStatusColor()}} btn-xs">{{$sel->getStatusText()}}</button>
+                                            <span class="label label-{{$sel->getStatusColor()}} btn-xs">{{$sel->getStatusText()}}</span>
                                         </td>
                                     </tr>
                                 @endforeach
