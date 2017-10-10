@@ -104,6 +104,9 @@
                                     <li><a href="{{route('selolacres.create')}}">Gestão</a></li>
                                     <li><a href="{{route('selolacres.listagem')}}">Histórico / Relatórios</a></li>
                                     <li><a href="{{route('selolacres.requisicoes')}}">Rastreio de Operações</a></li>
+                                    @role(['admin','financeiro'])
+                                        <li><a href="{{ route('relatorios.ipem') }}"> Relatório IPEM</a></li>
+                                    @endrole
                                 </ul>
                             </li>
                             <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
@@ -247,9 +250,6 @@
 
                     <li><a><i class="fa fa-line-chart"></i> Relatórios<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            @if(Auth::user()->hasRole(['admin','financeiro']))
-                                <li><a href="{{ route('relatorios.ipem') }}"> IPEM</a></li>
-                            @endif
                             <li><a href="#">Meu relatório</a></li>
                         </ul>
                     </li>
