@@ -119,6 +119,19 @@ class Request extends Model
         return "Requisição aceita com sucesso!";
     }
 
+	public function getSelos($ids)
+	{
+		return Selo::whereIn('idselo',$ids)->get()->map(function($s){
+			return $s->getFormatedSeloDV();
+		});
+	}
+
+	public function getLacres($ids)
+	{
+		return Lacre::whereIn('idlacre',$ids)->get()->map(function($s){
+			return $s->getNumeracao();
+		});
+	}
 
 	/*
 	 * DEFAULT =============================================
@@ -126,12 +139,15 @@ class Request extends Model
 
     static public function accept($data)
     {
-        $Data = self::findOrFail($data['id']);
-        $Data->update([
+        $self = self::findOrFail($data['id']);
+        $parameters = $self->getParametersUncoded();
+	    $parameters->valores = $data['valores'];
+	    $self->update([
+            'parameters' => json_encode($parameters),
             'idmanager' => $data['idmanager'],
             'idstatus' => StatusRequest::_STATUS_ACEITA_,
         ]);
-        return $Data;
+        return $self;
     }
 
     static public function deny($data)
@@ -182,15 +198,39 @@ class Request extends Model
         return $this->type->description;
     }
 
+    public function getParametersUncoded()
+    {
+        return json_decode($this->getAttribute('parameters'));
+    }
+
     public function getParametersText()
     {
-        $parameters = json_decode($this->getAttribute('parameters'));
+        $parameters = $this->getParametersUncoded();
         switch ($this->getAttribute('idtype')) {
             case TypeRequest::_TYPE_SELOS_:
+	            return 'Quantidade: ' . $parameters->quantidade;
             case TypeRequest::_TYPE_LACRES_:
                 return 'Quantidade: ' . $parameters->quantidade;
                 break;
         }
+    }
+    public function getParametersValoresText()
+    {
+        $parameters = $this->getParametersUncoded();
+	    $valores = [];
+        switch ($this->getAttribute('idtype')) {
+            case TypeRequest::_TYPE_SELOS_:
+	            if(isset($parameters->valores)){
+		            $valores = $this->getSelos($parameters->valores);
+	            }
+	            break;
+            case TypeRequest::_TYPE_LACRES_:
+	            if(isset($parameters->valores)){
+		            $valores = $this->getLacres($parameters->valores);
+	            }
+	            break;
+        }
+	    return $valores;
     }
 
     public function getResponseText()

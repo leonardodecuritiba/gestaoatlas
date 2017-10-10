@@ -138,6 +138,7 @@
                                     <th>Requerente</th>
                                     <th>Tipo</th>
                                     <th>Detalhes</th>
+                                    <th>Valores</th>
                                     <th>Razão</th>
                                     <th>Retorno</th>
                                     <th>Gestor</th>
@@ -153,11 +154,18 @@
                                         <td>{{$sel->getNameRequester()}}</td>
                                         <td>{{$sel->getTypeText()}}</td>
                                         <td>{{$sel->getParametersText()}}</td>
+                                        <td>
+                                            @forelse($sel->getParametersValoresText() as $val)
+                                                <span class="label label-info">{{$val}}</span>
+                                            @empty
+                                                -
+                                            @endforelse
+                                        </td>
                                         <td>{{$sel->reason}}</td>
                                         <td>{{$sel->getResponseText()}}</td>
                                         <td>{{$sel->getNameManager()}}</td>
                                         <td>
-                                            <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
+                                            <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                         </td>
                                         <td>
                                             @if($sel->isWaiting())
@@ -173,6 +181,21 @@
                                     </tr>
                                 @endforeach
                                 </tbody>
+                                <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Data</th>
+                                    <th>Requerente</th>
+                                    <th>Tipo</th>
+                                    <th>Detalhes</th>
+                                    <th>Valores</th>
+                                    <th>Razão</th>
+                                    <th>Retorno</th>
+                                    <th>Gestor</th>
+                                    <th>Status</th>
+                                    <th>Ação</th>
+                                </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>
