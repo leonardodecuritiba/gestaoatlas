@@ -45,7 +45,7 @@
                                         <td>{{$sel->getNameManager()}}</td>
                                         <td>{{$sel->getResponseText()}}</td>
                                         <td>
-                                            <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
+                                            <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                         </td>
                                     </tr>
                                 @endforeach

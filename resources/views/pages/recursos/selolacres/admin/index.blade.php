@@ -121,7 +121,7 @@
                                                 <td>{{$sel->n_serie}}</td>
                                                 <td>{{$sel->n_inventario}}</td>
                                                 <td>
-                                                    <span class="btn btn-xs btn-{{$sel->status_color}}">{{$sel->status_text}}</span>
+                                                    <span class="label label-{{$sel->status_color}}">{{$sel->status_text}}</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -208,7 +208,7 @@
                                                 <td>{{$sel->n_serie}}</td>
                                                 <td>{{$sel->n_inventario}}</td>
                                                 <td>
-                                                    <span class="btn btn-xs btn-{{$sel->status_color}}">{{$sel->status_text}}</span>
+                                                    <span class="label label-{{$sel->status_color}}">{{$sel->status_text}}</span>
                                                 </td>
                                             </tr>
                                         @endforeach

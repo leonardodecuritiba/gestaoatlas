@@ -139,7 +139,7 @@
                                     <tr>
                                         <td>{{$selecao->id}}</td>
                                         <td>
-                                            <button class="btn btn-xs btn-{{$selecao->getStatusColor()}}">
+                                            <button class="label label-{{$selecao->getStatusColor()}}">
                                                 {{$selecao->getStatusText()}}
                                             </button>
                                         </td>

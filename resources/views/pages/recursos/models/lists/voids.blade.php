@@ -13,7 +13,7 @@
         <tr>
             <td>{{$sel->id}}</td>
             <td>{{$sel->number}}</td>
-            <td><span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span></td>
+            <td><span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span></td>
             <td>
                 {{--<a class="btn btn-primary btn-xs"--}}
                 {{--href="{{route($Page->link.'.show',$sel->id)}}">--}}

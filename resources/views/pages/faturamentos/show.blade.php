@@ -207,7 +207,7 @@
                             @foreach ($Faturamento->pagamento->parcelas as $selecao)
                                 <tr>
                                     <td>
-                                        <button class="btn btn-xs btn-{{$selecao->getStatusColor()}}">
+                                        <button class="label label-{{$selecao->getStatusColor()}}">
                                             {{$selecao->getStatusText()}}
                                         </button>
                                     </td>

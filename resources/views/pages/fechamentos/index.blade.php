@@ -87,7 +87,7 @@
                                     <tr>
                                         <td>{{$selecao->id}}</td>
                                         <td>
-                                            <button class="btn btn-xs btn-{{$selecao->getStatusType()}}">
+                                            <button class="label label-{{$selecao->getStatusType()}}">
                                                 {{$selecao->getStatusText()}}
                                             </button>
                                         </td>

@@ -155,7 +155,7 @@
                                         <td>{{$sel->getResponseText()}}</td>
                                         <td>{{$sel->getNameManager()}}</td>
                                         <td>
-                                            <span class="btn btn-xs btn-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
+                                            <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                         </td>
                                         <td>
                                             @if($sel->isWaiting())
