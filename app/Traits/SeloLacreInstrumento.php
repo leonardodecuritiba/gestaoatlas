@@ -28,13 +28,13 @@ trait SeloLacreInstrumento
 	public function getUnsetText() {
 		$aparelho = $this->aparelho_manutencao_unset;
 
-		return ( $aparelho == null ) ? $this->getRetiradoEm() : $this->getRetiradoEm() . "(" . $aparelho->idordem_servico . ")";
+		return ( $aparelho == null ) ? $this->getRetiradoEm() : $this->getRetiradoEm() . " (" . $aparelho->idordem_servico . ")";
 	}
 
 	public function getSetText() {
 		$aparelho = $this->aparelho_manutencao_set;
 
-		return ( $aparelho == null ) ? $this->getAfixadoEm() : $this->getAfixadoEm() . "(" . $aparelho->idordem_servico . ")";
+		return ( $aparelho == null ) ? $this->getAfixadoEm() : $this->getAfixadoEm() . " (" . $aparelho->idordem_servico . ")";
 	}
 
 	public function aparelho_manutencao_set() {

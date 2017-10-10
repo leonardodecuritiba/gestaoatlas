@@ -341,33 +341,38 @@ class AparelhoManutencao extends Model
         return ($this->selo_retirado() != NULL);
     }
 
-    public function selo_retirado()
-    {
-	    RETURN 'AparelhoManutencao@selo_retirado ***teste***';
-
-	    return $this->selo_instrumentos_unset->selo_retirado();
-        return $this->instrumento->selo_retirado();
-    }
-
     public function numeracao_selo_afixado()
     {
-        return $this->instrumento->numeracao_selo_afixado();
+        return $this->instrumento->numeracao_selo_afixado($this->getAttribute('idaparelho_manutencao'));
     }
 
     public function numeracao_selo_retirado()
     {
-        return $this->instrumento->numeracao_selo_retirado();
+        return $this->instrumento->numeracao_selo_retirado($this->getAttribute('idaparelho_manutencao'));
     }
 
 	public function numeracao_selo_instrumento_retirado() {
 		return $this->selo_instrumentos;
 	}
 
+
+	public function selo_retirado()
+	{
+		RETURN 'AparelhoManutencao@selo_retirado ***teste***';
+
+		return $this->selo_instrumentos_unset->selo_retirado();
+		return $this->instrumento->selo_retirado();
+	}
     public function selo_afixado()
     {
 	    RETURN 'AparelhoManutencao@selo_afixado ***teste***';
         return $this->instrumento->selo_afixado();
     }
+	public function lacres_retirados()
+	{
+		RETURN 'AparelhoManutencao@lacres_retirados ***teste***';
+		return $this->instrumento->lacres_retirados();
+	}
 
     //LACRES --------
 
@@ -376,15 +381,9 @@ class AparelhoManutencao extends Model
         return ($this->lacres_retirados() != NULL);
     }
 
-    public function lacres_retirados()
-    {
-	    RETURN 'AparelhoManutencao@lacres_retirados ***teste***';
-        return $this->instrumento->lacres_retirados();
-    }
-
     public function numeracao_lacres_afixados()
     {
-        return $this->instrumento->numeracao_lacres_afixados();
+        return $this->instrumento->numeracao_lacres_afixados($this->getAttribute('idaparelho_manutencao'));
     }
 
     public function numeracao_lacres_retirados()

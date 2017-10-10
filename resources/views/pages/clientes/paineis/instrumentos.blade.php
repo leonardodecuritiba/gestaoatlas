@@ -112,23 +112,28 @@
             <div class="x_content" id="selos-container">
                 <div class="form-group">
                     <div class="animated fadeInDown">
-                        <table id="datatable-responsive"
-                               class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                        <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
                                width="100%">
                             <thead>
                             <tr>
-                                <th colspan="5">Selo</th>
-                            </tr>
-                            <tr>
                                 <th>#</th>
+                                <th>Númeração (DV)</th>
                                 <th>Afixado em (O.S)</th>
                                 <th>Retirado em (O.S)</th>
                                 <th>Técnico</th>
-                                <th>Númeração (DV)</th>
                             </tr>
                             </thead>
                             <tbody>
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Númeração (DV)</th>
+                                <th>Afixado em (O.S)</th>
+                                <th>Retirado em (O.S)</th>
+                                <th>Técnico</th>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -136,23 +141,28 @@
             <div class="x_content" id="lacres-container">
                 <div class="form-group">
                     <div class="animated fadeInDown">
-                        <table id="datatable-responsive"
-                               class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                        <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
                                width="100%">
                             <thead>
                             <tr>
-                                <th colspan="5">Lacres</th>
-                            </tr>
-                            <tr>
                                 <th>#</th>
+                                <th>Númeração</th>
                                 <th>Afixado em (O.S)</th>
                                 <th>Retirado em (O.S)</th>
                                 <th>Técnico</th>
-                                <th>Númeração</th>
                             </tr>
                             </thead>
                             <tbody>
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Númeração</th>
+                                <th>Afixado em (O.S)</th>
+                                <th>Retirado em (O.S)</th>
+                                <th>Técnico</th>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -273,6 +283,7 @@
         var $etiquetas = $(this).data('etiquetas');
         console.log($dados);
         var ver_selo_lacre = 0;
+//        var table = $($novo_instrumento_container).find('div#selos-container table').DataTable();
 
         $selos = $(this).data('selo-afixado');
         if (($selos != null) && ($selos != "")) {
@@ -280,13 +291,21 @@
             console.log($selos);
             $($novo_instrumento_container).find('div#selos-container').find('tbody').empty();
             $($selos).each(function (i, selo) {
+//                table.row.add([
+//                    selo.idselo,
+//                    selo.afixado_em,
+//                    selo.retirado_em,
+//                    selo.nome_tecnico,
+//                    selo.numeracao_dv
+//                ]).draw();
+//
                 $($novo_instrumento_container).find('div#selos-container').find('tbody').append(
                     '<tr>' +
                     '<td>' + selo.idselo + '</td>' +
+                    '<td>' + selo.numeracao_dv + '</td>' +
                     '<td>' + selo.afixado_em + '</td>' +
                     '<td>' + selo.retirado_em + '</td>' +
                     '<td>' + selo.nome_tecnico + '</td>' +
-                    '<td>' + selo.numeracao_dv + '</td>' +
                     '</tr>'
                 );
             });
@@ -301,10 +320,10 @@
                 $($novo_instrumento_container).find('div#lacres-container').find('tbody').append(
                     '<tr>' +
                     '<td>' + lacre.idlacre + '</td>' +
+                    '<td>' + lacre.numeracao + '</td>' +
                     '<td>' + lacre.afixado_em + '</td>' +
                     '<td>' + lacre.retirado_em + '</td>' +
                     '<td>' + lacre.nome_tecnico + '</td>' +
-                    '<td>' + lacre.numeracao + '</td>' +
                     '</tr>'
                 );
             });

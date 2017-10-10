@@ -2,7 +2,7 @@
     <div class="x_title">
         <h2>
             Instrumento
-            <small>#{{$Instrumento->idinstrumento}}</small>
+            <small>#{{$AparelhoManutencao->idaparelho_manutencao}} - {{$Instrumento->idinstrumento}}</small>
         </h2>
         <ul class="nav navbar-right panel_toolbox">
             <li><a class="collapse-link"><i class="fa fa-chevron-down"></i></a></li>
