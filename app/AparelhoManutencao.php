@@ -389,7 +389,7 @@ class AparelhoManutencao extends Model
 
     public function numeracao_lacres_retirados()
     {
-        return $this->instrumento->numeracao_lacres_retirados();
+        return $this->instrumento->numeracao_lacres_retirados($this->getAttribute('idaparelho_manutencao'));
     }
 
     public function lacres_afixados()

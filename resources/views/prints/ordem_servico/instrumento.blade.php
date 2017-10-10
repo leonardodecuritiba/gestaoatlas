@@ -48,8 +48,8 @@ $Instrumento = $aparelhoManutencao->instrumento;
     <td colspan="2">LACRES AFIXADOS</td>
 </tr>
 <tr>
-    <td colspan="2">{{$Instrumento->numeracao_selo_retirado()}}</td>
-    <td colspan="2">{{$Instrumento->numeracao_selo_afixado()}}</td>
-    <td colspan="2">{{$Instrumento->numeracao_lacres_retirados()}}</td>
-    <td colspan="2">{{$Instrumento->numeracao_lacres_afixados()}}</td>
+    <td colspan="2">{{$aparelhoManutencao->numeracao_selo_retirado()}}</td>
+    <td colspan="2">{{$aparelhoManutencao->numeracao_selo_afixado()}}</td>
+    <td colspan="2">{{$aparelhoManutencao->numeracao_lacres_retirados()}}</td>
+    <td colspan="2">{{$aparelhoManutencao->numeracao_lacres_afixados()}}</td>
 </tr>
