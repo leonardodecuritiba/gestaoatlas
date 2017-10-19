@@ -154,6 +154,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Data</th>
+                                    <th>Status</th>
                                     <th>Requerente</th>
                                     <th>Tipo</th>
                                     <th>Detalhes</th>
@@ -161,15 +162,32 @@
                                     <th>Razão</th>
                                     <th>Retorno</th>
                                     <th>Gestor</th>
-                                    <th>Status</th>
                                     <th>Ação</th>
                                 </tr>
                                 </thead>
+                                <tfoot>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Data</th>
+                                    <th>Status</th>
+                                    <th>Requerente</th>
+                                    <th>Tipo</th>
+                                    <th>Detalhes</th>
+                                    <th>Valores</th>
+                                    <th>Razão</th>
+                                    <th>Retorno</th>
+                                    <th>Gestor</th>
+                                    <th>Ação</th>
+                                </tr>
+                                </tfoot>
                                 <tbody>
                                 @foreach ($Page->extras['requests'] as $sel)
                                     <tr>
                                         <td>{{$sel->id}}</td>
                                         <td>{{$sel->created_at}}</td>
+                                        <td>
+                                            <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
+                                        </td>
                                         <td>{{$sel->getNameRequester()}}</td>
                                         <td>{{$sel->getTypeText()}}</td>
                                         <td>{{$sel->getParametersText()}}</td>
@@ -184,9 +202,6 @@
                                         <td>{{$sel->getResponseText()}}</td>
                                         <td>{{$sel->getNameManager()}}</td>
                                         <td>
-                                            <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
-                                        </td>
-                                        <td>
                                             @if($sel->isWaiting())
                                                 <button data-request="{{$sel->getFormatedRequest()}}"
                                                         class="btn btn-xs btn-danger btn-deny">Negar
@@ -200,21 +215,6 @@
                                     </tr>
                                 @endforeach
                                 </tbody>
-                                <tfoot>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Data</th>
-                                    <th>Requerente</th>
-                                    <th>Tipo</th>
-                                    <th>Detalhes</th>
-                                    <th>Valores</th>
-                                    <th>Razão</th>
-                                    <th>Retorno</th>
-                                    <th>Gestor</th>
-                                    <th>Status</th>
-                                    <th>Ação</th>
-                                </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>
