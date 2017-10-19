@@ -155,7 +155,7 @@ class NFSe extends NF
         $endereco["bairro"] = $Contato->bairro; //: Bairro. Tamanho: 60 caracteres.
 //        $endereco["codigo_municipio"] = $this->servico_params_fixos['codigo_municipio']; //: código IBGE do município.
         $endereco["codigo_municipio"] = $Contato->codigo_municipio; //: código IBGE do município.
-        $endereco["uf"] = $Contato->estado; //: UF do endereço. Tamanho: 2 caracteres.
+        $endereco["uf"] = strtoupper($Contato->estado); //: UF do endereço. Tamanho: 2 caracteres.
         $endereco["cep"] = $Contato->getCep(); //: CEP do endereço. Caracteres não numéricos são ignorados.
 
         $this->tomador["telefone"] = $Contato->getTelefone();
