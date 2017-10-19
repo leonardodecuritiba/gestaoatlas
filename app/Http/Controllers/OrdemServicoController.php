@@ -341,7 +341,7 @@ class OrdemServicoController extends Controller
 	                'used'              => 1,
                 ]);
 	            //Afixar/Retirar o selo na tabela SeloInstrumento
-	            SeloInstrumento::retirarNovo( $AparelhoManutencao, $lacre->idlacre, $now );
+	            SeloInstrumento::retirarNovo( $AparelhoManutencao, $selo->idselo, $now );
 
             }
             /*** AFIXAÇAO DO SELO ***/
