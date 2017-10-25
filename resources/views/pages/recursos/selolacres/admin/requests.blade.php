@@ -116,7 +116,7 @@
                         <div class="form-group">
                             <button class="btn btn-success btn-lg pull-right"><i class="fa fa-check fa-2"></i> Confirmar
                             </button>
-                            <a class="btn btn-danger btn-lg pull-right btn-cancel"><i class="fa fa-times fa-2"></i> Cancelar</a>
+                            <a class="btn btn-danger btn-lg pull-right" onclick="_cancelRequest()"><i class="fa fa-times fa-2"></i> Cancelar</a>
                         </div>
                         {!! Form::close() !!}
                     </div>
@@ -204,11 +204,13 @@
                                         <td>
                                             @if($sel->isWaiting())
                                                 <button data-request="{{$sel->getFormatedRequest()}}"
-                                                        class="btn btn-xs btn-danger btn-deny">Negar
+                                                        class="btn btn-xs btn-danger btn-deny"
+                                                        onclick="_denyRequest(this)">Negar
                                                 </button>
                                                 <button data-request="{{$sel->getFormatedRequest()}}"
                                                         data-type="{{$sel->getTypeText()}}"
-                                                        class="btn btn-xs btn-success btn-confirm">Confirmar
+                                                        onclick="_confirmRequest(this)"
+                                                        class="btn btn-xs btn-success">Confirmar
                                                 </button>
                                             @endif
                                         </td>
@@ -261,8 +263,24 @@
 
     <!-- FORM -->
     <script type="text/javascript">
+        if (!Array.prototype.removeElements) {
+            Array.prototype.removeElements = function(val, all) {
+                var i, removedItems = [];
+                if (all) {
+                    for(i = this.length; i--;){
+                        if (this[i] === val) removedItems.push(this.splice(i, 1));
+                    }
+                }
+                else {  //same as before...
+                    i = this.indexOf(val);
+                    if(i>-1) removedItems = this.splice(i, 1);
+                }
+                return removedItems;
+            };
+        }
         var $_FORM_REQUEST_CONFIRMAR_ = "div#formRequestConfirmar";
         var $_FORM_REQUEST_NEGAR_ = "div#formRequestNegar";
+        var $_SELECT2_MULTIPLE_ = "select[name='valores[]']";
         var $_RESULTS_AJAX_ = "div#resultsAjax";
         var $_RESULTS_ = "div#results";
         var URL_AJAX = [];
@@ -278,7 +296,7 @@
                 data: function (params) {
                     return {
                         value: params.term, // search term
-                        idtecnico: $('select[name=idorigem]').val(), // search term
+                        idtecnico: $($_SELECT2_MULTIPLE_).val(), // search term
                     };
                 },
                 processResults: function (data) {
@@ -304,50 +322,115 @@
             });
         }
 
-        $(document).ready(function () {
-            $(".btn-confirm").click(function () {
-                var $data = $(this).data('request');
-                setDataRequest($data, $_FORM_REQUEST_CONFIRMAR_);
-                $DATA.url = URL_AJAX[$data.type];
-                $DATA.type = $data.type;
-                $DATA.max = JSON.parse($data.parameters_json).quantidade;
-                remoteDataConfigSelos.ajax.url = URL_AJAX[$data.type];
-                remoteDataConfigSelos.maximumSelectionLength = JSON.parse($data.parameters_json).quantidade;
+        function _confirmRequest($this){
+            var $data = $($this).data('request');
+            setDataRequest($data, $_FORM_REQUEST_CONFIRMAR_);
+            $DATA.url = URL_AJAX[$data.type];
+            $DATA.type = $data.type;
+            $DATA.max = JSON.parse($data.parameters_json).quantidade;
+//            remoteDataConfigSelos.ajax.url = URL_AJAX[$data.type];
+            remoteDataConfigSelos.maximumSelectionLength = JSON.parse($data.parameters_json).quantidade;
 
-                $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').show();
-                $($_FORM_REQUEST_CONFIRMAR_).find('div.x_title h2 b').html($DATA.type);
-                $($_FORM_REQUEST_NEGAR_).parents('div.row').hide();
-                $($_FORM_REQUEST_NEGAR_).find('div.x_title h2 b').html($DATA.type);
-                $($_RESULTS_AJAX_).parents('div.row').show();
-                $($_RESULTS_AJAX_).find('div.x_title h2 b').html($DATA.type);
-                $($_RESULTS_).hide();
-                $(".select2_multiple-ajax").select2(remoteDataConfigSelos);
-            });
-        });
+            $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').show();
+            $($_FORM_REQUEST_CONFIRMAR_).find('div.x_title h2 b').html($DATA.type);
+            $($_FORM_REQUEST_NEGAR_).parents('div.row').hide();
+            $($_FORM_REQUEST_NEGAR_).find('div.x_title h2 b').html($DATA.type);
+            $($_RESULTS_AJAX_).parents('div.row').show();
+            $($_RESULTS_AJAX_).find('div.x_title h2 b').html($DATA.type);
+            $($_RESULTS_).hide();
+            $(".select2_multiple-ajax").select2(remoteDataConfigSelos);
+        }
 
-        $(".btn-deny").click(function () {
-            var $data = $(this).data('request');
+        function _denyRequest($this){
+            var $data = $($this).data('request');
             $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').hide();
             $($_FORM_REQUEST_NEGAR_).parents('div.row').show();
             $($_RESULTS_AJAX_).parents('div.row').hide();
             $($_RESULTS_).hide();
             setDataRequest($data, $_FORM_REQUEST_NEGAR_);
             $(".select2_multiple-ajax").val(null).trigger("change");
-        });
+        }
 
-        $(".btn-cancel").click(function () {
+        function _cancelRequest(){
             $($_FORM_REQUEST_CONFIRMAR_).parents('div.row').hide();
             $($_FORM_REQUEST_NEGAR_).parents('div.row').hide();
             $($_RESULTS_AJAX_).parents('div.row').hide();
             $($_RESULTS_).show();
             $(".select2_multiple-ajax").val(null).trigger("change");
+        }
+
+        function _removeOption(_data){
+            if ($($_SELECT2_MULTIPLE_).find("option[value='" + _data.id + "']").length) {
+                $($_SELECT2_MULTIPLE_).find(" option[value='" + _data.id + "']").remove().trigger('change');
+                var values = $($_SELECT2_MULTIPLE_).val();
+                if(values.length > 1){
+                    values = values.sort();
+                }
+                $($_SELECT2_MULTIPLE_).val(values).trigger('change');
+            }
+        }
+
+        function _addOption(_data){
+            var newOption = new Option(_data.text, _data.id, false, false);
+            $($_SELECT2_MULTIPLE_).append(newOption);
+            var values = $($_SELECT2_MULTIPLE_).val();
+            if(values == null) {
+                values = _data.id;
+            } else {
+                values.push(_data.id);
+                values = values.sort();
+            }
+            $($_SELECT2_MULTIPLE_).val(values).trigger('change');
+
+            console.log(values);
+        }
+
+        function _unselectBtn($this){
+            $($this).data('value',0);
+            $($this).removeClass('btn-success');
+            $($this).addClass('btn-default')
+        }
+
+        function _selectBtn($this){
+            $($this).data('value',1);
+            $($this).removeClass('btn-default');
+            $($this).addClass('btn-success');
+        }
+
+        function _acceptBtn($this){
+            var val = $($this).data('value');
+            var _data = {};
+            _data.id = $($this).data('id');
+            _data.text = $($this).html();
+            if(val == "1"){
+                _unselectBtn($this);
+                _removeOption(_data);
+            } else {
+                _selectBtn($this)
+                _addOption(_data);
+            }
+        }
+        $($_SELECT2_MULTIPLE_).on('select2:unselect', function (e) {
+            var _data = {};
+            _data.id = e.params.data.id;
+            _data.text = e.params.data.text;
+            var $this = $('div.valores').find('button[data-id=' + e.params.data.id + ']');
+            _unselectBtn($this);
+            _removeOption(_data);
+        });
+        $($_SELECT2_MULTIPLE_).on('select2:select', function (e) {
+            var _data = {};
+            _data.id = e.params.data.id;
+            _data.text = e.params.data.text;
+            var $this = $('div.valores').find('button[data-id=' + e.params.data.id + ']');
+            _selectBtn($this);
+            _addOption(_data);
         });
 
         //seleção do selos
         $('select[name=idorigem]').on("select2:select", function () {
             //achar parent, pegar próximo td e escrever o valor
             var $sel = $(this).find(":selected");
-            $(".select2_multiple-ajax").val(null).trigger("change");
         });
 
         $(document).ready(function () {
@@ -374,9 +457,14 @@
                     success: function (json) {
                         console.log(json);
                         if (json!=null) {
+                            var values = $($_SELECT2_MULTIPLE_).val();
                             $(json).each(function(i,v){
-                                $('div.valores').append('<button data-id="' + v.id + '" class="btn btn-success">' + v.text + '</button>');
-                            })
+                                if($.inArray(v.id.toString(), values) > -1){
+                                    $('div.valores').append('<button data-value="1" onclick="_acceptBtn(this)" data-id="' + v.id + '" class="btn btn-success">' + v.text + '</button>');
+                                } else {
+                                    $('div.valores').append('<button data-value="0" onclick="_acceptBtn(this)" data-id="' + v.id + '" class="btn btn-default">' + v.text + '</button>');
+                                }
+                             })
                         } else {
                             $('div.valores').append('<div class="row jumbotron"><h1>Ops!</h1><h2>' + $DATA.type +  ' não encontrados. Selecione outra Origem!</h2></div>');
                         }
