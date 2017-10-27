@@ -4,7 +4,7 @@
             <tr class="fundo_titulo">
                 <th class="linha_titulo" colspan="8">FECHAMENTO DE VALORES</th>
             </tr>
-            @if($aparelhoManutencao->has_servico_prestados())
+            @if(count($OrdemServico->fechamentoServicos())>0)
                 <?php
                 $Servicos = $OrdemServico->fechamentoServicos();
                 $Total = $OrdemServico->fechamentoServicosTotalReal();
@@ -12,7 +12,7 @@
                 @include('prints.ordem_servico.servico')
             @endif
 
-            @if($aparelhoManutencao->has_pecas_utilizadas())
+            @if(count($OrdemServico->fechamentoPecas())>0)
                 <?php
                 $Pecas = $OrdemServico->fechamentoPecas();
                 $Total = $OrdemServico->fechamentoPecasTotalReal();
@@ -20,7 +20,7 @@
                 @include('prints.ordem_servico.peca')
             @endif
 
-            @if($aparelhoManutencao->has_kits_utilizados())
+            @if(count($OrdemServico->fechamentoKits())>0)
                 <?php
                 $Kits = $OrdemServico->fechamentoKits();
                 $Total = $OrdemServico->fechamentoKitsTotalReal();
