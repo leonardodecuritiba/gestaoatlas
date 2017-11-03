@@ -56,7 +56,7 @@ class NF
         if (!strcmp($type, 'nfe')) {
             $URL = $_SERVER_ . "/nfe2/consultar?ref=" . $ref . "&token=" . $_TOKEN_;
         } else {
-            $URL = $_SERVER_ . "/nfse/" . $ref . "?token=" . $_TOKEN_;
+            $URL = $_SERVER_ . "/nfse/" . $ref . ".json?token=" . $_TOKEN_;
         }
 //        return $URL;
 
