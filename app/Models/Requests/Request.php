@@ -4,6 +4,7 @@ namespace App\Models\Requests;
 
 use App\Helpers\DataHelper;
 use App\Lacre;
+use App\Peca;
 use App\Selo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -30,7 +31,32 @@ class Request extends Model
      */
 
 	/*
-	 * PATTERNS ===============================================
+	 * PARTS ===============================================
+	 */
+	static public function openPartsRequest($data)
+	{
+		//openPecasRequest
+		$idrequester = $data['idrequester'];
+		$parameters = $data['parameters'];
+		self::create([
+			'idtype' => TypeRequest::_TYPE_PECAS_,
+			'idstatus' => StatusRequest::_STATUS_AGUARDANDO_,
+			'reason' => $data['reason'],
+			'parameters' => json_encode($parameters),
+			'idrequester' => $idrequester,
+		]);
+		return "Requisição de " . $parameters['opcao'] . " aberta com sucesso!";
+	}
+
+	static public function sendPartsRequest($data)
+	{
+		$Request = self::accept($data);
+		$data['idtecnico'] = $Request->requester->tecnico->idtecnico;
+		return "Requisição aceita com sucesso!";
+	}
+
+	/*
+	 * TOOLS ===============================================
 	 */
 	static public function openToolsRequest($data)
 	{
@@ -141,7 +167,11 @@ class Request extends Model
     {
         $self = self::findOrFail($data['id']);
         $parameters = $self->getParametersUncoded();
-	    $parameters->valores = $data['valores'];
+        if($self->attributes['idtype'] == TypeRequest::_TYPE_PECAS_){
+	        $parameters->valores = $parameters->idpeca;
+        } else {
+	        $parameters->valores = $data['valores'];
+        }
 	    $self->update([
             'parameters' => json_encode($parameters),
             'idmanager' => $data['idmanager'],
@@ -211,6 +241,10 @@ class Request extends Model
 	            return 'Quantidade: ' . $parameters->quantidade;
             case TypeRequest::_TYPE_LACRES_:
                 return 'Quantidade: ' . $parameters->quantidade;
+                break;
+            case TypeRequest::_TYPE_PECAS_:
+	            $p = Peca::find($parameters->idpeca);
+                return 'Peça: ' . $p->descricao . ' - ' . $p->nome_marca();
                 break;
         }
     }
@@ -283,6 +317,18 @@ class Request extends Model
      * ========================================================
      */
 
+
+	/**
+	 * Scope a query to only include active users.
+	 *
+	 * @param \Illuminate\Database\Eloquent\Builder $query
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeWaiting($query)
+	{
+		return $query->where('idstatus', StatusRequest::_STATUS_AGUARDANDO_);
+	}
+
     /**
      * Scope a query to only include active users.
      *
@@ -293,18 +339,6 @@ class Request extends Model
     {
         return $query->where('idtype', TypeRequest::_TYPE_SELOS_);
     }
-
-    /**
-     * Scope a query to only include active users.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeWaiting($query)
-    {
-        return $query->where('idstatus', StatusRequest::_STATUS_AGUARDANDO_);
-    }
-
     /**
      * Scope a query to only include active users.
      *
@@ -348,6 +382,16 @@ class Request extends Model
     public function scopePatterns($query)
     {
         return $query->where('idtype', TypeRequest::_TYPE_PADROES_);
+    }
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeParts($query)
+    {
+        return $query->where('idtype', TypeRequest::_TYPE_PECAS_);
     }
 
     /*

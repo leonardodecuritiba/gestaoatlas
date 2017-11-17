@@ -116,6 +116,13 @@
                                     <li><a href="{{route('tools.requisicoes')}}">Requisições</a></li>
                                 </ul>
                             </li>
+                            <li><a>Peças<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+{{--                                    <li><a href="{{route('parts.index')}}">Modelos</a></li>--}}
+{{--                                    <li><a href="{{ route('parts.stocks') }}">Estoque</a></li>--}}
+                                    <li><a href="{{route('parts.requisicoes')}}">Requisições</a></li>
+                                </ul>
+                            </li>
                             <li><a>Padrões<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('patterns.index')}}">Modelos</a></li>
@@ -177,6 +184,7 @@
                             <li><a href="{{ route('selolacres.requisicao') }}">Selos/Lacres</a></li>
                             <li><a href="{{ route('patterns.requisicao') }}">Padrões</a></li>
                             <li><a href="{{ route('tools.requisicao') }}">Ferramentas</a></li>
+                            <li><a href="{{ route('parts.requisicao') }}">Peças</a></li>
                             <li><a href="#">Equipamento BKP</a></li>
                             <li><a href="#">Veículos</a></li>
                             <li><a href="#">Alimentação</a></li>

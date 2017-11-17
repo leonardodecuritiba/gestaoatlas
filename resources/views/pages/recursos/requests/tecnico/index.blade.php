@@ -1,6 +1,8 @@
 @extends('layouts.template')
 @section('style_content')
     @include('helpers.datatables.head')
+    <!-- Select2 -->
+    @include('helpers.select2.head')
 @endsection
 @section('modals_content')
     @include('pages.recursos.requests.modal.requerer')
@@ -12,7 +14,7 @@
     </section>
     <section class="row">
         <div class="x_panel">
-            @if($Page->extras['requisicoes']->count() > 0)
+            @if(count($Page->extras['requisicoes']) > 0)
                 <div class="x_title">
                     <h2><b>{{$Page->extras['requisicoes']->count()}}</b> Requisições de {{$Page->search_results}} </h2>
                     <div class="clearfix"></div>
@@ -69,6 +71,17 @@
 @section('scripts_content')
     <!-- Datatables -->
 
+    <!-- Select2 -->
+    @include('helpers.select2.foot')
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".select2_single").select2({
+                width: 'resolve'
+            });
+        });
+    </script>
+    <!-- /Select2 -->
+
     {!! Html::script('js/parsley/parsley.min.js') !!}
     @include('helpers.datatables.foot')
     <script>
@@ -105,6 +118,15 @@
                     "max": MAX[option_],              // substitute your own
                 });
                 $($field).parents('form').parsley();
+            });
+        });
+
+        $(document).ready(function () {
+            $('div#modalRequererParts').on('show.bs.modal', function (e) {
+                var option_ = $(e.relatedTarget).data('option');
+                var $content = $(this).find('div.modal-content');
+                $($content).find('div.modal-header h4.modal-title b').html(option_);
+                $($content).find('div.modal-body input[name=opcao]').val(option_);
             });
         });
     </script>

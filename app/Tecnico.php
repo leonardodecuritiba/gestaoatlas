@@ -54,6 +54,9 @@ class Tecnico extends Model
 		    case 'tools' :
 			    return $this->colaborador->requisicoes->where('idtype',TypeRequest::_TYPE_FERRAMENTAS_);
 			    break;
+		    case 'parts' :
+			    return $this->colaborador->requisicoes->where('idtype',TypeRequest::_TYPE_PECAS_);
+			    break;
 	    }
     }
 
@@ -73,6 +76,9 @@ class Tecnico extends Model
 		    	break;
 		    case 'tools' :
 			    return $this->colaborador->requisicoes_waiting->where('idtype',TypeRequest::_TYPE_FERRAMENTAS_);
+		    	break;
+		    case 'parts' :
+			    return $this->colaborador->requisicoes_waiting->where('idtype',TypeRequest::_TYPE_PECAS_);
 		    	break;
 	    }
     }
@@ -102,6 +108,9 @@ class Tecnico extends Model
 				break;
 			case 'tools':
 				return (Ajuste::getValueByMetaKey('requests_max_tools') - $this->tools()->count());
+				break;
+			case 'parts':
+				return (Ajuste::getValueByMetaKey('requests_max_parts') - 10);
 				break;
 		}
 

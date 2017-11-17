@@ -29,6 +29,16 @@ class Peca extends Model
     ];
 
     // ******************** FUNCTIONS ******************************
+
+	static public function getAlltoSelectList() {
+		return self::get()->map( function ( $s ) {
+			return [
+				'id'          => $s->idpeca,
+				'description' => $s->descricao . ' - ' . $s->nome_marca()
+			];
+		} )->pluck( 'description', 'id' );
+	}
+
     public function has_insumos()
     {
         return ($this->insumos()->count() > 0);
