@@ -348,6 +348,7 @@ class AparelhoManutencao extends Model
 
     public function numeracao_selo_retirado()
     {
+//    	return $this->instrumento;
         return $this->instrumento->numeracao_selo_retirado($this->getAttribute('idaparelho_manutencao'));
     }
 
