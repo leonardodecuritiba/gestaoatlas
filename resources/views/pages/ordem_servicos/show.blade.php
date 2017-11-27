@@ -390,8 +390,10 @@
             });
             $('input[name=selo_outro]').on('ifUnchecked', function(){
                 var $parent = $(this).parents('div.form-group').next();
-                $($parent).find('input[name=selo_retirado]').attr('required',false);
-                $($parent).find('input[name=selo_retirado]').attr('disabled',true);
+                var $input_selo = $($parent).find('input[name=selo_retirado]');
+                $($input_selo).val($($input_selo).data('selo_text'));
+                $($input_selo).attr('required',false);
+                $($input_selo).attr('disabled',true);
             });
 
             $('input[name=lacre_outro]').on('ifChecked', function(){
@@ -414,23 +416,21 @@
             });
 
             $('input[name=lacre_rompido]').on('ifChanged', function(){
+                $(this).parents('div.checkbox').siblings().toggle();
                 $(this).parents('div.form-group').next().toggle();
             });
             $('input[name=lacre_rompido]').on('ifChecked', function(){
                 var $parent = $(this).parents('div.form-group').next();
                 $($($parent).find(':input')).each(function(i,v){
                     if($.inArray(v.name,lista_selolacre)>=0){
-                        console.log(v.name);
                         $(v).attr('required',true);
                     }
                 });
             });
             $('input[name=lacre_rompido]').on('ifUnchecked', function(){
                 var $parent = $(this).parents('div.form-group').next();
-                console.log($parent);
                 $($($parent).find(':input')).each(function(i,v){
                     if($.inArray(v.name,lista_selolacre)>=0){
-                        console.log(v.name);
                         $(v).attr('required',false);
                     }
                 });

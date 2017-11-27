@@ -66,35 +66,54 @@ class Instrumento extends Model
     //SELOS --------
 	public function selo_retirado($idaparelho_unset = NULL) {
 		if ( $this->has_selo_instrumentos_retirado() ) {
-			$SeloInstrumento = $this->selo_instrumentos_retirado($idaparelho_unset)->first();
-			return ( $SeloInstrumento != null ) ? $SeloInstrumento->selo : $SeloInstrumento;
+			$SeloInstrumento = $this->selo_instrumentos_retirado($idaparelho_unset)->get();
+			return $SeloInstrumento;
 		}
 		return null;
 	}
 
-	public function selo_afixado($idaparelho_set = NULL) {
-//		dd(1);
-		$SeloInstrumento = $this->selo_instrumentos_afixado($idaparelho_set)->first();
-		return ( $SeloInstrumento == null ) ? $SeloInstrumento : $SeloInstrumento->selo;
-//		if ( $SeloInstrumento ) {
-////            $SeloInstrumento = $this->selo_instrumentos()->whereNull('retirado_em')->first();
-//			$SeloInstrumento = $this->selo_instrumentos_afixado();
-//
-//			return ( $SeloInstrumento != null ) ? $SeloInstrumento->selo : $SeloInstrumento;
-//		}
-//
-//		return null;
+	public function numeracao_selo_retirado($idaparelho_unset = NULL) {
+		$selos = $this->selo_retirado($idaparelho_unset);
+		$num_selos = count($selos);
+		if($num_selos == 0){
+			$numeracoes['text'] = 'Sem intervenção';
+		} else if($num_selos > 1){
+			$numeracoes = array();
+			foreach($selos as $selo_instrumento){
+				$numeracoes['text'][] = $selo_instrumento->selo->getFormatedSeloDV();
+				$numeracoes['id'][] = $selo_instrumento->idselo_instrumento;
+			}
+			$numeracoes['text'] = implode('; ',$numeracoes['text']);
+		} else {
+			$numeracoes['text'] = $selos->first()->selo->getFormatedSeloDV();
+			$numeracoes['id'] = $selos->first()->idselo_instrumento;
+		}
+		return $numeracoes;
 	}
 
-	public function numeracao_selo_retirado($idaparelho_unset = NULL) {
-		$selo = $this->selo_retirado($idaparelho_unset);
-		return ( $selo != null ) ? $selo->getFormatedSeloDV() : '-';
+	public function selo_afixado($idaparelho_set = NULL) {
+		$SeloInstrumento = $this->selo_instrumentos_afixado($idaparelho_set)->get();
+		return $SeloInstrumento;
 	}
 
 	public function numeracao_selo_afixado($idaparelho_set = NULL)
 	{
-		$selo = $this->selo_afixado($idaparelho_set);
-		return ($selo != NULL) ? $selo->getFormatedSeloDV() : '-';
+		$selos = $this->selo_afixado($idaparelho_set);
+		$num_selos = count($selos);
+		if($num_selos == 0){
+			$numeracoes['text'] = 'Sem intervenção';
+		} else if($num_selos > 1){
+			$numeracoes = array();
+			foreach($selos as $selo_instrumento){
+				$numeracoes['text'][] = $selo_instrumento->selo->getFormatedSeloDV();
+				$numeracoes['id'][] = $selo_instrumento->idselo_instrumento;
+			}
+			$numeracoes['text'] = implode('; ',$numeracoes['text']);
+		} else {
+			$numeracoes['text'] = $selos->first()->selo->getFormatedSeloDV();
+			$numeracoes['id'] = $selos->first()->idselo_instrumento;
+		}
+		return $numeracoes;
 	}
 
 	public function selo_instrumento_cliente() {

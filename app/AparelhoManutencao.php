@@ -26,6 +26,7 @@ class AparelhoManutencao extends Model
 	static public function updateOrdemServico( $id, array $data ) {
 		$AparelhoManutencao = self::findOrFail( $id );
 		//atualiza o status da O.S.
+
 		$AparelhoManutencao->ordem_servico->update( [
 			'idsituacao_ordem_servico' => 2
 		] );

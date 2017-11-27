@@ -261,6 +261,7 @@ class OrdemServicoController extends Controller
 
     public function updateAparelhoManutencao(Request $request, $idaparelho_manutencao)
     {
+//    	dd($request->all());
 	    $AparelhoManutencao = AparelhoManutencao::updateOrdemServico( $idaparelho_manutencao, $request->only( [
 		    'defeito',
 		    'solucao'
@@ -277,12 +278,53 @@ class OrdemServicoController extends Controller
 
     public function updateInstrumento(Request $request, AparelhoManutencao $AparelhoManutencao)
     {
+//	    dd($request->all());
         //UPDATE DOS LACRES E SELOS
         //caso não tenha lacre rompido, só atualizar defeito/manutenção
 
         if ($request->has('lacre_rompido')) {
             $now = Carbon::now()->toDateTimeString();
             //Na primeira vez que o técnico for dar manutenção no instrumento, deverá marcar SELO OUTRO e LACRE OUTRO
+
+	        /*** RETIRADA DO SELO ***/
+	        //Nesse caso quer dizer que o selo está sendo editado pela segunda vez
+	        if ($request->has('selo_retirado_hidden')) {
+		        $selos_retirados = json_decode($request->get('selo_retirado_hidden'));
+		        //Nesse caso, o SeloInstrumento já existe, vamos atualizar o retirado_em
+		        if(count($selos_retirados)  > 1){
+			        foreach($selos_retirados as $idselo_instrumento){
+				        $SeloInstrumento = SeloInstrumento::retirar( $AparelhoManutencao, $idselo_instrumento, $now );
+			        }
+		        } else {
+			        $SeloInstrumento = SeloInstrumento::retirar( $AparelhoManutencao, $selos_retirados, $now );
+		        }
+	        }
+
+	        //Nesse caso o selo é externo ou PRIMEIRA vez
+	        if ($request->has('selo_outro')) {
+		        $selo_retirado = $request->get('selo_retirado');
+		        //Nesse caso, criar um selo novo na tabela selos e atribuí-lo ao técnico em questão
+		        if (Selo::selo_exists($selo_retirado)) { // Testar para saber se já existe esse selo na base, por segurnaça
+			        dd('ERRO: SELO JÁ EXISTE');
+		        }
+		        $selo = Selo::create([ // se não existir, inserir e retornar o novo id
+			        'idtecnico'         => $this->tecnico->idtecnico,
+			        'numeracao_externa' => $selo_retirado,
+			        'externo'           => 1,
+			        'used'              => 1,
+		        ]);
+		        //Afixar/Retirar o selo na tabela SeloInstrumento
+		        SeloInstrumento::retirarNovo( $AparelhoManutencao, $selo->idselo, $now );
+
+	        }
+	        /*** AFIXAÇAO DO SELO ***/
+	        $idselo_afixado = $request->get('selo_afixado');
+	        //Afixar o selo na tabela SeloInstrumento
+	        SeloInstrumento::afixar( $AparelhoManutencao, $idselo_afixado, $now );
+
+
+
+
 //            return $request->all();
 
             /*** RETIRADA DOS LACRES ***/
@@ -320,34 +362,6 @@ class OrdemServicoController extends Controller
             //Afixar os lacres na tabela LacreInstrumento
 	        LacreInstrumento::afixar( $AparelhoManutencao, $idlacres_afixados, $now );
 
-            /*** RETIRADA DO SELO ***/
-            //Nesse caso quer dizer que o selo está sendo editado pela segunda vez
-            if ($request->has('selo_retirado_hidden')) {
-                $selo_retirado = $request->get('selo_retirado_hidden');
-                //Nesse caso, criar o SeloInstrumento já existe, vamos atualizar o retirado_em
-	            $SeloInstrumento = SeloInstrumento::retirar( $AparelhoManutencao, $selo_retirado, $now );
-            }
-            //Nesse caso o selo é externo ou PRIMEIRA vez
-            if ($request->has('selo_outro')) {
-                $selo_retirado = $request->get('selo_retirado');
-                //Nesse caso, criar um selo novo na tabela selos e atribuí-lo ao técnico em questão
-                if (Selo::selo_exists($selo_retirado)) { // Testar para saber se já existe esse selo na base, por segurnaça
-                    dd('ERRO: SELO JÁ EXISTE');
-                }
-                $selo = Selo::create([ // se não existir, inserir e retornar o novo id
-	                'idtecnico'         => $this->tecnico->idtecnico,
-	                'numeracao_externa' => $selo_retirado,
-	                'externo'           => 1,
-	                'used'              => 1,
-                ]);
-	            //Afixar/Retirar o selo na tabela SeloInstrumento
-	            SeloInstrumento::retirarNovo( $AparelhoManutencao, $selo->idselo, $now );
-
-            }
-            /*** AFIXAÇAO DO SELO ***/
-            $idselo_afixado = $request->get('selo_afixado');
-            //Afixar o selo na tabela SeloInstrumento
-	        SeloInstrumento::afixar( $AparelhoManutencao, $idselo_afixado, $now );
         }
         return;
     }

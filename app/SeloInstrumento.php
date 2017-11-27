@@ -63,8 +63,8 @@ class SeloInstrumento extends Model
 	static public function retirarNovo( AparelhoManutencao $aparelho, $idselo, $now = null ) {
 		$now = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
 
-		return LacreInstrumento::create( [
-			'idlacre'          => $idselo,
+		return SeloInstrumento::create( [
+			'idselo'           => $idselo,
 			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,
 			'idinstrumento'    => $aparelho->idinstrumento,
@@ -74,10 +74,10 @@ class SeloInstrumento extends Model
 	}
 
 	//Nesse caso, criar o SeloInstrumento já existe, vamos atualizar o retirado_em
-	static public function retirar( AparelhoManutencao $aparelho, $idselo, $now = null ) {
+	static public function retirar( AparelhoManutencao $aparelho, $idselo_instrumento, $now = null ) {
 		$now  = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
 //		$Selo = Selo::where( 'numeracao', $idselo )->first();
-		$Data = self::where( 'idselo', $idselo )->first();
+		$Data = self::find( $idselo_instrumento);
 
 		return $Data->update( [
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,

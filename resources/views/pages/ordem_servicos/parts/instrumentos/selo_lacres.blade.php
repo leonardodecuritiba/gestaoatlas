@@ -25,13 +25,18 @@
                 {{$AparelhoManutencao->defeito}}
             </p>
             @if($AparelhoManutencao->has_selo_retirado())
+                <?php
+                    $numeracao_selo_afixado = $AparelhoManutencao->numeracao_selo_afixado();
+                    $numeracao_selo_retirado = $AparelhoManutencao->numeracao_selo_retirado();
+//                    dd($numeracao_selo_retirado);
+                ?>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <h2>Selo Retirado:</h2>
-                    <p class="green">{{$AparelhoManutencao->numeracao_selo_retirado()}}</p>
+                    <p class="green">{{$numeracao_selo_retirado['text']}}</p>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <h2>Selo Afixado:</h2>
-                    <p class="green">{{$AparelhoManutencao->numeracao_selo_afixado()}}</p>
+                    <p class="green">{{$numeracao_selo_afixado['text']}}</p>
                 </div>
             @else
                 <div class="alert-custos_isento alert alert-danger fade in"

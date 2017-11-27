@@ -212,13 +212,17 @@
                         </thead>
                         <tbody>
                         @foreach($Cliente->instrumentos as $instrumento)
+                            <?php
+                                $selos = $instrumento->numeracao_selo_afixado();
+//                                dd();
+                            ?>
                             <tr>
                                 <td>{{$instrumento->idinstrumento}}</td>
                                 <td><img src="{{$instrumento->getThumbFoto()}}" class="avatar" alt="Avatar"></td>
                                 <td>{{$instrumento->getDetalhesBase()}}</td>
                                 <td>{{$instrumento->numero_serie}}</td>
                                 <td>{{$instrumento->inventario}}</td>
-                                <td>{{$instrumento->numeracao_selo_afixado()}}</td>
+                                <td>{{$selos['text']}}</td>
                                 <td>{{$instrumento->numeracao_lacres_afixados()}}</td>
                                 <td>
                                     <button class="btn btn-default btn-xs edit-instrumento"

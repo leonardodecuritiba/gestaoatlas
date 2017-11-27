@@ -1,12 +1,11 @@
 <?php
-$selo_retirado = $Instrumento->selo_afixado();
+$selos_retirados = $Instrumento->numeracao_selo_afixado();
 $lacres_retirados_list = $Instrumento->lacres_afixados_list();
 $lacres_retirados = NULL;
 if ( $lacres_retirados_list != NULL ) {
 	$lacres_retirados   = $lacres_retirados_list->toArray();
 	$idlacres_retirados = $lacres_retirados_list->pluck( 'id' )->toArray();
 }
-
 ?>
 <section class="row">
     {!! Form::open(['route' => ['aparelho_manutencao.update',$AparelhoManutencao->idaparelho_manutencao],
@@ -19,7 +18,7 @@ if ( $lacres_retirados_list != NULL ) {
                 rompido?
             </label>
         </div>
-        @if($selo_retirado!=null)
+        @if($selos_retirados!=null)
             <div class="checkbox col-md-2 col-sm-2 col-xs-12">
                 <label>
                     <input name="selo_outro" type="checkbox" class="flat"> Outro Selo?
@@ -30,12 +29,10 @@ if ( $lacres_retirados_list != NULL ) {
         @endif
 
         @if($lacres_retirados!=null)
-            <div class="form-group col-md-2">
-                <div class="checkbox">
-                    <label>
-                        <input name="lacre_outro" type="checkbox" class="flat"> Outros Lacres?
-                    </label>
-                </div>
+            <div class="checkbox col-md-2 col-sm-2 col-xs-12">
+                <label>
+                    <input name="lacre_outro" type="checkbox" class="flat"> Outros Lacres?
+                </label>
             </div>
         @else
             <input name="lacre_outro" type="hidden" value="1">
@@ -48,11 +45,14 @@ if ( $lacres_retirados_list != NULL ) {
                             class="required">*</span></label>
                 <div class="col-md-10 col-sm-10 col-xs-12">
                     <input type="text" name="selo_retirado" class="form-control" placeholder="Selo retirado"
-                           @if($selo_retirado!=null) value="{{$selo_retirado->getFormatedSeloDV()}}" disabled
-                           @else required @endif />
-                    @if($selo_retirado!=null)
+                        @if($selos_retirados!=null)
+                           data-selo_id="{{json_encode($selos_retirados['id'])}}"
+                           data-selo_text="{{$selos_retirados['text']}}"
+                           value="{{$selos_retirados['text']}}" disabled
+                        @else  data-selo="" data-selo_text="" required @endif />
+                    @if($selos_retirados!=null)
                         <input type="hidden" name="selo_retirado_hidden"
-                               value="{{$selo_retirado->idselo}}"/>
+                               value="{{json_encode($selos_retirados['id'])}}"/>
                     @endif
                 </div>
             </div>
