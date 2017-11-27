@@ -233,9 +233,11 @@ class Instrumento extends Model
 		$o = $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' );
 		if($idaparelho_set != NULL){
 			$o->where('idaparelho_set', $idaparelho_set);
-		} else {
+		}
+		else {
 			$o->whereNull('idaparelho_unset');
 		}
+//		$o->whereNull('idaparelho_unset');
 		return $o->orderBy( 'retirado_em' , 'ASC');
 	}
 
