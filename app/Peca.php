@@ -30,11 +30,19 @@ class Peca extends Model
 
     // ******************** FUNCTIONS ******************************
 
+	public function getShortCost() {
+		return $this->peca_tributacao->getCostFormatted();
+	}
+
+	public function getShortDescriptions() {
+		return $this->getAttribute('descricao') . ' - ' . $this->nome_marca();
+	}
+
 	static public function getAlltoSelectList() {
 		return self::get()->map( function ( $s ) {
 			return [
 				'id'          => $s->idpeca,
-				'description' => $s->descricao . ' - ' . $s->nome_marca()
+				'description' => $s->getShortDescriptions()
 			];
 		} )->pluck( 'description', 'id' );
 	}

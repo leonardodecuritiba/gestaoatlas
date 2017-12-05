@@ -98,6 +98,32 @@ Route::group(['middleware' => ['auth']], function () {
 });
 /*
 |--------------------------------------------------------------------------
+| Tools Routes
+|--------------------------------------------------------------------------
+|
+|
+*/
+
+Route::group(['middleware' => ['auth']], function () {
+
+//    Route::post('selolacre/{idtecnico}', 'ColaboradoresController@selolacre_store')->name('selolacre.store');
+//    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
+
+//	Route::resource('parts', 'Inputs\ToolsController');
+	Route::get( 'parts-stocks', 'Inputs\PartsController@stocks' )->name( 'parts.stocks' );
+	Route::match( [ 'POST' ], 'parts-stocks-store', 'Inputs\PartsController@stocksStore' )->name( 'parts.stocksStore' );
+
+	//REQUISIÇÕES - ADMIM
+	Route::get('parts-requisicoes', 'Inputs\PartsController@listRequests')->name('parts.requisicoes');
+	Route::post('parts-repasse', 'Inputs\PartsController@postFormPassRequest')->name('parts.repasse');
+	Route::post('parts-negar', 'Inputs\PartsController@deniedRequest')->name('parts.deny');
+
+	//REQUISIÇÕES -TÉCNICO
+	Route::get('parts-requisicao', 'Inputs\PartsController@getFormRequest')->name('parts.requisicao');
+	Route::post('parts-requerer', 'Inputs\PartsController@postFormRequest')->name('parts.requerer');
+});
+/*
+|--------------------------------------------------------------------------
 | Pattern Routes
 |--------------------------------------------------------------------------
 |

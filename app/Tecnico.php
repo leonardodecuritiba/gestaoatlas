@@ -253,4 +253,8 @@ class Tecnico extends Model
 	{
 		return $this->colaborador->tools;
 	}
+	public function parts()
+	{
+		return $this->colaborador->parts;
+	}
 }

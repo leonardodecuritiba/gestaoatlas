@@ -139,51 +139,6 @@ class PecasController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_add]);
         return Redirect::route('pecas.show', $Peca->idpeca);
-            /*
-            //Calcular custo_final
-            $data['custo_final'] = $data['custo_compra'] + $data['custo_frete'] + $data['custo_imposto'];
-
-            //Calcular preco_final
-            // zerando os custos de dolar se náo houver
-            $campos = ['custo_dolar_cambio','custo_dolar','custo_dolar_frete','custo_dolar_imposto'];
-            foreach($campos as $dolar){
-                if($data[$dolar] == ''){
-                    $data[$dolar] = NULL;
-                }
-            }
-            //Cálculo do preço
-            $data['preco'] = $data['custo_dolar_cambio'] * $data['custo_dolar'];
-            $data['preco_frete'] = $data['custo_dolar_cambio'] * $data['custo_dolar_frete'];
-            $data['preco_imposto'] = $data['custo_dolar_cambio'] * $data['custo_dolar_imposto'];
-            $data['preco_final'] = $data['preco'] + $data['preco_frete'] + $data['preco_imposto'];
-
-            // zerando as tributações de importação se náo houver
-            $campos = ['aliquota_ii','icms_importacao','aliquota_cofins_importacao','aliquota_pis_importacao'];
-            foreach($campos as $sel){
-                if($data[$sel] == ''){
-                    $data[$sel] = NULL;
-                }
-            }
-
-            // testando as opções BOOL
-            $nomes_bool = ['isencao_icms','ipi_venda','reducao_icms'];
-            foreach($nomes_bool as $n){
-                if(isset($data[$n])){
-                    $data[$n] = 1;
-                }else {
-                    $data[$n] = 0;
-                }
-            }
-
-            $ali_impotacao = ['aliquota_ii','icms_importacao','aliquota_cofins_importacao','aliquota_pis_importacao'];
-            foreach($ali_impotacao as $n){
-                if($data[$n] == '' || $data[$n] == 0){
-                    $data[$n] = NULL;
-                }
-            }
-            $Tributacao = Tributacao::create($data);
-            $data['idtributacao'] = $Tributacao->idtributacao;
-            */
     }
 
     public function update(PecasRequest $request, $id)
@@ -218,52 +173,6 @@ class PecasController extends Controller
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_upd]);
         return Redirect::route('pecas.show', $Peca->idpeca);
-            /*
-            //Calcular custo_final
-            $dataUpdate['custo_final'] = $dataUpdate['custo_compra'] + $dataUpdate['custo_frete'] + $dataUpdate['custo_imposto'];
-
-            //Calcular preco_final
-            // zerando os custos de dolar se náo houver
-            $campos = ['custo_dolar_cambio','custo_dolar','custo_dolar_frete','custo_dolar_imposto'];
-            foreach($campos as $dolar){
-                if($dataUpdate[$dolar] == ''){
-                    $dataUpdate[$dolar] = NULL;
-                }
-            }
-
-            //Cálculo do preço
-            $dataUpdate['preco'] = $dataUpdate['custo_dolar_cambio'] * $dataUpdate['custo_dolar'];
-            $dataUpdate['preco_frete'] = $dataUpdate['custo_dolar_cambio'] * $dataUpdate['custo_dolar_frete'];
-            $dataUpdate['preco_imposto'] = $dataUpdate['custo_dolar_cambio'] * $dataUpdate['custo_dolar_imposto'];
-            $dataUpdate['preco_final'] = $dataUpdate['preco'] + $dataUpdate['preco_frete'] + $dataUpdate['preco_imposto'];
-
-            // zerando as tributações de importação se náo houver
-            $campos = ['aliquota_ii','icms_importacao','aliquota_cofins_importacao','aliquota_pis_importacao'];
-            foreach($campos as $sel){
-                if($dataUpdate[$sel] == ''){
-                    $dataUpdate[$sel] = NULL;
-                }
-            }
-
-//            return $dataUpdate;
-            // testando as opções BOOL
-            $nomes_bool = ['isencao_icms','ipi_venda','reducao_icms'];
-            foreach($nomes_bool as $n){
-                if(isset($dataUpdate[$n])){
-                    $dataUpdate[$n] = 1;
-                } else {
-                    $dataUpdate[$n] = 0;
-                }
-            }
-
-            $ali_impotacao = ['aliquota_ii','icms_importacao','aliquota_cofins_importacao','aliquota_pis_importacao'];
-            foreach($ali_impotacao as $n){
-                if($dataUpdate[$n] == '' || $dataUpdate[$n] == 0){
-                    $dataUpdate[$n] = NULL;
-                }
-            }
-            $Peca->tributacao->update($dataUpdate);
-            */
     }
 
     public function destroy($id)
@@ -375,4 +284,112 @@ class PecasController extends Controller
         $FornecedoresController = new FornecedoresController();
         return $FornecedoresController->show($id,$tab);
     }
+
+
+
+
+
+	public function stocks() {
+		$this->Page->extras['tools']         = Tool::getAlltoSelectList();
+		$this->Page->extras['type_stock']    = 'tools';
+		$this->Page->extras['voids']         = Voidx::unuseds()->pluck( 'number', 'id' );
+		$this->Page->extras['colaboradores'] = Colaborador::getAlltoSelectList();
+		$this->Page->titulo_primario         = "Listagem de Ferramentas";
+		$Buscas                              = ToolStock::all();
+
+		return view( 'pages.recursos.stocks.index' )
+			->with( 'Page', $this->Page )
+			->with( 'Buscas', $Buscas );
+	}
+
+	public function stocksStore( Request $request ) {
+		ToolStock::createWithVoid( $request->all() );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $this->Page->msg_stock ] );
+
+		return redirect()->route( 'tools.stocks' );
+	}
+
+
+
+
+
+
+	//Tecnico
+	public function getFormRequest( Request $request ) {
+    	return $request->all();
+		$Tecnico                       = $this->colaborador->tecnico;
+		$this->Page->search_no_results = "Nenhuma Requisição encontrada!";
+		$max_can_request               = $Tecnico->getMaxCanRequest('parts');
+		$can_request                   = ( $Tecnico->waitingRequisicoes('parts')->count() < 1 );
+		$this->Page->extras            = [
+			'return'            => $Tecnico->parts(),
+			'max_can_request'  => $max_can_request,
+			'can_request'      => ( ( $max_can_request > 0 ) && ( $can_request ) ),
+			'requisicoes'      => $Tecnico->requisicoes('parts'),
+			'type'             => $this->route,
+		];
+
+		return view( 'pages.recursos.requests.tecnico.index' )
+			->with( 'Page', $this->Page );
+	}
+	public function postFormRequest( Request $request ) {
+		return $request->all();
+		$mensagem = RequestTools::openToolsRequest( [
+			'idrequester' => $this->colaborador->idcolaborador,
+			'parameters'  => $request->only( [ 'opcao', 'quantidade' ] ),
+			'reason'      => $request->get( 'reason' ),
+		] );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
+		return redirect()->route( 'tools.requisicao' );
+	}
+
+
+	//Admin
+	public function listRequests( Request $request ) {
+		return $request->all();
+		$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
+		$this->Page->extras = [
+			'requests'  => RequestTools::tools()->get(),
+			'tecnicos'  => Tecnico::all(),
+			'type'      => $this->route,
+		];
+		return view( 'pages.recursos.requests.admin.index' )
+			->with( 'Page', $this->Page );
+	}
+
+	//Admin/Gestor
+	public function deniedRequest( Request $request ) {
+		return $request->all();
+		$data              = $request->only( 'id', 'response' );
+		$data['idmanager'] = $this->colaborador->idcolaborador;
+		$mensagem          = RequestTools::deny( $data );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
+		return redirect()->route( 'tools.requisicoes' );
+	}
+
+	/*
+		public function getReports( Request $request ) {
+			$Buscas                         = null;
+			$this->Page->search_no_results  = "Nenhuma Requisição encontrada!";
+			$this->Page->extras['tecnicos'] = Tecnico::all();
+
+			return view( 'pages.recursos.tools.admin.reports' )
+				->with( 'Page', $this->Page )
+				->with( 'Buscas', $Buscas );
+		}
+	*/
+
+	public function postFormPassRequest( Request $request ) {
+		RETURN $request->all();
+		$data              = $request->only( [ 'id', 'valores' ] );
+		$data['idmanager'] = $this->colaborador->idcolaborador;
+		$mensagem          = RequestTools::sendSeloLacreRequest( $data );
+		session()->forget( 'mensagem' );
+		session( [ 'mensagem' => $mensagem ] );
+
+		return redirect()->route( 'tools.requisicoes' );
+	}
 }

@@ -41,6 +41,11 @@ class PecaTributacao extends Model
         return $this->belongsTo('App\Cfop', 'idcfop');
     }
 
+    public function getCostFormatted()
+    {
+        return DataHelper::getFloat2RealMoeda($this->attributes['custo_final']);
+    }
+
     public function cst()
     {
         return $this->belongsTo('App\Cst', 'idcst');

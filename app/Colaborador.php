@@ -8,6 +8,7 @@ use App\Models\Commons\Voidx;
 use App\Models\Inputs\Equipment;
 use App\Models\Inputs\Instrument;
 use App\Models\Inputs\Pattern;
+use App\Models\Inputs\Stocks\PartStock;
 use App\Models\Inputs\Stocks\PatternStock;
 use App\Models\Inputs\Stocks\ToolStock;
 use App\Models\Inputs\Tool;
@@ -34,11 +35,17 @@ class Colaborador extends Model
 
     // ************************ FUNCTIONS ******************************
 
+
+	public function getShortName()
+	{
+		return $this->getAttribute('nome').' - ' .$this->getAttribute('cpf');
+	}
+
 	static public function getAlltoSelectList() {
 		return self::get()->map( function ( $s ) {
 			return [
 				'id'          => $s->idcolaborador,
-				'description' => $s->nome . ' - ' . $s->cpf
+				'description' => $s->getShortName()
 			];
 		} )->pluck( 'description', 'id' );
 	}
@@ -155,6 +162,10 @@ class Colaborador extends Model
 
 	public function tools() {
 		return $this->hasMany( ToolStock::class, 'owner_id',  'idcolaborador');
+	}
+
+	public function parts() {
+		return $this->hasMany( PartStock::class, 'owner_id',  'idcolaborador');
 	}
 	// ************************** HAS **********************************
 

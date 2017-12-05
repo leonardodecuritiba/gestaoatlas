@@ -1,13 +1,22 @@
 
 @include('pages.recursos.requests.modal.requerer_parts')
 <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-    <div class="x_panel">
-        <div class="row">
+    <div class="row">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2><b>{{count($Page->extras['return'])}}</b> {{$Page->search_results}}</h2>
+                <button class="btn btn-primary pull-right"
+                        data-option="{{$Page->Target}}"
+                        data-toggle="modal"
+                        data-target="#modalRequererParts"
+                        @if(!$Page->extras['can_request'])
+                        disabled
+                        @endif
+                ><i class="fa fa-plus fa-2"></i> Requerer
+                </button>
+                <div class="clearfix"></div>
+            </div>
             @if(count($Page->extras['return']) > 0)
-                <div class="x_title">
-                    <h2><b>{{$Page->extras['return']->count()}}</b> {{$Page->search_results}}</h2>
-                    <div class="clearfix"></div>
-                </div>
                 <div class="x_content">
                     <div class="row">
                         <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
@@ -24,19 +33,6 @@
                     </div>
                 </div>
             @endif
-        </div>
-        <div class="row">
-            <div class="form-group">
-                <button class="btn btn-primary pull-right"
-                        data-option="{{$Page->Target}}"
-                        data-toggle="modal"
-                        data-target="#modalRequererParts"
-                        @if(!$Page->extras['can_request'])
-                        disabled
-                        @endif
-                ><i class="fa fa-plus fa-2"></i> Requerer
-                </button>
-            </div>
         </div>
     </div>
 </div>

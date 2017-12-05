@@ -12,11 +12,12 @@
                     'method' => 'POST',
                     'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
             <div class="modal-body">
+                {{Form::hidden('opcao','parts')}}
                 <div class="form-group">
                     {!! Html::decode(Form::label('idpeca', 'Peça <span class="required">*</span>',
                         array('class' => 'control-label col-md-3 col-sm-3 col-xs-12'))) !!}
                     <div class="col-md-9 col-sm-9 col-xs-12">
-                        {{Form::select('idpeca', $Page->extras['pecas'], '', ['class'=>'form-control select2_single', 'required'])}}
+                        {{Form::select('id', $Page->extras['pecas'], '', ['class'=>'form-control select2_single', 'required'])}}
                     </div>
                 </div>
                 <div class="form-group">

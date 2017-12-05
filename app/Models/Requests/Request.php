@@ -4,7 +4,7 @@ namespace App\Models\Requests;
 
 use App\Helpers\DataHelper;
 use App\Lacre;
-use App\Peca;
+use App\Models\Inputs\Stocks\PartStock;
 use App\Selo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -51,7 +51,9 @@ class Request extends Model
 	static public function sendPartsRequest($data)
 	{
 		$Request = self::accept($data);
-		$data['idtecnico'] = $Request->requester->tecnico->idtecnico;
+		$data['owner_id'] = $Request->requester->tecnico->idcolaborador;
+		$data['id'] = $Request->getParametersUncoded()->id;
+		PartStock::assign($data);
 		return "Requisição aceita com sucesso!";
 	}
 
@@ -168,7 +170,7 @@ class Request extends Model
         $self = self::findOrFail($data['id']);
         $parameters = $self->getParametersUncoded();
         if($self->attributes['idtype'] == TypeRequest::_TYPE_PECAS_){
-	        $parameters->valores = $parameters->idpeca;
+	        $parameters->valores = $parameters->id;
         } else {
 	        $parameters->valores = $data['valores'];
         }
@@ -243,8 +245,8 @@ class Request extends Model
                 return 'Quantidade: ' . $parameters->quantidade;
                 break;
             case TypeRequest::_TYPE_PECAS_:
-	            $p = Peca::find($parameters->idpeca);
-                return 'Peça: ' . $p->descricao . ' - ' . $p->nome_marca();
+	            $p = PartStock::findOrFail($parameters->id);
+	            return 'Peça: ' . $p->getShortDescritptions();
                 break;
         }
     }

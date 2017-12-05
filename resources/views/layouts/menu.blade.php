@@ -118,8 +118,8 @@
                             </li>
                             <li><a>Peças<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-{{--                                    <li><a href="{{route('parts.index')}}">Modelos</a></li>--}}
-{{--                                    <li><a href="{{ route('parts.stocks') }}">Estoque</a></li>--}}
+                                    {{--<li><a href="{{route('parts.index')}}">Modelos</a></li>--}}
+                                    <li><a href="{{ route('parts.stocks') }}">Estoque</a></li>
                                     <li><a href="{{route('parts.requisicoes')}}">Requisições</a></li>
                                 </ul>
                             </li>
