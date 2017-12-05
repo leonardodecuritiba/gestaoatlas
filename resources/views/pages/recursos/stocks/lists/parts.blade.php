@@ -26,7 +26,8 @@
             <td>{{$sel->getShortOwnerName()}}</td>
             <td>{{$sel->getShortCost()}}</td>
             <td>
-                @if(!Entrust::hasRole('tecnico'))
+                @if(!
+                Entrust::hasRole('tecnico'))
                     <a class="btn btn-primary btn-xs"
                     href="{{route($Page->link.'.show',$sel->id)}}">
                     <i class="fa fa-edit"></i></a>
