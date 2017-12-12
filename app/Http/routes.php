@@ -85,7 +85,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::resource('tools', 'Inputs\ToolsController');
 	Route::get( 'tools-stocks', 'Inputs\ToolsController@stocks' )->name( 'tools.stocks' );
-	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
+	Route::post('tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
 
 	//REQUISIÇÕES - ADMIM
 	Route::get('tools-requisicoes', 'Inputs\ToolsController@listRequests')->name('tools.requisicoes');
@@ -111,7 +111,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 //	Route::resource('parts', 'Inputs\ToolsController');
 	Route::get( 'parts-stocks', 'Inputs\PartsController@stocks' )->name( 'parts.stocks' );
-	Route::match( [ 'POST' ], 'parts-stocks-store', 'Inputs\PartsController@stocksStore' )->name( 'parts.stocksStore' );
+	Route::post('parts-stocks-store', 'Inputs\PartsController@stocksStore' )->name( 'parts.stocksStore' );
 
 	//REQUISIÇÕES - ADMIM
 	Route::get('parts-requisicoes', 'Inputs\PartsController@listRequests')->name('parts.requisicoes');
@@ -137,7 +137,7 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('patterns', 'Inputs\PatternsController');
 	Route::get( 'patterns-stocks', 'Inputs\PatternsController@stocks' )->name( 'patterns.stocks' );
-	Route::match( [ 'POST' ], 'patterns-stocks-store', 'Inputs\PatternsController@stocksStore' )->name( 'patterns.stocksStore' );
+	Route::post( 'patterns-stocks-store', 'Inputs\PatternsController@stocksStore' )->name( 'patterns.stocksStore' );
 
 	//REQUISIÇÕES - ADMIM
 	Route::get('patterns-requisicoes', 'Inputs\PatternsController@listRequests')->name('patterns.requisicoes');
@@ -164,7 +164,7 @@ Route::group(['middleware' => ['auth']], function () {
 
 	Route::resource('parts', 'Inputs\PartsController');
 	Route::get( 'parts-stocks', 'Inputs\PartsController@stocks' )->name( 'parts.stocks' );
-	Route::match( [ 'POST' ], 'patterns-stocks-store', 'Inputs\PartsController@stocksStore' )->name( 'parts.stocksStore' );
+	Route::post('parts-stocks-store', 'Inputs\PartsController@stocksStore' )->name( 'parts.stocksStore' );
 
 	//REQUISIÇÕES - ADMIM
 	Route::get('parts-requisicoes', 'Inputs\PartsController@listRequests')->name('parts.requisicoes');
@@ -189,9 +189,8 @@ Route::group( [ 'middleware' => [ 'auth' ] ], function () {
 //    Route::post('selolacre-remanejar/{idtecnico}', 'ColaboradoresController@selolacre_remanejar')->name('selolacre.remanejar');
 
 	Route::resource( 'voids', 'Inputs\Voids\VoidsController' );
-//	Route::get( 'tools-requisicoes', 'Inputs\ToolsController@listRequests' )->name( 'tools.requisicoes' );
 //	Route::get( 'tools-stocks', 'Inputs\ToolsController@stocks' )->name( 'tools.stocks' );
-//	Route::match( [ 'POST' ], 'tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
+//	Route::post('tools-stocks-store', 'Inputs\ToolsController@stocksStore' )->name( 'tools.stocksStore' );
 	//Admin
 //    Route::get('selolacres-listagem', 'SeloLacreController@index')->name('selolacres.listagem');
 } );

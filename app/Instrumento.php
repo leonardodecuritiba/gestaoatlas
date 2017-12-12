@@ -102,16 +102,20 @@ class Instrumento extends Model
 		$num_selos = count($selos);
 		if($num_selos == 0){
 			$numeracoes['text'] = 'Sem intervenção';
+			$numeracoes['id'] = NULL;
+			$numeracoes['declared'] = NULL;
 		} else if($num_selos > 1){
 			$numeracoes = array();
 			foreach($selos as $selo_instrumento){
 				$numeracoes['text'][] = $selo_instrumento->selo->getFormatedSeloDV();
 				$numeracoes['id'][] = $selo_instrumento->idselo_instrumento;
+				$numeracoes['declared'][] = $selo_instrumento->selo->declared;
 			}
 			$numeracoes['text'] = implode('; ',$numeracoes['text']);
 		} else {
 			$numeracoes['text'] = $selos->first()->selo->getFormatedSeloDV();
 			$numeracoes['id'] = $selos->first()->idselo_instrumento;
+			$numeracoes['declared'] = $selos->first()->declared;
 		}
 		return $numeracoes;
 	}

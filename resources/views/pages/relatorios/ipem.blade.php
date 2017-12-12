@@ -93,7 +93,7 @@
                                 <th>Nº de Série</th>
                                 <th>Marca de reparo</th>
                                 <th>Data do Reparo</th>
-                                <th>Declaração</th>
+                                {{--<th>Declaração</th>--}}
                                 <th>Técnico</th>
                                 <th>Descrição O.S.</th>
                                 <th>Carga</th>
@@ -113,17 +113,22 @@
                                     <td>{!! (($sel->selo_numeracao!=NULL) ? $sel->selo_numeracao : '<i class="red">sem reparo</i>') !!}</td>
                                     <td>{{$sel->ordem_servico->getDataAbertura()}}</td>
                                     <td>
-                                        @if($sel->idselo != NULL)
-                                            <div class="checkbox">
-                                                @if($sel->selo_declared != NULL)
-                                                    {{$sel->selo_declared}}
-                                                @else
-                                                    <button onclick="declare(this)" class="btn btn-warning btn-xs" data-id="{{$sel->idselo}}">Declarar</button>
-                                                @endif
-                                            </div>
-                                        @else
-                                            <i class="red">sem reparo</i>
-                                        @endif
+                                        {{--@if($sel->idselo != NULL)--}}
+                                            {{--<div class="checkbox">--}}
+                                                {{--@if($sel->selo_declared != NULL)--}}
+                                                    {{--@foreach($sel->selo_declared as $i => $item)--}}
+                                                        {{--@if($item != NULL)--}}
+                                                            {{--{{$item}}--}}
+                                                        {{--@else--}}
+                                                            {{--{{json_encode($item)}}--}}
+                                                            {{--<button onclick="declare(this)" class="btn btn-warning btn-xs" data-id="{{$item}}">Declarar</button>--}}
+                                                        {{--@endif--}}
+                                                    {{--@endforeach--}}
+                                                {{--@endif--}}
+                                            {{--</div>--}}
+                                        {{--@else--}}
+                                            {{--<i class="red">sem reparo</i>--}}
+                                        {{--@endif--}}
                                     </td>
                                     <td>
                                         <b><a href="{{route('colaboradores.show', $sel->colaborador->idcolaborador)}}"

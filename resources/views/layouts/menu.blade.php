@@ -109,18 +109,11 @@
                                     @endrole
                                 </ul>
                             </li>
-                            <li><a href="#">Ferramentas<span class="fa fa-chevron-down"></span></a>
+                            <li><a>Ferramentas<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{route('tools.index')}}">Modelos</a></li>
                                     <li><a href="{{ route('tools.stocks') }}">Estoque</a></li>
                                     <li><a href="{{route('tools.requisicoes')}}">Requisições</a></li>
-                                </ul>
-                            </li>
-                            <li><a>Peças<span class="fa fa-chevron-down"></span></a>
-                                <ul class="nav child_menu">
-                                    {{--<li><a href="{{route('parts.index')}}">Modelos</a></li>--}}
-                                    <li><a href="{{ route('parts.stocks') }}">Estoque</a></li>
-                                    <li><a href="{{route('parts.requisicoes')}}">Requisições</a></li>
                                 </ul>
                             </li>
                             <li><a>Padrões<span class="fa fa-chevron-down"></span></a>
@@ -154,14 +147,14 @@
                                                     class="label label-danger pull-right">!</span></a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">Alimentação</a>
+                            <li><a>Peças<span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="#">Cadastro</a></li>
-                                    <li><a href="#">Gestão</a></li>
-                                    <li><a href="#">Relatório</a></li>
+                                    {{--<li><a href="{{route('parts.index')}}">Modelos</a></li>--}}
+                                    <li><a href="{{ route('parts.stocks') }}">Estoque</a></li>
+                                    <li><a href="{{route('parts.requisicoes')}}">Requisições</a></li>
                                 </ul>
                             </li>
-                            <li><a href="#">Peças / Produtos</a>
+                            <li><a href="#">Alimentação</a>
                                 <ul class="nav child_menu">
                                     <li><a href="#">Cadastro</a></li>
                                     <li><a href="#">Gestão</a></li>

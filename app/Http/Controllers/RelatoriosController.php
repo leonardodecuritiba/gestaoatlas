@@ -37,6 +37,7 @@ class RelatoriosController extends Controller
     public function ipem(Request $request)
     {
         $Buscas = AparelhoManutencao::getRelatorioIpem($request);
+//        return $Buscas;
         $this->Page->Targets = 'Instrumentos';
         $this->Page->extras['tecnicos'] = Tecnico::all();
         return view('pages.relatorios.ipem')

@@ -58,59 +58,15 @@ class AparelhoManutencao extends Model
         return $query->get()->map(function($r){
 	        $Ordem_servico = $r->ordem_servico;
 	        $Cliente = $Ordem_servico->cliente->getType();
-	        $selo = $r->instrumento->selo_afixado();
+	        $selo = $r->instrumento->numeracao_selo_afixado();
         	$r->ordem_servico   = $Ordem_servico;
         	$r->colaborador     = $Ordem_servico->colaborador;
         	$r->cliente         = $Cliente;
-	        $r->selo_numeracao  = ($selo != NULL) ? $selo->getFormatedSeloDV() : $selo;
-	        $r->selo_declared   = ($selo != NULL) ? $selo->declared : $selo;
-	        $r->idselo          = ($selo != NULL) ? $selo->idselo : $selo;
+
+	        $r->selo_numeracao  = $selo['text'];
+	        $r->selo_declared   = $selo['declared'];
+	        $r->idselo          = $selo['id'];
 	        return $r;
-
-        	/*
-                                <th>Razão Social</th>
-                                <th>Nome Fantasia</th>
-                                <th>CNPJ / CPF</th>
-                                <th>Nº O.S.</th>
-                                <th>Nº do Inventario</th>
-                                <th>Nº de Série</th>
-                                <th>Marca de reparo</th>
-                                <th>Data do Reparo</th>
-                                <th>Declaração</th>
-                                <th>Técnico</th>
-                                <th>Descrição O.S.</th>
-                                <th>Carga</th>
-        	 * <?php $Ordem_servico = $Aparelho_manutencao->ordem_servico; ?>
-                <?php $Cliente = $Ordem_servico->cliente->getType(); ?>
-                <?php $Instrumento = $Aparelho_manutencao->instrumento; ?>
-                <tr>
-                    <td>{{$Cliente->razao_social}}</td>
-                    <td><b><a href="{{route('clientes.show', $Ordem_servico->idcliente)}}"
-                              target="_blank">{{$Cliente->nome_principal}}</a></b></td>
-                    <td>{{$Cliente->documento}}</td>
-                    <td><b><a href="{{route('ordem_servicos.show', $Ordem_servico->idordem_servico)}}"
-                              target="_blank">{{$Ordem_servico->idordem_servico}}</a></b></td>
-                    <td>{{$Instrumento->inventario}}</td>
-                    <td>{{$Instrumento->numero_serie}}</td>
-                    <td>{{$Instrumento->numeracao_selo_afixado()}}</td>
-                    <td>{{$Ordem_servico->getDataAbertura()}}</td>
-                    <td>{{$Instrumento->selo_afixado()->declared}}</td>
-                    <td>
-                        <b><a href="{{route('colaboradores.show', $Ordem_servico->colaborador->idcolaborador)}}"
-                              target="_blank">{{$Ordem_servico->colaborador->nome.' - '.$Ordem_servico->colaborador->rg}}</a>
-                        </b></td>
-                    <td>
-                        <span class="red">{{$Aparelho_manutencao->defeito}}</span> /
-                        <span class="green">{{$Aparelho_manutencao->solucao}}</span>
-                    <td>{{$Instrumento->capacidade}}</td>
-
-                </tr>
-        	 *
-        	 *
-        	 *
-        	 *
-        	 */
-
         });
     }
 
