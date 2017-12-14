@@ -10,6 +10,7 @@ use App\Selo;
 use App\Tecnico;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Zizaco\Entrust\EntrustFacade;
 
 class SeloLacreController extends Controller

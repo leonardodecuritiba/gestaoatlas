@@ -137,7 +137,7 @@ class Request extends Model
 
     static public function sendSeloLacreRequest($data)
     {
-        $Request = self::accept($data);
+	    $Request = self::accept($data);
         $data['idtecnico'] = $Request->requester->tecnico->idtecnico;
         if ($Request->idtype == TypeRequest::_TYPE_SELOS_) {
             Selo::assign($data);
