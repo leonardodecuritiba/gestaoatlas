@@ -47,7 +47,7 @@ class Selo extends Model
 
     static public function selo_exists($numeracao)
     {
-        return (self::where('numeracao', $numeracao)->count() > 0);
+        return (self::where('numeracao', $numeracao)->exists() > 0);
     }
 
     public function scopeNumeracao($query, $numeracao)

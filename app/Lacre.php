@@ -135,7 +135,7 @@ class Lacre extends Model
 
     static public function lacre_exists($numeracao)
     {
-        return (self::where('numeracao', $numeracao)->count() > 0);
+        return self::where('numeracao', $numeracao)->exists();
     }
 
     public function has_lacre_instrumento()

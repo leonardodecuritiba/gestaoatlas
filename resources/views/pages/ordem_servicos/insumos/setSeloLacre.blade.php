@@ -50,7 +50,7 @@ if ( $lacres_retirados_list != NULL ) {
                            data-selo_text="{{$selos_retirados['text']}}"
                            value="{{$selos_retirados['text']}}" disabled
                         @else  data-selo="" data-selo_text="" required @endif />
-                    @if($selos_retirados!=null)
+                    @if($selos_retirados!=null && $selos_retirados['id']!=null)
                         <input type="hidden" name="selo_retirado_hidden"
                                value="{{json_encode($selos_retirados['id'])}}"/>
                     @endif
