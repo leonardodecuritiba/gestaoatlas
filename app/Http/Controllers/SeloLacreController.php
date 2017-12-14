@@ -87,7 +87,7 @@ class SeloLacreController extends Controller
         }
         if ($qtd == 0) {
             return Redirect::back()
-                ->withErrors(['Já existem Selos com essa numeração'])
+                ->withErrors(['Já existem Selos com essa numeração. Ou nenhum Selo foi lançado!'])
                 ->withInput($request->all());
         } else {
             session()->forget('mensagem');
