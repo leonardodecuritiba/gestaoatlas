@@ -99,8 +99,9 @@ class Instrumento extends Model
 	public function numeracao_selo_afixado($idaparelho_set = NULL)
 	{
 		$selos = $this->selo_afixado($idaparelho_set);
-//		dd($selos);
 		$num_selos = count($selos);
+//		dd($selos);
+		/*
 		$numeracoes = NULL;
 		if($num_selos == 0){
 			$numeracoes['text'] = 'Sem intervenção';
@@ -126,7 +127,7 @@ class Instrumento extends Model
 		}
 		return $numeracoes;
 
-		/*
+		*/
 		if($num_selos == 0){
 			$numeracoes['text'] = 'Sem intervenção';
 			$numeracoes['id'] = NULL;
@@ -145,7 +146,7 @@ class Instrumento extends Model
 			$numeracoes['declared'] = $selos->first()->declared;
 		}
 		return $numeracoes;
-		*/
+
 	}
 
 	public function selo_instrumento_cliente() {
@@ -167,32 +168,6 @@ class Instrumento extends Model
 	public function lacres_afixados_list() {
 
 		$lacres = $this->lacres_afixados();
-
-//		$num_lacres = count($lacres);
-//		$numeracoes = NULL;
-//		if($num_lacres == 0){
-//			$numeracoes['text'] = 'Sem intervenção';
-//			$numeracoes['id'] = NULL;
-//			$numeracoes['declared'] = NULL;
-//		} else if($num_lacres > 1) {
-//			foreach ( $lacres as $lacre_instrumento ) {
-//				$lacre = $lacre_instrumento->lacre;
-//				if ( !$lacre->isExterno() ) {
-//					$numeracoes['text'][]     = $lacre->numeracao;
-//					$numeracoes['id'][]       = $lacre_instrumento->idlacre_instrumento;
-//					$numeracoes['declared'][] = $lacre->declared;
-//				}
-//			}
-//			$numeracoes['text'] = implode('; ',$numeracoes['text']);
-//		} else {
-//			$lacre = $lacres->first()->lacre;
-//			if ( !$lacre->isExterno() ) {
-//				$numeracoes['text']     = $lacre->numeracao;
-//				$numeracoes['id']       = $lacres->first()->idselo_instrumento;
-//				$numeracoes['declared'] = $lacre->declared;
-//			}
-//		}
-//		return $numeracoes;
 
 		return ( $lacres == null ) ? $lacres : $lacres->map( function ( $s ) {
 			return [
@@ -226,9 +201,10 @@ class Instrumento extends Model
         if ($lacresInstrumento != NULL) {
             foreach ($lacresInstrumento as $li) {
 	            $lacre = $li->lacre;
-            	if(!$lacre->isExterno()){
-		            $numeracao[] = $lacre->numeracao;
-	            }
+	            $numeracao[] = $lacre->numeracao;
+//            	if(!$lacre->isExterno()){
+//		            $numeracao[] = $lacre->numeracao;
+//	            }
             }
         }
         return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
