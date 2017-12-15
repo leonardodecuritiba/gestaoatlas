@@ -69,7 +69,7 @@ class Selo extends Model
 
     public function isExterno()
     {
-        return ($this->attributes['numeracao'] == NULL);
+	    return (($this->attributes['numeracao_externa'] != NULL) && ($this->attributes['numeracao'] == NULL));
     }
 
 	public function getOrdemServicoID()

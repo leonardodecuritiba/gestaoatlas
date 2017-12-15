@@ -99,7 +99,34 @@ class Instrumento extends Model
 	public function numeracao_selo_afixado($idaparelho_set = NULL)
 	{
 		$selos = $this->selo_afixado($idaparelho_set);
+//		dd($selos);
 		$num_selos = count($selos);
+		$numeracoes = NULL;
+		if($num_selos == 0){
+			$numeracoes['text'] = 'Sem intervenção';
+			$numeracoes['id'] = NULL;
+			$numeracoes['declared'] = NULL;
+		} else if($num_selos > 1) {
+			foreach ( $selos as $selo_instrumento ) {
+				$selo = $selo_instrumento->selo;
+				if ( !$selo->isExterno() ) {
+					$numeracoes['text'][]     = $selo->getFormatedSeloDV();
+					$numeracoes['id'][]       = $selo_instrumento->idselo_instrumento;
+					$numeracoes['declared'][] = $selo->declared;
+				}
+			}
+			$numeracoes['text'] = implode('; ',$numeracoes['text']);
+		} else {
+			$selo = $selos->first()->selo;
+			if ( !$selo->isExterno() ) {
+				$numeracoes['text']     = $selo->selo->getFormatedSeloDV();
+				$numeracoes['id']       = $selos->first()->idselo_instrumento;
+				$numeracoes['declared'] = $selo->declared;
+			}
+		}
+		return $numeracoes;
+
+		/*
 		if($num_selos == 0){
 			$numeracoes['text'] = 'Sem intervenção';
 			$numeracoes['id'] = NULL;
@@ -118,6 +145,7 @@ class Instrumento extends Model
 			$numeracoes['declared'] = $selos->first()->declared;
 		}
 		return $numeracoes;
+		*/
 	}
 
 	public function selo_instrumento_cliente() {
@@ -137,7 +165,34 @@ class Instrumento extends Model
 
 	//LACRES --------
 	public function lacres_afixados_list() {
+
 		$lacres = $this->lacres_afixados();
+
+//		$num_lacres = count($lacres);
+//		$numeracoes = NULL;
+//		if($num_lacres == 0){
+//			$numeracoes['text'] = 'Sem intervenção';
+//			$numeracoes['id'] = NULL;
+//			$numeracoes['declared'] = NULL;
+//		} else if($num_lacres > 1) {
+//			foreach ( $lacres as $lacre_instrumento ) {
+//				$lacre = $lacre_instrumento->lacre;
+//				if ( !$lacre->isExterno() ) {
+//					$numeracoes['text'][]     = $lacre->numeracao;
+//					$numeracoes['id'][]       = $lacre_instrumento->idlacre_instrumento;
+//					$numeracoes['declared'][] = $lacre->declared;
+//				}
+//			}
+//			$numeracoes['text'] = implode('; ',$numeracoes['text']);
+//		} else {
+//			$lacre = $lacres->first()->lacre;
+//			if ( !$lacre->isExterno() ) {
+//				$numeracoes['text']     = $lacre->numeracao;
+//				$numeracoes['id']       = $lacres->first()->idselo_instrumento;
+//				$numeracoes['declared'] = $lacre->declared;
+//			}
+//		}
+//		return $numeracoes;
 
 		return ( $lacres == null ) ? $lacres : $lacres->map( function ( $s ) {
 			return [
@@ -170,8 +225,10 @@ class Instrumento extends Model
         $numeracao = NULL;
         if ($lacresInstrumento != NULL) {
             foreach ($lacresInstrumento as $li) {
-                $lacre = $li->lacre;
-                $numeracao[] = ($lacre->numeracao != NULL) ? $lacre->numeracao : $lacre->numeracao_externa;
+	            $lacre = $li->lacre;
+            	if(!$lacre->isExterno()){
+		            $numeracao[] = $lacre->numeracao;
+	            }
             }
         }
         return ($numeracao != NULL) ? implode('; ', $numeracao) : '-';
@@ -236,7 +293,10 @@ class Instrumento extends Model
 //		dd($idaparelho_set);
 		$o = $this->hasMany( 'App\SeloInstrumento', 'idinstrumento' );
 		if($idaparelho_set != NULL){
-			$o->where('idaparelho_set', $idaparelho_set);
+			$o->where('idaparelho_set', $idaparelho_set)
+//				->whereNull('idaparelho_unset')
+//			    ->where('idaparelho_unset', $idaparelho_set)
+			;
 		}
 		else {
 			$o->whereNull('idaparelho_unset');
@@ -257,7 +317,9 @@ class Instrumento extends Model
 	public function lacres_instrumentos_afixados($idaparelho_set = NULL) {
 		$o = $this->hasMany( 'App\LacreInstrumento', 'idinstrumento' );
 		if($idaparelho_set != NULL){
-			$o->where('idaparelho_set', $idaparelho_set);
+			$o->where('idaparelho_set', $idaparelho_set)
+//				->whereNull('idaparelho_unset')
+			;
 		} else {
 			$o->whereNull('idaparelho_unset');
 		}

@@ -133,6 +133,12 @@ class Lacre extends Model
             ->update(['idtecnico' => $data['idtecnico']]);
     }
 
+
+	public function isExterno()
+	{
+		return (($this->attributes['numeracao_externa'] != NULL) && ($this->attributes['numeracao'] == NULL));
+	}
+
     static public function lacre_exists($numeracao)
     {
         return self::where('numeracao', $numeracao)->exists();
