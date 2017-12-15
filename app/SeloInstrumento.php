@@ -65,7 +65,7 @@ class SeloInstrumento extends Model
 
 		return SeloInstrumento::create( [
 			'idselo'           => $idselo,
-			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
+			'idaparelho_set'   => NULL,
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,
 			'idinstrumento'    => $aparelho->idinstrumento,
 			'afixado_em'       => $now,
