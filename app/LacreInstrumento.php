@@ -64,8 +64,8 @@ class LacreInstrumento extends Model
 
 		return LacreInstrumento::create( [
 			'idlacre'          => $idlacre,
-//			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
-			'idaparelho_set'   => NULL,
+			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
+//			'idaparelho_set'   => NULL,
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,
 			'idinstrumento'    => $aparelho->idinstrumento,
 			'afixado_em'       => $now,
