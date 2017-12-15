@@ -1,11 +1,7 @@
 <?php
 $selos_retirados = $Instrumento->numeracao_selo_afixado();
-$lacres_retirados_list = $Instrumento->lacres_afixados_list();
-$lacres_retirados = NULL;
-if ( $lacres_retirados_list != NULL ) {
-	$lacres_retirados   = $lacres_retirados_list->toArray();
-	$idlacres_retirados = $lacres_retirados_list->pluck( 'id' )->toArray();
-}
+$lacres_retirados = $Instrumento->numeracao_lacres_afixados();
+//dd($lacres_retirados)
 ?>
 <section class="row">
     {!! Form::open(['route' => ['aparelho_manutencao.update',$AparelhoManutencao->idaparelho_manutencao],
@@ -77,7 +73,7 @@ if ( $lacres_retirados_list != NULL ) {
                                     tabindex="-1" multiple="multiple" required></select>
                             <script>
                                 $(document).ready(function () {
-                                    var data = JSON.parse('<?php echo json_encode( $lacres_retirados );?>');
+                                    var data = JSON.parse('<?php echo json_encode( $lacres_retirados['list'] );?>');
                                     var ids_data = $(data).map(function () {
                                         return this.id;
                                     }).get();
@@ -86,7 +82,7 @@ if ( $lacres_retirados_list != NULL ) {
                                 });
                             </script>
                             <input type="hidden" name="lacres_retirado_hidden"
-                                   value="{{json_encode($idlacres_retirados)}}"/>
+                                   value="{{json_encode($lacres_retirados['id'])}}"/>
                         @endif
                     </div>
                     <input type="text" name="lacre_retirado_livre" class="form-control"

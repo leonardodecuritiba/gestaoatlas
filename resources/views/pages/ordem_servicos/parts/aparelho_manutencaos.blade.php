@@ -1,17 +1,17 @@
 <?php
 $selo_afixado = NULL;
 if ( $Instrumento->has_selo_instrumentos_fixado() ) {
-    $selo_afixado = $Instrumento->selo_afixado();
+	$selo_afixado = $Instrumento->selo_afixado();
 }
 $lacres_atual = NULL;
 if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
-    $lacres_atual_aux = $Instrumento->lacres_afixados;
-    foreach($lacres_atual_aux as $lacre){
-        $lacres_atual[] = [
-                'id' => $lacre->lacre->idlacre,
-                'text' => $lacre->lacre->numeracao
-        ];
-    }
+	$lacres_atual_aux = $Instrumento->lacres_afixados;
+	foreach($lacres_atual_aux as $lacre){
+		$lacres_atual[] = [
+			'id' => $lacre->lacre->idlacre,
+			'text' => $lacre->lacre->numeracao
+		];
+	}
 }
 ?>
 <div class="x_panel">
@@ -67,18 +67,18 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                     'method' => 'POST',
                     'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
                 <div class="form-group">
-                        <div class="checkbox col-md-2 col-sm-2 col-xs-12">
-                            <label>
-                                <input name="lacre_rompido" type="checkbox" class="flat" checked="checked"> Lacre
-                                rompido?
-                            </label>
-                        </div>
+                    <div class="checkbox col-md-2 col-sm-2 col-xs-12">
+                        <label>
+                            <input name="lacre_rompido" type="checkbox" class="flat" checked="checked"> Lacre
+                            rompido?
+                        </label>
+                    </div>
                     @if($selo_afixado!=NULL)
                         <div class="checkbox col-md-2 col-sm-2 col-xs-12">
-                                <label>
-                                    <input name="selo_outro" type="checkbox" class="flat"> Outro Selo?
-                                </label>
-                            </div>
+                            <label>
+                                <input name="selo_outro" type="checkbox" class="flat"> Outro Selo?
+                            </label>
+                        </div>
                     @else
                         <input name="selo_outro" type="hidden" value="1">
                     @endif
@@ -90,11 +90,11 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                     <input name="lacre_outro" type="checkbox" class="flat"> Outros Lacres?
                                 </label>
                             </div>
-                            </div>
+                        </div>
                     @else
                         <input name="lacre_outro" type="hidden" value="1">
                     @endif
-                    </div>
+                </div>
                 <section id="selolacre">
                     <div id="selos-container">
                         <div class="form-group">
@@ -107,9 +107,9 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                 @if($selo_afixado!=NULL)
                                     <input type="hidden" name="selo_retirado_hidden"
                                            value="{{$selo_afixado->numeracao}}"/>
-                                    @endif
-                                </div>
+                                @endif
                             </div>
+                        </div>
                         <div class="form-group">
                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Selo afixado: <span
                                         class="required">*</span></label>
@@ -119,7 +119,7 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                             </div>
                             <div id="element"></div>
                         </div>
-                        </div>
+                    </div>
                     <div id="lacres-container">
                         <div class="form-group">
                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Lacres retirados: <span
@@ -146,8 +146,8 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                 <input type="text" name="lacre_retirado_livre" class="form-control"
                                        placeholder="Outros Lacres separados por ';' Ex: 1001; 1002; 1003"
                                        @if($lacres_atual==NULL) required @else style="display:none;" @endif/>
-                                </div>
                             </div>
+                        </div>
                         <div class="form-group">
                             <label class="control-label col-md-2 col-sm-2 col-xs-12">Lacres afixados: <span
                                         class="required">*</span></label>
@@ -158,22 +158,22 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                 </div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </section>
                 <div class="form-group col-md-6">
                     <label>Defeitos encontrados: <span class="required">*</span></label>
                     <textarea name="defeito" class="form-control" rows="3"
                               required>{{$AparelhoManutencao->defeito}}</textarea>
-                    </div>
+                </div>
                 <div class="form-group col-md-6">
                     <label>Solução: <span class="required">*</span></label>
                     <textarea name="solucao" class="form-control" rows="3"
                               required>{{$AparelhoManutencao->solucao}}</textarea>
                 </div>
-                    <div class="clearfix"></div>
+                <div class="clearfix"></div>
                 <div class="form-group">
                     <button class="btn btn-success btn-lg pull-right"><i class="fa fa-check fa-lg"></i> Salvar</button>
-                    </div>
+                </div>
                 {!! Form::close() !!}
             </section>
         @else
@@ -206,9 +206,9 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                     </thead>
                                     <tbody>
                                     @foreach($AparelhoManutencao->servico_prestados as $servico_prestado)
-                                        <?php
-                                        $tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                                        ?>
+										<?php
+										$tabela_preco = $servico_prestado->servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
+										?>
                                         <tr>
                                             <td>
                                                 {{$servico_prestado->servico->nome}}
@@ -239,10 +239,10 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                                     tabindex="-1">
                                                 <option value="">Selecione</option>
                                                 @foreach($Servicos as $servico)
-                                                    <?php
-                                                    $tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                                                    //                                                        print_r($tabela_preco);
-                                                    ?>
+													<?php
+													$tabela_preco = $servico->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
+													//                                                        print_r($tabela_preco);
+													?>
                                                     {{--<option>{{$tabela_preco}}</option>--}}
                                                     <option value="{{$servico->idservico}}"
                                                             data-preco="{{$tabela_preco->preco}}"
@@ -275,7 +275,7 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
             @else
                 <div class="jumbotron">
                     <h2>Nenhum Serviço cadastrado no sistema!</h2>
-                    </div>
+                </div>
             @endif
             {{--{{dd(1)}}--}}
             {{--PEÇAS/PRODUTOS--}}
@@ -301,9 +301,9 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                     </thead>
                                     <tbody>
                                     @foreach($AparelhoManutencao->pecas_utilizadas as $peca_utilizada)
-                                        <?php
-                                        $tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                                        ?>
+										<?php
+										$tabela_preco = $peca_utilizada->peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
+										?>
                                         <tr>
                                             <td>
                                                 {{$peca_utilizada->peca->descricao}}
@@ -337,9 +337,9 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                                     tabindex="-1">
                                                 <option value="">Selecione</option>
                                                 @foreach($Pecas as $peca)
-                                                    <?php
-                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                                                    ?>
+													<?php
+													$tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
+													?>
                                                     <option value="{{$peca->idpeca}}"
                                                             data-preco="{{$tabela_preco->preco}}"
                                                             data-preco_minimo="{{$tabela_preco->preco_minimo}}">
@@ -397,9 +397,9 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                     </thead>
                                     <tbody>
                                     @foreach($AparelhoManutencao->kits_utilizados as $kit_utilizado)
-                                        <?php
-                                        $tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                                        ?>
+										<?php
+										$tabela_preco = $kit_utilizado->kit->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
+										?>
                                         <tr>
                                             <td>
                                                 {{$kit_utilizado->nome()}}
@@ -436,9 +436,9 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                                                     tabindex="-1">
                                                 <option value="">Selecione</option>
                                                 @foreach($Kits as $kit)
-                                                    <?php
-                                                    $tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
-                                                    ?>
+													<?php
+													$tabela_preco = $peca->tabela_cliente($OrdemServico->cliente->idtabela_preco_tecnica);
+													?>
                                                     <option value="{{$kit->idkit}}"
                                                             data-preco="{{$tabela_preco->preco}}"
                                                             data-preco_minimo="{{$tabela_preco->preco_minimo}}">{{$kit->descricao}}</option>
@@ -484,7 +484,7 @@ if ( $Instrumento->has_lacres_instrumentos_fixados() ) {
                             <button type="submit" class="btn btn-success btn-lg btn-block">Salvar</button>
                         </div>
                     </div>
-                    </div>
+                </div>
             </section>
             {!! Form::close() !!}
 

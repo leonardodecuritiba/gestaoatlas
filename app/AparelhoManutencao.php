@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\DataHelper;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -23,16 +24,74 @@ class AparelhoManutencao extends Model
 
     // ******************** FUNCTIONS ******************************
 
-	static public function updateOrdemServico( $id, array $data ) {
-		$AparelhoManutencao = self::findOrFail( $id );
-		//atualiza o status da O.S.
+	public function updateSeloLacreInstrumento(array $data)
+	{
+		//UPDATE DOS LACRES E SELOS
+		//caso não tenha lacre rompido, só atualizar defeito/manutenção
 
-		$AparelhoManutencao->ordem_servico->update( [
-			'idsituacao_ordem_servico' => 2
-		] );
-		$AparelhoManutencao->update( $data );
+//	    dd(($request->has('selo_retirado_hidden') && $request->get('selo_retirado_hidden') != NULL));
+		if (isset($data['lacre_rompido'])) {
+			$now = Carbon::now()->toDateTimeString();
+			//Na primeira vez que o técnico for dar manutenção no instrumento, deverá marcar SELO OUTRO e LACRE OUTRO
 
-		return $AparelhoManutencao;
+			/*** AFIXAÇAO DO SELO ***/
+			//Afixar o Selo convencional na tabela SeloInstrumento
+			SeloInstrumento::afixar( $this, $data['selo_afixado'], $now );
+
+			/*** RETIRADA DO SELO ***/
+			//Nesse caso quer dizer que o selo está sendo editado pela segunda vez
+			if (isset($data['selo_retirado_hidden']) && $data['selo_retirado_hidden'] != NULL)
+			{
+				SeloInstrumento::retirarHidden($this, $data['selo_retirado_hidden'], $now);
+			}
+
+
+			//Nesse caso o selo é externo ou PRIMEIRA vez
+			if (isset($data['selo_outro']))
+			{
+				//Nesse caso, criar um selo novo na tabela selos e atribuí-lo ao técnico em questão
+//		        if (Selo::selo_exists($selo_retirado)) { // Testar para saber se já existe esse selo na base, por segurnaça
+//			        dd('ERRO: SELO JÁ EXISTE');
+//		        }
+//				$selo = Selo::create([ // se não existir, inserir e retornar o novo id
+//					'idtecnico'         => $this->tecnico->idtecnico,
+//					'numeracao_externa' => $data['selo_retirado'],
+//					'externo'           => 1,
+//					'used'              => 1,
+//				]);
+				//Afixar/Retirar o selo na tabela SeloInstrumento
+				SeloInstrumento::retirarNovo( $this, $data['selo_retirado'], $now );
+
+			}
+
+//			dd($data);
+			/*** AFIXAÇAO DOS LACRES ***/
+			//Afixar os lacres na tabela LacreInstrumento
+			LacreInstrumento::afixar( $this, $data['lacre_afixado'], $now );
+
+			/*** RETIRADA DOS LACRES ***/
+			//Nesse caso quer dizer que os lacres está sendo editado pela segunda vez
+			if (isset($data['lacres_retirado_hidden']) && $data['lacres_retirado_hidden'] != NULL)
+			{
+				LacreInstrumento::retirarHidden($this, $data['lacres_retirado_hidden'], $now);
+			}
+
+			//Nesse caso os lacres são externos ou PRIMEIRA vez
+			if (isset($data['lacre_outro'])) {
+				$lacre_retirado_livre =  trim($data['lacre_retirado_livre']);
+				if(($lacre_retirado_livre != NULL) && ($lacre_retirado_livre != '')){
+					$lacres_retirado = explode(';',$lacre_retirado_livre);
+
+					//Nesse caso, criar um lacre novo na tabela lacress e atribuí-lo ao técnico em questão
+					//Afixar/Retirar o lacre na tabela LacreInstrumento
+					foreach ($lacres_retirado as $lacre) {
+						LacreInstrumento::retirarNovo( $this, $lacre, $now );
+					}
+				}
+			}
+
+		}
+		return;
 	}
 
     static public function getRelatorioIpem($data)
@@ -288,6 +347,11 @@ class AparelhoManutencao extends Model
         return $total;
     }
 
+	public function valor_pecas_utilizadas()
+	{
+		return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
+	}
+
     // ******************** RELASHIONSHIP ******************************
     // ********************** BELONGS ********************************
 
@@ -295,7 +359,7 @@ class AparelhoManutencao extends Model
 
     public function has_selo_retirado()
     {
-        return ($this->selo_retirado() != NULL);
+	    return $this->selo_instrumento_unset->count()>0;
     }
 
     public function numeracao_selo_afixado()
@@ -309,34 +373,31 @@ class AparelhoManutencao extends Model
         return $this->instrumento->numeracao_selo_retirado($this->getAttribute('idaparelho_manutencao'));
     }
 
-	public function numeracao_selo_instrumento_retirado() {
+	public function numeracao_selo_instrumento_retirado()
+	{
 		return $this->selo_instrumentos;
 	}
 
 
-	public function selo_retirado()
+	public function selo_instrumento_set()
 	{
-		RETURN 'AparelhoManutencao@selo_retirado ***teste***';
-
-		return $this->selo_instrumentos_unset->selo_retirado();
-		return $this->instrumento->selo_retirado();
-	}
-    public function selo_afixado()
-    {
-	    RETURN 'AparelhoManutencao@selo_afixado ***teste***';
-        return $this->instrumento->selo_afixado();
-    }
-	public function lacres_retirados()
-	{
-		RETURN 'AparelhoManutencao@lacres_retirados ***teste***';
-		return $this->instrumento->lacres_retirados();
+		return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
 	}
 
-    //LACRES --------
+	public function selo_instrumento_unset() {
+		return $this->hasMany( SeloInstrumento::class, 'idaparelho_unset', 'idaparelho_manutencao' );
+	}
+
+
+
+
+
+
+	//LACRES --------
 
     public function has_lacres_retirados()
     {
-        return ($this->lacres_retirados() != NULL);
+        return $this->lacres_instrumento_unset->count() > 0;
     }
 
     public function numeracao_lacres_afixados()
@@ -354,52 +415,30 @@ class AparelhoManutencao extends Model
         return $this->instrumento->lacres_afixados();
     }
 
-    //------------------------------------------------
-//
-//	public function selo_instrumentos()
-//	{
-//		return $this->hasMany('App\SeloInstrumento', 'idaparelho_manutencao');
-//	}
-//
-//	public function lacre_instrumentos()
-//	{
-//		return $this->hasMany('App\LacreInstrumento', 'idaparelho_manutencao');
-//	}
-
-	public function selo_instrumento_set()
-    {
-	    return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
-    }
-
 	public function lacres_instrumento_set()
-    {
-	    return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
-    }
-
-	public function selo_instrumento_unset() {
-		return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_unset', 'idaparelho_manutencao' );
+	{
+		return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
 	}
 
-	public function lacres_instrumento_unset() {
-		return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_unset', 'idaparelho_manutencao' );
+	public function lacres_instrumento_unset()
+	{
+		return $this->hasMany( LacreInstrumento::class, 'idaparelho_unset', 'idaparelho_manutencao' );
 	}
 
-    public function valor_pecas_utilizadas()
-    {
-        return $this->hasMany('App\PecasUtilizadas', 'idaparelho_manutencao');
-    }
-
-    public function has_instrumento()
-    {
-        return ($this->attributes['idinstrumento'] != NULL);
-    }
-
-    public function has_equipamento()
-    {
-        return ($this->attributes['idequipamento'] != NULL);
-    }
+    //------------------------------------------------
 
     // ************************** HASMANY **********************************
+
+
+	public function has_instrumento()
+	{
+		return ($this->attributes['idinstrumento'] != NULL);
+	}
+
+	public function has_equipamento()
+	{
+		return ($this->attributes['idequipamento'] != NULL);
+	}
 
     public function ordem_servico()
     {
@@ -415,4 +454,33 @@ class AparelhoManutencao extends Model
     {
         return $this->belongsTo('App\Equipamento', 'idequipamento');
     }
+
+
+
+
+//
+//	public function selo_instrumentos()
+//	{
+//		return $this->hasMany('App\SeloInstrumento', 'idaparelho_manutencao');
+//	}
+//
+//	public function lacre_instrumentos()
+//	{
+//		return $this->hasMany('App\LacreInstrumento', 'idaparelho_manutencao');
+//	}
+
+	/*
+
+		public function selo_afixado()
+		{
+			RETURN 'AparelhoManutencao@selo_afixado ***teste***';
+			return $this->instrumento->selo_afixado();
+		}
+
+		public function lacres_retirados()
+		{
+			RETURN 'AparelhoManutencao@lacres_retirados ***teste***';
+			return $this->instrumento->lacres_retirados();
+		}
+		*/
 }

@@ -6,6 +6,7 @@ use App\Helpers\DataHelper;
 use App\Traits\SeloLacreInstrumento;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class LacreInstrumento extends Model
 {
@@ -19,7 +20,8 @@ class LacreInstrumento extends Model
         'idinstrumento',
         'idlacre',
         'afixado_em',
-        'retirado_em'
+        'retirado_em',
+        'external'
     ];
 
 
@@ -28,7 +30,6 @@ class LacreInstrumento extends Model
 	//Extornar lacre
 	public function extorna() {
 		$this->lacre->extorna();
-
 		return $this->delete();
 	}
 
@@ -59,35 +60,54 @@ class LacreInstrumento extends Model
 	}
 
 	//Afixar e Retirar o lacre, neste caso quando é um lacre externo
-	static public function retirarNovo( AparelhoManutencao $aparelho, $idlacre, $now = null ) {
-		$now = ( $now == null ) ? Carbon::now() : $now;
+	static public function retirarNovo( AparelhoManutencao $aparelho, $lacre, $now = null ) {
+
+		$now = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
+
+		$lacre = Lacre::create([ // se não existir, inserir e retornar o novo id
+			'idtecnico'         => Auth::user()->getIdTecnico(),
+			'numeracao_externa' => $lacre,
+			'externo'           => 1,
+			'used'              => 1,
+		]);
 
 		return LacreInstrumento::create( [
-			'idlacre'          => $idlacre,
+			'idlacre'          => $lacre->idlacre,
 			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
-//			'idaparelho_set'   => NULL,
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,
 			'idinstrumento'    => $aparelho->idinstrumento,
 			'afixado_em'       => $now,
 			'retirado_em'      => $now,
+			'external'         => true,
 		] );
+
 	}
 
-	static public function retirar( AparelhoManutencao $aparelho, $idslacres, $now = null )
-    {
-	    $now = ( $now == null ) ? Carbon::now() : $now;
-	    foreach ( $idslacres as $idlacre ) {
-		    //Nesse caso, vamos atualizar o retirado_em
-		    $Data = self::where( 'idlacre', $idlacre )->first();
-		    $Data->update( [
-			    'idaparelho_unset' => $aparelho->idaparelho_manutencao,
-			    'retirado_em'      => $now,
-		    ] );
-	    }
+	static public function retirar( AparelhoManutencao $aparelho, $idlacre_instrumento, $now = null )
+	{
+		$now  = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
+		$Data = self::find( $idlacre_instrumento);
+		$Data->update( [
+			'idaparelho_unset' => $aparelho->idaparelho_manutencao,
+			'retirado_em'      => $now,
+			'external'         => $Data->lacre->isExterno(),
+		] );
+		return $Data;
+	}
 
-	    return 1;
-    }
-
+	static public function retirarHidden(AparelhoManutencao $aparelho_manutencao, $idslacres, $now = NULL)
+	{
+		$lacres_retirados = json_decode($idslacres);
+		//Nesse caso, o SeloInstrumento já existe, vamos atualizar o retirado_em
+		if(count($lacres_retirados)  > 1){
+			foreach($lacres_retirados as $key => $id){
+				self::retirar( $aparelho_manutencao, $id, $now );
+			}
+		} else {
+			$id = $lacres_retirados;
+			self::retirar( $aparelho_manutencao, $id, $now );
+		}
+	}
 
     public function getNomeTecnico()
     {

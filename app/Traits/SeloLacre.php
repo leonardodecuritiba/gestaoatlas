@@ -9,7 +9,8 @@ trait SeloLacre
     static public function set_used($id)
     {
         $Data = self::find($id);
-        return $Data->update(['used' => 1]);
+        $Data->update(['used' => 1]);
+	    return $Data;
     }
 
     public function getNomeTecnico()

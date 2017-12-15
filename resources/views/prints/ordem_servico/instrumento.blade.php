@@ -2,6 +2,8 @@
 $Instrumento = $aparelhoManutencao->instrumento;
 $numeracao_selo_afixado = $aparelhoManutencao->numeracao_selo_afixado();
 $numeracao_selo_retirado = $aparelhoManutencao->numeracao_selo_retirado();
+$numeracao_lacres_afixados = $aparelhoManutencao->numeracao_lacres_afixados();
+$numeracao_lacres_retirado = $aparelhoManutencao->numeracao_lacres_retirados();
 ?>
 
 <tr class="fundo_titulo_2">
@@ -52,6 +54,6 @@ $numeracao_selo_retirado = $aparelhoManutencao->numeracao_selo_retirado();
 <tr>
     <td colspan="2">{{$numeracao_selo_retirado['text']}}</td>
     <td colspan="2">{{$numeracao_selo_afixado['text']}}</td>
-    <td colspan="2">{{$aparelhoManutencao->numeracao_lacres_retirados()}}</td>
-    <td colspan="2">{{$aparelhoManutencao->numeracao_lacres_afixados()}}</td>
+    <td colspan="2">{{$numeracao_lacres_retirado['text']}}</td>
+    <td colspan="2">{{$numeracao_lacres_afixados['text']}}</td>
 </tr>

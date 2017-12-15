@@ -35,6 +35,12 @@ class User extends Authenticatable
 		return ( $name == null ) ? $role : ( $role->name == $name );
 	}
 
+	public function getIdTecnico()
+	{
+		$tenico = $this->colaborador->tecnico;
+		return ($tenico != NULL) ? $tenico->idtecnico : $tenico;
+	}
+
     // ******************** RELASHIONSHIP ******************************
     public function colaborador()
     {

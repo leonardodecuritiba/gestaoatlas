@@ -8,6 +8,7 @@ use App\Traits\SeloLacreInstrumento;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class SeloInstrumento extends Model
 {
@@ -22,13 +23,13 @@ class SeloInstrumento extends Model
         'idinstrumento',
         'idselo',
         'afixado_em',
-        'retirado_em'
+        'retirado_em',
+	    'external'
     ];
 
 
 
     // ******************** FUNCTIONS ******************************
-
 	//Extornar selo
 	public function extorna() {
 		$this->selo->extorna();
@@ -48,7 +49,6 @@ class SeloInstrumento extends Model
 	static public function afixar( AparelhoManutencao $aparelho, $idselo, $now = null ) {
 		$now = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
 		Selo::set_used( $idselo );
-
 		return SeloInstrumento::create( [
 			'idselo'           => $idselo,
 			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
@@ -56,34 +56,58 @@ class SeloInstrumento extends Model
 			'idinstrumento'    => $aparelho->idinstrumento,
 			'afixado_em'       => $now,
 			'retirado_em'      => null,
+			'external'         => false,
 		] );
 	}
 
 	//Afixar e Retirar o selo, neste caso quando é um selo externo
-	static public function retirarNovo( AparelhoManutencao $aparelho, $idselo, $now = null ) {
+	static public function retirarNovo( AparelhoManutencao $aparelho, $selo, $now = null ) {
 		$now = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
 
+		$selo = Selo::create([ // se não existir, inserir e retornar o novo id
+			'idtecnico'         => Auth::user()->getIdTecnico(),
+			'numeracao_externa' => $selo,
+			'externo'           => 1,
+			'used'              => 1,
+		]);
+
 		return SeloInstrumento::create( [
-			'idselo'           => $idselo,
+			'idselo'           => $selo->idselo,
 			'idaparelho_set'   => $aparelho->idaparelho_manutencao,
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,
 			'idinstrumento'    => $aparelho->idinstrumento,
 			'afixado_em'       => $now,
 			'retirado_em'      => $now,
+			'external'         => true,
 		] );
 	}
 
 	//Nesse caso, criar o SeloInstrumento já existe, vamos atualizar o retirado_em
-	static public function retirar( AparelhoManutencao $aparelho, $idselo_instrumento, $now = null ) {
+	static public function retirar( AparelhoManutencao $aparelho, $idselo_instrumento, $now = null )
+	{
 		$now  = ( $now == null ) ? Carbon::now()->toDateTimeString() : $now;
-//		$Selo = Selo::where( 'numeracao', $idselo )->first();
 		$Data = self::find( $idselo_instrumento);
-
-		return $Data->update( [
+		$Data->update( [
 			'idaparelho_unset' => $aparelho->idaparelho_manutencao,
 			'retirado_em'      => $now,
+			'external'         => $Data->selo->isExterno(),
 		] );
+		return $Data;
     }
+
+	static public function retirarHidden(AparelhoManutencao $aparelho_manutencao, $idselos, $now = NULL)
+	{
+		$selos_retirados = json_decode($idselos);
+		//Nesse caso, o SeloInstrumento já existe, vamos atualizar o retirado_em
+		if(count($selos_retirados)  > 1){
+			foreach($selos_retirados as $key => $id){
+				self::retirar( $aparelho_manutencao, $id, $now );
+			}
+		} else {
+			$id = $selos_retirados;
+			self::retirar( $aparelho_manutencao, $id, $now );
+		}
+	}
 
     public function getNomeTecnico()
     {

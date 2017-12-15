@@ -133,7 +133,6 @@ class Lacre extends Model
             ->update(['idtecnico' => $data['idtecnico']]);
     }
 
-
 	public function isExterno()
 	{
 		return (($this->attributes['numeracao_externa'] != NULL) && ($this->attributes['numeracao'] == NULL));
@@ -159,7 +158,7 @@ class Lacre extends Model
 
     public function getNumeracao()
     {
-        return ($this->attributes['externo']) ? $this->attributes['numeracao_externa'] : $this->attributes['numeracao'];
+        return ($this->isExterno()) ? $this->attributes['numeracao_externa'] : $this->attributes['numeracao'];
     }
 
     // ********************** HASONE ********************************

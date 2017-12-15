@@ -25,13 +25,13 @@
                 {{$AparelhoManutencao->defeito}}
             </p>
             @if($AparelhoManutencao->has_selo_retirado())
-                <?php
-                    $numeracao_selo_afixado = $AparelhoManutencao->numeracao_selo_afixado();
-                    $numeracao_selo_retirado = $AparelhoManutencao->numeracao_selo_retirado();
-                    $numeracao_lacres_retirados = $AparelhoManutencao->numeracao_lacres_retirados();
-                    $numeracao_lacres_afixados = $AparelhoManutencao->numeracao_lacres_afixados();
-//                    dd($numeracao_selo_retirado);
-                ?>
+				<?php
+				$numeracao_selo_afixado = $AparelhoManutencao->numeracao_selo_afixado();
+				$numeracao_selo_retirado = $AparelhoManutencao->numeracao_selo_retirado();
+		        $numeracao_lacres_afixados = $AparelhoManutencao->numeracao_lacres_afixados();
+		        $numeracao_lacres_retirados = $AparelhoManutencao->numeracao_lacres_retirados();
+				//                    dd($numeracao_selo_retirado);
+				?>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <h2>Selo Retirado:</h2>
                     <p class="green">{{$numeracao_selo_retirado['text']}}</p>
@@ -55,11 +55,11 @@
             @if($AparelhoManutencao->has_selo_retirado())
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <h2>Lacres Retirados:</h2>
-                    <p class="green">{{$numeracao_lacres_retirados}}</p>
+                    <p class="green">{{$numeracao_lacres_retirados['text']}}</p>
                 </div>
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <h2>Lacres Afixados:</h2>
-                    <p class="green">{{$numeracao_lacres_afixados}}</p>
+                    <p class="green">{{$numeracao_lacres_afixados['text']}}</p>
                 </div>
             @else
                 <div class="alert-custos_isento alert alert-danger fade in"
