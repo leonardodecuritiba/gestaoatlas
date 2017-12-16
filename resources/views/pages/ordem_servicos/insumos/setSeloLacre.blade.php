@@ -41,12 +41,12 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                             class="required">*</span></label>
                 <div class="col-md-10 col-sm-10 col-xs-12">
                     <input type="text" name="selo_retirado" class="form-control" placeholder="Selo retirado"
-                        @if($selos_retirados!=null)
+                        @if($selos_retirados['id']!=null)
                            data-selo_id="{{json_encode($selos_retirados['id'])}}"
                            data-selo_text="{{$selos_retirados['text']}}"
                            value="{{$selos_retirados['text']}}" disabled
                         @else  data-selo="" data-selo_text="" required @endif />
-                    @if($selos_retirados!=null && $selos_retirados['id']!=null)
+                    @if($selos_retirados['id']!=null)
                         <input type="hidden" name="selo_retirado_hidden"
                                value="{{json_encode($selos_retirados['id'])}}"/>
                     @endif
@@ -87,7 +87,7 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                     </div>
                     <input type="text" name="lacre_retirado_livre" class="form-control"
                            placeholder="Outros Lacres separados por ';' Ex: 1001; 1002; 1003"
-                           @if($lacres_retirados['list']==null) required @else style="display:none;" @endif/>
+                           @if($lacres_retirados['id']==null) required @else style="display:none;" @endif/>
                 </div>
             </div>
             <div class="form-group">
