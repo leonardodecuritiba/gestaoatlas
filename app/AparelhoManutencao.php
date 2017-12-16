@@ -34,6 +34,8 @@ class AparelhoManutencao extends Model
 			$now = Carbon::now()->toDateTimeString();
 			//Na primeira vez que o técnico for dar manutenção no instrumento, deverá marcar SELO OUTRO e LACRE OUTRO
 
+
+
 			/*** AFIXAÇAO DO SELO ***/
 			//Afixar o Selo convencional na tabela SeloInstrumento
 			SeloInstrumento::afixar( $this, $data['selo_afixado'], $now );
@@ -44,7 +46,6 @@ class AparelhoManutencao extends Model
 			{
 				SeloInstrumento::retirarHidden($this, $data['selo_retirado_hidden'], $now);
 			}
-
 
 			//Nesse caso o selo é externo ou PRIMEIRA vez
 			if (isset($data['selo_outro']))
@@ -60,11 +61,12 @@ class AparelhoManutencao extends Model
 //					'used'              => 1,
 //				]);
 				//Afixar/Retirar o selo na tabela SeloInstrumento
-				SeloInstrumento::retirarNovo( $this, $data['selo_retirado'], $now );
+				if(isset($data['selo_retirado'])) SeloInstrumento::retirarNovo( $this, $data['selo_retirado'], $now );
 
 			}
 
-//			dd($data);
+
+			//			dd($data);
 			/*** AFIXAÇAO DOS LACRES ***/
 			//Afixar os lacres na tabela LacreInstrumento
 			LacreInstrumento::afixar( $this, $data['lacre_afixado'], $now );
@@ -357,6 +359,11 @@ class AparelhoManutencao extends Model
 
     //SELOS --------
 
+    public function has_selo_afixado()
+    {
+	    return $this->selo_instrumento_set->count()>0;
+    }
+
     public function has_selo_retirado()
     {
 	    return $this->selo_instrumento_unset->count()>0;
@@ -381,7 +388,7 @@ class AparelhoManutencao extends Model
 
 	public function selo_instrumento_set()
 	{
-		return $this->hasMany( 'App\SeloInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
+		return $this->hasMany( SeloInstrumento::class, 'idaparelho_set', 'idaparelho_manutencao' );
 	}
 
 	public function selo_instrumento_unset() {
@@ -398,6 +405,11 @@ class AparelhoManutencao extends Model
     public function has_lacres_retirados()
     {
         return $this->lacres_instrumento_unset->count() > 0;
+    }
+
+    public function has_lacres_afixados()
+    {
+        return $this->lacres_instrumento_set->count() > 0;
     }
 
     public function numeracao_lacres_afixados()
@@ -417,7 +429,7 @@ class AparelhoManutencao extends Model
 
 	public function lacres_instrumento_set()
 	{
-		return $this->hasMany( 'App\LacreInstrumento', 'idaparelho_set', 'idaparelho_manutencao' );
+		return $this->hasMany( LacreInstrumento::class, 'idaparelho_set', 'idaparelho_manutencao' );
 	}
 
 	public function lacres_instrumento_unset()

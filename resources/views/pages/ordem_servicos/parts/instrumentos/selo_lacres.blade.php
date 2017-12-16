@@ -24,7 +24,7 @@
             <p>
                 {{$AparelhoManutencao->defeito}}
             </p>
-            @if($AparelhoManutencao->has_selo_retirado())
+            @if($AparelhoManutencao->has_selo_afixado())
 				<?php
 				$numeracao_selo_afixado = $AparelhoManutencao->numeracao_selo_afixado();
 				$numeracao_selo_retirado = $AparelhoManutencao->numeracao_selo_retirado();
@@ -52,7 +52,7 @@
             <p>
                 {{$AparelhoManutencao->solucao}}
             </p>
-            @if($AparelhoManutencao->has_selo_retirado())
+            @if($AparelhoManutencao->has_lacres_afixados())
                 <div class="col-md-6 col-sm-6 col-xs-12">
                     <h2>Lacres Retirados:</h2>
                     <p class="green">{{$numeracao_lacres_retirados['text']}}</p>

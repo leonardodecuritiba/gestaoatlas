@@ -153,6 +153,7 @@ class Instrumento extends Model
 	    if($num_lacres == 0){
 		    $numeracoes['text'] = 'Sem intervenção';
 		    $numeracoes['id'] = NULL;
+		    $numeracoes['list'] = NULL;
 	    } else if($num_lacres > 1){
 		    $numeracoes = array();
 		    foreach($lacres as $lacre_instrumento){

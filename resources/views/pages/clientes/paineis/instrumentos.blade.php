@@ -214,6 +214,7 @@
                         @foreach($Cliente->instrumentos as $instrumento)
                             <?php
                                 $selos = $instrumento->numeracao_selo_afixado();
+                                $lacres = $instrumento->numeracao_lacres_afixados();
 //                                dd();
                             ?>
                             <tr>
@@ -223,7 +224,7 @@
                                 <td>{{$instrumento->numero_serie}}</td>
                                 <td>{{$instrumento->inventario}}</td>
                                 <td>{{$selos['text']}}</td>
-                                <td>{{$instrumento->numeracao_lacres_afixados()}}</td>
+                                <td>{{$lacres['text']}}</td>
                                 <td>
                                     <button class="btn btn-default btn-xs edit-instrumento"
                                             data-dados="{{$instrumento}}"

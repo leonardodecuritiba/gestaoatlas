@@ -14,7 +14,7 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                 rompido?
             </label>
         </div>
-        @if($selos_retirados!=null)
+        @if($selos_retirados['id']!=null)
             <div class="checkbox col-md-2 col-sm-2 col-xs-12">
                 <label>
                     <input name="selo_outro" type="checkbox" class="flat"> Outro Selo?
@@ -24,7 +24,7 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
             <input name="selo_outro" type="hidden" value="1">
         @endif
 
-        @if($lacres_retirados!=null)
+        @if($lacres_retirados['id']!=null)
             <div class="checkbox col-md-2 col-sm-2 col-xs-12">
                 <label>
                     <input name="lacre_outro" type="checkbox" class="flat"> Outros Lacres?
@@ -68,7 +68,7 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                             class="required">*</span></label>
                 <div class="col-md-10 col-sm-10 col-xs-12">
                     <div>
-                        @if($lacres_retirados!=null)
+                        @if($lacres_retirados['list']!=null)
                             <select name="lacre_retirado[]" class="select2_multiple-ajax form-control"
                                     tabindex="-1" multiple="multiple" required></select>
                             <script>
@@ -87,7 +87,7 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                     </div>
                     <input type="text" name="lacre_retirado_livre" class="form-control"
                            placeholder="Outros Lacres separados por ';' Ex: 1001; 1002; 1003"
-                           @if($lacres_retirados==null) required @else style="display:none;" @endif/>
+                           @if($lacres_retirados['list']==null) required @else style="display:none;" @endif/>
                 </div>
             </div>
             <div class="form-group">
