@@ -459,7 +459,7 @@ class AparelhoManutencao extends Model
 
     public function instrumento()
     {
-        return $this->belongsTo('App\Instrumento', 'idinstrumento');
+        return $this->belongsTo(Instrumento::class, 'idinstrumento');
     }
 
     public function equipamento()

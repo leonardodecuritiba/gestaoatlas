@@ -46,7 +46,7 @@ class LacreInstrumento extends Model
 		$now = ( $now == null ) ? Carbon::now() : $now;
 		foreach ( $idslacre as $idlacre ) {
 			Lacre::set_used( $idlacre );
-			LacreInstrumento::create( [
+			self::create( [
 				'idlacre'          => $idlacre,
 				'idaparelho_set'   => $aparelho->idaparelho_manutencao,
 				'idaparelho_unset' => null,
