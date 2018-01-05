@@ -183,6 +183,7 @@ return [
         App\Providers\ResponseMacroServiceProvider::class,
 
         Spatie\Backup\BackupServiceProvider::class,
+        App\Providers\DropboxFilesystemServiceProvider::class
     ],
 
     /*

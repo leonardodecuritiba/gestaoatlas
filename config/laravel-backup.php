@@ -54,6 +54,7 @@ return [
              */
             'disks' => [
                 'local',
+//                'dropbox',
             ],
         ],
     ],
@@ -109,6 +110,7 @@ return [
         [
             'name' => env('APP_URL'),
             'disks' => ['local'],
+//            'disks' => ['dropbox'],
             'newestBackupsShouldNotBeOlderThanDays' => 1,
             'storageUsedMayNotBeHigherThanMegabytes' => 5000,
         ],
