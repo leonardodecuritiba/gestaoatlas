@@ -153,8 +153,8 @@ return [
          * Here you can specify how emails should be sent.
          */
         'mail' => [
-            'from' => 'your@email.com',
-            'to' => 'your@email.com',
+            'from' => 'no-reply@atlastecnologia.com.br',
+            'to' => 'silva.zanin@gmail.com',
         ],
 
         /*
