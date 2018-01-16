@@ -15,21 +15,21 @@ class ImportTabelaPrecoServico extends Seeder
         $start = microtime(true);
 
 
-	    $tabelas = \App\TabelaPrecoServico::where('idtabela_preco',3)->get();
-	    foreach ( $tabelas as $tabela ) {
-		    $data   = [
-			    'idtabela_preco'=> 6,
-			    'idservico'     => $tabela->idservico,
-			    'margem'        => \App\Helpers\DataHelper::getReal2Float($tabela->margem),
-			    'preco'         => \App\Helpers\DataHelper::getReal2Float($tabela->preco),
-			    'margem_minimo' => \App\Helpers\DataHelper::getReal2Float($tabela->margem_minimo),
-			    'preco_minimo'  => \App\Helpers\DataHelper::getReal2Float($tabela->preco_minimo)
-		    ];
-		    \App\TabelaPrecoServico::create( $data );
-	    }
-	    exit;
-
-
+//	    $tabelas = \App\TabelaPrecoServico::where('idtabela_preco',3)->get();
+//	    foreach ( $tabelas as $tabela ) {
+//		    $data   = [
+//			    'idtabela_preco'=> 6,
+//			    'idservico'     => $tabela->idservico,
+//			    'margem'        => \App\Helpers\DataHelper::getReal2Float($tabela->margem),
+//			    'preco'         => \App\Helpers\DataHelper::getReal2Float($tabela->preco),
+//			    'margem_minimo' => \App\Helpers\DataHelper::getReal2Float($tabela->margem_minimo),
+//			    'preco_minimo'  => \App\Helpers\DataHelper::getReal2Float($tabela->preco_minimo)
+//		    ];
+//		    \App\TabelaPrecoServico::create( $data );
+//	    }
+//	    exit;
+//
+//
 
 
 
