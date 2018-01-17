@@ -14,6 +14,10 @@
         </div>
         <div class="clearfix"></div>
         <section class="row">
+            <div class="alert-custos_isento alert alert-danger fade in"
+                 role="alert">
+                <strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong> NÃO DIGITAR ÚLTIMO DÍGITO DO SELO!
+            </div>
             <div class="col-md-6 col-sm-6 col-xs-12">
                 <div class="x_panel">
                     <div class="x_title">
@@ -48,7 +52,7 @@
                                         <label class="control-label col-md-4 col-sm-6 col-xs-12">Numeração Inicial:
                                             <span class="required">*</span></label>
                                         <div class="col-md-8 col-sm-6 col-xs-12">
-                                            <input type="text" class="form-control show-inteiro" min="1"
+                                            <input type="text" class="form-control show-inteiro" min="1" maxlength="8"
                                                    name="numeracao_inicial" placeholder="Numeração Inicial" required>
                                         </div>
                                     </div>
@@ -56,7 +60,7 @@
                                         <label class="control-label col-md-4 col-sm-6 col-xs-12">Numeração Final: <span
                                                     class="required">*</span></label>
                                         <div class="col-md-8 col-sm-6 col-xs-12">
-                                            <input type="text" class="form-control show-inteiro" min="2"
+                                            <input type="text" class="form-control show-inteiro" min="2" maxlength="8"
                                                    name="numeracao_final" placeholder="Numeração Inicial" required>
                                         </div>
                                     </div>
@@ -148,63 +152,86 @@
         @if (session()->has('Selos'))
             <section class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                    <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
-                           width="100%">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Técnico</th>
-                            <th>Numeração</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach(session()->get('Selos') as $sel)
-                            <tr>
-                                <td>{{$sel->idselo}}</td>
-                                <td>{{$sel->getNomeTecnico()}}</td>
-                                <td>{{$sel->numeracao}}</td>
-                                <td>@if($sel->used)
-                                        <span class="btn btn-danger btn-xs">Usado</span>
-                                    @else
-                                        <span class="btn btn-success btn-xs">Disponível</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>{{count(session()->get('Selos'))}} selos lançados</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <section class="row">
+                                <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                                       width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Técnico</th>
+                                        <th>Numeração</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach(session()->get('Selos') as $sel)
+                                        <tr>
+                                            <td>{{$sel->idselo}}</td>
+                                            <td>{{$sel->getNomeTecnico()}}</td>
+                                            <td>{{$sel->numeracao}}</td>
+                                            <td>@if($sel->used)
+                                                    <span class="btn btn-danger btn-xs">Usado</span>
+                                                @else
+                                                    <span class="btn btn-success btn-xs">Disponível</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+
+                            </section>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         @elseif (session()->has('Lacres'))
             <section class="row">
                 <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                    <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
-                           width="100%">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Técnico</th>
-                            <th>Numeração</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @foreach(session()->get('Lacres') as $sel)
-                            <tr>
-                                <td>{{$sel->idlacre}}</td>
-                                <td>{{$sel->getNomeTecnico()}}</td>
-                                <td>{{$sel->numeracao}}</td>
-                                <td>@if($sel->used)
-                                        <span class="btn btn-danger btn-xs">Usado</span>
-                                    @else
-                                        <span class="btn btn-success btn-xs">Disponível</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>{{count(session()->get('Lacres'))}} lacres lançados</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                            <section class="row">
+                                <table class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+                                       width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Técnico</th>
+                                        <th>Numeração</th>
+                                        <th>Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach(session()->get('Lacres') as $sel)
+                                        <tr>
+                                            <td>{{$sel->idlacre}}</td>
+                                            <td>{{$sel->getNomeTecnico()}}</td>
+                                            <td>{{$sel->numeracao}}</td>
+                                            <td>@if($sel->used)
+                                                    <span class="btn btn-danger btn-xs">Usado</span>
+                                                @else
+                                                    <span class="btn btn-success btn-xs">Disponível</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
+                            </section>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         @endif

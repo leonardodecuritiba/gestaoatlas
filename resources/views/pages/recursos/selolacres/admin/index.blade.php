@@ -22,7 +22,7 @@
                 <label class="control-label col-md-1 col-sm-1 col-xs-12">NUMERAÇÃO:</label>
                 <div class="col-md-2 col-sm-2 col-xs-12">
                     <input value="{{Request::get('numeracao')}}" type="text" class="form-control"
-                           name="numeracao" placeholder="NUMERAÇÃO" minlength="4" required>
+                           name="numeracao" placeholder="NUMERAÇÃO" minlength="5" required>
                 </div>
 
                 {!! Html::decode(Form::label('origem', 'ORIGEM',
