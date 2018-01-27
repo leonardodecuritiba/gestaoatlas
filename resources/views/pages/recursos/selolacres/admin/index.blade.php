@@ -99,7 +99,7 @@
                                         @foreach ($Page->extras['selos'] as $sel)
                                             <tr>
                                                 <td>{{$sel->idselo}}</td>
-                                                <td>{{$sel->created_at}}</td>
+                                                <td data-order="{{$sel->created_at}}">{{$sel->getCreatedAtFormatted()}}</td>
                                                 <td>{{$sel->nome_tecnico}}</td>
                                                 <td>{{$sel->numero_formatado}}</td>
                                                 <td>{{$sel->numeracao_externa}}</td>
@@ -257,7 +257,7 @@
                     "language": language_pt_br,
                     "pageLength": 10,
                     "columnDefs": [{
-                        "targets": 0,
+                        "targets": 2,
                         "orderable": false
                     }],
                     "bLengthChange": false, //used to hide the property

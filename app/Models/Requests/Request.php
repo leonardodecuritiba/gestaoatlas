@@ -205,10 +205,10 @@ class Request extends Model
      * ========================================================
      */
 
-    public function getCreatedAtAttribute($value)
-    {
-        return DataHelper::getPrettyDateTime($value);
-    }
+	public function getCreatedAtFormatted()
+	{
+		return DataHelper::getPrettyDateTime($this->attributes['created_at']);
+	}
 
     public function getFormatedRequest()
     {

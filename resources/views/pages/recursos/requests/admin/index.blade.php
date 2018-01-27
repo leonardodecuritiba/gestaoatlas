@@ -118,7 +118,7 @@
                                 @foreach ($Page->extras['requests'] as $sel)
                                     <tr>
                                         <td>{{$sel->id}}</td>
-                                        <td>{{$sel->created_at}}</td>
+                                        <td data-order="{{$sel->created_at}}">{{$sel->getCreatedAtFormatted()}}</td>
                                         <td>{{$sel->getNameRequester()}}</td>
                                         <td>{{$sel->getTypeText()}}</td>
                                         <td>{{$sel->getParametersText()}}</td>

@@ -184,7 +184,7 @@
                                 @foreach ($Page->extras['requests'] as $sel)
                                     <tr>
                                         <td>{{$sel->id}}</td>
-                                        <td>{{$sel->created_at}}</td>
+                                        <td data-order="{{$sel->created_at}}">{{$sel->getCreatedAtFormatted()}}</td>
                                         <td>
                                             <span class="label label-{{$sel->getStatusColor()}}">{{$sel->getStatusText()}}</span>
                                         </td>
@@ -238,10 +238,7 @@
                 {
                     "language": language_pt_br,
                     "pageLength": 20,
-                    "columnDefs": [{
-                        "targets": 0,
-                        "orderable": false
-                    }],
+                    "order": [[ 0, 'desc'] ],
                     "bLengthChange": false, //used to hide the property
                     "bFilter": false
                 }
@@ -252,13 +249,6 @@
 
     <!-- Select2 -->
     @include('helpers.select2.foot')
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $(".select2_single").select2({
-                width: 'resolve'
-            });
-        });
-    </script>
     <!-- /Select2 -->
 
     <!-- FORM -->
