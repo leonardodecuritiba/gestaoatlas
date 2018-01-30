@@ -17,7 +17,7 @@ class NFSe extends NF
     public $servico_params_fixos = [
 
         //3. A aliquota não deve ser enviada para optantes do simples nacional
-        'aliquota' => 3.84,
+        'aliquota' => 3.27,
         'porcentagem_tributos_float' => 11.31,
         'porcentagem_tributos_real' => '11,31%',
 
