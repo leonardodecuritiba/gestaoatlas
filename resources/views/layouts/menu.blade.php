@@ -205,15 +205,17 @@
                             </ul>
                         </li>
                     @endrole
-                    <li><a><i class="fa fa-cogs"></i> Atividades<span class="fa fa-chevron-down"></span></a>
+                    <li><a><i class="fa fa-list"></i> Operações<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="#"> Orçamentos</a></li>
+                            <li><a href="{{ route('budgets.select') }}">Orçamento de Venda</a></li>
+                            <li><a href="#">Orçamento / Ordem Serviço</a></li>
+                            <li><a href="#">Pedido Fornecedor</a></li>
                         </ul>
                     </li>
                     <li><a><i class="fa fa-handshake-o"></i> Ordens de Serviços<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
                             @role('tecnico')
-                            <li><a href="{{ route('ordem_servicos.busca') }}">Abrir O.S.</a></li>
+                            <li><a href="{{ route('ordem_servicos.busca') }}">Abrir</a></li>
                             @endrole
                             <li><a href="{{ route('ordem_servicos.index') }}">Listar</a></li>
 

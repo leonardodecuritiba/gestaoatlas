@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Ajustes\Ajuste;
+use App\Traits\CommonTrait;
 use \Swift_Mailer;
 use \Swift_SmtpTransport as SmtpTransport;
 use App\Helpers\DataHelper;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Mail;
 
 class Cliente extends Model
 {
+	use CommonTrait;
     public $timestamps = true;
     protected $table = 'clientes';
     protected $primaryKey = 'idcliente';
@@ -51,16 +53,90 @@ class Cliente extends Model
         'numero_chamado',
     ];
 
-    // ************************ EMAIL-FUNCTIONS ******************************
+	// =====================================================================
+	// ======================== NEW FUNCTIONS ==============================
+	// =====================================================================
 
-    static public function getInvalidos()
-    {
-        return self::whereNull('idcolaborador_validador')->whereNull('validated_at')->get();
-    }
+	public function getName()
+	{
+		return ($this->is_pjuridica()) ?
+			$this->pessoa_juridica()->first()->nome_fantasia :
+			$this->attributes['nome_responsavel'];
+	}
 
-    // ************************ FUNCTIONS ******************************
+	public function getShortName()
+	{
+		return str_limit($this->getName(),20);
+	}
 
-    static public function getValidosOrdemServico()
+	public function getDocument()
+	{
+		return ($this->is_pjuridica()) ?
+			$this->pessoa_juridica()->first()->cnpj :
+			$this->pessoa_fisica()->first()->cpf;
+	}
+
+	public function getResponsibleName()
+	{
+		return $this->attributes['nome_responsavel'];
+	}
+
+	public function getPhone()
+	{
+		return $this->contato->telefone;
+	}
+
+	// =====================================================================
+	// ======================== COSTS FUNCTIONS ============================
+	// =====================================================================
+
+	public function getCostDisplacement()
+	{
+		return ($this->attributes['distancia'] * DataHelper::getReal2Float(Ajuste::getByMetaKey('custo_km')->meta_value));
+	}
+
+	public function getCostDisplacementFormatted()
+	{
+		return DataHelper::getReal2Float($this->getCostDisplacement());
+	}
+
+	public function getCostToll()
+	{
+		return $this->attributes['pedagios'];
+	}
+
+	public function getCostTollFormatted()
+	{
+		return DataHelper::getReal2Float($this->getCostToll());
+	}
+
+	public function getCostOther()
+	{
+		return $this->attributes['outros_custos'];
+	}
+
+	public function getCostOtherFormatted()
+	{
+		return DataHelper::getReal2Float($this->getCostOther());
+	}
+
+
+	// =====================================================================
+	// =====================================================================
+	// =====================================================================
+
+	// ************************ EMAIL-FUNCTIONS ******************************
+
+	static public function getInvalidos()
+	{
+		return self::whereNull('idcolaborador_validador')->whereNull('validated_at')->get();
+	}
+
+
+	// ************************ FUNCTIONS ******************************
+
+
+	static public function getValidosOrdemServico()
     {
         return self::whereNotNull('validated_at')
             ->orWhere('created_at', '<', Carbon::now()->subDay());
@@ -236,16 +312,6 @@ class Cliente extends Model
 
     //Mutattors
 
-    public function pessoa_juridica()
-    {
-        return $this->hasOne('App\PessoaJuridica', 'idpjuridica', 'idpjuridica');
-    }
-
-    public function pessoa_fisica()
-    {
-        return $this->hasOne('App\PessoaFisica', 'idpfisica', 'idpfisica');
-    }
-
     public function getURLFoto()
     {
         return ($this->attributes['foto'] != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/user.png');
@@ -402,6 +468,17 @@ class Cliente extends Model
 
 
     // ************************** HASMANY **********************************
+
+
+	public function pessoa_juridica()
+	{
+		return $this->hasOne('App\PessoaJuridica', 'idpjuridica', 'idpjuridica');
+	}
+
+	public function pessoa_fisica()
+	{
+		return $this->hasOne('App\PessoaFisica', 'idpfisica', 'idpfisica');
+	}
 
     public function centro_custo_de()
     {

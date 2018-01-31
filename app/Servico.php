@@ -21,6 +21,36 @@ class Servico extends Model
         'valor',
     ];
 
+
+	// =====================================================================
+	// ======================== NEW FUNCTIONS ==============================
+	// =====================================================================
+
+	public function getCost()
+	{
+		return $this->attributes['valor'];
+	}
+
+	public function getCostFormatted()
+	{
+		return DataHelper::getFloat2RealMoeda($this->getCost());
+	}
+
+	public function getName()
+	{
+		return $this->getAttribute('nome');
+	}
+
+	public function getShortName()
+	{
+		return str_limit($this->getName(), 20);
+	}
+
+	// =====================================================================
+	// =====================================================================
+	// =====================================================================
+
+	
     public function getCreatedAtAttribute($value)
     {
         return ($value==NULL)?$value:Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('d/m/Y - H:i');

@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use App\Kit;
+use App\Models\Budgets\Budget;
+use App\Models\Budgets\BudgetKit;
+use App\Models\Budgets\BudgetPart;
+use App\Models\Budgets\BudgetService;
 use App\Models\Inputs\Pattern;
 use App\Models\Inputs\Stocks\PatternStock;
 use App\Models\Inputs\Stocks\ToolStock;
@@ -10,6 +14,10 @@ use App\Models\Inputs\Tool;
 use App\Models\Inputs\Voids\VoidPattern;
 use App\Models\Inputs\Voids\VoidTool;
 use App\Models\Inputs\Voids\Voidx;
+use App\Observers\Budget\BudgetObserver;
+use App\Observers\Budget\BudgetKitObserver;
+use App\Observers\Budget\BudgetPartObserver;
+use App\Observers\Budget\BudgetServiceObserver;
 use App\Observers\KitsObserver;
 use App\Observers\PatternsObserver;
 use App\Observers\PatternStocksObserver;
@@ -26,6 +34,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Validator;
+use Faker\Generator as FakerGenerator;
+use Faker\Factory as FakerFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -52,6 +62,19 @@ class AppServiceProvider extends ServiceProvider
 	    Pattern::observe( PatternsObserver::class );
 	    VoidPattern::observe( VoidPatternsObserver::class );
 	    PatternStock::observe( PatternStocksObserver::class );
+
+	    // =====================================================================
+	    // ======================== BUDGETS ====================================
+	    // =====================================================================
+
+	    Budget::observe( BudgetObserver::class );
+	    BudgetPart::observe( BudgetPartObserver::class );
+	    BudgetService::observe( BudgetServiceObserver::class );
+	    BudgetKit::observe( BudgetKitObserver::class );
+
+	    // =====================================================================
+	    // =====================================================================
+	    // =====================================================================
 
         Validator::extend('unique_cliente', function ($attribute, $value, $parameters, $validator) {
             // Get the parameters passed to the rule
@@ -84,6 +107,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+
+	    $this->app->singleton( FakerGenerator::class, function () {
+		    return FakerFactory::create( 'pt_BR' );
+	    } );
     }
 }

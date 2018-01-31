@@ -172,6 +172,8 @@
 
     <!-- Select2 -->
     @include('helpers.select2.foot')
+
+
     <script type="text/javascript">
         $(document).ready(function () {
             $(".select2_single").select2({
@@ -316,6 +318,9 @@
             $(".select2_multiple-ajax").select2(remoteDataConfigLacres);
         });
     </script>
+
+
+
     <script>
         //ABRE MODAL INSTRUMENTO.
         var $_ID_ORDEM_SERVICO = {{$OrdemServico->idordem_servico}};
@@ -377,6 +382,8 @@
             });
         });
     </script>
+
+
 
     <!-- Lacres/Selos rompidos -->
     <script>

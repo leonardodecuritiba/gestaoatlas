@@ -32,13 +32,22 @@ class Colaborador extends Model
         'cnh',
         'carteira_trabalho'
     ];
-
-    // ************************ FUNCTIONS ******************************
-
+// =====================================================================
+	// ======================== NEW FUNCTIONS ==============================
+	// =====================================================================
+	public function getName()
+	{
+		return $this->getAttribute('nome');
+	}
 
 	public function getShortName()
 	{
-		return $this->getAttribute('nome').' - ' .$this->getAttribute('cpf');
+		return str_limit($this->getName(),20);
+	}
+
+	public function getNameDocument()
+	{
+		return $this->getName().' - ' .$this->getAttribute('cpf');
 	}
 
 	static public function getAlltoSelectList() {

@@ -18,6 +18,35 @@ class Kit extends Model
         'observacao',
     ];
 
+
+	// =====================================================================
+	// ======================== NEW FUNCTIONS ==============================
+	// =====================================================================
+
+	public function getCost()
+	{
+		return $this->valor_total_float();
+	}
+
+	public function getCostFormatted()
+	{
+		return DataHelper::getFloat2RealMoeda($this->getCost());
+	}
+
+	public function getName()
+	{
+		return $this->getAttribute('descricao');
+	}
+
+	public function getShortName()
+	{
+		return str_limit($this->getName(), 20);
+	}
+
+	// =====================================================================
+	// =====================================================================
+	// =====================================================================
+
     public function valor_total()
     {
         $val = $this->valor_total_float();

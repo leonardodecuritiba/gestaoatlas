@@ -28,7 +28,33 @@ class Peca extends Model
         'comissao_vendedor',
     ];
 
-    // ******************** FUNCTIONS ******************************
+	// =====================================================================
+	// ======================== NEW FUNCTIONS ==============================
+	// =====================================================================
+
+	public function getCost()
+	{
+		return $this->peca_tributacao->custo_final_float();
+	}
+
+	public function getCostFormatted()
+	{
+		return DataHelper::getFloat2RealMoeda($this->getCost());
+	}
+
+	public function getName()
+	{
+		return $this->getAttribute('descricao');
+	}
+
+	public function getShortName()
+	{
+		return str_limit($this->getName(), 20);
+	}
+
+
+
+	// ******************** FUNCTIONS ******************************
 
 	public function getShortCost() {
 		return $this->peca_tributacao->getCostFormatted();

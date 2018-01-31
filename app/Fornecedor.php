@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Traits\CommonTrait;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Fornecedor extends Model
 {
+	use CommonTrait;
     use SoftDeletes;
     public $timestamps = true;
     protected $table = 'fornecedores';
@@ -22,7 +24,42 @@ class Fornecedor extends Model
         'nome_responsavel'
     ];
 
+
+	// =====================================================================
+	// ======================== NEW FUNCTIONS ==============================
+	// =====================================================================
+	public function getName()
+	{
+		return ($this->attributes['idpjuridica'] != NULL) ?
+			$this->pessoa_juridica()->first()->nome_fantasia :
+			$this->attributes['nome_responsavel'];
+	}
+
+	public function getShortName()
+	{
+		return str_limit($this->getName(),20);
+	}
+
+	public function getDocument()
+	{
+		return ($this->attributes['idpjuridica'] != NULL) ?
+			$this->pessoa_juridica()->first()->cnpj :
+			$this->pessoa_fisica()->first()->cpf;
+	}
+
+	public function getResponsibleName()
+	{
+		return $this->attributes['nome_responsavel'];
+	}
+
+	public function getPhone()
+	{
+		return $this->contato->telefone;
+	}
+
+
     // ************************ FUNCTIONS ******************************
+
     public function getCreatedAtAttribute($value)
     {
         return Carbon::createFromFormat('Y-m-d H:i:s', $value)->format('d/m/Y - H:i');
