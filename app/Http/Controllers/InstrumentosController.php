@@ -45,7 +45,9 @@ class InstrumentosController extends Controller
         $data = $request->all();
         //store Instrumento
         $img = new ImageController();
-        $data['etiqueta_identificacao'] = $img->store($request->file('etiqueta_identificacao'), $this->Page->link);
+        if ($request->hasFile('etiqueta_inventario')) {
+            $data['etiqueta_inventario'] = $img->store($request->file('etiqueta_inventario'), $this->Page->link);
+        }
         if ($request->hasFile('etiqueta_inventario')) {
             $data['etiqueta_inventario'] = $img->store($request->file('etiqueta_inventario'), $this->Page->link);
         }
