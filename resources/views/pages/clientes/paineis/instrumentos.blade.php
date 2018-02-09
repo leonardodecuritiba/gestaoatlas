@@ -277,7 +277,8 @@
         $($novo_instrumento_container).find('div.etiquetas').hide();
         instrumento_toggle();
         $($form_instrumento).find('input[name="_method"]').remove();
-        $($form_instrumento).find('input[name="etiqueta_identificacao"]').attr('required', true);
+        // $($form_instrumento).find('input[name="etiqueta_identificacao"]').attr('required', true);
+        $($form_instrumento).find('input[name="etiqueta_identificacao"]').attr('required', false);
     });
 
     $('button.edit-instrumento').click(function(){
@@ -349,7 +350,8 @@
             switch (i) {
                 case 'etiqueta_identificacao': {
                     if (v == null) {
-                        $($form_instrumento).find('input[name="' + i + '"]').attr('required', true);
+                        // $($form_instrumento).find('input[name="' + i + '"]').attr('required', true);
+                        $($form_instrumento).find('input[name="' + i + '"]').attr('required', false);
                         $($novo_instrumento_container).find('div.etiquetas').find('div#' + i).hide();
                     } else {
                         $($form_instrumento).find('input[name="' + i + '"]').attr('required', false);
