@@ -8,21 +8,21 @@
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
-            "version": "v0.8.1",
+            "version": "v0.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-dompdf.git",
-                "reference": "3b2235e589616331d68482d61b7763789a2600fe"
+                "reference": "7dcdecfa125c174d0abe723603633dc2756ea3af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-dompdf/zipball/3b2235e589616331d68482d61b7763789a2600fe",
-                "reference": "3b2235e589616331d68482d61b7763789a2600fe",
+                "url": "https://api.github.com/repos/barryvdh/laravel-dompdf/zipball/7dcdecfa125c174d0abe723603633dc2756ea3af",
+                "reference": "7dcdecfa125c174d0abe723603633dc2756ea3af",
                 "shasum": ""
             },
             "require": {
                 "dompdf/dompdf": "^0.8",
-                "illuminate/support": "5.1.x|5.2.x|5.3.x|5.4.x|5.5.x",
+                "illuminate/support": "5.1.x|5.2.x|5.3.x|5.4.x|5.5.x|5.6.x",
                 "php": ">=5.5.9"
             },
             "type": "library",
@@ -60,7 +60,7 @@
                 "laravel",
                 "pdf"
             ],
-            "time": "2017-07-29T19:01:17+00:00"
+            "time": "2018-02-07T17:43:25+00:00"
         },
         {
             "name": "barryvdh/laravel-ide-helper",
@@ -1602,16 +1602,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.41",
+            "version": "1.0.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "f400aa98912c561ba625ea4065031b7a41e5a155"
+                "reference": "09eabc54e199950041aef258a85847676496fe8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/f400aa98912c561ba625ea4065031b7a41e5a155",
-                "reference": "f400aa98912c561ba625ea4065031b7a41e5a155",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/09eabc54e199950041aef258a85847676496fe8e",
+                "reference": "09eabc54e199950041aef258a85847676496fe8e",
                 "shasum": ""
             },
             "require": {
@@ -1622,12 +1622,13 @@
             },
             "require-dev": {
                 "ext-fileinfo": "*",
-                "mockery/mockery": "~0.9",
-                "phpspec/phpspec": "^2.2",
-                "phpunit/phpunit": "~4.8"
+                "phpspec/phpspec": "^3.4",
+                "phpunit/phpunit": "^5.7"
             },
             "suggest": {
                 "ext-fileinfo": "Required for MimeType",
+                "ext-ftp": "Allows you to use FTP server storage",
+                "ext-openssl": "Allows you to use FTPS server storage",
                 "league/flysystem-aws-s3-v2": "Allows you to use S3 storage with AWS SDK v2",
                 "league/flysystem-aws-s3-v3": "Allows you to use S3 storage with AWS SDK v3",
                 "league/flysystem-azure": "Allows you to use Windows Azure Blob storage",
@@ -1681,7 +1682,54 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2017-08-06T17:41:04+00:00"
+            "time": "2018-01-27T16:03:56+00:00"
+        },
+        {
+            "name": "league/flysystem-dropbox",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-dropbox.git",
+                "reference": "939f91ca00d0255d9b3aa313e191480d00f09382"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-dropbox/zipball/939f91ca00d0255d9b3aa313e191480d00f09382",
+                "reference": "939f91ca00d0255d9b3aa313e191480d00f09382",
+                "shasum": ""
+            },
+            "require": {
+                "dropbox/dropbox-sdk": "~1.1",
+                "league/flysystem": "~1.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.8"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\Dropbox\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frenky.net"
+                }
+            ],
+            "description": "Flysystem adapter for Dropbox",
+            "abandoned": "spatie/flysystem-dropbox",
+            "time": "2016-04-25T18:51:39+00:00"
         },
         {
             "name": "league/flysystem-dropbox",
@@ -2214,6 +2262,7 @@
                 "xls",
                 "xlsx"
             ],
+            "abandoned": "phpoffice/phpspreadsheet",
             "time": "2015-05-01T07:00:55+00:00"
         },
         {
@@ -2650,7 +2699,11 @@
         },
         {
             "name": "symfony/browser-kit",
+<<<<<<< Updated upstream
             "version": "v3.4.3",
+=======
+            "version": "v3.4.4",
+>>>>>>> Stashed changes
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
@@ -2707,7 +2760,11 @@
         },
         {
             "name": "symfony/class-loader",
+<<<<<<< Updated upstream
             "version": "v3.4.3",
+=======
+            "version": "v3.4.4",
+>>>>>>> Stashed changes
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/class-loader.git",
@@ -2989,7 +3046,11 @@
         },
         {
             "name": "symfony/event-dispatcher",
+<<<<<<< Updated upstream
             "version": "v3.4.3",
+=======
+            "version": "v3.4.4",
+>>>>>>> Stashed changes
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -3236,6 +3297,7 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
+<<<<<<< Updated upstream
             "version": "v1.6.0",
             "source": {
                 "type": "git",
@@ -3246,6 +3308,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
                 "reference": "2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296",
+=======
+            "version": "v1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-mbstring.git",
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/78be803ce01e55d3491c1397cf1c64beb9c1b63b",
+                "reference": "78be803ce01e55d3491c1397cf1c64beb9c1b63b",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -3257,7 +3331,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< Updated upstream
                     "dev-master": "1.6-dev"
+=======
+                    "dev-master": "1.7-dev"
+>>>>>>> Stashed changes
                 }
             },
             "autoload": {
@@ -3291,6 +3369,7 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< Updated upstream
             "time": "2017-10-11T12:05:26+00:00"
         },
         {
@@ -3305,6 +3384,22 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/polyfill-php56/zipball/265fc96795492430762c29be291a371494ba3a5b",
                 "reference": "265fc96795492430762c29be291a371494ba3a5b",
+=======
+            "time": "2018-01-30T19:27:44+00:00"
+        },
+        {
+            "name": "symfony/polyfill-php56",
+            "version": "v1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php56.git",
+                "reference": "ebc999ce5f14204c5150b9bd15f8f04e621409d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php56/zipball/ebc999ce5f14204c5150b9bd15f8f04e621409d8",
+                "reference": "ebc999ce5f14204c5150b9bd15f8f04e621409d8",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -3314,7 +3409,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< Updated upstream
                     "dev-master": "1.6-dev"
+=======
+                    "dev-master": "1.7-dev"
+>>>>>>> Stashed changes
                 }
             },
             "autoload": {
@@ -3347,6 +3446,7 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< Updated upstream
             "time": "2017-10-11T12:05:26+00:00"
         },
         {
@@ -3361,6 +3461,22 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/polyfill-util/zipball/6e719200c8e540e0c0effeb31f96bdb344b94176",
                 "reference": "6e719200c8e540e0c0effeb31f96bdb344b94176",
+=======
+            "time": "2018-01-30T19:27:44+00:00"
+        },
+        {
+            "name": "symfony/polyfill-util",
+            "version": "v1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-util.git",
+                "reference": "e17c808ec4228026d4f5a8832afa19be85979563"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-util/zipball/e17c808ec4228026d4f5a8832afa19be85979563",
+                "reference": "e17c808ec4228026d4f5a8832afa19be85979563",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -3369,7 +3485,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
+<<<<<<< Updated upstream
                     "dev-master": "1.6-dev"
+=======
+                    "dev-master": "1.7-dev"
+>>>>>>> Stashed changes
                 }
             },
             "autoload": {
@@ -3399,7 +3519,11 @@
                 "polyfill",
                 "shim"
             ],
+<<<<<<< Updated upstream
             "time": "2017-10-11T12:05:26+00:00"
+=======
+            "time": "2018-01-31T18:08:44+00:00"
+>>>>>>> Stashed changes
         },
         {
             "name": "symfony/process",
@@ -4544,6 +4668,7 @@
         },
         {
             "name": "phpunit/phpunit",
+<<<<<<< Updated upstream
             "version": "5.7.26",
             "source": {
                 "type": "git",
@@ -4554,6 +4679,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/7fbc25c13309de0c4c9bb48b7361f1eca34c7fbd",
                 "reference": "7fbc25c13309de0c4c9bb48b7361f1eca34c7fbd",
+=======
+            "version": "5.7.27",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sebastianbergmann/phpunit.git",
+                "reference": "b7803aeca3ccb99ad0a506fa80b64cd6a56bbc0c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b7803aeca3ccb99ad0a506fa80b64cd6a56bbc0c",
+                "reference": "b7803aeca3ccb99ad0a506fa80b64cd6a56bbc0c",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -4577,7 +4714,11 @@
                 "sebastian/global-state": "^1.1",
                 "sebastian/object-enumerator": "~2.0",
                 "sebastian/resource-operations": "~1.0",
+<<<<<<< Updated upstream
                 "sebastian/version": "~1.0.3|~2.0",
+=======
+                "sebastian/version": "^1.0.6|^2.0.1",
+>>>>>>> Stashed changes
                 "symfony/yaml": "~2.1|~3.0|~4.0"
             },
             "conflict": {
@@ -4622,7 +4763,11 @@
                 "testing",
                 "xunit"
             ],
+<<<<<<< Updated upstream
             "time": "2017-12-17T06:14:38+00:00"
+=======
+            "time": "2018-02-01T05:50:59+00:00"
+>>>>>>> Stashed changes
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -5198,6 +5343,7 @@
         },
         {
             "name": "symfony/yaml",
+<<<<<<< Updated upstream
             "version": "v3.3.15",
             "source": {
                 "type": "git",
@@ -5208,6 +5354,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/symfony/yaml/zipball/7c80d81b5805589be151b85b0df785f0dc3269cf",
                 "reference": "7c80d81b5805589be151b85b0df785f0dc3269cf",
+=======
+            "version": "v3.3.16",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "af615970e265543a26ee712c958404eb9b7ac93d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/af615970e265543a26ee712c958404eb9b7ac93d",
+                "reference": "af615970e265543a26ee712c958404eb9b7ac93d",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -5249,20 +5407,24 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
+<<<<<<< Updated upstream
             "time": "2018-01-03T07:37:11+00:00"
+=======
+            "time": "2018-01-20T15:04:53+00:00"
+>>>>>>> Stashed changes
         },
         {
             "name": "webmozart/assert",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "2db61e59ff05fe5126d152bd0655c9ea113e550f"
+                "reference": "0df1908962e7a3071564e857d86874dad1ef204a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/2db61e59ff05fe5126d152bd0655c9ea113e550f",
-                "reference": "2db61e59ff05fe5126d152bd0655c9ea113e550f",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/0df1908962e7a3071564e857d86874dad1ef204a",
+                "reference": "0df1908962e7a3071564e857d86874dad1ef204a",
                 "shasum": ""
             },
             "require": {
@@ -5299,7 +5461,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2016-11-23T20:04:58+00:00"
+            "time": "2018-01-29T19:49:41+00:00"
         }
     ],
     "aliases": [],

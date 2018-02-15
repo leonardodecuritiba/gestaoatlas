@@ -45,7 +45,7 @@ class InstrumentoRequest extends Request
             }
             case 'POST': {
                 return array_merge($rules, [
-                    'etiqueta_identificacao' => 'required|image',
+//                    'etiqueta_identificacao' => 'required|image',
                     'numero_serie' => 'required|min:1|max:50|
                                             unique_cliente:' . $this->table . ',numero_serie,idcliente,' . $idcliente,
                     'patrimonio' => 'present|min:1|max:50|
