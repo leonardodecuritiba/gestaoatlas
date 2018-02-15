@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Helpers\DataHelper;
+use App\Traits\CommonTrait;
 use App\Traits\SeloLacre;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,7 @@ class Selo extends Model
 {
     use SeloLacre;
     use SoftDeletes;
+    use CommonTrait;
     public $timestamps = true;
     protected $table = 'selos';
     protected $primaryKey = 'idselo';
@@ -95,7 +97,10 @@ class Selo extends Model
     {
     	$self = new self();
 	    $query = $self->newQuery();
-    	if(isset($filters['numeracao'])){
+	    if($filters['status']<2){
+		    $query->where('used', $filters['status']);
+	    }
+	    if(isset($filters['numeracao'])){
 		    $filters['numeracao'] = DataHelper::getOnlyNumbers($filters['numeracao']);
 		    $query->where('numeracao', 'like','%' .$filters['numeracao']. '%');
 	    }
@@ -165,26 +170,7 @@ class Selo extends Model
 		    }
 	    }
 
-        return $query->get()->map(function($s){
-        	$x_instrumento = $s->selo_instrumento;
-
-	        if($x_instrumento!=NULL){
-	        	$instrumento = $x_instrumento->instrumento;
-	        	$cliente = $instrumento->cliente->getType();
-
-		        $s->idos_set            = ($x_instrumento->idaparelho_set != NULL) ? $x_instrumento->aparelho_set->idordem_servico : NULL;
-		        $s->idos_unset          = ($x_instrumento->idaparelho_unset != NULL) ? $x_instrumento->aparelho_unset->idordem_servico : NULL;
-		        $s->n_serie             = $instrumento->numero_serie;
-		        $s->n_inventario        = $instrumento->inventario;
-		        $s->cliente_documento   = $cliente->documento;
-	        }
-
-        	$s->nome_tecnico    = $s->getNomeTecnico();
-        	$s->numero_formatado= $s->getFormatedSeloDV();
-        	$s->status_color    = $s->getStatusColor();
-        	$s->status_text     = $s->getStatusText();
-        	return $s;
-        });
+        return $query;
     }
 
 

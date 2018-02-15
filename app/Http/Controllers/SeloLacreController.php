@@ -43,17 +43,73 @@ class SeloLacreController extends Controller
 	    $this->Page->extras['lacres'] = NULL;
     	if($request->has('tipo')){
 	        if($request->get('tipo')){
-			    $this->Page->extras['lacres'] = Lacre::getAllListagem($request->all());
+	        	$lacres = Lacre::getAllListagem($request->all());
+			    $this->Page->extras['lacres'] = $lacres->paginate(10)->map(function($s){
+				    $x_instrumento = $s->lacre_instrumento;
+
+				    if($x_instrumento!=NULL){
+					    $instrumento = $x_instrumento->instrumento;
+					    $cliente = $instrumento->cliente->getType();
+
+					    $s->idos_set            = ($x_instrumento->idaparelho_set != NULL) ? $x_instrumento->aparelho_set->idordem_servico : NULL;
+					    $s->idos_unset          = ($x_instrumento->idaparelho_unset != NULL) ? $x_instrumento->aparelho_unset->idordem_servico : NULL;
+					    $s->n_serie             = $instrumento->numero_serie;
+					    $s->n_inventario        = $instrumento->inventario;
+					    $s->cliente_documento   = $cliente->documento;
+				    }
+
+				    $s->nome_tecnico    = $s->getNomeTecnico();
+				    $s->numero_formatado= $s->numeracao;
+				    $s->status_color    = $s->getStatusColor();
+				    $s->status_text     = $s->getStatusText();
+				    return $s;
+			    });
 		        $this->Page->titulo_primario = "Listagem de Lacres";
 		        $this->Page->search_no_results =  "Nenhum Lacre encontrado!";
 		    } else {
-		        $this->Page->extras['selos'] = Selo::getAllListagem($request->all());
+	        	$selos = Selo::getAllListagem($request->all());
+
+		        $this->Page->extras['selos'] = $selos->get()->map(function($s){
+			        $x_instrumento = $s->selo_instrumento;
+			        $se = new \stdClass();
+
+			        if($x_instrumento!=NULL){
+				        $instrumento = $x_instrumento->instrumento;
+				        $cliente = $instrumento->cliente->getType();
+
+				        $se->cliente_documento   = $cliente->documento;
+				        $se->idos_set            = ($x_instrumento->idaparelho_set != NULL) ? $x_instrumento->aparelho_set->idordem_servico : NULL;
+				        $se->idos_unset          = ($x_instrumento->idaparelho_unset != NULL) ? $x_instrumento->aparelho_unset->idordem_servico : NULL;
+				        $se->n_serie             = $instrumento->numero_serie;
+				        $se->n_inventario        = $instrumento->inventario;
+			        } else {
+				        $se->cliente_documento   = NULL;
+				        $se->idos_set            = NULL;
+				        $se->idos_unset          = NULL;
+				        $se->n_serie             = NULL;
+				        $se->n_inventario        = NULL;
+			        }
+
+			        $se->idselo                  = $s->idselo;
+			        $se->created_at              = $s->getCreatedAtTime();
+			        $se->created_at_formatted    = $s->getCreatedAtFormatted();
+			        $se->nome_tecnico            = $s->getNomeTecnico();
+			        $se->numero_formatado        = $s->getFormatedSeloDV();
+			        $se->numeracao_externa       = $s->numeracao_externa;
+			        $se->status_color            = $s->getStatusColor();
+			        $se->status_text             = $s->getStatusText();
+			        return $se;
+		        });
+
+//		        return $this->Page->extras['selos'];
+
 		        $this->Page->titulo_primario = "Listagem de Selos";
 		        $this->Page->search_no_results =  "Nenhum Selo encontrado!";
 	        }
 	    }
 	    $this->Page->extras['tecnicos'] = Tecnico::getAlltoSelectList();
 	    $this->Page->extras['tecnicos']->prepend("Todos");
+	    $this->Page->extras['status'] = [0=>'Disponíveis',1=>'Usados',2=>'Todos'];
         return view('pages.recursos.selolacres.admin.index')
             ->with('Page', $this->Page);
     }

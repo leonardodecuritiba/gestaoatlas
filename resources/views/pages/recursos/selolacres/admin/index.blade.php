@@ -14,7 +14,7 @@
             <div class="row">
 
                 {!! Html::decode(Form::label('tipo', 'TIPO',
-                    array('class' => 'control-label col-md-2 col-sm-2 col-xs-12'))) !!}
+                    array('class' => 'control-label col-md-1 col-sm-1 col-xs-12'))) !!}
                 <div class="col-md-2 col-sm-2 col-xs-12">
                     {{Form::select('tipo', ['Selo', 'Lacre'], old('tipo'), ['class'=>'form-control select2_single', 'required'])}}
                 </div>
@@ -22,18 +22,25 @@
                 <label class="control-label col-md-1 col-sm-1 col-xs-12">NUMERAÇÃO:</label>
                 <div class="col-md-2 col-sm-2 col-xs-12">
                     <input value="{{Request::get('numeracao')}}" type="text" class="form-control"
-                           name="numeracao" placeholder="NUMERAÇÃO" minlength="5" required>
+                           name="numeracao" placeholder="NUMERAÇÃO">
                 </div>
 
                 {!! Html::decode(Form::label('origem', 'ORIGEM',
                     array('class' => 'control-label col-md-1 col-sm-1 col-xs-12'))) !!}
-                <div class="col-md-4 col-sm-4 col-xs-12">
+                <div class="col-md-2 col-sm-2 col-xs-12">
                     {{Form::select('origem', $Page->extras['tecnicos'], old('origem'), ['class'=>'form-control select2_single', 'required'])}}
+                </div>
+
+
+                {!! Html::decode(Form::label('status', 'STATUS',
+                    array('class' => 'control-label col-md-1 col-sm-1 col-xs-12'))) !!}
+                <div class="col-md-2 col-sm-2 col-xs-12">
+                    {{Form::select('status', $Page->extras['status'], old('status'), ['class'=>'form-control select2_single', 'required'])}}
                 </div>
             </div>
             <div class="ln_solid"></div>
             <div class="row">
-                <label class="control-label col-md-2 col-sm-2 col-xs-12">CNPJ:</label>
+                <label class="control-label col-md-1 col-sm-1 col-xs-12">CNPJ:</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <input value="{{Request::get('cnpj')}}" type="text" class="form-control"
                            name="cnpj" placeholder="CNPJ">
@@ -46,7 +53,7 @@
             </div>
             <div class="ln_solid"></div>
             <div class="row">
-                <label class="control-label col-md-2 col-sm-2 col-xs-12">Nº SÉRIE:</label>
+                <label class="control-label col-md-1 col-sm-1 col-xs-12">Nº SÉRIE:</label>
                 <div class="col-md-4 col-sm-4 col-xs-12">
                     <input value="{{Request::get('numero_serie')}}" type="text" class="form-control"
                            name="numero_serie" placeholder="Nº SÉRIE">
@@ -99,7 +106,7 @@
                                         @foreach ($Page->extras['selos'] as $sel)
                                             <tr>
                                                 <td>{{$sel->idselo}}</td>
-                                                <td data-order="{{$sel->created_at}}">{{$sel->getCreatedAtFormatted()}}</td>
+                                                <td data-order="{{$sel->created_at}}">{{$sel->created_at_formatted}}</td>
                                                 <td>{{$sel->nome_tecnico}}</td>
                                                 <td>{{$sel->numero_formatado}}</td>
                                                 <td>{{$sel->numeracao_externa}}</td>

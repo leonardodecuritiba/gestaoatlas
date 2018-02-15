@@ -29,6 +29,10 @@ class Lacre extends Model
 	{
 		$self = new self();
 		$query = $self->newQuery();
+
+		if($filters['status']<2){
+			$query->where('used', $filters['status']);
+		}
 		if(isset($filters['numeracao'])){
 			$filters['numeracao'] = DataHelper::getOnlyNumbers($filters['numeracao']);
 			$query->where('numeracao', 'like','%' .$filters['numeracao']. '%');
@@ -105,26 +109,7 @@ class Lacre extends Model
 		}
 
 
-		return $query->get()->map(function($s){
-			$x_instrumento = $s->lacre_instrumento;
-
-			if($x_instrumento!=NULL){
-				$instrumento = $x_instrumento->instrumento;
-				$cliente = $instrumento->cliente->getType();
-
-				$s->idos_set            = ($x_instrumento->idaparelho_set != NULL) ? $x_instrumento->aparelho_set->idordem_servico : NULL;
-				$s->idos_unset          = ($x_instrumento->idaparelho_unset != NULL) ? $x_instrumento->aparelho_unset->idordem_servico : NULL;
-				$s->n_serie             = $instrumento->numero_serie;
-				$s->n_inventario        = $instrumento->inventario;
-				$s->cliente_documento   = $cliente->documento;
-			}
-
-			$s->nome_tecnico    = $s->getNomeTecnico();
-			$s->numero_formatado= $s->numeracao;
-			$s->status_color    = $s->getStatusColor();
-			$s->status_text     = $s->getStatusText();
-			return $s;
-		});
+		return $query;
 	}
 
     static public function assign($data)
