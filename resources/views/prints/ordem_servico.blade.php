@@ -8,28 +8,52 @@
     <table border="0" class="table table-condensed table-bordered">
         @include('prints.ordem_servico.empresa')
     </table>
-    <table border="1" class="table table-condensed table-bordered">
-        @include('prints.ordem_servico.cliente')
-    </table>
-    <table border="1" class="table table-condensed table-bordered">
-        @include('prints.ordem_servico.cabecalho_os')
+
+    <table border="0" class="table table-condensed table-bordered">
+        <tr>
+            <td>
+                <table border="0" class="table table-condensed table-bordered">
+                    @include('prints.ordem_servico.cliente')
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table border="0" class="table table-condensed table-bordered">
+                    @include('prints.ordem_servico.cabecalho_os')
+                </table>
+            </td>
+        </tr>
     </table>
 
-    <table border="1" class="table table-condensed table-bordered">
+    <table border="0" class="table table-condensed table-bordered">
         @foreach($OrdemServico->aparelho_manutencaos_totais()  as $aparelhoManutencao)
             @include('prints.ordem_servico.aparelho')
         @endforeach
     </table>
 
-    <table border="1" class="table table-condensed table-bordered">
-        @include('prints.ordem_servico.fechamento')
+    <table border="0" class="table table-condensed table-bordered">
+        <tr>
+            <td>
+                <table border="0" class="table table-condensed table-bordered">
+                    @include('prints.ordem_servico.fechamento')
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table border="0" class="table table-condensed table-bordered">
+                    @include('prints.ordem_servico.termos')
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table border="0" class="table table-condensed table-bordered">
+                    @include('prints.ordem_servico.assinatura')
+                </table>
+            </td>
+        </tr>
     </table>
 
-    <table border="1" class="table table-condensed table-bordered">
-        <tr class="fundo_titulo">
-            <th class="linha_titulo" colspan="7">TERMOS / AVISOS</th>
-        </tr>
-        @include('prints.ordem_servico.termos')
-        @include('prints.ordem_servico.assinatura')
-    </table>
 @endsection

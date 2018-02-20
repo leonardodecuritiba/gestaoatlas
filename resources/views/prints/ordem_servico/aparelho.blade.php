@@ -1,5 +1,5 @@
 <tr>
-    <td style="height: 3px !important;">
+    <td colspan="7" style="height: 3px !important;">
         <table class="table table-condensed table-bordered">
             @if($aparelhoManutencao->has_instrumento())
                 @include('prints.ordem_servico.instrumento')
@@ -31,7 +31,7 @@
     </td>
 </tr>
 <tr>
-    <td>
+    <td colspan="7" style="height: 3px !important;">
         <table border="1" class="table table-condensed table-bordered">
             @if($aparelhoManutencao->has_servico_prestados())
                 <?php

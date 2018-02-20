@@ -1,3 +1,7 @@
+
+<tr class="fundo_titulo">
+    <th class="linha_titulo" colspan="7">TERMOS / AVISOS</th>
+</tr>
 <tr>
     <th colspan="7">Assinatura:</th>
 </tr>

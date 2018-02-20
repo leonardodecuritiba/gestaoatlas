@@ -1,5 +1,5 @@
 <tr>
-    <td colspan="7">
+    <td colspan="7" style="height: 3px !important;">
         <table border="1" class="table table-condensed table-bordered">
             <tr class="fundo_titulo">
                 <th class="linha_titulo" colspan="8">FECHAMENTO DE VALORES</th>
