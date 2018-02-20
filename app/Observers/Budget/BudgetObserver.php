@@ -23,10 +23,7 @@ class BudgetObserver
     public function creating(Budget $budget)
     {
     	//update budget total
-	    $client = $budget->client;
-	    $budget->cost_displacement  = $client->getCostDisplacement();
-	    $budget->cost_toll          = $client->getCostToll();
-	    $budget->cost_other         = $client->getCostOther();
+	    $budget->exemptCost(0);
 	    $budget->collaborator_id    = Auth::user()->colaborador->idcolaborador;
 	    $budget->situation_id       = $budget::$_SITUATION_OPPENED_;
 //	    $budget->save();

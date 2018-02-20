@@ -8,7 +8,7 @@
                     @role('admin')
                     <a class="btn btn-danger pull-right"
                        href="{{route('budgets.reopen',$Data->id)}}">
-                        <i class="fa fa-trash fa-2"></i> Reabrir</a>
+                        <i class="fa fa-refresh fa-2"></i> Reabrir</a>
                     @endrole
                 @endif
             </h4>
@@ -26,7 +26,7 @@
                         <b>{{$Data->getClosedAtFormatted()}}</b>
                     </li>
                     <li><i class="fa fa-user"></i> Responsável: <b>{{$Data->responsible}}</b></li>
-                    <li><i class="fa fa-info"></i> CPF: <b>{{$Data->responsible_cpf}}</b></li>
+                    <li><i class="fa fa-info"></i> CPF: <b>{{$Data->getResponsibleCpf()}}</b></li>
                     <li><i class="fa fa-info"></i> Cargo: <b>{{$Data->responsible_office}}</b></li>
                 @endif
                 @if($Data->cost_exemption)

@@ -207,7 +207,7 @@
                     @endrole
                     <li><a><i class="fa fa-list"></i> Operações<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="{{ route('budgets.select') }}">Orçamento de Venda</a></li>
+                            <li><a href="{{ route('budgets.index') }}">Orçamentos de Venda</a></li>
                             <li><a href="#">Orçamento / Ordem Serviço</a></li>
                             <li><a href="#">Pedido Fornecedor</a></li>
                         </ul>

@@ -55,6 +55,9 @@
 							{{--value="{{(isset($OrdemServico))?$OrdemServico->numero_chamado:old('numero_chamado')}}" required>--}}
 							{{--</div>--}}
 						</div>
+
+						{{--RESPONSÁVEL / ISENCAO DE CUSTOS--}}
+
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">Nome Responsável: <span
 										class="required">*</span></label>
@@ -73,6 +76,8 @@
 								</div>
 							</div>
 						</div>
+
+
 						<div class="form-group">
 							<label class="control-label col-md-3 col-sm-3 col-xs-12">CPF: <span
 										class="required">*</span></label>

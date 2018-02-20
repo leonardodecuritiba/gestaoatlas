@@ -5,14 +5,11 @@ namespace App\Http\Controllers\Budgets;
 use App\Cliente;
 use App\Fornecedor;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Inputs\InstrumentRequest;
-use App\Kit;
+use App\Http\Requests\Budgets\BudgetCloseRequest;
 use App\Models\Budgets\Budget;
-use App\Models\Budgets\BudgetPart;
-use App\Models\Instrumentos\InstrumentoBase as BaseInstruments;
 use App\Models\Inputs\Instrument;
 use App\Peca;
-use App\Servico;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,88 +40,91 @@ class BudgetsController extends Controller {
 		];
 	}
 
-	public function select(Request $request) {
-		if($request->has('type')){
-			if($request->get('type')) {
-				$this->Page->response = Fornecedor::get()->map( function ( $s ) {
+
+	public function index(Request $request) {
+		$this->Page->titulo_primario        = "Listagem de " . $this->Page->Targets;
+		$this->Page->extras['situation']    = [''=>'Todos','0'=>'Aberto', '1'=>'Fechado'];
+
+
+		if ($request->has('id')) {
+			$response = Budget::filterById($request->get('id'));
+			if($response != NULL){
+				$client = $response->first()->client;
+				$this->Page->extras['clients']  = array([
+					'id'                => $client->idcliente,
+					'name'              => $client->getType()->nome_principal,
+				]);
+			}
+		} else {
+			if (!$request->has('date')) {
+				$request->merge(['date' => Carbon::now()->format('d/m/Y')]);
+			}
+			$response = Budget::filter($request->all())->get();
+//			return $response;
+			if($response != NULL){
+				$this->Page->extras['clients'] = $response->pluck('client')->map(function($c){
 					return [
-						'type'            => 1,
-						'id'              => $s->idfornecedor,
-						'name'            => $s->getName(),
-						'document'        => $s->getDocument(),
-						'responsible'     => $s->getResponsibleName(),
-						'phone'           => $s->getPhone(),
-						'created_at'      => $s->getCreatedAtFormatted(),
-						'created_at_time' => $s->getCreatedAtTime()
+						'id'                => $c->idcliente,
+						'name'              => $c->getType()->nome_principal,
 					];
-				} );
-			} else {
-				$this->Page->response = Cliente::get()->map( function ( $s ) {
-					return [
-						'type'            => 0,
-						'id'              => $s->idcliente,
-						'name'            => $s->getName(),
-						'document'        => $s->getDocument(),
-						'responsible'     => $s->getResponsibleName(),
-						'phone'           => $s->getPhone(),
-						'created_at'      => $s->getCreatedAtFormatted(),
-						'created_at_time' => $s->getCreatedAtTime()
-					];
-				} );
+				});
 			}
 		}
-		$this->Page->extras['types'] =['0'=>'Cliente', '1'=>'Fornecedor'];
-		$this->Page->titulo_primario       = "Abrir Orçamento ";
 
-		return view( $this->view_folder . '.select' )
+		$this->Page->response  = $response->map(function($b){
+			return [
+				'id'                => $b->id,
+				'situation_color'   => $b->getSituationColor(),
+				'situation_text'    => $b->getSituationText(),
+				'collaborator'      => $b->getCollaboratorName(),
+				'client'            => $b->getClientName(),
+				'show_url'          => $b->getShowUrl(),
+				'created_at'        => $b->getCreatedAtFormatted(),
+				'created_at_time'   => $b->getCreatedAtTime()
+			];
+		});
+
+		return view('pages.activities.budgets.index' )
 			->with( 'Page', $this->Page );
 	}
 
-	public function open($type, $id) {
-		$Data = NULL;
-		if($type) {
-			dd(1);
-			$supplier = Fornecedor::findOrFail($id);
-			$parts  = $supplier->pecas->map( function ( $s ) {
-				return [
-					'id'                => $s->idpeca,
-					'name'              => $s->getName(),
-					'price'             => $s->getCost(),
-					'price_formatted'   => $s->getCostFormatted(),
-				];
-			} );
-//			$services = Servico::get()->map( function ( $s ) {
-//				return [
-//					'id'                => $s->idservico,
-//					'name'              => $s->getName(),
-//					'price'             => $s->getCost(),
-//					'price_formatted'   => $s->getCostFormatted(),
-//				];
-//			} );
-//			$kits = Kit::get()->map( function ( $s ) {
-//				return [
-//					'id'                => $s->idservico,
-//					'name'              => $s->getName(),
-//					'price'             => $s->getCost(),
-//					'price_formatted'   => $s->getCostFormatted(),
-//				];
-//			} );
-			$this->Page->extras = [
-				'response'  => $supplier,
-				'parts'     => $parts,
-//				'service'   => $services,
-//				'kits'      => $kits
-				];
-		} else {
-			$Data = Budget::create(['client_id' => $id]);
-		}
+	public function create() {
+		$this->Page->response = Cliente::get()->map( function ( $s ) {
+			return [
+				'id'              => $s->idcliente,
+				'name'            => $s->getName(),
+				'document'        => $s->getDocument(),
+				'responsible'     => $s->getResponsibleName(),
+				'phone'           => $s->getPhone(),
+				'created_at'      => $s->getCreatedAtFormatted(),
+				'created_at_time' => $s->getCreatedAtTime()
+			];
+		} );
+		$this->Page->titulo_primario       = "Abrir Orçamento de Venda";
+		return view('pages.activities.budgets.create' )
+			->with( 'Page', $this->Page );
+//				$this->Page->response = Fornecedor::get()->map( function ( $s ) {
+//					return [
+//						'type'            => 1,
+//						'id'              => $s->idfornecedor,
+//						'name'            => $s->getName(),
+//						'document'        => $s->getDocument(),
+//						'responsible'     => $s->getResponsibleName(),
+//						'phone'           => $s->getPhone(),
+//						'created_at'      => $s->getCreatedAtFormatted(),
+//						'created_at_time' => $s->getCreatedAtTime()
+//					];
+//				} );
+	}
+
+	public function open($id) {
+		$Data = Budget::create(['client_id' => $id]);
 		return redirect()->route('budgets.show', $Data->id);
 	}
 
 	public function show($id)
 	{
 		$Data = Budget::findOrFail($id);
-//		return $Data->getPartsFormatted();
 		$parts  = Peca::get()->map( function ( $s ) {
 			return [
 				'id'                => $s->idpeca,
@@ -138,7 +138,7 @@ class BudgetsController extends Controller {
 		];
 		$this->Page->titulo_primario       = "Abrir Orçamento ";
 
-		return view( $this->view_folder . '.show' )
+		return view('pages.activities.budgets.show' )
 			->with( 'Page', $this->Page )
 			->with( 'Data', $Data );
 	}
@@ -147,21 +147,18 @@ class BudgetsController extends Controller {
 	{
 		$Budget = Budget::findOrFail($id);
 		if ($request->has('part_id')) {
-
-
 			$ids = $request->get('part_id');
 			$values = $request->get('part_value');
 			$quantities = $request->get('part_quantity');
 			$discounts = $request->get('part_discount');
 			foreach ($ids as $i => $id) {
-
 				$budgetPart = $Budget->getPartById($id);
-				if($budgetPart != NULL){
+				if($budgetPart != NULL){ //ATUALIZAÇÃO DE PEÇA
 					$budgetPart->update([
 						'quantity' => $budgetPart->quantity + $quantities[$i],
 						'discount' => $budgetPart->discount + $discounts[$i],
 					]);
-				} else {
+				} else { //CRIAÇÃO DE PEÇA
 					$data = [
 						'part_id'   => $id,
 						'value'     => $values[$i],
@@ -174,6 +171,48 @@ class BudgetsController extends Controller {
 		}
 		return redirect()->route('budgets.show', $Budget->id);
 	}
+
+	public function summary($id)
+	{
+		$Data = Budget::findOrFail($id);
+		$this->Page->titulo_primario       = "Resumo Orçamento de Venda";
+		return view('pages.activities.budgets.summary' )
+			->with( 'Page', $this->Page )
+			->with( 'Data', $Data );
+	}
+
+	public function close(BudgetCloseRequest $request, $id)
+	{
+		$Data = Budget::findOrFail($id);
+		$Data->close($request->all());
+		return redirect()->route('budgets.summary', $Data->id);
+	}
+
+	public function reopen($id)
+	{
+		$Data = Budget::findOrFail($id);
+		$Data->reopen();
+		return redirect()->route('budgets.show', $Data->id);
+	}
+
+
+
+
+
+
+	public function _print($id)
+	{
+		return $id;
+	}
+
+	public function send($id)
+	{
+		return $id;
+	}
+
+
+
+
 
 
 //	public function add_insumos(Request $request, $idordem_servico)
@@ -260,24 +299,6 @@ class BudgetsController extends Controller {
 //		return Redirect::route('ordem_servicos.show', $idordem_servico);
 //	}
 
-	public function summary($id)
-	{
-		return $id;
-	}
-
-	public function reopen($id)
-	{
-		return $id;
-	}
-
-	public function index() {
-		return 1;
-		$this->Page->extras['instruments'] = Instrument::with( 'base' )->get();
-		$this->Page->titulo_primario       = "Listagem de " . $this->Page->Targets;
-
-		return view( $this->view_folder . '.admin.index' )
-			->with( 'Page', $this->Page );
-	}
 
 
 

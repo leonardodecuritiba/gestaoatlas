@@ -7,8 +7,10 @@ use App\Peca;
 use App\Traits\DateTimeTrait;
 use App\Traits\Relashionship\ClientTrait;
 use App\Traits\Relashionship\CollaboratorTrait;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Budget extends Model
 {
@@ -44,18 +46,42 @@ class Budget extends Model
 	static public $_SITUATION_CLOSED_ = 1;
 
 	// =====================================================================
-	// ======================== SITUATION ==================================
+	// ======================== FILTERS ====================================
 	// =====================================================================
 
-	public function getSituationText()
+
+	static public function filterById($id)
 	{
-		switch ($this->attributes['situation_id']){
-			case self::$_SITUATION_OPPENED_:
-				return 'Aberta';
-			case self::$_SITUATION_CLOSED_:
-				return 'Fechada';
-		}
+		return self::where('id', $id)
+		                  ->with('client', 'collaborator')
+		                  ->get();
 	}
+
+
+	static public function filter(array $data)
+	{
+		$query = (new self)->newQuery();
+		if(isset($data['situation']) && ($data['situation'] != "")){
+			$query->where('situation_id', $data['situation']);
+		}
+		if (isset($data['date'])) {
+			$query->where( 'created_at', '>=', DataHelper::getPrettyToCarbonZero( $data['date'] ) );
+		}
+		if (isset($data['client_id']) && ($data['client_id'] != "")) {
+			$query->where('client_id', $data['client_id']);
+		}
+		$User = Auth::user();
+		if ($User->hasRole('tecnico')) {
+			$query->where('collaborator_id', $User->colaborador->idcolaborador);
+		}
+		return $query
+			->with('client', 'collaborator');
+	}
+
+	// =====================================================================
+	// ======================== FUNCTIONS ==================================
+	// =====================================================================
+
 
 	public function addPart(array $data)
 	{
@@ -63,6 +89,39 @@ class Budget extends Model
 		return BudgetPart::create($data);
 	}
 
+	public function reopen()
+	{
+		return $this->update([
+			'closed_at'     => NULL,
+			'situation_id'  => self::$_SITUATION_OPPENED_,
+		]);
+	}
+
+	public function close(array $data)
+	{
+		if(isset($data['cost_exemption'])){
+			$this->exemptCost($data['cost_exemption']);
+		}
+		$data['closed_at'] = Carbon::now();
+		$data['situation_id'] = self::$_SITUATION_CLOSED_;
+		$this->fill($data);
+		return $this->save();
+	}
+
+	public function exemptCost($exemption)
+	{
+		$this->attributes['cost_exemption'] = $exemption;
+		if($exemption){ //zero
+			$this->attributes['cost_displacement']  = 0;
+			$this->attributes['cost_toll']          = 0;
+			$this->attributes['cost_other']         = 0;
+		} else { //get cost from client
+			$client = $this->client;
+			$this->attributes['cost_displacement']  = $client->getCostDisplacement();
+			$this->attributes['cost_toll']          = $client->getCostToll();
+			$this->attributes['cost_other']         = $client->getCostOther();
+		}
+	}
 
 	public function getPartsFormatted()
 	{
@@ -80,10 +139,38 @@ class Budget extends Model
 		} );;
 	}
 
+	// =====================================================================
+	// ======================== SITUATION ==================================
+	// =====================================================================
+
+	public function getSituationColor()
+	{
+		switch ($this->attributes['situation_id']){
+			case self::$_SITUATION_OPPENED_:
+				return 'warning';
+			case self::$_SITUATION_CLOSED_:
+				return 'danger';
+		}
+	}
+
+	public function getSituationText()
+	{
+		switch ($this->attributes['situation_id']){
+			case self::$_SITUATION_OPPENED_:
+				return 'Aberto';
+			case self::$_SITUATION_CLOSED_:
+				return 'Fechado';
+		}
+	}
 
 	public function isClosed()
 	{
 		return ($this->attributes['situation_id'] == self::$_SITUATION_CLOSED_);
+	}
+
+	public function getShowUrl()
+	{
+		return route(($this->isClosed() ? 'budgets.summary' : 'budgets.show'), $this->getAttribute('id'));
 	}
 
 	// =====================================================================
@@ -126,6 +213,11 @@ class Budget extends Model
 	// =====================================================================
 	// ======================== GETTERS ====================================
 	// =====================================================================
+
+	public function getResponsibleCpf()
+	{
+		return DataHelper::mask($this->attributes['responsible_cpf'],'###.###.###-##');
+	}
 
 	public function getValueTotal()
 	{
@@ -263,19 +355,19 @@ class Budget extends Model
 	// =====================================================================
 
 
-	public function getRange()
-	{
-		return $this->sensor_type->getRange();
-	}
+//	public function getRange()
+//	{
+//		return $this->sensor_type->getRange();
+//	}
 
 	// =====================================================================
 	// ======================== RELASHIONSHIP - COUNT ======================
 	// =====================================================================
 
-	public function getAlertsCount()
-	{
-		return $this->alerts->count();
-	}
+//	public function getAlertsCount()
+//	{
+//		return $this->alerts->count();
+//	}
 
 	// =====================================================================
 	// ======================== RELASHIONSHIP ==============================

@@ -80,7 +80,7 @@ class ClientesController extends Controller
     {
         $this->Page->titulo_primario = "Visualização de ";
         $this->Page->tab = $tab;
-        $this->Page->extras = [
+	    $this->Page->extras = [
             'centro_custo'  => Cliente::all(),
             'segmentos'     => Segmento::all(),
             'regioes'       => Regiao::all(),

@@ -208,11 +208,22 @@ Route::group(['middleware' => ['auth']], function() {
 	|
 	*/
 	Route::resource( 'budgets', 'Budgets\BudgetsController' );
+
 	Route::match(['post','get'], 'budgets-new/select', 'Budgets\BudgetsController@select' )->name('budgets.select');
-	Route::get( 'budgets-open/{type}/{id}', 'Budgets\BudgetsController@open' )->name('budgets.open');
+
+	Route::get( 'budgets-open/{client_id}', 'Budgets\BudgetsController@open' )->name('budgets.open');
+
 	Route::get( 'budgets-summary/{id}', 'Budgets\BudgetsController@summary' )->name('budgets.summary');
-	Route::get( 'budgets-reopen/{id}', 'Budgets\BudgetsController@reopen' )->name('budgets.reopen');
+
+	Route::get( 'budgets-print/{id}', 'Budgets\BudgetsController@_print' )->name('budgets.print');
+
+	Route::get( 'budgets-send/{id}', 'Budgets\BudgetsController@send' )->name('budgets.send');
+
 	Route::post( 'budgets-add_input/{id}', 'Budgets\BudgetsController@addInputs' )->name('budgets.add_input');
+
+	Route::post( 'budgets-close/{id}', 'Budgets\BudgetsController@close' )->name('budgets.close');
+
+	Route::get( 'budgets-reopen/{id}', 'Budgets\BudgetsController@reopen' )->name('budgets.reopen');
 	/*
 	|--------------------------------------------------------------------------
 	| BudgetParts Routes
