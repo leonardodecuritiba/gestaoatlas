@@ -57,6 +57,26 @@ class Cliente extends Model
 	// ======================== NEW FUNCTIONS ==============================
 	// =====================================================================
 
+    static public function findByText($search)
+    {
+        $query = (new self)->newQuery();
+        if ($search != NULL) {
+            $pj_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
+                ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
+            $query->whereIn('idpjuridica', $pj_ids);
+        }
+        return $query
+            ->with('pessoa_juridica', 'pessoa_fisica');
+    }
+
+
+    public function getRazaoSocial()
+    {
+        return ($this->is_pjuridica()) ?
+            $this->pessoa_juridica()->first()->razao_social :
+            $this->attributes['nome_responsavel'];
+    }
+
 	public function getName()
 	{
 		return ($this->is_pjuridica()) ?
@@ -85,6 +105,20 @@ class Cliente extends Model
 	{
 		return $this->contato->telefone;
 	}
+
+    // =====================================================================
+    // ======================== SITUATION ==================================
+    // =====================================================================
+
+    public function getValidatedColor()
+    {
+        return $this->validado() ? 'success' : 'danger';
+    }
+
+    public function getValidatedText()
+    {
+        return $this->validado() ? 'Validado' : 'Não Validado';
+    }
 
 	// =====================================================================
 	// ======================== COSTS FUNCTIONS ============================
@@ -151,20 +185,13 @@ class Cliente extends Model
             ->orWhere('created_at', '<', Carbon::now()->subDay());
     }
 
-    static public function getAll($search)
-    {
-        $pessoa_juridica_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
-            ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
-        return self::whereIn('idpjuridica', $pessoa_juridica_ids);
-    }
-
     public function scopeValidos($query)
     {
-        return $query->where(function ($q) {
-            $q->whereNotNull('validated_at')
-                ->orWhere('created_at', '<', Carbon::now()->subDay());
-        });
-
+//        return $query->where(function ($q) {
+//            $q->whereNotNull('validated_at')
+//                ->orWhere('created_at', '<', Carbon::now()->subDay());
+//        });
+        return $query->whereNotNull('validated_at');
     }
 
     public function isValidated()

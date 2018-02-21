@@ -208,6 +208,7 @@ Route::group(['middleware' => ['auth']], function() {
 	|
 	*/
 	Route::resource( 'budgets', 'Budgets\BudgetsController' );
+    Route::get('budgets/create', 'Budgets\BudgetsController@create')->name('budgets.create');
 
 	Route::match(['post','get'], 'budgets-new/select', 'Budgets\BudgetsController@select' )->name('budgets.select');
 

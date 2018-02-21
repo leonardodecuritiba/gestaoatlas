@@ -88,8 +88,10 @@ class BudgetsController extends Controller {
 			->with( 'Page', $this->Page );
 	}
 
-	public function create() {
-		$this->Page->response = Cliente::get()->map( function ( $s ) {
+    public function create(Request $request)
+    {
+        $this->Page->search_no_results = "Nenhum Cliente encontrado!";
+        $this->Page->response = Cliente::findByText($request->get('busca'))->validos()->get()->map(function ($s) {
 			return [
 				'id'              => $s->idcliente,
 				'name'            => $s->getName(),

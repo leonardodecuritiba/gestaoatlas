@@ -8,16 +8,35 @@
     <!-- /Select2 -->
 @endsection
 @section('page_content')
-    <section class="row">
-        <div class="x_panel">
+
+    <section class="row" id="search">
+        <div class="x_panel animated flipInX">
             <div class="x_title">
                 <h2>{{$Page->titulo_primario}}</h2>
                 <div class="clearfix"></div>
             </div>
+            <div class="x_content">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        {!! Form::open(array('route'=>'budgets.create',
+                                        'method'=>'GET','id'=>'search',
+                                        'class' => 'form-horizontal form-label-left')) !!}
+                        <div class="col-md-12 col-sm-12 col-xs-12 input-group input-group-lg">
+                            <input id="buscar" name="busca" type="text" class="form-control"
+                                   value="{{Request::get('busca')}}" placeholder="Buscar Cliente...">
+                            <span class="input-group-btn">
+                                        <button class="btn btn-info" type="submit">Buscar</button>
+                                    </span>
+                        </div>
+                        {!! Form::close() !!}
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
+
     <section class="row">
-        @if(count($Page->response) > 0)
+        @if($Page->response->count() > 0)
             <div class="x_panel">
                 <div class="x_title">
                     <h2>{{$Page->response->count()}} clientes encontrados</h2>
@@ -60,7 +79,7 @@
                     </div>
                 </div>
             </div>
-        @elseif(Request::has('type'))
+        @else
             @include('layouts.search.no-results')
         @endif
     </section>

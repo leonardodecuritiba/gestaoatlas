@@ -48,13 +48,20 @@ class ClientesController extends Controller
 
     public function index(Request $request)
     {
-        if (isset($request['busca'])) {
-            $busca = $request['busca'];
-            $Buscas = Cliente::getAll($busca)->get();
-        } else {
-            $Buscas = Cliente::all();
-        }
-
+        $Buscas = Cliente::findByText($request->get('busca'))->get()->map(function ($s) {
+            return [
+                'id' => $s->idcliente,
+                'razao_social' => $s->getRazaoSocial(),
+                'validated_color' => $s->getValidatedColor(),
+                'validated_text' => $s->getValidatedText(),
+                'name' => $s->getName(),
+                'document' => $s->getDocument(),
+                'responsible' => $s->getResponsibleName(),
+                'phone' => $s->getPhone(),
+                'created_at' => $s->getCreatedAtFormatted(),
+                'created_at_time' => $s->getCreatedAtTime()
+            ];
+        });
         return view('pages.'.$this->Page->link.'.index')
             ->with('Page', $this->Page)
             ->with('Buscas',$Buscas);

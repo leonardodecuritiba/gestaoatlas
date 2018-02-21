@@ -49,22 +49,22 @@
 	@if(count($Buscas) > 0)
 		<div class="x_panel">
 			<div class="x_title">
-				<h2>{{$Page->Targets}} encontrados</h2>
+				<h2>{{count($Buscas)}} {{$Page->Targets}} encontrados</h2>
 				<div class="clearfix"></div>
 			</div>
 			<div class="x_content">
 				<div class="row">
 					<div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
-                        <table id="datatable-responsive"
-                               class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
-                               width="100%">
+						<table id="datatable-responsive"
+							   class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0"
+							   width="100%">
 							<thead>
 								<tr>
-                                    <th>#</th>
+									<th>#</th>
 									<th>Status</th>
 									<th>Fantasia</th>
-                                    <th>Razão Social</th>
-                                    <th>CNPJ/CPF</th>
+									<th>Razão Social</th>
+									<th>CNPJ/CPF</th>
 									<th>Responsável</th>
 									<th>Fone</th>
 									<th>Ações</th>
@@ -72,27 +72,24 @@
 							</thead>
 							<tbody>
 								@foreach($Buscas as $cliente)
-									<?php $tipo_cliente = $cliente->getType(); ?>
 									<tr>
-                                        <td>{{$cliente->idcliente}}</td>
-										@if($cliente->validado())
-											<td><span class="btn btn-success btn-xs"> Validado</span></td>
-										@else
-											<td><span class="btn btn-danger btn-xs"> Não Validado</span></td>
-										@endif
-										<td>{{$tipo_cliente->nome_principal}}</td>
-                                        <td>{{$tipo_cliente->razao_social}}</td>
-										<td>{{$tipo_cliente->entidade}}</td>
-										<td>{{$cliente->nome_responsavel}}</td>
-										<td>{{$cliente->contato->telefone}}</td>
+										<td>{{$cliente['id']}}</td>
+										<td>
+											<span class="btn btn-{{$cliente['validated_color']}} btn-xs"> {{$cliente['validated_text']}}</span>
+										</td>
+										<td>{{$cliente['name']}}</td>
+										<td>{{$cliente['razao_social']}}</td>
+										<td>{{$cliente['document']}}</td>
+										<td>{{$cliente['responsible']}}</td>
+										<td>{{$cliente['phone']}}</td>
 										<td>
 											<a class="btn btn-default btn-xs"
-											   href="{{route($Page->link.'.show',$cliente->idcliente)}}">
+											   href="{{route($Page->link.'.show',$cliente['id'])}}">
 												<i class="fa fa-edit"></i> Visualizar / Editar</a>
 											@if(Auth::user()->hasRole('admin'))
 												<a class="btn btn-danger btn-xs"
-												   data-nome="{{$cliente->getType()->entidade}}"
-												   data-href="{{route($Page->link.'.destroy',$cliente->idcliente)}}"
+												   data-nome="{{$cliente['name']}}"
+												   data-href="{{route($Page->link.'.destroy',$cliente['id'])}}"
 												   data-toggle="modal"
 												   data-target="#modalRemocao">
 													<i class="fa fa-trash-o"></i> Excluir </a>
