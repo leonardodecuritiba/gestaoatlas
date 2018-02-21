@@ -205,20 +205,25 @@
                             </ul>
                         </li>
                     @endrole
-                    <li><a><i class="fa fa-list"></i> Operações<span class="fa fa-chevron-down"></span></a>
+                    <li><a><i class="fa fa-handshake-o"></i> Operações<span class="fa fa-chevron-down"></span></a>
                         <ul class="nav child_menu">
-                            <li><a href="{{ route('budgets.index') }}">Orçamentos de Venda</a></li>
-                            <li><a href="#">Orçamento / Ordem Serviço</a></li>
-                            <li><a href="#">Pedido Fornecedor</a></li>
-                        </ul>
-                    </li>
-                    <li><a><i class="fa fa-handshake-o"></i> Ordens de Serviços<span class="fa fa-chevron-down"></span></a>
-                        <ul class="nav child_menu">
-                            @role('tecnico')
-                            <li><a href="{{ route('ordem_servicos.busca') }}">Abrir</a></li>
-                            @endrole
-                            <li><a href="{{ route('ordem_servicos.index') }}">Listar</a></li>
-
+                            <li><a>Operações Técnicas<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    @role('tecnico')
+                                    <li><a href="{{ route('ordem_servicos.busca') }}">Abrir O.S.</a></li>
+                                    @endrole
+                                    <li><a href="{{ route('ordem_servicos.index') }}">Listar O.S.</a></li>
+                                    <li><a href="#">Abrir Orçamento / O.S.</a></li>
+                                    <li><a href="#">Listar Orçamento / O.S.</a></li>
+                                </ul>
+                            </li>
+                            <li><a>Operações Comerciais<span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('budgets.create') }}">Abrir Orçamento</a></li>
+                                    <li><a href="{{ route('budgets.index') }}">Listar Orçamento</a></li>
+                                    <li><a href="#">Venda Direta</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </li>
                     @role(['admin','financeiro'])
