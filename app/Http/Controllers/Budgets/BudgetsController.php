@@ -138,7 +138,7 @@ class BudgetsController extends Controller {
 		$this->Page->extras = [
 			'parts'     => $parts,
 		];
-		$this->Page->titulo_primario       = "Abrir Orçamento ";
+        $this->Page->titulo_primario = "Orçamento de Venda - Em andamento";
 
 		return view('pages.activities.budgets.show' )
 			->with( 'Page', $this->Page )

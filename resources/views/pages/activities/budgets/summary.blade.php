@@ -139,7 +139,7 @@
                                 {{--FINALIZAR--}}
                                 <div class="col-md-3 col-sm-3 col-xs-12 ">
                                     <button class="btn btn-success btn-lg btn-block"><i class="fa fa-sign-out fa-2"></i>
-                                        Finalizar
+                                        Arquivar
                                     </button>
                                 </div>
 

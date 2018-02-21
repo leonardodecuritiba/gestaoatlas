@@ -159,7 +159,7 @@ class Budget extends Model
 			case self::$_SITUATION_OPPENED_:
 				return 'Aberto';
 			case self::$_SITUATION_CLOSED_:
-				return 'Fechado';
+                return 'Arquivado';
 		}
 	}
 

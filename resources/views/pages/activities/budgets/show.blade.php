@@ -13,6 +13,60 @@
     @include('pages.activities.budgets.inc.orcamento')
 @endsection
 @section('page_content')
+
+    <section class="row">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>{{$Page->titulo_primario}}</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+                {{--STATUS--}}
+
+                <div class="alert fade in alert-{{$Data->getSituationColor()}}" role="alert">
+                    Status do Orçamento de Venda: <b>{{$Data->getSituationText()}}</b>
+                </div>
+
+                @include('pages.activities.budgets.inc.details')
+
+                <section class="row">
+
+                    <div class="form-group">
+
+                        {{--REMOVE--}}
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <a class="btn btn-danger btn-lg btn-block"
+                               data-nome="Orçamento #{{$Data->id}}"
+                               data-href="{{route('budgets.destroy',$Data->id)}}"
+                               data-toggle="modal"
+                               data-target="#modalDelecao">
+                                <i class="fa fa-trash-o"></i> Remover</a>
+                        </div>
+
+                        {{--CLIENT--}}
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <a class="btn btn-warning btn-lg btn-block" target="_blank"
+                               href="{{route('clientes.show',$Data->client_id)}}">
+                                <i class="fa fa-eye"></i> Cliente</a>
+                        </div>
+
+                        {{--FINALIZAR--}}
+                        <div class="col-md-8 col-sm-8 col-xs-12">
+                            <a class="btn btn-success btn-lg btn-block"
+                               href="{{route('budgets.summary',$Data->id)}}">
+                                <i class="fa fa-check fa-2"></i> Finalizar
+                            </a>
+                        </div>
+
+
+                    </div>
+
+
+                </section>
+            </div>
+        </div>
+    </section>
     {!! Form::open(['route' => ['budgets.add_input',$Data->id ],
                 'method' => 'POST',
                 'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
@@ -21,15 +75,6 @@
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Peças/Produtos</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                        <li>
-                            <button type="button" class="btn btn-default"
-                                    data-toggle="modal"
-                                    data-target="#modalOrcamento">
-                                <i class="fa fa-eye fa-2"></i> Visualizar Orçamento
-                            </button>
-                        </li>
-                    </ul>
                     <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
