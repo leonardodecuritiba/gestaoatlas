@@ -67,11 +67,13 @@
             </div>
         </div>
     </section>
-    {!! Form::open(['route' => ['budgets.add_input',$Data->id ],
+    {!! Form::open(['route' => ['budgets.save',$Data->id ],
                 'method' => 'POST',
                 'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
 
-        <section class="row">
+        {{--Peças/Produtos--}}
+
+        <section class="row" id="parts">
             <div class="x_panel">
                 <div class="x_title">
                     <h2>Peças/Produtos</h2>
@@ -91,6 +93,16 @@
                                 <th>Ações</th>
                             </tr>
                             </thead>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th width="40%">Nome</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Total</th>
+                            </tr>
+                            </tfoot>
                             <tbody>
                                 @foreach($Data->getPartsFormatted() as $sel)
                                     <tr>
@@ -156,7 +168,104 @@
         </section>
 
 
+        {{--Serviços--}}
+
+        <section class="row" id="services">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Serviços</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
+                        <table border="0" class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th width="40%">Nome</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Total</th>
+                                <th>Ações</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th width="40%">Nome</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Total</th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            @foreach($Data->getServicesFormatted() as $sel)
+                                <tr>
+                                    <td>{{$sel['id']}}</td>
+                                    <td>{{$sel['name']}}</td>
+                                    <td>{{$sel['price']}}</td>
+                                    <td>{{$sel['quantity']}}</td>
+                                    <td>{{$sel['discount']}}</td>
+                                    <td>{{$sel['total']}}</td>
+                                    <td>
+                                        <a class="btn btn-danger"
+                                           data-nome="{{$sel['name']}}"
+                                           data-href="{{route('budget_services.destroy',$sel['id'])}}"
+                                           data-toggle="modal"
+                                           data-target="#modalRemocao"
+                                           data-toggle-tooltip="tooltip" data-placement="top" title="Excluir">
+                                            <i class="fa fa-trash fa-lg"></i></a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            <tr>
+                                <td>#</td>
+                                <td>
+                                    <select class="select2_single form-control" id="service" name="select_service_id"
+                                            tabindex="-1">
+                                        <option value="">Selecione</option>
+                                        @foreach($Page->extras['services'] as $sel)
+                                            <option value="{{$sel['id']}}"
+                                                    data-price_formatted="{{$sel['price_formatted']}}"
+                                                    data-price="{{$sel['price']}}">
+                                                {{$sel['name']}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <input disabled id="value" class="form-control show-valor-fixo">
+                                </td>
+                                <td>
+                                    <input id="quantity" value="1" type="text"
+                                           class="form-control show-inteiro-positivo calc-total"
+                                           placeholder="Quantidade">
+                                </td>
+                                <td>
+                                    <input id="discount" value="R$ 0,00" type="text"
+                                           class="form-control show-valor calc-total"
+                                           placeholder="Desconto"
+                                           @role('tecnico') disabled @endrole>
+                                </td>
+                                <td>
+                                    <input disabled id="total" class="form-control show-valor-fixo">
+                                </td>
+                                <td>
+                                    <a class="btn btn-success add"
+                                       data-toggle-tooltip="tooltip" data-placement="top" title="Salvar">
+                                        <i class="fa fa-check fa-lg"></i></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         {{--FECHAR--}}
+
         <section class="row">
             <div class="form-horizontal form-label-left">
                 <div class="form-group">
@@ -166,6 +275,7 @@
                 </div>
             </div>
         </section>
+
     {!! Form::close() !!}
 
 
@@ -211,7 +321,9 @@
 
 
         $(document).ready(function () {
-            //Select
+
+            //Select - PART
+
             $("select[name=select_part_id]").on("select2:select", function() {
                 //achar parent, pegar próximo td e escrever o valor
                 var $sel = $(this).find(":selected");
@@ -231,6 +343,32 @@
                 $($field_preco).val(preco);
                 $($field_total).val(preco);
             });
+
+
+            //Select - SERVICE
+
+            $("select[name=select_service_id]").on("select2:select", function() {
+                //achar parent, pegar próximo td e escrever o valor
+                var $sel = $(this).find(":selected");
+                var $tr = $(this).parents('tr');
+                var $field_preco = $($tr).find($_INPUT_VALUE_);
+                var $field_quantidade = $($tr).find($_INPUT_QUANTITY_);
+                var $field_desconto = $($tr).find($_INPUT_DISCOUNT_);
+                var $field_total = $($tr).find($_INPUT_TOTAL_);
+
+                $($field_quantidade).val(1);
+                $($field_desconto).val('0,00');
+                var preco = '';
+                if($($sel).val()!=''){
+                    preco = $($sel).data($_DATA_PRICE_);
+                    preco = 'R$ ' + preco;
+                }
+                $($field_preco).val(preco);
+                $($field_total).val(preco);
+            });
+
+
+
 
             $(".calc-total").on("change", function () {
                 //achar parent, pegar próximo td e escrever o valor

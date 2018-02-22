@@ -220,7 +220,7 @@ Route::group(['middleware' => ['auth']], function() {
 
 	Route::get( 'budgets-send/{id}', 'Budgets\BudgetsController@send' )->name('budgets.send');
 
-	Route::post( 'budgets-add_input/{id}', 'Budgets\BudgetsController@addInputs' )->name('budgets.add_input');
+	Route::post( 'budgets-save/{id}', 'Budgets\BudgetsController@save' )->name('budgets.save');
 
 	Route::post( 'budgets-close/{id}', 'Budgets\BudgetsController@close' )->name('budgets.close');
 
@@ -234,6 +234,15 @@ Route::group(['middleware' => ['auth']], function() {
 	*/
 
 	Route::resource( 'budget_parts', 'Budgets\BudgetPartsController' );
+	/*
+	|--------------------------------------------------------------------------
+	| BudgetParts Routes
+	|--------------------------------------------------------------------------
+	|
+	|
+	*/
+
+	Route::resource( 'budget_services', 'Budgets\BudgetServicesController' );
 
 });
 /*

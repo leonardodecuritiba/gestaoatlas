@@ -9,6 +9,7 @@ use App\Http\Requests\Budgets\BudgetCloseRequest;
 use App\Models\Budgets\Budget;
 use App\Models\Inputs\Instrument;
 use App\Peca;
+use App\Servico;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,7 +61,6 @@ class BudgetsController extends Controller {
 				$request->merge(['date' => Carbon::now()->format('d/m/Y')]);
 			}
 			$response = Budget::filter($request->all())->get();
-//			return $response;
 			if($response != NULL){
 				$this->Page->extras['clients'] = $response->pluck('client')->map(function($c){
 					return [
@@ -135,43 +135,24 @@ class BudgetsController extends Controller {
 				'price_formatted'   => $s->getCostFormatted(),
 			];
 		} );
+		$services  = Servico::get()->map( function ( $s ) {
+			return [
+				'id'                => $s->idservico,
+				'name'              => $s->getName(),
+				'price'             => $s->getCost(),
+				'price_formatted'   => $s->getCostFormatted(),
+			];
+		} );
+
 		$this->Page->extras = [
 			'parts'     => $parts,
+			'services'  => $services,
 		];
         $this->Page->titulo_primario = "Orçamento de Venda - Em andamento";
 
 		return view('pages.activities.budgets.show' )
 			->with( 'Page', $this->Page )
 			->with( 'Data', $Data );
-	}
-
-	public function addInputs(Request $request, $id)
-	{
-		$Budget = Budget::findOrFail($id);
-		if ($request->has('part_id')) {
-			$ids = $request->get('part_id');
-			$values = $request->get('part_value');
-			$quantities = $request->get('part_quantity');
-			$discounts = $request->get('part_discount');
-			foreach ($ids as $i => $id) {
-				$budgetPart = $Budget->getPartById($id);
-				if($budgetPart != NULL){ //ATUALIZAÇÃO DE PEÇA
-					$budgetPart->update([
-						'quantity' => $budgetPart->quantity + $quantities[$i],
-						'discount' => $budgetPart->discount + $discounts[$i],
-					]);
-				} else { //CRIAÇÃO DE PEÇA
-					$data = [
-						'part_id'   => $id,
-						'value'     => $values[$i],
-						'quantity'  => $quantities[$i],
-						'discount'  => $discounts[$i],
-					];
-					$Budget->addPart($data);
-				}
-			}
-		}
-		return redirect()->route('budgets.show', $Budget->id);
 	}
 
 	public function summary($id)
@@ -199,6 +180,70 @@ class BudgetsController extends Controller {
 
 
 
+	public function save(Request $request, $id)
+	{
+		$Budget = Budget::findOrFail($id);
+		$this->addInputs($request, $Budget);
+		$this->addService($request, $Budget);
+		return redirect()->route('budgets.show', $Budget->id);
+	}
+
+
+	public function addInputs(Request $request, Budget $Budget)
+	{
+		if ($request->has('part_id')) {
+			$ids = $request->get('part_id');
+			$values = $request->get('part_value');
+			$quantities = $request->get('part_quantity');
+			$discounts = $request->get('part_discount');
+			foreach ($ids as $i => $id) {
+				$budgetPart = $Budget->getPartById($id);
+				if($budgetPart != NULL){ //ATUALIZAÇÃO DE PEÇA
+					$budgetPart->update([
+						'quantity' => $budgetPart->quantity + $quantities[$i],
+						'discount' => $budgetPart->discount + $discounts[$i],
+					]);
+				} else { //CRIAÇÃO DE PEÇA
+					$data = [
+						'part_id'   => $id,
+						'value'     => $values[$i],
+						'quantity'  => $quantities[$i],
+						'discount'  => $discounts[$i],
+					];
+					$Budget->addPart($data);
+				}
+			}
+		}
+	}
+
+	public function addService(Request $request, Budget $Budget)
+	{
+//		$Budget = Budget::findOrFail($id);
+		if ($request->has('service_id')) {
+			$ids = $request->get('service_id');
+			$values = $request->get('service_value');
+			$quantities = $request->get('service_quantity');
+			$discounts = $request->get('service_discount');
+			foreach ($ids as $i => $id) {
+				$budgetService = $Budget->getServiceById($id);
+				if($budgetService != NULL){ //ATUALIZAÇÃO DE PEÇA
+					$budgetService->update([
+						'quantity' => $budgetService->quantity + $quantities[$i],
+						'discount' => $budgetService->discount + $discounts[$i],
+					]);
+				} else { //CRIAÇÃO DE PEÇA
+					$data = [
+						'service_id'=> $id,
+						'value'     => $values[$i],
+						'quantity'  => $quantities[$i],
+						'discount'  => $discounts[$i],
+					];
+					$Budget->addService($data);
+				}
+			}
+		}
+//		return redirect()->route('budgets.show', $Budget->id);
+	}
 
 
 

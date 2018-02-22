@@ -57,7 +57,6 @@ class Budget extends Model
 		                  ->get();
 	}
 
-
 	static public function filter(array $data)
 	{
 		$query = (new self)->newQuery();
@@ -81,13 +80,6 @@ class Budget extends Model
 	// =====================================================================
 	// ======================== FUNCTIONS ==================================
 	// =====================================================================
-
-
-	public function addPart(array $data)
-	{
-		$data['budget_id'] = $this->attributes['id'];
-		return BudgetPart::create($data);
-	}
 
 	public function reopen()
 	{
@@ -123,6 +115,19 @@ class Budget extends Model
 		}
 	}
 
+
+	public function addPart(array $data)
+	{
+		$data['budget_id'] = $this->attributes['id'];
+		return BudgetPart::create($data);
+	}
+
+	public function addService(array $data)
+	{
+		$data['budget_id'] = $this->attributes['id'];
+		return BudgetService::create($data);
+	}
+
 	public function getPartsFormatted()
 	{
 		return $this->parts->map( function ( $s ) {
@@ -136,7 +141,23 @@ class Budget extends Model
 //				'created_at'        => $s->getCreatedAtFormatted(),
 //				'created_at_time'   => $s->getCreatedAtTime()
 			];
-		} );;
+		} );
+	}
+
+	public function getServicesFormatted()
+	{
+		return $this->services->map( function ( $s ) {
+			return [
+				'id'                => $s->id,
+				'name'              => $s->getServiceName(),
+				'price'             => $s->getValueFormatted(),
+				'quantity'          => $s->quantity,
+				'discount'          => $s->getDiscountFormatted(),
+				'total'             => $s->getFinalValueFormatted(),
+//				'created_at'        => $s->getCreatedAtFormatted(),
+//				'created_at_time'   => $s->getCreatedAtTime()
+			];
+		} );
 	}
 
 	// =====================================================================
@@ -218,6 +239,9 @@ class Budget extends Model
 	{
 		return DataHelper::mask($this->attributes['responsible_cpf'],'###.###.###-##');
 	}
+
+
+	// ======================== VALUES =====================================
 
 	public function getValueTotal()
 	{
@@ -374,13 +398,23 @@ class Budget extends Model
 	// =====================================================================
 
 
-	public function getPartById($id)
+	public function getServiceById($id)
 	{
 		return $this->parts()->where('part_id', $id)->first();
+	}
+
+	public function getPartById($id)
+	{
+		return $this->services()->where('service_id', $id)->first();
 	}
 
 	public function parts()
 	{
 		return $this->hasMany(BudgetPart::class,'budget_id');
+	}
+
+	public function services()
+	{
+		return $this->hasMany(BudgetService::class,'budget_id');
 	}
 }

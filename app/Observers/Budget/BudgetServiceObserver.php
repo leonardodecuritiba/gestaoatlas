@@ -27,6 +27,18 @@ class BudgetServiceObserver
 	    ]); //getFinalValue (value*quantity) - discount
 
     }
+	/**
+	 * Listen to the BudgetPart updated event.
+	 *
+	 * @param  BudgetService $budget_service
+	 * @return void
+	 */
+	public function updated(BudgetService $budget_service)
+	{
+		$budget_service->budget->insertInputValues([
+			'value_total'       => $budget_service->getFinalValue()
+		]);
+	}
 
     /**
      * Listen to the User deleting event.

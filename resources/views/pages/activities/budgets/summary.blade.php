@@ -152,6 +152,10 @@
                 </div>
             </div>
         </section>
+
+
+        {{--Peças/Produtos--}}
+
         <section class="row">
             <div class="x_panel">
                 <div class="x_title">
@@ -171,17 +175,78 @@
                                 <th>Total</th>
                             </tr>
                             </thead>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th width="40%">Nome</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Total</th>
+                            </tr>
+                            </tfoot>
                             <tbody>
-                                @foreach($Data->getPartsFormatted() as $sel)
-                                    <tr>
-                                        <td>{{$sel['id']}}</td>
-                                        <td>{{$sel['name']}}</td>
-                                        <td>{{$sel['price']}}</td>
-                                        <td>{{$sel['quantity']}}</td>
-                                        <td>{{$sel['discount']}}</td>
-                                        <td>{{$sel['total']}}</td>
-                                    </tr>
-                                @endforeach
+                            @foreach($Data->getPartsFormatted() as $sel)
+                                <tr>
+                                    <td>{{$sel['id']}}</td>
+                                    <td>{{$sel['name']}}</td>
+                                    <td>{{$sel['price']}}</td>
+                                    <td>{{$sel['quantity']}}</td>
+                                    <td>{{$sel['discount']}}</td>
+                                    <td>{{$sel['total']}}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        {{--Serviços--}}
+
+        <section class="row">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Serviços</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                    <div class="col-md-12 col-sm-12 col-xs-12 animated fadeInDown">
+                        <table border="0" class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th width="40%">Nome</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th width="40%">Nome</th>
+                                <th>Preço</th>
+                                <th>Quantidade</th>
+                                <th>Desconto</th>
+                                <th>Total</th>
+                            </tr>
+                            </tfoot>
+                            <tbody>
+                            @foreach($Data->getServicesFormatted() as $sel)
+                                <tr>
+                                    <td>{{$sel['id']}}</td>
+                                    <td>{{$sel['name']}}</td>
+                                    <td>{{$sel['price']}}</td>
+                                    <td>{{$sel['quantity']}}</td>
+                                    <td>{{$sel['discount']}}</td>
+                                    <td>{{$sel['total']}}</td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div>

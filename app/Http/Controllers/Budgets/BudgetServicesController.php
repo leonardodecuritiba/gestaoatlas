@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Budgets;
 
 use App\Http\Controllers\Controller;
-use App\Models\Budgets\BudgetPart;
+use App\Models\Budgets\BudgetService;
 
-class BudgetPartsController extends Controller {
+class BudgetServicesController extends Controller {
 
 	private $Page;
 
@@ -13,25 +13,24 @@ class BudgetPartsController extends Controller {
 		$this->Page        = (object) [
 //			'link'              => $this->route,
 //			'view_folder'       => $this->view_folder,
-			'Target'            => "Peça",
-			'Targets'           => "Peças",
-			'Titulo'            => "Peças",
+			'Target'            => "Serviço",
+			'Targets'           => "Serviços",
+			'Titulo'            => "Serviços",
 			'extras'            => [],
 			'constraints'       => [],
-			'search_no_results' => "Nenhuma Peça encontrada!",
-			'msg_add'           => 'Peça adicionada com sucesso!',
-			'msg_upd'           => 'Peça atualizada com sucesso!',
-			'msg_rem'           => 'Peça removida com sucesso!',
+			'search_no_results' => "Nenhum Serviço encontrado!",
+			'msg_add'           => 'Serviço adicionado com sucesso!',
+			'msg_upd'           => 'Serviço atualizado com sucesso!',
+			'msg_rem'           => 'Serviço removido com sucesso!',
 			'titulo_primario'   => "",
 			'titulo_secundario' => "",
-
 			'response'          => array(),
 		];
 	}
 
 	public function destroy($id)
 	{
-		$data = BudgetPart::find($id);
+		$data = BudgetService::find($id);
 		$data->delete();
 		return response()->json(['status' => '1',
 		                         'response' => $this->Page->msg_rem]);
