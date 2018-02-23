@@ -97,7 +97,7 @@ class Cliente extends Model
         } else {
             $data = $this->prazo_pagamento_comercial;
         }
-        
+
         if ($data->id) {
             $parcelas = implode(', ', $data->extras);
             $text = 'PARCELADO: ' . $parcelas . ' dias';
