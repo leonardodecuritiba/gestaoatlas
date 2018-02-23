@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Ajustes\Ajuste;
+use App\Models\TipoEmissaoFaturamento;
 use App\Traits\CommonTrait;
 use \Swift_Mailer;
 use \Swift_SmtpTransport as SmtpTransport;
@@ -77,12 +78,41 @@ class Cliente extends Model
             $this->attributes['nome_responsavel'];
     }
 
-	public function getName()
-	{
-		return ($this->is_pjuridica()) ?
-			$this->pessoa_juridica()->first()->nome_fantasia :
-			$this->attributes['nome_responsavel'];
-	}
+    public function getTipoEmissao($option)
+    {
+        $tipo = ($option == 'tecnica') ? $this->tipo_emissao_tecnica : $this->tipo_emissao_comercial;
+        return $tipo->descricao;
+    }
+
+    public function getFormaPagamento($option)
+    {
+        $tipo = ($option == 'tecnica') ? $this->forma_pagamento_tecnica : $this->forma_pagamento_comercial;
+        return $tipo->descricao;
+    }
+
+    public function getPrazoPagamentoText($option)
+    {
+        if ($option == 'tecnica') {
+            $data = $this->prazo_pagamento_tecnica;
+        } else {
+            $data = $this->prazo_pagamento_comercial;
+        }
+        
+        if ($data->id) {
+            $parcelas = implode(', ', $data->extras);
+            $text = 'PARCELADO: ' . $parcelas . ' dias';
+        } else {
+            $text = 'À VISTA';
+        }
+        return $text;
+    }
+
+    public function getName()
+    {
+        return ($this->is_pjuridica()) ?
+            $this->pessoa_juridica()->first()->nome_fantasia :
+            $this->attributes['nome_responsavel'];
+    }
 
 	public function getShortName()
 	{
@@ -470,12 +500,12 @@ class Cliente extends Model
 
     public function tipo_emissao_tecnica()
     {
-        return $this->belongsTo('App\Models\TipoEmissaoFaturamento', 'idemissao_tecnica');
+        return $this->belongsTo(TipoEmissaoFaturamento::class, 'idemissao_tecnica');
     }
 
     public function forma_pagamento_tecnica()
     {
-        return $this->belongsTo('App\FormaPagamento', 'idforma_pagamento_tecnica');
+        return $this->belongsTo(FormaPagamento::class, 'idforma_pagamento_tecnica');
     }
 
     public function tabela_preco_comercial()
@@ -485,12 +515,12 @@ class Cliente extends Model
 
     public function tipo_emissao_comercial()
     {
-        return $this->belongsTo('App\Models\TipoEmissaoFaturamento', 'idemissao_comercial');
+        return $this->belongsTo(TipoEmissaoFaturamento::class, 'idemissao_comercial');
     }
 
     public function forma_pagamento_comercial()
     {
-        return $this->belongsTo('App\FormaPagamento', 'idforma_pagamento_comercial');
+        return $this->belongsTo(FormaPagamento::class, 'idforma_pagamento_comercial');
     }
 
 

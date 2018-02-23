@@ -12,6 +12,7 @@
                     @endrole
                 @endif
             </h4>
+
             <ul class="list-unstyled">
                 <li><i class="fa fa-info"></i> Nº do Orçamento: <b>{{$Data->id}}</b>
                 </li>
@@ -34,6 +35,30 @@
                     </li>
                 @endif
             </ul>
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <ul class="list-unstyled">
+                    <li><h4>Dados Financeiros (Técnica)</h4></li>
+                    <li><i class="fa fa-money"></i> Emissão: <b>{{$Data->client->getTipoEmissao('tecnica')}}</b></li>
+                    <li><i class="fa fa-money"></i> Forma: <b>{{$Data->client->getFormaPagamento('tecnica')}}</b></li>
+                    <li><i class="fa fa-money"></i> Prazo: <b>{{$Data->client->getPrazoPagamentoText('tecnica')}}</b>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-md-6 col-sm-6 col-xs-12">
+                <ul class="list-unstyled">
+                    <li><h4>Dados Financeiros (Comercial)</h4></li>
+                    <li><i class="fa fa-money"></i> Emissão: <b>{{$Data->client->getTipoEmissao('comercial')}}</b></li>
+                    <li><i class="fa fa-money"></i> Forma: <b>{{$Data->client->getFormaPagamento('comercial')}}</b></li>
+                    <li><i class="fa fa-money"></i> Prazo: <b>{{$Data->client->getPrazoPagamentoText('comercial')}}</b>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="clearfix"></div>
+
             <ul class="list-unstyled product_price">
                 <li>
                     <i class="fa fa-money"></i> Total em Peças/Produtos: <b class="pull-right" id="valor_total_pecas">{{$Data->getValueTotalFormatted()}}</b>
