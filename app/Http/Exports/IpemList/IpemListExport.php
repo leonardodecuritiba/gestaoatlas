@@ -25,14 +25,14 @@ class IpemListExport extends NewExcelFile
             $cabecalho = [
                 'Razão Social',
                 'Nome Fantasia',
-                'Documento',
+                'CNPJ / CPF',
                 'Nº O.S.',
+                'Nº do Inventario',
+                'Nº de Série',
+                'Marca de reparo',
                 'Data do Reparo',
                 'Técnico',
                 'Descrição O.S.',
-                'Nº de Série',
-                'Nº do Inventario',
-                'Marca de reparo',
                 'Carga'
             ];
             $sheet->cells('A1:K1', function ($cells) {
@@ -44,23 +44,19 @@ class IpemListExport extends NewExcelFile
             });
             $sheet->row(1, $cabecalho);
             $i = 2;
-            foreach ($Buscas as $Aparelho_manutencao) {
-                $Ordem_servico = $Aparelho_manutencao->ordem_servico;
-                $Cliente = $Ordem_servico->cliente->getType();
-                $Instrumento = $Aparelho_manutencao->instrumento;
-
+            foreach ($Buscas as $sel) {
                 $sheet->row($i, array(
-                    $Cliente->razao_social,
-                    $Cliente->nome_principal,
-                    $Cliente->documento,
-                    $Ordem_servico->idordem_servico,
-                    $Ordem_servico->created_at,
-                    $Ordem_servico->colaborador->nome . ' - ' . $Ordem_servico->colaborador->rg,
-                    $Aparelho_manutencao->defeito . ' / ' . $Aparelho_manutencao->solucao,
-                    $Instrumento->numero_serie,
-                    $Instrumento->inventario,
-	                $Instrumento->numeracao_selo_afixado(),
-                    $Instrumento->capacidade
+                    $sel->cliente->razao_social,
+                    $sel->cliente->nome_principal,
+                    $sel->cliente->documento,
+                    $sel->ordem_servico->idordem_servico,
+                    $sel->instrumento->inventario,
+                    $sel->instrumento->numero_serie,
+                    (($sel->selo_numeracao!=NULL) ? $sel->selo_numeracao : 'sem reparo'),
+                    $sel->ordem_servico->getDataAbertura(),
+                    $sel->colaborador->nome.' - '.$sel->colaborador->rg,
+                    $sel->defeito . ' / ' . $sel->solucao,
+                    $sel->instrumento->capacidade
                 ));
                 $i++;
             }

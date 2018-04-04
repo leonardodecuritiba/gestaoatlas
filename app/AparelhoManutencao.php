@@ -117,7 +117,6 @@ class AparelhoManutencao extends Model
 		    }
 	    }
 
-	    return 0;
         return $query->get()->map(function($r){
 	        $Ordem_servico = $r->ordem_servico;
 	        $Cliente = $Ordem_servico->cliente->getType();
