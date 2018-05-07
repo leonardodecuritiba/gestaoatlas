@@ -46,14 +46,23 @@ class OrdemServico extends Model
         'validacao',
     ]; //success
 
+    protected $appends = [
+        'created_at_formatted'
+    ]; //success
+
     private $valor_desconto, $valor_acrescimo;
 
     // ******************** FILTROS ********************************
-    static public function filter_layout($data)
-    {
-        $query = self::filter_situacao($data);
-        return (isset($data['centro_custo']) && $data['centro_custo']) ? $query->centroCustos() : $query->clientes();
-    }
+	public function getCreatedAtFormattedAttribute()
+	{
+		return DataHelper::getFullPrettyDateTime($this->attributes['created_at']);
+	}
+
+	static public function filter_layout($data)
+	{
+		$query = self::filter_situacao($data);
+		return (isset($data['centro_custo']) && $data['centro_custo']) ? $query->centroCustos() : $query->clientes();
+	}
 
     static public function filter_situacao($data)
     {

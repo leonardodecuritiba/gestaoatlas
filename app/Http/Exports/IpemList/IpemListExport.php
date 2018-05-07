@@ -22,19 +22,29 @@ class IpemListExport extends NewExcelFile
     {
         return $this->sheet('sheetName', function ($sheet) use ($Buscas) {
             $sheet->setOrientation('landscape');
-            $cabecalho = [
-                'Razão Social',
-                'Nome Fantasia',
-                'Documento',
-                'Nº O.S.',
+//            $cabecalho = [
+//                'Razão Social',
+//                'Nome Fantasia',
+//                'Documento',
+//                'Nº O.S.',
+//                'Data do Reparo',
+//                'Técnico',
+//                'Descrição O.S.',
+//                'Nº de Série',
+//                'Nº do Inventario',
+//                'Marca de reparo',
+//                'Carga'
+//            ];
+	        $cabecalho = [
+		        'Razão Social',
+		        'Nome Fantasia',
+		        'CNPJ / CPF',
+		        'Nº O.S.',
+		        'Nº de Série',
+		        'Marca de reparo',
                 'Data do Reparo',
-                'Técnico',
-                'Descrição O.S.',
-                'Nº de Série',
-                'Nº do Inventario',
-                'Marca de reparo',
-                'Carga'
-            ];
+		        'Técnico'
+	        ];
             $sheet->cells('A1:K1', function ($cells) {
                 // manipulate the cell
                 $fonts = $this->getFonts();
@@ -49,19 +59,31 @@ class IpemListExport extends NewExcelFile
                 $Cliente = $Ordem_servico->cliente->getType();
                 $Instrumento = $Aparelho_manutencao->instrumento;
 
-                $sheet->row($i, array(
-                    $Cliente->razao_social,
-                    $Cliente->nome_principal,
-                    $Cliente->documento,
-                    $Ordem_servico->idordem_servico,
-                    $Ordem_servico->created_at,
-                    $Ordem_servico->colaborador->nome . ' - ' . $Ordem_servico->colaborador->rg,
-                    $Aparelho_manutencao->defeito . ' / ' . $Aparelho_manutencao->solucao,
-                    $Instrumento->numero_serie,
-                    $Instrumento->inventario,
-	                $Instrumento->numeracao_selo_afixado(),
-                    $Instrumento->capacidade
-                ));
+//                $sheet->row($i, array(
+//                    $Cliente->razao_social,
+//                    $Cliente->nome_principal,
+//                    $Cliente->documento,
+//                    $Ordem_servico->idordem_servico,
+//                    $Ordem_servico->created_at,
+//                    $Ordem_servico->colaborador->nome . ' - ' . $Ordem_servico->colaborador->rg,
+//                    $Aparelho_manutencao->defeito . ' / ' . $Aparelho_manutencao->solucao,
+//                    $Instrumento->numero_serie,
+//                    $Instrumento->inventario,
+//	                $Instrumento->numeracao_selo_afixado(),
+//                    $Instrumento->capacidade
+//                ));
+	            $data_row = array(
+		            $Cliente->razao_social,
+		            $Cliente->nome_principal,
+		            $Cliente->documento,
+		            $Ordem_servico->idordem_servico,
+		            $Instrumento->numero_serie,
+		            $Instrumento->numeracao_selo_afixado()['text'],
+		            $Ordem_servico->created_at_formatted,
+		            $Ordem_servico->colaborador->nome . ' - ' . $Ordem_servico->colaborador->rg,
+	            );
+
+	            $sheet->row($i, $data_row);
                 $i++;
             }
         });
@@ -69,7 +91,7 @@ class IpemListExport extends NewExcelFile
 
     public function getFonts()
     {
-        $default_size = '13';
+        $default_size = '14';
         return (object)[
             'cabecalho_font' => array(
                 'size' => $default_size,
@@ -79,7 +101,7 @@ class IpemListExport extends NewExcelFile
             'cabecalho_background_color' => '#000000',
             'nome' => array(
                 'family' => 'Bookman Old Style',
-                'size' => '16',
+                'size' => '18',
             ),
             'descricao' => array(
                 'size' => $default_size,

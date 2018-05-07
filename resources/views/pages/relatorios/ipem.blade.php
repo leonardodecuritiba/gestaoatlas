@@ -34,10 +34,15 @@
                     <div class="form-group">
                         <label class="control-label col-md-2 col-sm-2 col-xs-12">Numeração: <span
                                     class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input name="numeracao" type="text" maxlength="50" class="form-control"
-                                   placeholder="Numeração"
-                                   value="{{Request::get('numeracao')}}">
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <input name="numeracao_inicial" type="text" maxlength="50" class="form-control"
+                                   placeholder="Inicial"
+                                   value="{{Request::get('numeracao_inicial')}}">
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <input name="numeracao_final" type="text" maxlength="50" class="form-control"
+                                   placeholder="Final"
+                                   value="{{Request::get('numeracao_final')}}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -69,9 +74,11 @@
                 <ul class="nav navbar-right panel_toolbox">
                     <li>
                         <form action="{{route('relatorios.ipem.print')}}" target="_blank">
-                            <input type="hidden" name="idtecnico" value="{{Request::get('idtecnico')}}">
                             <input type="hidden" name="data_inicial" value="{{Request::get('data_inicial')}}">
                             <input type="hidden" name="data_final" value="{{Request::get('data_final')}}">
+                            <input type="hidden" name="numeracao_inicial" value="{{Request::get('numeracao_inicial')}}">
+                            <input type="hidden" name="numeracao_final" value="{{Request::get('numeracao_final')}}">
+                            <input type="hidden" name="idtecnico" value="{{Request::get('idtecnico')}}">
                             <button class="btn btn-success"><i class="fa fa-print fa-2"></i> Exportar</button>
                         </form>
                     </li>
@@ -93,12 +100,26 @@
                                 <th>Nº de Série</th>
                                 <th>Marca de reparo</th>
                                 <th>Data do Reparo</th>
-                                {{--<th>Declaração</th>--}}
                                 <th>Técnico</th>
                                 <th>Descrição O.S.</th>
                                 <th>Carga</th>
                             </tr>
                             </thead>
+                            <tfoot>
+                            <tr>
+                                <th>Razão Social</th>
+                                <th>Nome Fantasia</th>
+                                <th>CNPJ / CPF</th>
+                                <th>Nº O.S.</th>
+                                <th>Nº do Inventario</th>
+                                <th>Nº de Série</th>
+                                <th>Marca de reparo</th>
+                                <th>Data do Reparo</th>
+                                <th>Técnico</th>
+                                <th>Descrição O.S.</th>
+                                <th>Carga</th>
+                            </tr>
+                            </tfoot>
                             <tbody>
                             @foreach ($Buscas as $sel)
                                 <tr>
@@ -111,25 +132,7 @@
                                     <td>{{$sel->instrumento->inventario}}</td>
                                     <td>{{$sel->instrumento->numero_serie}}</td>
                                     <td>{!! (($sel->selo_numeracao!=NULL) ? $sel->selo_numeracao : '<i class="red">sem reparo</i>') !!}</td>
-                                    <td>{{$sel->ordem_servico->getDataAbertura()}}</td>
-                                    <td>
-                                        {{--@if($sel->idselo != NULL)--}}
-                                            {{--<div class="checkbox">--}}
-                                                {{--@if($sel->selo_declared != NULL)--}}
-                                                    {{--@foreach($sel->selo_declared as $i => $item)--}}
-                                                        {{--@if($item != NULL)--}}
-                                                            {{--{{$item}}--}}
-                                                        {{--@else--}}
-                                                            {{--{{json_encode($item)}}--}}
-                                                            {{--<button onclick="declare(this)" class="btn btn-warning btn-xs" data-id="{{$item}}">Declarar</button>--}}
-                                                        {{--@endif--}}
-                                                    {{--@endforeach--}}
-                                                {{--@endif--}}
-                                            {{--</div>--}}
-                                        {{--@else--}}
-                                            {{--<i class="red">sem reparo</i>--}}
-                                        {{--@endif--}}
-                                    </td>
+                                    <td>{{$sel->ordem_servico->created_at_formatted}}</td>
                                     <td>
                                         <b><a href="{{route('colaboradores.show', $sel->colaborador->idcolaborador)}}"
                                               target="_blank">{{$sel->colaborador->nome.' - '.$sel->colaborador->rg}}</a>
@@ -142,22 +145,6 @@
                                 </tr>
                             @endforeach
                             </tbody>
-                            <tfoot>
-                            <tr>
-                                <th>Razão Social</th>
-                                <th>Nome Fantasia</th>
-                                <th>CNPJ / CPF</th>
-                                <th>Nº O.S.</th>
-                                <th>Nº do Inventario</th>
-                                <th>Nº de Série</th>
-                                <th>Marca de reparo</th>
-                                <th>Data do Reparo</th>
-                                <th>Declaração</th>
-                                <th>Técnico</th>
-                                <th>Descrição O.S.</th>
-                                <th>Carga</th>
-                            </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

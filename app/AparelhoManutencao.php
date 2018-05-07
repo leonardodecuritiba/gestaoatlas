@@ -105,16 +105,20 @@ class AparelhoManutencao extends Model
 	            $query->whereIn('idordem_servico', $OS->pluck('idordem_servico'));
 	        }
         }
-	    if (isset($data['numeracao'])) {
-		    if ($data['numeracao'] != "") {
-			    $query->whereIn('idaparelho_manutencao',
-				    SeloInstrumento::whereIn('idselo',
-					    Selo::numeracao($data['numeracao'])->pluck('idselo')
-				    )->pluck( 'idaparelho_set' )
-	//                    )->pluck('idaparelho_manutencao')
-			    );
-
+	    if (isset($data['numeracao_inicial'])) {
+		    $selos = [];
+		    if ($data['numeracao_inicial'] != "") {
+		    	$selos = Selo::where('numeracao', '>',  DataHelper::getOnlyNumbers($data['numeracao_inicial']));
 		    }
+		    if ($data['numeracao_final'] != "") {
+		    	$selos->where('numeracao', '<',  DataHelper::getOnlyNumbers($data['numeracao_final']));
+		    }
+		    $query->whereIn('idaparelho_manutencao',
+			    SeloInstrumento::whereIn('idselo',
+				    $selos->pluck('idselo')
+			    )->pluck( 'idaparelho_set' )
+		    //                    )->pluck('idaparelho_manutencao')
+		    );
 	    }
         return $query->get()->map(function($r){
 	        $Ordem_servico = $r->ordem_servico;
