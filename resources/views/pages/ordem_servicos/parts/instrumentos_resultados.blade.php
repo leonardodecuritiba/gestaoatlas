@@ -11,21 +11,32 @@
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Nº de Série</th>
                     <th>Imagem</th>
                     <th>Descrição</th>
-                    <th>Nº de Série</th>
                     <th>Inventário</th>
                     <th>Setor</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
+                <tfoot>
+                <tr>
+                    <th>ID</th>
+                    <th>Nº de Série</th>
+                    <th>Imagem</th>
+                    <th>Descrição</th>
+                    <th>Inventário</th>
+                    <th>Setor</th>
+                    <th>Ações</th>
+                </tr>
+                </tfoot>
                 <tbody>
                 @foreach($Instrumentos as $instrumento)
                     <tr>
                         <td>{{$instrumento->idinstrumento}}</td>
+                        <td>{{$instrumento->numero_serie}}</td>
                         <td><img src="{{$instrumento->getThumbFoto()}}" class="avatar" alt="Avatar"></td>
                         <td>{{$instrumento->getDetalhesBase()}}</td>
-                        <td>{{$instrumento->numero_serie}}</td>
                         <td>{{$instrumento->inventario}}</td>
                         <td>{{$instrumento->setor->descricao}}</td>
                         <td>

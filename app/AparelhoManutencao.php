@@ -120,6 +120,7 @@ class AparelhoManutencao extends Model
 		    //                    )->pluck('idaparelho_manutencao')
 		    );
 	    }
+
         return $query->get()->map(function($r){
 	        $Ordem_servico = $r->ordem_servico;
 	        $Cliente = $Ordem_servico->cliente->getType();

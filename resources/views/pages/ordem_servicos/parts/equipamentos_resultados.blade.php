@@ -11,25 +11,36 @@
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Nº de Série</th>
                     <th>Imagem</th>
                     <th>Descrição</th>
                     <th>Marca</th>
                     <th>Modelo</th>
-                    <th>Nº de Série</th>
                     <th>Ações</th>
                 </tr>
                 </thead>
+                <tfoot>
+                <tr>
+                    <th>ID</th>
+                    <th>Nº de Série</th>
+                    <th>Imagem</th>
+                    <th>Descrição</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Ações</th>
+                </tr>
+                </tfoot>
                 <tbody>
                 @foreach($Equipamentos as $equipamento)
                     <tr>
                         <td>{{$equipamento->idequipamento}}</td>
+                        <td>{{$equipamento->numero_serie}}</td>
                         <td>
-                            <img src="{{$equipamento->getFoto()}}" class="avatar" alt="Avatar">
+                        <img src="{{$equipamento->getFoto()}}" class="avatar" alt="Avatar">
                         </td>
                         <td>{{$equipamento->descricao}}</td>
                         <td>{{$equipamento->marca->descricao}}</td>
                         <td>{{$equipamento->modelo}}</td>
-                        <td>{{$equipamento->numero_serie}}</td>
                         <td>
                             <a class="btn btn-primary btn-xs"
                                data-tipo="equipamento"

@@ -84,6 +84,20 @@ class IpemListExport extends NewExcelFile
 	            );
 
 	            $sheet->row($i, $data_row);
+            foreach ($Buscas as $sel) {
+                $sheet->row($i, array(
+                    $sel->cliente->razao_social,
+                    $sel->cliente->nome_principal,
+                    $sel->cliente->documento,
+                    $sel->ordem_servico->idordem_servico,
+                    $sel->instrumento->inventario,
+                    $sel->instrumento->numero_serie,
+                    (($sel->selo_numeracao!=NULL) ? $sel->selo_numeracao : 'sem reparo'),
+                    $sel->ordem_servico->getDataAbertura(),
+                    $sel->colaborador->nome.' - '.$sel->colaborador->rg,
+                    $sel->defeito . ' / ' . $sel->solucao,
+                    $sel->instrumento->capacidade
+                ));
                 $i++;
             }
         });
