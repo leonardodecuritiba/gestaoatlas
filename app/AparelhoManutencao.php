@@ -106,7 +106,7 @@ class AparelhoManutencao extends Model
 	        }
         }
 	    if (isset($data['numeracao_inicial'])) {
-		    $selos = Selo::newQuery();
+		    $selos = new Selo;
 		    if ($data['numeracao_inicial'] != "") {
 		    	$selos->where('numeracao', '>=',  DataHelper::getOnlyNumbers($data['numeracao_inicial']));
 		    }
