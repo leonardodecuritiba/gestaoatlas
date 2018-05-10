@@ -106,12 +106,12 @@ class AparelhoManutencao extends Model
 	        }
         }
 	    if (isset($data['numeracao_inicial'])) {
-		    $selos = [];
+		    $selos = Selo::newQuery();
 		    if ($data['numeracao_inicial'] != "") {
-		    	$selos = Selo::where('numeracao', '>',  DataHelper::getOnlyNumbers($data['numeracao_inicial']));
+		    	$selos->where('numeracao', '>=',  DataHelper::getOnlyNumbers($data['numeracao_inicial']));
 		    }
 		    if ($data['numeracao_final'] != "") {
-		    	$selos->where('numeracao', '<',  DataHelper::getOnlyNumbers($data['numeracao_final']));
+		    	$selos->where('numeracao', '<=',  DataHelper::getOnlyNumbers($data['numeracao_final']));
 		    }
 		    $query->whereIn('idaparelho_manutencao',
 			    SeloInstrumento::whereIn('idselo',

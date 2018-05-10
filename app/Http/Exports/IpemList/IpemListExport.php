@@ -84,8 +84,8 @@ class IpemListExport extends NewExcelFile
 	            );
 
 	            $sheet->row($i, $data_row);
-            foreach ($Buscas as $sel) {
-                $sheet->row($i, array(
+	            /*
+	            $data_row = array(
                     $sel->cliente->razao_social,
                     $sel->cliente->nome_principal,
                     $sel->cliente->documento,
@@ -97,7 +97,8 @@ class IpemListExport extends NewExcelFile
                     $sel->colaborador->nome.' - '.$sel->colaborador->rg,
                     $sel->defeito . ' / ' . $sel->solucao,
                     $sel->instrumento->capacidade
-                ));
+                );
+	            */
                 $i++;
             }
         });
