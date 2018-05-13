@@ -22,9 +22,13 @@
                     @if($response['error'])
                         <div class="alert fade in alert-danger" role="alert">
                             <ul>
-                                @foreach($response['message'] as $message)
-                                    <li><b>{{$message->codigo}}:</b> <i>{{$message->mensagem}}</i></li>
-                                @endforeach
+                                @if(count($response['message'])>1)
+                                    @foreach($response['message'] as $message)
+                                        <li><b>{{$message->codigo}}:</b> <i>{{$message->mensagem}}</i></li>
+                                    @endforeach
+                                @else
+                                    <li><b>ERRO:</b> <i>{{$response['message']}}</i></li>
+                                @endif
                             </ul>
                         </div>
                     @else

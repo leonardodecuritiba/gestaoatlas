@@ -239,19 +239,26 @@ class Faturamento extends Model
 
         $retorno = $NF->emitir();
 
-        if (isset($retorno->body->erros)) {
-            $responseNF = [
-                'message' => $retorno->body->erros,
-                'code' => $retorno->result,
-                'error' => 1,
-            ];
-        } else {
-            $responseNF = [
-                'message' => 'Nota Fiscal (Ref. #' . $NF->_REF_ . ') enviada com sucesso!',
-                'code' => $retorno->result,
-                'error' => 0,
-            ];
-        }
+	    if (isset($retorno->body->erros)) {
+		    $responseNF = [
+			    'message' => $retorno->body->erros,
+			    'code' => $retorno->result,
+			    'error' => 1,
+		    ];
+	    } else if($retorno->result>400){
+		    $responseNF = [
+			    'message' => $retorno->body,
+			    'code' => $retorno->result,
+			    'error' => 1,
+		    ];
+	    } else {
+		    $responseNF = [
+			    'message' => 'Nota Fiscal (Ref. #' . $NF->_REF_ . ') enviada com sucesso!',
+			    'code' => $retorno->result,
+			    'error' => 0,
+		    ];
+	    }
+
         return $responseNF;
     }
 

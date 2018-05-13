@@ -12,6 +12,11 @@ return [
     |
     */
 
+	'admin' => [
+		'name'=>"Leonardo",
+		'email'=>"silva.zanin@gmail.com"
+	],
+	'name' => 'GESTÃO-ATLAS',
 	'version' => 'v1.9.2',
 	'update'  => '10/10',
 

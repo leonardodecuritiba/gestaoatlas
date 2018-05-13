@@ -7,6 +7,8 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Yaml\Yaml;
 
@@ -161,6 +163,16 @@ class NF
         return;
     }
 
+    public function writeLog($retorno)
+    {
+	    $ERROR = json_encode($retorno);
+	    Mail::raw($ERROR, function ($m) {
+		    $m->to(config('app.admin.email'), config('app.admin.name'))
+		      ->subject("ERROR NF: " . config('app.name'));
+	    });
+	    return Log::info(json_encode($retorno));
+    }
+
     public function setLink($link)
     {
         return $this->_FATURAMENTO_->setUrl($this->_NF_TYPE_, $link);
@@ -188,13 +200,22 @@ class NF
         $body = curl_exec($ch);
         $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        $retorno = (object)[
-            'url_focus' => $URL,
-            'type' => $this->_NF_TYPE_,
-            'body' => json_decode($body),
-            'result' => $result,
+	    if($result>400){
+	        $nbody = $body;
+	        $ERROR = ['url_focus' => $URL, 'type' => $this->_NF_TYPE_,'body' => $nbody, 'result' => $result];
+	        $this->writeLog($ERROR);
+        } else {
+	        $nbody = json_decode($body);
+        }
+
+	    $retorno = (object)[
+		    'url_focus' => $URL,
+		    'type' => $this->_NF_TYPE_,
+		    'body' => $nbody,
+	        'result' => $result,
         ];
         curl_close($ch);
+
 
         return ($retorno);
 
