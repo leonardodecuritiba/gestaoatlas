@@ -14,11 +14,14 @@ class OrdemServico extends Model
     use SoftDeletes;
     const _STATUS_ABERTA_ = 1;
     const _STATUS_ATENDIMENTO_EM_ANDAMENTO_ = 2;
+
     const _STATUS_FINALIZADA_ = 3;
     const _STATUS_AGUARDANDO_PECA_ = 4;
     const _STATUS_EQUIPAMENTO_NA_OFICINA_ = 5; //primary
+
     const _STATUS_FATURADA_ = 6; //success
     const _STATUS_FATURAMENTO_PENDENTE_ = 7; //success
+
     public $timestamps = true;
     public $valores = [];
     protected $table = 'ordem_servicos';
@@ -56,6 +59,24 @@ class OrdemServico extends Model
 	public function getCreatedAtFormattedAttribute()
 	{
 		return DataHelper::getFullPrettyDateTime($this->attributes['created_at']);
+	}
+
+	public function verifyOverTechnicalLimit()
+	{
+		$limit = $this->cliente->attributes['limite_credito_tecnica'];
+		$sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
+			[
+				self::_STATUS_FINALIZADA_,
+				self::_STATUS_AGUARDANDO_PECA_,
+				self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+				self::_STATUS_FATURAMENTO_PENDENTE_,
+			])->sum('valor_final');
+		return ($sum > $limit);
+		/*
+			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ABERTA_)
+			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ATENDIMENTO_EM_ANDAMENTO_)
+			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_FATURADA_);
+			*/
 	}
 
 	static public function filter_layout($data)

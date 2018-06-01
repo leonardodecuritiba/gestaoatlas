@@ -383,7 +383,17 @@ class OrdemServicoController extends Controller
 
     public function finalizar(Request $request, $idordem_servico)
     {
-        $OrdemServico = OrdemServico::find($idordem_servico);
+	    $OrdemServico = OrdemServico::find($idordem_servico);
+
+	    //verify if is over client technical limit
+	    if($limit = $OrdemServico->verifyOverTechnicalLimit() != 0){
+		    $limit = $OrdemServico->cliente->limite_credito_tecnica;
+		    $erros = ['Limite Técnica (R$' . $limit . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
+		    return redirect()->back()
+		                     ->withErrors($erros)
+		                     ->withInput($request->all());
+	    }
+
         $OrdemServico->finalizar($request->all());
         session()->forget('mensagem');
         session(['mensagem' => $this->Page->msg_fec]);

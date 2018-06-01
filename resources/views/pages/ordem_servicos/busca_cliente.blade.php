@@ -120,6 +120,8 @@
 				$(this).find('div.perfil ul span#endereco').html(endereco);
 				$(this).find('div.perfil ul span#fones').html(fones);
 				$(this).find('div.perfil ul span#email').html(email);
+				$(this).find('div.perfil ul span#tecnica').html(cliente_.limite_credito_tecnica);
+				$(this).find('div.perfil ul span#comercial').html(cliente_.limite_credito_comercial);
 
 				$(this).find('.btn-ok').html('Abrir O.S.');
 				$(this).find('.btn-ok').attr("href", href_);
