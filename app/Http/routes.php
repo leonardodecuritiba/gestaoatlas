@@ -495,12 +495,11 @@ Route::group(['prefix' => 'teste'], function () {
 
         return "Your email has been sent successfully";
     });
-    Route::get('show-limit', function () {
-        $Client = \App\Cliente::find(137);
+    Route::get('show-limit/{id}', function ($id) {
+        $Client = \App\Cliente::find($id);
 
-        return $Client->available_limit_tecnica;
 
-        return "Your email has been sent successfully";
+        return $Client->getData();
     });
 });
 

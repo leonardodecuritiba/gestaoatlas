@@ -23,18 +23,22 @@
                 </li>
                 <li>
                     <i class="fa fa-money"></i> Limite Técnica:
-                    @if($OrdemServico->cliente->available_limit_tecnica <= 0)
-                        <b class="red">{{$OrdemServico->cliente->available_limit_tecnica_formatted}}</b>
+                    <?php
+                    $available_limit_tecnica = $OrdemServico->cliente->getAvailableLimitTecnica();
+                    $available_limit_comercial = $OrdemServico->cliente->getAvailableLimitComercial();
+                    ?>
+                    @if($available_limit_tecnica <= 0)
+                        <b class="red">{{DataHelper::getFloat2RealMoeda($available_limit_tecnica)}}</b>
                     @else
-                        <b class="green">{{$OrdemServico->cliente->available_limit_tecnica_formatted}}</b>
+                        <b class="green">{{DataHelper::getFloat2RealMoeda($available_limit_tecnica)}}</b>
                     @endif
                 </li>
                 <li>
                     <i class="fa fa-money"></i> Limite Comercial:
-                    @if($OrdemServico->cliente->available_limit_comercial <= 0)
-                        <b class="red">{{$OrdemServico->cliente->available_limit_comercial_formatted}}</b>
+                    @if($available_limit_comercial <= 0)
+                        <b class="red">{{DataHelper::getFloat2RealMoeda($available_limit_comercial)}}</b>
                     @else
-                        <b class="green">{{$OrdemServico->cliente->available_limit_comercial_formatted}}</b>
+                        <b class="green">{{DataHelper::getFloat2RealMoeda($available_limit_comercial)}}</b>
                     @endif
                 </li>
                 @if($OrdemServico->status())

@@ -244,6 +244,7 @@ return [
         'Date' => Jenssegers\Date\Date::class,
 //        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class,
         'DomPDF' => Barryvdh\DomPDF\Facade::class,
+        'DataHelper' => \App\Helpers\DataHelper::class,
 
     ],
 

@@ -53,53 +53,81 @@ class Cliente extends Model
 
         'numero_chamado',
     ];
-
-    protected $appends = [
-        'available_limit_tecnica',
-        'available_limit_tecnica_formatted',
-        'available_limit_comercial',
-        'available_limit_comercial_formatted',
-    ];
 	// =====================================================================
 	// ======================== NEW FUNCTIONS ==============================
 	// =====================================================================
 
     // ************ Corrigir depois quando Houver VENDA ************
+    public function getData(){
+        $data = $this->toArray();
+        $available_limit_tecnica = $this->getAvailableLimitTecnica();
+        $available_limit_comercial = $this->getAvailableLimitComercial();
+        return json_encode(array_merge($data,[
+            'available_limit_tecnica'               => $available_limit_tecnica,
+            'available_limit_tecnica_formatted'     => $this->getAvailableLimitTecnicaFormatted($available_limit_tecnica),
+            'available_limit_comercial'             => $available_limit_comercial,
+            'available_limit_comercial_formatted'   => $this->getAvailableLimitComercialFormatted($available_limit_comercial),
+        ]));
+
+    }
+
+    public function getAvailableLimitCentroCusto($type = 'tecnica'){
+        $ordem_servicos = $this->ordem_servicos_centro_custo;
+        $sum = $ordem_servicos->whereIn('idsituacao_ordem_servico',
+            [
+                OrdemServico::_STATUS_FINALIZADA_,
+                OrdemServico::_STATUS_AGUARDANDO_PECA_,
+                OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+                OrdemServico::_STATUS_FATURAMENTO_PENDENTE_,
+            ])->sum('valor_final');
+        return $sum;
+    }
+
     public function getAvailableLimit($type = 'tecnica')
     {
-        $limit = $this->attributes['limite_credito_' . $type];
-        if($type == 'tecnica'){
-            $sum = $this->ordem_servicos->whereIn('idsituacao_ordem_servico',
-                [
-                    OrdemServico::_STATUS_FINALIZADA_,
-                    OrdemServico::_STATUS_AGUARDANDO_PECA_,
-                    OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_,
-                    OrdemServico::_STATUS_FATURAMENTO_PENDENTE_,
-                ])->sum('valor_final');
+        $sum = 0;
+        if($this->centro_custo){ //se tem centro de custo
+            $centro_custo = $this->centro_custo_de;
+            $limit = $centro_custo->attributes['limite_credito_' . $type];
+            if($type == 'tecnica'){
+                $sum = $centro_custo->getAvailableLimitCentroCusto($type);
+            }
         } else {
-            $sum = 0;
+            $limit = $this->attributes['limite_credito_' . $type];
+            if($type == 'tecnica'){
+                $sum = $this->getAvailableLimitCentroCusto($type) +
+                    $this->ordem_servicos->whereIn('idsituacao_ordem_servico',
+                        [
+                            OrdemServico::_STATUS_FINALIZADA_,
+                            OrdemServico::_STATUS_AGUARDANDO_PECA_,
+                            OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+                            OrdemServico::_STATUS_FATURAMENTO_PENDENTE_,
+                        ])->sum('valor_final');
+            }
         }
         return $limit - $sum;
     }
 
-    public function getAvailableLimitTecnicaAttribute()
+    public function getAvailableLimitTecnica()
     {
         return $this->getAvailableLimit($type = 'tecnica');
     }
 
-    public function getAvailableLimitTecnicaFormattedAttribute()
+    public function getAvailableLimitTecnicaFormatted($value = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->available_limit_tecnica);
+        $value = ($value == NULL) ? $this->getAvailableLimitTecnica() : $value;
+        return DataHelper::getFloat2RealMoeda($value);
     }
 
-    public function getAvailableLimitComercialAttribute()
+    public function getAvailableLimitComercial()
     {
         return $this->getAvailableLimit($type = 'comercial');
     }
 
-    public function getAvailableLimitComercialFormattedAttribute()
+    public function getAvailableLimitComercialFormatted($value = NULL)
     {
-        return DataHelper::getFloat2RealMoeda($this->available_limit_comercial);
+        $value = ($value == NULL) ? $this->getAvailableLimitComercial() : $value;
+        return DataHelper::getFloat2RealMoeda($value);
     }
 
 
@@ -526,11 +554,10 @@ class Cliente extends Model
         return $this->hasMany('App\OrdemServico', 'idcliente');
     }
 
-    public function centro_custo_para()
+    public function ordem_servicos_centro_custo()
     {
-        return $this->hasOne('App\Cliente', 'idcliente', 'idcliente');
+        return $this->hasMany(OrdemServico::class, 'idcentro_custo', 'idcliente');
     }
-
     // ********************** BELONGS ********************************
 
     public function segmento()
@@ -582,9 +609,15 @@ class Cliente extends Model
 		return $this->hasOne('App\PessoaFisica', 'idpfisica', 'idpfisica');
 	}
 
-    public function centro_custo_de()
+    public function centro_custo_de() //quem é o centro de custo do cliente
     {
-        return $this->belongsTo('App\Cliente', 'idcliente');
+        return $this->belongsTo(Cliente::class, 'idcliente_centro_custo','idcliente');
+    }
+
+
+    public function centro_custo_para() //listagens para quem o cliente é centro de custo
+    {
+        return $this->hasMany(Cliente::class, 'idcliente_centro_custo','idcliente');
     }
 
     public function faturamento()

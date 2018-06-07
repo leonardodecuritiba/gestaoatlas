@@ -51,7 +51,7 @@
 										   data-href="{{route($Page->link.'.abrir',$cliente->idcliente)}}"
 										   data-os="{{route($Page->link.'.cliente',$cliente->idcliente)}}"
 										   data-cli="{{route('clientes.show',$cliente->idcliente)}}"
-										   data-cliente="{{$cliente}}"
+										   data-cliente="{{$cliente->getData()}}"
 										   data-endereco="{{$cliente->getEndereco()}}"
 										   data-fones="{{$cliente->getFones()}}"
 										   data-email="{{$cliente->email_orcamento}}"
