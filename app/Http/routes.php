@@ -496,9 +496,9 @@ Route::group(['prefix' => 'teste'], function () {
         return "Your email has been sent successfully";
     });
     Route::get('show-limit', function () {
-        $Client = \App\Cliente::find(1227);
+        $Client = \App\Cliente::find(137);
 
-        return $Client->getAvailableLimit('tecnica');
+        return $Client->available_limit_tecnica;
 
         return "Your email has been sent successfully";
     });

@@ -21,6 +21,22 @@
                     <b>{{$OrdemServico->situacao->descricao}}</b></li>
                 <li><i class="fa fa-user"></i> Colaborador: <b>{{$OrdemServico->colaborador->nome}}</b>
                 </li>
+                <li>
+                    <i class="fa fa-money"></i> Limite Técnica:
+                    @if($OrdemServico->cliente->available_limit_tecnica <= 0)
+                        <b class="red">{{$OrdemServico->cliente->available_limit_tecnica_formatted}}</b>
+                    @else
+                        <b class="green">{{$OrdemServico->cliente->available_limit_tecnica_formatted}}</b>
+                    @endif
+                </li>
+                <li>
+                    <i class="fa fa-money"></i> Limite Comercial:
+                    @if($OrdemServico->cliente->available_limit_comercial <= 0)
+                        <b class="red">{{$OrdemServico->cliente->available_limit_comercial_formatted}}</b>
+                    @else
+                        <b class="green">{{$OrdemServico->cliente->available_limit_comercial_formatted}}</b>
+                    @endif
+                </li>
                 @if($OrdemServico->status())
                     <li><i class="fa fa-calendar-o"></i> Data de Finalização:
                         <b>{{$OrdemServico->getDataFinalizada()}}</b>

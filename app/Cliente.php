@@ -54,22 +54,52 @@ class Cliente extends Model
         'numero_chamado',
     ];
 
+    protected $appends = [
+        'available_limit_tecnica',
+        'available_limit_tecnica_formatted',
+        'available_limit_comercial',
+        'available_limit_comercial_formatted',
+    ];
 	// =====================================================================
 	// ======================== NEW FUNCTIONS ==============================
 	// =====================================================================
 
-
+    // ************ Corrigir depois quando Houver VENDA ************
     public function getAvailableLimit($type = 'tecnica')
     {
-        $limit = $this->cliente->attributes['limite_credito_tecnica'];
-        $sum = $this->ordem_servicos->whereIn('idsituacao_ordem_servico',
-            [
-                self::_STATUS_FINALIZADA_,
-                self::_STATUS_AGUARDANDO_PECA_,
-                self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
-                self::_STATUS_FATURAMENTO_PENDENTE_,
-            ])->sum('valor_final');
+        $limit = $this->attributes['limite_credito_' . $type];
+        if($type == 'tecnica'){
+            $sum = $this->ordem_servicos->whereIn('idsituacao_ordem_servico',
+                [
+                    OrdemServico::_STATUS_FINALIZADA_,
+                    OrdemServico::_STATUS_AGUARDANDO_PECA_,
+                    OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+                    OrdemServico::_STATUS_FATURAMENTO_PENDENTE_,
+                ])->sum('valor_final');
+        } else {
+            $sum = 0;
+        }
         return $limit - $sum;
+    }
+
+    public function getAvailableLimitTecnicaAttribute()
+    {
+        return $this->getAvailableLimit($type = 'tecnica');
+    }
+
+    public function getAvailableLimitTecnicaFormattedAttribute()
+    {
+        return DataHelper::getFloat2RealMoeda($this->available_limit_tecnica);
+    }
+
+    public function getAvailableLimitComercialAttribute()
+    {
+        return $this->getAvailableLimit($type = 'comercial');
+    }
+
+    public function getAvailableLimitComercialFormattedAttribute()
+    {
+        return DataHelper::getFloat2RealMoeda($this->available_limit_comercial);
     }
 
 

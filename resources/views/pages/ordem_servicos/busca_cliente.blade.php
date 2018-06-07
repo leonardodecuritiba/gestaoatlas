@@ -120,8 +120,20 @@
 				$(this).find('div.perfil ul span#endereco').html(endereco);
 				$(this).find('div.perfil ul span#fones').html(fones);
 				$(this).find('div.perfil ul span#email').html(email);
-				$(this).find('div.perfil ul span#tecnica').html(cliente_.limite_credito_tecnica);
-				$(this).find('div.perfil ul span#comercial').html(cliente_.limite_credito_comercial);
+
+				if(cliente_.available_limit_tecnica <= 0){
+				    var text = '<b class="red">';
+				} else {
+                    var text = '<b class="green">';
+				}
+				$(this).find('div.perfil ul span#tecnica').html(text + cliente_.available_limit_tecnica_formatted + '</b>');
+
+                if(cliente_.available_limit_comercial <= 0){
+                    text = '<b class="red">';
+                } else {
+                    text = '<b class="green">';
+                }
+				$(this).find('div.perfil ul span#comercial').html(text + cliente_.available_limit_comercial_formatted + '</b>');
 
 				$(this).find('.btn-ok').html('Abrir O.S.');
 				$(this).find('.btn-ok').attr("href", href_);

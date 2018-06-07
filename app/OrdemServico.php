@@ -63,7 +63,8 @@ class OrdemServico extends Model
 
 	public function verifyOverTechnicalLimit()
 	{
-		return $this->cliente->getAvailableLimit($type = 'tecnica');
+	    $limit = $this->cliente->getAvailableLimit($type = 'tecnica');
+		return ($this->cliente->getAvailableLimit($type = 'tecnica') - $this->valor_final) < 0;
 	}
 
 	static public function filter_layout($data)
