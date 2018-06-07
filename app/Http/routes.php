@@ -481,19 +481,27 @@ Route::group(['prefix' => 'teste'], function () {
         echo 'Dígito: ' . $mod . '<br>';
         echo 'Numeração (com DV): ' . $DATA_HELPER->mask($final, '##.###.###-#') . '<br>';
     });
-});
-//Testando o envio de email
-Route::get('sendemail', function () {
-    $user = array(
-        'email' => "silva.zanin@gmail.com",
-        'name' => "LEO",
-        'mensagem' => "olá",
-    );
-    Mail::raw($user['mensagem'], function ($m) use ($user) {
-        $m->to($user['email'], $user['name'])->subject('Welcome!');
-    });
 
-    return "Your email has been sent successfully";
+//Testando o envio de email
+    Route::get('sendemail', function () {
+        $user = array(
+            'email' => "silva.zanin@gmail.com",
+            'name' => "LEO",
+            'mensagem' => "olá",
+        );
+        Mail::raw($user['mensagem'], function ($m) use ($user) {
+            $m->to($user['email'], $user['name'])->subject('Welcome!');
+        });
+
+        return "Your email has been sent successfully";
+    });
+    Route::get('show-limit', function () {
+        $Client = \App\Cliente::find(1227);
+
+        return $Client->getAvailableLimit('tecnica');
+
+        return "Your email has been sent successfully";
+    });
 });
 
 

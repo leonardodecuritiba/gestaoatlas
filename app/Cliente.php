@@ -58,6 +58,21 @@ class Cliente extends Model
 	// ======================== NEW FUNCTIONS ==============================
 	// =====================================================================
 
+
+    public function getAvailableLimit($type = 'tecnica')
+    {
+        $limit = $this->cliente->attributes['limite_credito_tecnica'];
+        $sum = $this->ordem_servicos->whereIn('idsituacao_ordem_servico',
+            [
+                self::_STATUS_FINALIZADA_,
+                self::_STATUS_AGUARDANDO_PECA_,
+                self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+                self::_STATUS_FATURAMENTO_PENDENTE_,
+            ])->sum('valor_final');
+        return $limit - $sum;
+    }
+
+
     static public function findByText($search)
     {
         $query = (new self)->newQuery();
