@@ -144,6 +144,27 @@ class Cliente extends Model
     }
 
 
+	public function getLimitCentroCusto()
+	{
+		$max = $this->attributes['limite_credito_tecnica'];
+		$soma = $this->centro_custo_para->sum(function($c){
+			return $c->attributes['limite_credito_tecnica'];
+		});
+
+		return $max - $soma;
+	}
+
+    public function getMaxCentroCusto()
+    {
+        return $this->centro_custo_de->getLimitCentroCusto();
+    }
+
+    public function isCentroCusto()
+    {
+        return ($this->attributes['idcliente_centro_custo'] != NULL);
+    }
+
+
     public function getRazaoSocial()
     {
         return ($this->is_pjuridica()) ?

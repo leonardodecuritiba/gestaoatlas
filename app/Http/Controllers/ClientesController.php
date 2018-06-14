@@ -101,6 +101,8 @@ class ClientesController extends Controller
             'tipos_emissao_faturamento' => TipoEmissaoFaturamento::all(),
         ];
         $Cliente = Cliente::find($id);
+
+//        return $Cliente->getMaxCentroCusto();
         return view('pages.'.$this->Page->link.'.show')
             ->with('Cliente', $Cliente)
             ->with('Page', $this->Page);
@@ -191,7 +193,6 @@ class ClientesController extends Controller
         //update CLIENTE
         if ($dataUpdate['centro_custo'] != '0') {
             $dataUpdate['idcliente_centro_custo'] = ($dataUpdate['idcliente_centro_custo'] == '') ? NULL : $dataUpdate['idcliente_centro_custo'];
-            $dataUpdate['limite_credito_tecnica'] = NULL;
         } else {
             $dataUpdate['idcliente_centro_custo'] = NULL;
         }

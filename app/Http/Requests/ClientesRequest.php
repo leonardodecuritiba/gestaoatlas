@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Cliente;
+use App\Helpers\DataHelper;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Redirect;
 
@@ -35,6 +36,8 @@ class ClientesRequest extends Request
             'email_orcamento' => 'required',
             'idsegmento' => 'required',
             'idregiao' => 'required',
+            'limite_credito_tecnica' => 'required|numeric',
+//            'limite_credito_comercial' => 'required|numeric',
 //            'distancia' => 'required',
 //            'pedagios' => 'required',
 
@@ -49,12 +52,13 @@ class ClientesRequest extends Request
             'prazo_pagamento_comercial' => 'required',
             'numero_chamado' => 'required',
         ];
-        if ($this->get('centro_custo') == '0') {
-            $validacao = array_merge($validacao, [
-                'limite_credito_tecnica' => 'required'
-            ]);
-        }
 
+        $this->format_inputs();
+        if($this->has('idcliente_centro_custo')){
+        	$CentroCusto = Cliente::find($this->get('idcliente_centro_custo'));
+	        $validacao['limite_credito_tecnica'] = 'required|numeric|max:' .  $CentroCusto->getLimitCentroCusto();
+        }
+//        dd($validacao);
         switch ($this->method()) {
             case 'GET':
             case 'DELETE': {
@@ -120,6 +124,17 @@ class ClientesRequest extends Request
         }
     }
 
+	public function format_inputs()
+	{
+		if($this->has('limite_credito_tecnica')){
+			$value = DataHelper::getReal2Float($this->get('limite_credito_tecnica'));
+			$this->merge(['limite_credito_tecnica' => $value]);
+		}
+		if($this->has('limite_credito_comercial')){
+			$value = DataHelper::getReal2Float($this->get('limite_credito_comercial'));
+			$this->merge(['limite_credito_comercial' => $value]);
+		}
+	}
     /**
      * Get the response that handle the request errors.
      *

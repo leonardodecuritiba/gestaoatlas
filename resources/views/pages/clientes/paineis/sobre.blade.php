@@ -69,8 +69,8 @@
             <div class="x_content">
                 <div class="form-horizontal form-label-left">
                     <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Centro de Custo <span class="required">*</span></label>
-                        <div class="col-md-3 col-sm-3 col-xs-12">
+                        <label class="control-label col-md-2 col-sm-2 col-xs-12">Centro Custo <span class="required">*</span></label>
+                        <div class="col-md-4 col-sm-4 col-xs-12">
                             <div class="checkbox">
                                 <label>
                                     <input type="radio" name="centro_custo" value="0" class="flat"
@@ -80,7 +80,13 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12"
+                        <div class="col-md-2 col-sm-2 col-xs-12">
+                            <input value="{{$Cliente->limite_credito_tecnica}}" type="text"
+                                   class="form-control show-dinheiro"
+                                   name="limite_credito_tecnica"
+                                   placeholder="Limite de Crédito Técnica" required>
+                        </div>
+                        <div class="col-md-4 col-sm-4 col-xs-12"
                              @if(!$Cliente->centro_custo) style="display:none;" @endif>
                             <select name="idcliente_centro_custo" class="form-control">
                                 <option value="">Centro de Custo</option>
@@ -89,12 +95,6 @@
                                             @if($Cliente->idcliente_centro_custo == $centro_custo->idcliente) selected @endif>{{$centro_custo->getType()->nome_principal}}</option>
                                 @endforeach
                             </select>
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-12"
-                             @if($Cliente->centro_custo) style="display:none;" @endif>
-                            <input value="{{$Cliente->limite_credito_tecnica}}" type="text"
-                                   class="form-control show-dinheiro" name="limite_credito_tecnica"
-                                   placeholder="Limite de Crédito Técnica" required>
                         </div>
                     </div>
                     <div class="form-group">

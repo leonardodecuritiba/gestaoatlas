@@ -7,13 +7,13 @@
     $(document).ready(function () {
         $("input[name=centro_custo]").on('ifChecked', function (event) {
             $('select[name=idcliente_centro_custo]').parent('div').toggle();
-            $('input[name=limite_credito_tecnica]').parent('div').toggle();
-            if (this.value) {
+            // $('input[name=limite_credito_tecnica]').parent('div').toggle();
+            if (this.value == "1") {
                 $('select[name=idcliente_centro_custo]').attr('required', true);
-                $('input[name=limite_credito_tecnica]').attr('required', false);
+                // $('input[name=limite_credito_tecnica]').attr('required', false);
             } else {
                 $('select[name=idcliente_centro_custo]').attr('required', false);
-                $('input[name=limite_credito_tecnica]').attr('required', true);
+                // $('input[name=limite_credito_tecnica]').attr('required', true);
             }
         });
     });

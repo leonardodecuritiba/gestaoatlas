@@ -63,8 +63,34 @@ class OrdemServico extends Model
 
 	public function verifyOverTechnicalLimit()
 	{
-	    $limit = $this->cliente->getAvailableLimit($type = 'tecnica');
-		return ($this->cliente->getAvailableLimit($type = 'tecnica') - $this->valor_final) < 0;
+		if($this->cliente->isCentroCusto()){
+			dd($this->cliente->centro_custo);
+			$limit = $this->cliente->attributes['limite_credito_tecnica'];
+			$sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
+				[
+					self::_STATUS_FINALIZADA_,
+					self::_STATUS_AGUARDANDO_PECA_,
+					self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+					self::_STATUS_FATURAMENTO_PENDENTE_,
+				])->sum('valor_final');
+
+		} else {
+			$limit = $this->cliente->attributes['limite_credito_tecnica'];
+			$sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
+				[
+					self::_STATUS_FINALIZADA_,
+					self::_STATUS_AGUARDANDO_PECA_,
+					self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+					self::_STATUS_FATURAMENTO_PENDENTE_,
+				])->sum('valor_final');
+
+		}
+		return ($sum > $limit);
+		/*
+			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ABERTA_)
+			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ATENDIMENTO_EM_ANDAMENTO_)
+			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_FATURADA_);
+			*/
 	}
 
 	static public function filter_layout($data)
