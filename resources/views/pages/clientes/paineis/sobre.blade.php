@@ -1,5 +1,5 @@
 {!! Form::model($Cliente, ['method' => 'PATCH','route'=>[$Page->link.'.update',$Cliente->idcliente],
-    'files' => true, 'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
+    'files' => true,'id'=>'form-client', 'class' => 'form-horizontal form-label-left', 'data-parsley-validate']) !!}
     <section class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
             <div class="x_panel">

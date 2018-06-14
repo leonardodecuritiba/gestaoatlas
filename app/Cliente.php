@@ -144,14 +144,19 @@ class Cliente extends Model
     }
 
 
-	public function getLimitCentroCusto()
+	public function getLimitCentroCusto($client_id = NULL)
 	{
 		$max = $this->attributes['limite_credito_tecnica'];
-		$soma = $this->centro_custo_para->sum(function($c){
+		$soma = $this->centro_custo_para($client_id)->sum(function($c){
 			return $c->attributes['limite_credito_tecnica'];
 		});
 
 		return $max - $soma;
+	}
+
+	public function getLimitCentroCustoFormatted()
+	{
+		return DataHelper::getFloat2RealMoeda($this->getLimitCentroCusto($client_id = NULL));
 	}
 
     public function getMaxCentroCusto()
@@ -636,9 +641,11 @@ class Cliente extends Model
     }
 
 
-    public function centro_custo_para() //listagens para quem o cliente é centro de custo
+    public function centro_custo_para($client_id = NULL) //listagens para quem o cliente é centro de custo
     {
-        return $this->hasMany(Cliente::class, 'idcliente_centro_custo','idcliente');
+    	$query = $this->hasMany(Cliente::class, 'idcliente_centro_custo','idcliente');
+    	if($client_id != NULL) $query->where('idcliente', '!=',$client_id);
+    	return $query->get();
     }
 
     public function faturamento()

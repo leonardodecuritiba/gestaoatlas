@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Redirect;
 class ClientesRequest extends Request
 {
     private $table = 'clientes';
+    private $max_limit_technical;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -28,15 +29,14 @@ class ClientesRequest extends Request
      */
     public function rules()
     {
-        $Data = Cliente::find($this->clientes);
-        $id = count($Data) ? $Data->id : 0;
+//	    $this->format_inputs();
 
         $validacao = [
             'centro_custo' => 'required',
             'email_orcamento' => 'required',
             'idsegmento' => 'required',
             'idregiao' => 'required',
-            'limite_credito_tecnica' => 'required|numeric',
+            'limite_credito_tecnica' => 'required',
 //            'limite_credito_comercial' => 'required|numeric',
 //            'distancia' => 'required',
 //            'pedagios' => 'required',
@@ -53,12 +53,11 @@ class ClientesRequest extends Request
             'numero_chamado' => 'required',
         ];
 
-        $this->format_inputs();
         if($this->has('idcliente_centro_custo')){
-        	$CentroCusto = Cliente::find($this->get('idcliente_centro_custo'));
-	        $validacao['limite_credito_tecnica'] = 'required|numeric|max:' .  $CentroCusto->getLimitCentroCusto();
+	        $CentroCusto = Cliente::find($this->get('idcliente_centro_custo'));
+	        $this->max_limit_technical = $CentroCusto->getLimitCentroCusto($this->clientes);
+	        $validacao['limite_credito_tecnica'] = 'required|numeric|max:' .  $this->max_limit_technical;
         }
-//        dd($validacao);
         switch ($this->method()) {
             case 'GET':
             case 'DELETE': {
@@ -92,6 +91,7 @@ class ClientesRequest extends Request
             }
             case 'PUT':
             case 'PATCH': {
+		        $Data = Cliente::find($this->clientes);
                 if ($Data->getType()->tipo_cliente == 0) {
                     //pessoa física
                     $idpfisica = $Data->pessoa_fisica->idpfisica;
@@ -134,6 +134,17 @@ class ClientesRequest extends Request
 			$value = DataHelper::getReal2Float($this->get('limite_credito_comercial'));
 			$this->merge(['limite_credito_comercial' => $value]);
 		}
+	}
+	/**
+	 * Get the error messages for the defined validation rules.
+	 *
+	 * @return array
+	 */
+	public function messages()
+	{
+		return [
+			'limite_credito_tecnica.max'  => 'O Limite de Crédito Técnica não pode ultrapassar ' . DataHelper::getFloat2RealMoeda($this->max_limit_technical),
+		];
 	}
     /**
      * Get the response that handle the request errors.

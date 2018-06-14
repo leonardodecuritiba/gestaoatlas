@@ -12,10 +12,16 @@
     </li>
     <li class="m-top-xs">
         <i class="fa fa-envelope-o user-profile-icon"></i>
-        <a href="#" >{{$Cliente->email_orcamento}}</a>
+        <span>{{$Cliente->email_orcamento}}</span>
     </li>
     <li class="m-top-xs">
         <i class="fa fa-calendar-o user-profile-icon"></i>
-        <a href="#">{{$Cliente->created_at}}</a>
+        <span>{{$Cliente->created_at}}</span>
     </li>
+    @if(!$Cliente->centro_custo)
+        <li class="m-top-xs">
+            <i class="fa fa-money user-profile-icon"></i>
+            <span> Crédito disponível <b class="red">{{$Cliente->getLimitCentroCustoFormatted()}}</b></span>
+        </li>
+    @endif
 </ul>

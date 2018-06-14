@@ -97,5 +97,17 @@
         });
     </script>
     <!-- /Datatables -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("form#form-client").on('submit',function(){
+                $(this).find('input.show-dinheiro').each(function(){
+                    var value = $(this).maskMoney('unmasked')[0];
+                    $(this).maskMoney('destroy');
+                    $(this).val(value);
+
+                });
+            });
+        });
+    </script>
 @endsection
 
