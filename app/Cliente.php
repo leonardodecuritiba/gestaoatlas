@@ -85,6 +85,16 @@ class Cliente extends Model
 
     public function getAvailableLimit($type = 'tecnica')
     {
+	    $limit = $this->attributes['limite_credito_' . $type];
+	    $sum = $this->ordem_servicos->whereIn('idsituacao_ordem_servico',
+		           [
+			           OrdemServico::_STATUS_FINALIZADA_,
+			           OrdemServico::_STATUS_AGUARDANDO_PECA_,
+			           OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+			           OrdemServico::_STATUS_FATURAMENTO_PENDENTE_,
+		           ])->sum('valor_final');
+	    return $limit - $sum;
+	    /*
         $sum = 0;
         if($this->centro_custo){ //se tem centro de custo
             $centro_custo = $this->centro_custo_de;
@@ -106,6 +116,7 @@ class Cliente extends Model
             }
         }
         return $limit - $sum;
+	    */
     }
 
     public function getAvailableLimitTecnica()

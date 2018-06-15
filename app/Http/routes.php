@@ -499,7 +499,13 @@ Route::group(['prefix' => 'teste'], function () {
         $Client = \App\Cliente::find($id);
 
 
-        return $Client->getData();
+        return $Client->ordem_servicos->whereIn('idsituacao_ordem_servico',
+		    [
+			    \App\OrdemServico::_STATUS_FINALIZADA_,
+			    \App\OrdemServico::_STATUS_AGUARDANDO_PECA_,
+			    \App\OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+			    \App\OrdemServico::_STATUS_FATURAMENTO_PENDENTE_,
+		    ]);
     });
 });
 
