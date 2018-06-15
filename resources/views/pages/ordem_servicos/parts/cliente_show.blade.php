@@ -1,5 +1,15 @@
+
+<?php
+$available_limit_tecnica = $OrdemServico->cliente->getAvailableLimitTecnica();
+$available_limit_comercial = $OrdemServico->cliente->getAvailableLimitComercial();
+?>
 <div class="profile_details">
     <div class="well">
+        @if($available_limit_tecnica <= 0)
+            <div class="alert fade in alert-danger" role="alert">
+                Limite Técnica atual (<b>{{DataHelper::getFloat2RealMoeda($available_limit_tecnica)}}</b>) foi atingido para esse cliente. Por favor, contate o Administrador!
+            </div>
+        @endif
         <div class="perfil">
             <h4>Cliente:
                 <a target="_blank"
@@ -23,10 +33,6 @@
                 </li>
                 <li>
                     <i class="fa fa-money"></i> Limite Técnica Atual:
-                    <?php
-                    $available_limit_tecnica = $OrdemServico->cliente->getAvailableLimitTecnica();
-                    $available_limit_comercial = $OrdemServico->cliente->getAvailableLimitComercial();
-                    ?>
                     @if($available_limit_tecnica <= 0)
                         <b class="red">{{DataHelper::getFloat2RealMoeda($available_limit_tecnica)}}</b>
                     @else

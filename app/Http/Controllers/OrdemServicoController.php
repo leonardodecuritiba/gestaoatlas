@@ -388,7 +388,7 @@ class OrdemServicoController extends Controller
 	    //verify if is over client technical limit
 	    if($OrdemServico->verifyOverTechnicalLimit()){
 		    $limit = $OrdemServico->cliente->getAvailableLimitTecnicaFormatted();
-		    $erros = ['Limite Técnica atual (' . $limit . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
+		    $erros = [' Não foi possível finalizar esta O.S. Limite Técnica atual (' . $limit . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
 		    return redirect()->back()
 		                     ->withErrors($erros)
 		                     ->withInput($request->all());
