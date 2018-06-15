@@ -63,8 +63,7 @@ class OrdemServico extends Model
 
 	public function verifyOverTechnicalLimit()
 	{
-
-
+	    $valor_os = $this->valor_final;
 		$limit = $this->cliente->attributes['limite_credito_tecnica'];
 		$sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
 			[
@@ -73,7 +72,8 @@ class OrdemServico extends Model
 				self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
 				self::_STATUS_FATURAMENTO_PENDENTE_,
 			])->sum('valor_final');
-		return ($sum > $limit);
+
+		return ($limit < ($sum + $valor_os));
 
 
 		/*

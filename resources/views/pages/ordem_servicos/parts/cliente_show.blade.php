@@ -22,7 +22,7 @@
                 <li><i class="fa fa-user"></i> Colaborador: <b>{{$OrdemServico->colaborador->nome}}</b>
                 </li>
                 <li>
-                    <i class="fa fa-money"></i> Limite Técnica:
+                    <i class="fa fa-money"></i> Limite Técnica Atual:
                     <?php
                     $available_limit_tecnica = $OrdemServico->cliente->getAvailableLimitTecnica();
                     $available_limit_comercial = $OrdemServico->cliente->getAvailableLimitComercial();
@@ -34,7 +34,7 @@
                     @endif
                 </li>
                 <li>
-                    <i class="fa fa-money"></i> Limite Comercial:
+                    <i class="fa fa-money"></i> Limite Comercial Atual:
                     @if($available_limit_comercial <= 0)
                         <b class="red">{{DataHelper::getFloat2RealMoeda($available_limit_comercial)}}</b>
                     @else
