@@ -176,7 +176,15 @@ class OrdemServicoController extends Controller
     public function abrir($clienteid)
     {
         $Cliente = Cliente::findOrFail($clienteid);
-        if ($Cliente->isValidated()) {
+
+	    //verify if is over client technical limit
+	    $limit = $Cliente->getAvailableLimit('tecnica');
+	    if($limit <= 0){
+	    	$value = DataHelper::getFloat2RealMoeda($limit);
+		    $erros = [' Não foi possível finalizar esta O.S. Limite Técnica atual (' . $value . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
+		    return redirect()->back()
+		                     ->withErrors($erros);
+	    } else if ($Cliente->isValidated()) {
             $OrdemServico = OrdemServico::abrir($Cliente, $this->colaborador->idcolaborador);
             session()->forget('mensagem');
             session(['mensagem' => $this->Page->msg_abr]);
@@ -413,7 +421,6 @@ class OrdemServicoController extends Controller
         $PrintHelper = new PrintHelper();
         return $PrintHelper->exportOS($OrdemServico);
     }
-
 
     public function encaminhar(Request $request, $idordem_servico)
     {
