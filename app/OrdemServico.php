@@ -56,53 +56,53 @@ class OrdemServico extends Model
     private $valor_desconto, $valor_acrescimo;
 
     // ******************** FILTROS ********************************
-	public function getCreatedAtFormattedAttribute()
-	{
-		return DataHelper::getFullPrettyDateTime($this->attributes['created_at']);
-	}
+    public function getCreatedAtFormattedAttribute()
+    {
+        return DataHelper::getFullPrettyDateTime($this->attributes['created_at']);
+    }
 
-	public function verifyOverTechnicalLimit()
-	{
-	    $valor_os = $this->valor_final;
-		$available_limit = $this->cliente->getAvailableLimit('tecnica');
-		return ($available_limit > $valor_os);
+    public function verifyOverTechnicalLimit()
+    {
+        $valor_os = $this->valor_final;
+        $available_limit = $this->cliente->getAvailableLimit('tecnica');
+        return ($available_limit < $valor_os);
 
-		/*
+        /*
 
-		if($this->cliente->isCentroCusto()){
-			dd($this->cliente->centro_custo);
-			$limit = $this->cliente->attributes['limite_credito_tecnica'];
-			$sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
-				[
-					self::_STATUS_FINALIZADA_,
-					self::_STATUS_AGUARDANDO_PECA_,
-					self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
-					self::_STATUS_FATURAMENTO_PENDENTE_,
-				])->sum('valor_final');
+        if($this->cliente->isCentroCusto()){
+            dd($this->cliente->centro_custo);
+            $limit = $this->cliente->attributes['limite_credito_tecnica'];
+            $sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
+                [
+                    self::_STATUS_FINALIZADA_,
+                    self::_STATUS_AGUARDANDO_PECA_,
+                    self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+                    self::_STATUS_FATURAMENTO_PENDENTE_,
+                ])->sum('valor_final');
 
-		} else {
-			$limit = $this->cliente->attributes['limite_credito_tecnica'];
-			$sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
-				[
-					self::_STATUS_FINALIZADA_,
-					self::_STATUS_AGUARDANDO_PECA_,
-					self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
-					self::_STATUS_FATURAMENTO_PENDENTE_,
-				])->sum('valor_final');
+        } else {
+            $limit = $this->cliente->attributes['limite_credito_tecnica'];
+            $sum = $this->cliente->ordem_servicos->whereIn('idsituacao_ordem_servico',
+                [
+                    self::_STATUS_FINALIZADA_,
+                    self::_STATUS_AGUARDANDO_PECA_,
+                    self::_STATUS_EQUIPAMENTO_NA_OFICINA_,
+                    self::_STATUS_FATURAMENTO_PENDENTE_,
+                ])->sum('valor_final');
 
-		}
-		/*
-			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ABERTA_)
-			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ATENDIMENTO_EM_ANDAMENTO_)
-			->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_FATURADA_);
-			*/
-	}
+        }
+        /*
+            ->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ABERTA_)
+            ->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_ATENDIMENTO_EM_ANDAMENTO_)
+            ->where('idsituacao_ordem_servico','<>', OrdemServico::_STATUS_FATURADA_);
+            */
+    }
 
-	static public function filter_layout($data)
-	{
-		$query = self::filter_situacao($data);
-		return (isset($data['centro_custo']) && $data['centro_custo']) ? $query->centroCustos() : $query->clientes();
-	}
+    static public function filter_layout($data)
+    {
+        $query = self::filter_situacao($data);
+        return (isset($data['centro_custo']) && $data['centro_custo']) ? $query->centroCustos() : $query->clientes();
+    }
 
     static public function filter_situacao($data)
     {
@@ -129,7 +129,7 @@ class OrdemServico extends Model
 //                break;
         }
         if (isset($data['data'])) {
-	        $query->where( 'created_at', '>=', DataHelper::getPrettyToCarbonZero( $data['data'] ) );
+            $query->where( 'created_at', '>=', DataHelper::getPrettyToCarbonZero( $data['data'] ) );
         }
 
         $User = Auth::user();
