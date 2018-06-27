@@ -181,8 +181,8 @@ class OrdemServicoController extends Controller
 	    $limit = $Cliente->getAvailableLimit('tecnica');
 	    if($limit <= 0){
 	    	$value = DataHelper::getFloat2RealMoeda($limit);
-		    $erros = [' Não foi possível finalizar esta O.S. Limite Técnica atual (' . $value . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
-		    return redirect()->back()
+            $erros = ['Não foi possível abrir esta O.S. Limite Técnica atual (' . $value . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
+            return redirect()->back()
 		                     ->withErrors($erros);
 	    } else if ($Cliente->isValidated()) {
             $OrdemServico = OrdemServico::abrir($Cliente, $this->colaborador->idcolaborador);
@@ -396,7 +396,7 @@ class OrdemServicoController extends Controller
 	    //verify if is over client technical limit
 	    if($OrdemServico->verifyOverTechnicalLimit()){
 		    $limit = $OrdemServico->cliente->getAvailableLimitTecnicaFormatted();
-		    $erros = [' Não foi possível finalizar esta O.S. Limite Técnica atual (' . $limit . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
+		    $erros = ['Não foi possível finalizar esta O.S. Limite Técnica atual (' . $limit . ') foi atingido para esse cliente. Por favor, contate o Administrador!'];
 		    return redirect()->back()
 		                     ->withErrors($erros)
 		                     ->withInput($request->all());
@@ -422,18 +422,6 @@ class OrdemServicoController extends Controller
         return $PrintHelper->exportOS($OrdemServico);
     }
 
-    public function encaminhar(Request $request, $idordem_servico)
-    {
-        return 'encaminhar por email';
-        $OrdemServico = OrdemServico::find($idordem_servico);
-        $OrdemServico->update([
-            'data_finalizada' => Carbon::now()->toDateTimeString()
-        ]);
-        session()->forget('mensagem');
-        session(['mensagem' => $this->Page->msg_fec]);
-        return $this->resumo($request, $idordem_servico);
-    }
-
     public function resumo($idordem_servico)
     {
         return view('pages.' . $this->Page->link . '.resumo')
@@ -452,6 +440,19 @@ class OrdemServicoController extends Controller
         return view('pages.' . $this->Page->link . '.index')
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
+    }
+
+
+    public function encaminhar(Request $request, $idordem_servico)
+    {
+        return 'encaminhar por email';
+        $OrdemServico = OrdemServico::find($idordem_servico);
+        $OrdemServico->update([
+            'data_finalizada' => Carbon::now()->toDateTimeString()
+        ]);
+        session()->forget('mensagem');
+        session(['mensagem' => $this->Page->msg_fec]);
+        return $this->resumo($request, $idordem_servico);
     }
 
     public function get_ordem_servicos_colaborador(Request $request, $idcliente)
