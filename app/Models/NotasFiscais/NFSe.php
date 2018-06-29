@@ -14,10 +14,11 @@ use Carbon\Carbon;
  */
 class NFSe extends NF
 {
+	/*
     public $servico_params_fixos = [
 
         //3. A aliquota não deve ser enviada para optantes do simples nacional
-        'aliquota' => 3.22,
+        'aliquota' => 2.5,
         'porcentagem_tributos_float' => 11.31,
         'porcentagem_tributos_real' => '11,31%',
 
@@ -32,6 +33,7 @@ class NFSe extends NF
 //        'discriminacao' => 'SERVI\u00c7OS PRESTADOS EM BALAN\u00c7AS, M\u00cdDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOM\u00c7\u00c3O COMERCIAL \\ INDUSTRIA',
         'codigo_municipio' => '3543402', //cliente
     ];
+    */
     private $now;
     private $cabecalho;
     private $prestador;
@@ -40,22 +42,20 @@ class NFSe extends NF
 
     function __construct($debug, Faturamento $faturamento)
     {
+	    $this->_EMPRESA_ = new Empresa();
         $this->debug = $debug;
         if ($this->debug) {
             $this->_SERVER_ = parent::_URL_HOMOLOGACAO_;
             $this->_TOKEN_ = parent::_TOKEN_HOMOLOGACAO_;
             $this->_REF_ = $faturamento->idnfse_homologacao;
-            $this->servico_params_fixos['aliquota'] = 2.50;
         } else {
             $this->_SERVER_ = parent::_URL_PRODUCAO_;
             $this->_TOKEN_ = parent::_TOKEN_PRODUCAO_;
             $this->_REF_ = $faturamento->idnfse_producao;
-            $this->servico_params_fixos['aliquota'] = 3.84;
         }
         $this->_NF_TYPE_ = parent::_URL_NFSe_;
         $this->now = Carbon::now();
         $this->_FATURAMENTO_ = $faturamento;
-        $this->_EMPRESA_ = new Empresa();
         $this->setParams();
     }
 
@@ -153,7 +153,7 @@ class NFSe extends NF
             $endereco["complemento"] = $Contato->complemento; //: Complemento do endereço. Tamanho: 60 caracteres.
         }
         $endereco["bairro"] = $Contato->bairro; //: Bairro. Tamanho: 60 caracteres.
-//        $endereco["codigo_municipio"] = $this->servico_params_fixos['codigo_municipio']; //: código IBGE do município.
+//        $endereco["codigo_municipio"] = $this->_EMPRESA_->codigo_municipio; //: código IBGE do município.
         $endereco["codigo_municipio"] = $Contato->codigo_municipio; //: código IBGE do município.
         $endereco["uf"] = strtoupper($Contato->estado); //: UF do endereço. Tamanho: 2 caracteres.
         $endereco["cep"] = $Contato->getCep(); //: CEP do endereço. Caracteres não numéricos são ignorados.
@@ -172,9 +172,9 @@ class NFSe extends NF
         $valores = $this->_FATURAMENTO_->getValores();
 
 
-        $valor_aproximado_tributos = ($valores['valor_nfse_float'] * $this->servico_params_fixos['porcentagem_tributos_float']) / 100;
-        $discriminacao = $this->servico_params_fixos['discriminacao'] .
-            ' (' . $this->servico_params_fixos['porcentagem_tributos_real'] . ') - ' .
+        $valor_aproximado_tributos = ($valores['valor_nfse_float'] * $this->_EMPRESA_->porcentagem_tributos_float) / 100;
+        $discriminacao = $this->_EMPRESA_->discriminacao .
+            ' (' . $this->_EMPRESA_->porcentagem_tributos_real . ') - ' .
             DataHelper::getFloat2RealMoeda($valor_aproximado_tributos);
         $this->servico = [
             "valor_liquido" => $valores['valor_nfse_float'],
@@ -193,17 +193,17 @@ class NFSe extends NF
             "base_calculo" => 0,//base_calculo: Base de cálculo do ISS, valor padrão igual ao valor_servicos. Campo ignorado pelo município de São Paulo.
 
             //3. A aliquota não deve ser enviada para optantes do simples nacional
-            "aliquota" => $this->servico_params_fixos['aliquota'],//aliquota: Aliquota do ISS.
+            "aliquota" => $this->_EMPRESA_->aliquota,//aliquota: Aliquota do ISS.
 
             "desconto_incondicionado" => 0,//desconto_incondicionado: Valor do desconto incondicionado. Campo ignorado pelo município de São Paulo.
             "desconto_condicionado" => 0,//desconto_condicionado: Valor do desconto incondicionado. Campo ignorado pelo município de São Paulo.
-            "item_lista_servico" => $this->servico_params_fixos['item_lista_servico'],//item_lista_servico (*): informar o código da lista de serviços, de acordo com a Lei Complementar 116/2003. Utilize outra tabela para o município de São Paulo.
+            "item_lista_servico" => $this->_EMPRESA_->item_lista_servico,//item_lista_servico (*): informar o código da lista de serviços, de acordo com a Lei Complementar 116/2003. Utilize outra tabela para o município de São Paulo.
             //2. Não deve ser enviado o código cnae para esta prefeitura
-//            "codigo_cnae" => $this->servico_params_fixos['codigo_cnae'],//codigo_cnae: Informar o código CNAE. Campo ignorado pelo município de São Paulo.
+//            "codigo_cnae" => $this->_EMPRESA_->codigo_cnae,//codigo_cnae: Informar o código CNAE. Campo ignorado pelo município de São Paulo.
 
-            "codigo_tributario_municipio" => $this->servico_params_fixos['codigo_tributario_municipio'],//codigo_tributario_municipio: Informar o código tributário de acordo com a tabela de cada município (não há um padrão). Campo ignorado pelo município de São Paulo.
+            "codigo_tributario_municipio" => $this->_EMPRESA_->codigo_tributario_municipio,//codigo_tributario_municipio: Informar o código tributário de acordo com a tabela de cada município (não há um padrão). Campo ignorado pelo município de São Paulo.
             "discriminacao" => $discriminacao,//discriminacao(*): Discriminação dos serviços. Tamanho: 2000 caracteres.
-//            "codigo_municipio" => $this->servico_params_fixos['codigo_municipio'],//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
+//            "codigo_municipio" => $this->_EMPRESA_->codigo_municipio,//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
             "codigo_municipio" => $this->_EMPRESA_->icms_codigo_municipio,//codigo_municipio(*): Informar o código IBGE do município de prestação do serviço.
             "percentual_total_tributos" => 0,//percentual_total_tributos: Percentual aproximado de todos os impostos, de acordo com a Lei da Transparência. No momento disponível apenas para São Paulo.
 //                    "fonte_total_tributos" =>0 ,//fonte_total_tributos: Fonte de onde foi retirada a informação de total de impostos, por exemplo, “IBPT”. No momento disponível apenas para São Paulo.

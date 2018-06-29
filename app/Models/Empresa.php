@@ -7,6 +7,20 @@ use App\Helpers\DataHelper;
 class Empresa
 {
 // (16)9826-3040/(16)9826-3260
+
+    public $aliquota = 2.5;//3. A aliquota não deve ser enviada para optantes do simples nacional
+    public $porcentagem_tributos_float = 11.31;
+    public $porcentagem_tributos_real = '11,31%';
+    public $item_lista_servico = '14.01';//'14.01/14.01.11',
+    public $codigo_cnae = '3314710';//'3314-7/10',
+
+	//4. Faltava um dígido no codigo_tributacao_municipio
+    public $codigo_tributario_municipio = '14.01.11 / 00140111';//'14.01',
+
+	//1. Alterei a configuração para remover automaticamente os acentos
+    public $discriminacao = 'SERVIÇOS PRESTADOS EM BALANÇAS, MÍDIAS, COLETORES DE DADOS, CFTV, SERVIDORES, FATIADORES, REDES DE DADOS E OUTROS EQUIPAMANTOS DE AUTOMAÇÃO COMERCIAL \ INDUSTRIAL.\n\nVALOR APROXIMADO DOS TRIBUTOS';
+    public $codigo_municipio = '3543402';//cliente
+
     public $cnpj = '10555180000121';
     public $ie = '797146934117';
     public $im = '20033165';
