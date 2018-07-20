@@ -488,19 +488,9 @@ class Cliente extends Model
         return ($this->attributes['foto'] != '') ? asset('uploads/' . $this->table . '/thumb_' . $this->attributes['foto']) : asset('imgs/user.png');
     }
 
-    public function setLimiteCreditoTecnicaAttribute($value)
-    {
-        $this->attributes['limite_credito_tecnica'] = DataHelper::getReal2Float($value);
-    }
-
     public function getLimiteCreditoTecnicaAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
-    }
-
-    public function setLimiteCreditoComercialAttribute($value)
-    {
-        $this->attributes['limite_credito_comercial'] = DataHelper::getReal2Float($value);
     }
 
     public function getLimiteCreditoComercialAttribute($value)
@@ -542,10 +532,10 @@ class Cliente extends Model
         return DataHelper::getFloat2Real($value);
     }
 
-    public function setPedagiosAttribute($value)
-    {
-        $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
-    }
+//    public function setPedagiosAttribute($value)
+//    {
+//	    $this->attributes['pedagios'] = DataHelper::getReal2Float($value);
+//    }
 
     public function getPedagiosAttribute($value)
     {
@@ -554,11 +544,6 @@ class Cliente extends Model
 
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
-
-    public function setOutrosCustosAttribute($value)
-    {
-        $this->attributes['outros_custos'] = DataHelper::getReal2Float($value);
-    }
 
     public function getOutrosCustosAttribute($value)
     {
