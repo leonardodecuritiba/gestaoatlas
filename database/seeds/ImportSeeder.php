@@ -14,7 +14,41 @@ class ImportSeeder extends Seeder
      */
     public function run()
     {
-        $start = microtime(true);
+	    //php artisan db:seed --class=ImportSeeder
+	    $start = microtime(true);
+	    echo "*** Iniciando o Upload (clientes_pedagio.xls) ***";
+	    $file = 'storage/uploads/import/clientes_pedagio.xls';
+	    echo "\n*** Upload completo em " . round((microtime(true) - $start), 3) . "s ***";
+	    set_time_limit(3600);
+	    $reader = Excel::load($file, function ($sheet) {
+		    // Loop through all sheets
+		    $sheet->each(function ($row) {
+
+//			    dd(\App\Helpers\DataHelper::getReal2Float($row->pedagios));
+//			    dd($row);
+			    \App\Cliente::where('idcliente', intval($row->idcliente))->update([
+			    	'pedagios' => \App\Helpers\DataHelper::getReal2Float($row->pedagios)
+			    ]);
+			    echo "\n*** id " . intval($row->idcliente) . " ***";
+		    });
+
+	    })->ignoreEmpty();
+	    echo "\n*** Importacao IMPORTSEEDER (part1) realizada com sucesso em " . round((microtime(true) - $start), 3) . "s ***";
+
+
+
+
+	    return;
+
+
+
+
+
+
+
+
+
+	    $start = microtime(true);
         echo "*** Iniciando o Upload (import_clientes.xlsx) ***";
         $file = storage_path('uploads') . '\import\import_clientes.xlsx';
         echo "\n*** Upload completo em " . round((microtime(true) - $start), 3) . "s ***";
