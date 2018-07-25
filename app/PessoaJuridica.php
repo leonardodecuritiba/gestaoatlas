@@ -74,6 +74,21 @@ class PessoaJuridica extends Model
         $this->attributes['cnpj'] = DataHelper::getOnlyNumbers($value);
     }
 
+    public function getDataSitCad()
+    {
+        return $this->attributes['data_sit_cad'];
+    }
+
+    public function getDataCredenciamento()
+    {
+        return $this->attributes['data_credenciamento'];
+    }
+
+    public function getDataIniObrigatoriedade()
+    {
+        return $this->attributes['data_ini_obrigatoriedade'];
+    }
+
     public function setDataSitCadAttribute($value)
     {
         if($value != NULL && $value != 0){

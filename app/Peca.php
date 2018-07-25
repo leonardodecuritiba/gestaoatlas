@@ -73,15 +73,6 @@ class Peca extends Model
 		} )->pluck( 'description', 'id' );
 	}
 
-    public function has_insumos()
-    {
-        return ($this->insumos()->count() > 0);
-    }
-
-    public function insumos()
-    {
-        return $this->hasMany('App\Insumo', 'idinsumo');
-    }
 
     public function getFoto()
     {
@@ -108,6 +99,11 @@ class Peca extends Model
         $this->attributes['comissao_tecnico'] = DataHelper::getPercent2Float($value);
     }
 
+    public function getComissaoTecnico()
+    {
+        return $this->attributes['comissao_tecnico'];
+    }
+
     public function getComissaoTecnicoAttribute($value)
     {
         return DataHelper::getFloat2Real($value);
@@ -123,8 +119,23 @@ class Peca extends Model
         return DataHelper::getFloat2Real($value);
     }
 
+    public function getComissaoVendedor()
+    {
+        return $this->attributes['comissao_vendedor'];
+    }
+
     // ******************** RELASHIONSHIP ******************************
     // ************************** HAS **********************************
+	public function has_insumos()
+	{
+		return ($this->insumos()->count() > 0);
+	}
+
+	public function insumos()
+	{
+		return $this->hasMany('App\Insumo', 'idinsumo');
+	}
+
     public function has_fornecedor()
     {
         return $this->fornecedor()->count();

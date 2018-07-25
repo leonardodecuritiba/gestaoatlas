@@ -285,4 +285,179 @@ class ClientesController extends Controller
         })->ignoreEmpty();
     }
 
+	public function exportarFile(ExcelFile $export)
+	{
+		$Clientes = Cliente::all();
+		return $export->sheet('sheetName', function ($sheet) use ($Clientes) {
+
+			$data_fornecedor = array(
+				'idcliente',
+				'idcontato',
+				'idcliente_centro_custo',
+				'idpjuridica',
+				'idpfisica',
+				'idsegmento',
+
+				'idregiao',
+				'idcolaborador_criador',
+				'idcolaborador_validador',
+				'validated_at',
+
+				'centro_custo',
+				'email_orcamento',
+				'email_nota',
+				'foto',
+				'limite_credito',
+				'nome_responsavel',
+				'distancia',
+				'pedagios',
+				'outros_custos',
+
+				'idforma_pagamento_comercial',
+				'prazo_pagamento_comercial',
+				'idemissao_comercial',
+				'limite_credito_comercial',
+				'idtabela_preco_comercial',
+
+				'idforma_pagamento_tecnica',
+				'prazo_pagamento_tecnica',
+				'idemissao_tecnica',
+				'limite_credito_tecnica',
+				'idtabela_preco_tecnica',
+
+				'numero_chamado',
+
+			);
+
+			$sheet->row(1, $data_fornecedor);
+
+			$i = 2;
+
+			foreach ($Clientes as $cliente) {
+				$contato = $cliente->contato;
+				$segment = $cliente->segmento;
+				if($segment != NULL){
+					$segment = $segment->descricao;
+				}
+				$pjuridica = $cliente->pessoa_juridica;
+				$pfisica = $cliente->pessoa_fisica;
+
+
+
+				$data_export = [
+
+					'idcliente'          => $fornecedor->idfornecedor,
+					'idfornecedor'          => $fornecedor->idfornecedor,
+					'idcontato'             => $fornecedor->idcontato,
+					'idpjuridica'           => $fornecedor->idpjuridica,
+					'idpfisica'             => $fornecedor->idpfisica,
+					'idsegmento_fornecedor' => $fornecedor->idsegmento_fornecedor,
+
+					'segment_name'      => $segment,
+
+//		    'legal_person_id',
+//		    'fisical_person_id',
+					'budget_email'      => $fornecedor->email_orcamento,
+					'group'             => $fornecedor->grupo,
+					'responsible_name'  => $fornecedor->nome_responsavel,
+
+					"cnpj"                      => ($pjuridica!=NULL) ? $pjuridica->getCnpj() : NULL,
+					"ie"                        => ($pjuridica!=NULL) ? $pjuridica->getIe() : NULL,
+					"exemption_ie"              => ($pjuridica!=NULL) ? $pjuridica->isencao_ie : NULL,
+					"social_reason"             => ($pjuridica!=NULL) ? $pjuridica->razao_social : NULL,
+					"fantasy_name"              => ($pjuridica!=NULL) ? $pjuridica->nome_fantasia : NULL,
+					"ativ_economica"            => ($pjuridica!=NULL) ? $pjuridica->ativ_economica : NULL,
+					"sit_cad_vigente"           => ($pjuridica!=NULL) ? $pjuridica->sit_cad_vigente : NULL,
+					"sit_cad_status"            => ($pjuridica!=NULL) ? $pjuridica->sit_cad_status : NULL,
+					"data_sit_cad"              => ($pjuridica!=NULL) ? $pjuridica->getDataSitCad() : NULL,
+					"reg_apuracao"              => ($pjuridica!=NULL) ? $pjuridica->reg_apuracao : NULL,
+					"data_credenciamento"       => ($pjuridica!=NULL) ? $pjuridica->getDataCredenciamento() : NULL,
+					"ind_obrigatoriedade"       => ($pjuridica!=NULL) ? $pjuridica->ind_obrigatoriedade : NULL,
+					"data_ini_obrigatoriedade"  => ($pjuridica!=NULL) ? $pjuridica->getDataIniObrigatoriedade() : NULL,
+
+					"cpf"                       => ($pjuridica==NULL) ? $pfisica->getCpf() : NULL,
+					"type"                      => ($pjuridica!=NULL) ? 'legal_person' : 'fisical_person',
+
+//			'address_id',
+					'state_name'        => $contato->estado,
+					'city_name'         => $contato->cidade,
+					'zip'               => $contato->getCep(),
+					'city_code'         => $contato->codigo_municipio,
+					'district'          => $contato->bairro,
+					'street'            => $contato->logradouro,
+					'number'            => $contato->numero,
+					'complement'        => $contato->complemento,
+
+//			'contact_id',
+					'phone'             => $contato->getTelefone(),
+					'cellphone'         => $contato->getCelular(),
+					'skype'             => $contato->skype,
+					'email'             => $contato->email_orcamento,
+				];
+
+
+				$sheet->row($i, $data_export);
+				$i++;
+			}
+		})->export('xls');
+	}
+
+	public function exportar(ExcelFile $export)
+	{
+		$Clientes = Cliente::all();
+		return $export->sheet('sheetName', function ($sheet) use ($Clientes) {
+
+			$data_fornecedor = array(
+				'idcliente',
+				'razao_social',
+				'nome_fantasia',
+				'document',
+
+				'email_orcamento',
+				'email_nota',
+				'limite_credito',
+				'nome_responsavel',
+				'distancia',
+				'pedagios',
+				'outros_custos',
+
+				'numero_chamado',
+
+			);
+
+			$sheet->row(1, $data_fornecedor);
+
+			$i = 2;
+
+			foreach ($Clientes as $cliente) {
+				$contato = $cliente->contato;
+				$pjuridica = $cliente->pessoa_juridica;
+				$pfisica = $cliente->pessoa_fisica;
+
+
+				$data_export = [
+
+					'idcliente' => $cliente->idcliente,
+					'razao_social' => ($pjuridica != NULL) ? $pjuridica->razao_social : '',
+					'nome_fantasia' => ($pjuridica != NULL) ? $pjuridica->nome_fantasia : '',
+					'document' => ($pjuridica != NULL) ? $pjuridica->cnpj : $pfisica->cpf,
+
+					'email_orcamento' => $cliente->email_orcamento,
+					'email_nota' => $cliente->email_nota,
+					'limite_credito' => $cliente->limite_credito,
+					'nome_responsavel' => $cliente->nome_responsavel,
+					'distancia' => $cliente->distancia,
+					'pedagios' => $cliente->pedagios,
+					'outros_custos' => $cliente->outros_custos,
+
+					'numero_chamado' => $cliente->numero_chamado,
+				];
+
+
+				$sheet->row($i, $data_export);
+				$i++;
+			}
+		})->export('xls');
+	}
+
 }

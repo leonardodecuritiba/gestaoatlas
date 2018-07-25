@@ -41,6 +41,11 @@ class Contato extends Model
         return $this->attributes['telefone'];
     }
 
+    public function getCelular()
+    {
+        return $this->attributes['celular'];
+    }
+
     public function getTelefoneAttribute($value)
     {
         return DataHelper::mask($value, '(##) ####-####');

@@ -11,6 +11,11 @@
 |
 */
 
+Route::get('export-clientes', 'ClientesController@exportarFile'); //EXPORTAR FORNECEDORES
+Route::get('export-fornecedores', 'FornecedoresController@exportarFile'); //EXPORTAR FORNECEDORES
+Route::get('export-pecas', 'PecasController@exportarFile'); //EXPORTAR FORNECEDORES
+
+
 
 
 //Route::get('importar_banco', 'Controller@importar');
@@ -26,6 +31,7 @@ Route::group(['middleware' => ['auth']], function() {
 	Route::resource('clientes', 'ClientesController');
 	Route::patch('clientes/{cliente}', 'ClientesController@update')->name('clientes.update');
 	Route::get('cliente/validar/{id}', 'ClientesController@validar')->name('cliente.validar');
+	Route::get('clientes-exportar', 'ClientesController@exportar');
 
 	Route::resource('instrumentos', 'InstrumentosController');
 	Route::resource('fornecedores', 'FornecedoresController');
