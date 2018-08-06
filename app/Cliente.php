@@ -162,7 +162,7 @@ class Cliente extends Model
             }
 
         }
-        $query->orWhere('nome_responsavel', 'like', '%' . $search . '%');
+//        $query->orWhere('nome_responsavel', 'like', '%' . $search . '%');
         return $query
             ->with('pessoa_juridica', 'pessoa_fisica');
     }
