@@ -151,14 +151,18 @@ class Cliente extends Model
         $query = (new self)->newQuery();
         if ($search != NULL) {
             $pj_ids = PessoaJuridica::where('razao_social', 'like', '%' . $search . '%')
-                ->orWhere('nome_fantasia', 'like', '%' . $search . '%')->pluck('idpjuridica');
+                ->orWhere('nome_fantasia', 'like', '%' . $search . '%')
+                ->pluck('idpjuridica');
             if($pj_ids->count() > 0){
                 $query->whereIn('idpjuridica', $pj_ids);
             }
 
-            $pf_ids = PessoaFisica::where('cpf', 'like', '%' . DataHelper::getOnlyNumbers($search) . '%')->pluck('idpfisica');
-            if($pf_ids->count() > 0){
-                $query->whereIn('idpfisica', $pf_ids);
+            $numbers = DataHelper::getOnlyNumbers($search);
+            if($numbers != ""){
+                $pf_ids = PessoaFisica::where('cpf', 'like', '%' . DataHelper::getOnlyNumbers($search) . '%')->pluck('idpfisica');
+                if($pf_ids->count() > 0){
+                    $query->whereIn('idpfisica', $pf_ids);
+                }
             }
 
         }
