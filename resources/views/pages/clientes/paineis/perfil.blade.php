@@ -21,7 +21,7 @@
     @if(!$Cliente->centro_custo)
         <li class="m-top-xs">
             <i class="fa fa-money user-profile-icon"></i>
-            <span> Crédito disponível <b class="red">{{$Cliente->getLimitCentroCustoFormatted()}}</b></span>
+            <span> Crédito disponível <b class="red">{{$Cliente->getAvailableLimitTecnicaFormatted()}}</b></span>
         </li>
     @endif
 </ul>
