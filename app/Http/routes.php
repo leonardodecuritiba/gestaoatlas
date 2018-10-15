@@ -11,6 +11,7 @@
 |
 */
 
+Route::get('export-equipamentos', 'EquipamentosController@exportarFile'); //EXPORTAR FORNECEDORES
 Route::get('export-clientes', 'ClientesController@exportarFile'); //EXPORTAR FORNECEDORES
 Route::get('export-fornecedores', 'FornecedoresController@exportarFile'); //EXPORTAR FORNECEDORES
 Route::get('export-pecas', 'PecasController@exportarFile'); //EXPORTAR FORNECEDORES

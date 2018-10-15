@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Equipamento;
+use App\Models\ExcelFile;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -25,7 +26,7 @@ class EquipamentosController extends Controller
             $this->Empresa = (Auth::user()->empresa == "")?'*':Auth::user()->empresa;
         }
         */
-        $this->idcolaborador = Auth::user()->colaborador->idcolaborador;
+        $this->idcolaborador = (Auth::check()) ? Auth::user()->colaborador->idcolaborador : NULL;
         $this->Page = (object)[
             'link'              => "equipamentos",
             'Target'            => "Equipamento",
@@ -122,5 +123,44 @@ class EquipamentosController extends Controller
         $Equipamento->delete();
         return response()->json(['status' => '1',
             'response' => $this->Page->Target.' removido com sucesso!']);
+    }
+
+    public function exportarFile(ExcelFile $export)
+    {
+        $Equipamentos = Equipamento::all();
+        return $export->sheet('sheetName', function ($sheet) use ($Equipamentos) {
+
+            $data_equipamento = array(
+                'idequipamento',
+                'idcliente',
+                'brand_id',
+                'brand_name',
+                'description',
+                'model',
+                'serial_number'
+
+            );
+
+            $sheet->row(1, $data_equipamento);
+
+            $i = 2;
+
+            foreach ($Equipamentos as $equipamento) {
+                $data_export = [
+
+                    'idequipamento' => $equipamento->idequipamento,
+                    'idcliente'     => $equipamento->idcliente,
+                    'brand_id'      => $equipamento->idmarca,
+                    'brand_name'    => $equipamento->marca->descricao,
+                    'description'   => $equipamento->descricao,
+                    'model'         => $equipamento->modelo,
+                    'serial_number' => $equipamento->numero_serie,
+
+                ];
+
+                $sheet->row($i, $data_export);
+                $i++;
+            }
+        })->export('xls');
     }
 }
