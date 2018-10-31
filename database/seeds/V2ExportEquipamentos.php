@@ -15,7 +15,7 @@ class V2ExportEquipamentos extends Seeder
     {
 //	    php artisan db:seed --class=V2ExportEquipamentos
 	    $Equipamentos = Equipamento::all();
-	    return Excel::create('fornecedores', function ($excel) use ($Equipamentos) {
+	    return Excel::create('equipamentos', function ($excel) use ($Equipamentos) {
 		    $excel->sheet('Sheet 1', function($sheet) use($Equipamentos) {
 
 			    $data_equipamento = array(

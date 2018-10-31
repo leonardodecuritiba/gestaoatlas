@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Seeder;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Models\Ajustes\RecursosHumanos\Clientes\Segmento;
+use App\Models\Ajustes\RecursosHumanos\Fornecedores\SegmentoFornecedor;
 
-class V2ExportSegmentos extends Seeder
+class V2ExportSegmentosFornecedores extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,9 +14,9 @@ class V2ExportSegmentos extends Seeder
     public function run()
     {
 
-//	    php artisan db:seed --class=V2ExportRegioes
-        $Data = Segmento::all();
-        return Excel::create('segments', function ($excel) use ($Data) {
+//	    php artisan db:seed --class=V2ExportSegmentosFornecedores
+        $Data = SegmentoFornecedor::all();
+        return Excel::create('segments_suppliers', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
                     'idsegmento',

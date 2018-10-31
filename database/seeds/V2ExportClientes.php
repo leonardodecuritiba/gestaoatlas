@@ -16,7 +16,7 @@ class V2ExportClientes extends Seeder
 //	    php artisan db:seed --class=V2ExportClientes
 
 	    $Clientes = Cliente::all();
-	    return Excel::create('fornecedores', function ($excel) use ($Clientes) {
+	    return Excel::create('clients', function ($excel) use ($Clientes) {
 		    $excel->sheet('Sheet 1', function($sheet) use($Clientes) {
 
 

@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Seeder;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Fornecedor;
+use App\Models\Ajustes\RecursosHumanos\Clientes\Regiao;
 
-class V2ExportFornecedores extends Seeder
+class V2ExportRegioes extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,130 +13,29 @@ class V2ExportFornecedores extends Seeder
      */
     public function run()
     {
-//	    php artisan db:seed --class=V2ExportFornecedores
 
-	    $Fornecedores = Fornecedor::all();
-	    return Excel::create('fornecedores', function ($excel) use ($Fornecedores) {
-		    $excel->sheet('Sheet 1', function($sheet) use($Fornecedores) {
+//	    php artisan db:seed --class=V2ExportRegioes
+        $Data = Regiao::all();
+        return Excel::create('regioes', function ($excel) use ($Data) {
+            $excel->sheet('Sheet 1', function($sheet) use($Data) {
+                $sheet->row(1, array(
+                    'idregiao',
+                    'description',
+                ));
 
-			    $data_fornecedor = array(
-				    'idfornecedor',
-				    'idcontato',
-				    'idpjuridica',
-				    'idpfisica',
-				    'idsegmento_fornecedor',
+                $i = 2;
 
-				    'segment_name',
+                foreach ($Data as $data) {
+                    $data_export = [
+                        'idregiao'      => $data->idregiao,
+                        'description'   => $data->descricao,
+                    ];
 
-				    'budget_email',
-				    'group',
-				    'responsible_name',
+                    $sheet->row($i, $data_export);
+                    $i++;
+                }
+            });
 
-				    "cnpj",
-				    "ie",
-				    "exemption_ie",
-				    "social_reason",
-				    "fantasy_name",
-				    "ativ_economica",
-				    "sit_cad_vigente",
-				    "sit_cad_status",
-				    "data_sit_cad",
-				    "reg_apuracao",
-				    "data_credenciamento",
-				    "ind_obrigatoriedade",
-				    "data_ini_obrigatoriedade",
-
-				    "cpf",
-				    "type",
-
-//			    'address_id',
-				    'state_name',
-				    'city_name',
-				    'zip',
-				    'city_code',
-				    'district',
-				    'street',
-				    'number',
-				    'complement',
-
-//			    'contact_id',
-				    'phone',
-				    'cellphone',
-				    'skype',
-				    'email',
-			    );
-
-			    $sheet->row(1, $data_fornecedor);
-
-			    $i = 2;
-
-			    foreach ($Fornecedores as $fornecedor) {
-				    $contato = $fornecedor->contato;
-				    $segment = $fornecedor->segmento;
-				    if($segment != NULL){
-					    $segment = $segment->descricao;
-				    }
-				    $pjuridica = $fornecedor->pessoa_juridica;
-				    $pfisica = $fornecedor->pessoa_fisica;
-
-
-				    $data_export = [
-
-					    'idfornecedor'          => $fornecedor->idfornecedor,
-					    'idcontato'             => $fornecedor->idcontato,
-					    'idpjuridica'           => $fornecedor->idpjuridica,
-					    'idpfisica'             => $fornecedor->idpfisica,
-					    'idsegmento_fornecedor' => $fornecedor->idsegmento_fornecedor,
-
-					    'segment_name'      => $segment,
-
-//		    'legal_person_id',
-//		    'fisical_person_id',
-					    'budget_email'      => $fornecedor->email_orcamento,
-					    'group'             => $fornecedor->grupo,
-					    'responsible_name'  => $fornecedor->nome_responsavel,
-
-					    "cnpj"                      => ($pjuridica!=NULL) ? $pjuridica->getCnpj() : NULL,
-					    "ie"                        => ($pjuridica!=NULL) ? $pjuridica->getIe() : NULL,
-					    "exemption_ie"              => ($pjuridica!=NULL) ? $pjuridica->isencao_ie : NULL,
-					    "social_reason"             => ($pjuridica!=NULL) ? $pjuridica->razao_social : NULL,
-					    "fantasy_name"              => ($pjuridica!=NULL) ? $pjuridica->nome_fantasia : NULL,
-					    "ativ_economica"            => ($pjuridica!=NULL) ? $pjuridica->ativ_economica : NULL,
-					    "sit_cad_vigente"           => ($pjuridica!=NULL) ? $pjuridica->sit_cad_vigente : NULL,
-					    "sit_cad_status"            => ($pjuridica!=NULL) ? $pjuridica->sit_cad_status : NULL,
-					    "data_sit_cad"              => ($pjuridica!=NULL) ? $pjuridica->getDataSitCad() : NULL,
-					    "reg_apuracao"              => ($pjuridica!=NULL) ? $pjuridica->reg_apuracao : NULL,
-					    "data_credenciamento"       => ($pjuridica!=NULL) ? $pjuridica->getDataCredenciamento() : NULL,
-					    "ind_obrigatoriedade"       => ($pjuridica!=NULL) ? $pjuridica->ind_obrigatoriedade : NULL,
-					    "data_ini_obrigatoriedade"  => ($pjuridica!=NULL) ? $pjuridica->getDataIniObrigatoriedade() : NULL,
-
-					    "cpf"                       => ($pjuridica==NULL) ? $pfisica->getCpf() : NULL,
-					    "type"                      => ($pjuridica!=NULL) ? 'legal_person' : 'fisical_person',
-
-//			'address_id',
-					    'state_name'        => $contato->estado,
-					    'city_name'         => $contato->cidade,
-					    'zip'               => $contato->getCep(),
-					    'city_code'         => $contato->codigo_municipio,
-					    'district'          => $contato->bairro,
-					    'street'            => $contato->logradouro,
-					    'number'            => $contato->numero,
-					    'complement'        => $contato->complemento,
-
-//			'contact_id',
-					    'phone'             => $contato->getTelefone(),
-					    'cellphone'         => $contato->getCelular(),
-					    'skype'             => $contato->skype,
-					    'email'             => $contato->email_orcamento,
-				    ];
-
-
-				    $sheet->row($i, $data_export);
-				    $i++;
-			    }
-		    });
-
-	    })->store('xls');
-
+        })->store('xls');
     }
 }
