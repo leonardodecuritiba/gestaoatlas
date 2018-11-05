@@ -1,19 +1,44 @@
 <?php
 
-use Illuminate\Database\Seeder;
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Marca;
 
-class V2ExportMarcas extends Seeder
+class ExportMarcas extends Command
 {
     /**
-     * Run the database seeds.
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'command:export_marcas';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
+
+    /**
+     * Create a new command instance.
      *
      * @return void
      */
-    public function run()
+    public function __construct()
     {
-//	    php artisan db:seed --class=V2ExportMarcas
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
         $Data = Marca::all();
         return Excel::create('marcas', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
@@ -37,7 +62,6 @@ class V2ExportMarcas extends Seeder
             });
 
         })->store('xls');
-
 
     }
 }

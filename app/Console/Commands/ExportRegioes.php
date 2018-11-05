@@ -1,20 +1,44 @@
 <?php
 
-use Illuminate\Database\Seeder;
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Ajustes\RecursosHumanos\Clientes\Regiao;
 
-class V2ExportRegioes extends Seeder
+class ExportRegioes extends Command
 {
     /**
-     * Run the database seeds.
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'command:export_regioes';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
+
+    /**
+     * Create a new command instance.
      *
      * @return void
      */
-    public function run()
+    public function __construct()
     {
+        parent::__construct();
+    }
 
-//	    php artisan db:seed --class=V2ExportRegioes
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
         $Data = Regiao::all();
         return Excel::create('regioes', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {

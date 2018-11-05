@@ -14,7 +14,19 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\CheckParcelas::class
+        Commands\CheckParcelas::class,
+        Commands\ExportClientes::class,
+        Commands\ExportEquipamentos::class,
+        Commands\ExportFornecedores::class,
+        Commands\ExportGrupos::class,
+        Commands\ExportMarcas::class,
+        Commands\ExportNcm::class,
+        Commands\ExportPecas::class,
+        Commands\ExportRegioes::class,
+        Commands\ExportSegmentos::class,
+        Commands\ExportSegmentosFornecedores::class,
+        Commands\ExportServicos::class,
+        Commands\MakeExport::class,
         // Commands\Inspire::class,
     ];
 

@@ -1,20 +1,44 @@
 <?php
 
-use Illuminate\Database\Seeder;
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Ncm;
 
-class V2ExportNcm extends Seeder
+class ExportNcm extends Command
 {
     /**
-     * Run the database seeds.
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'command:export_ncm';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
+
+    /**
+     * Create a new command instance.
      *
      * @return void
      */
-    public function run()
+    public function __construct()
     {
+        parent::__construct();
+    }
 
-//	    php artisan db:seed --class=V2ExportNcm
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
         $Data = Ncm::all();
         return Excel::create('ncms', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {

@@ -11,7 +11,7 @@ class MakeExport extends Command
      *
      * @var string
      */
-    protected $signature = 'export';
+    protected $signature = 'command:export';
 
     /**
      * The console command description.
@@ -37,6 +37,16 @@ class MakeExport extends Command
      */
     public function handle()
     {
-        //exportar
+        $this->call('command:export_clientes');
+        $this->call('command:export_equipamentos');
+        $this->call('command:export_fornecedores');
+        $this->call('command:export_grupos');
+        $this->call('command:export_marcas');
+        $this->call('command:export_ncm');
+        $this->call('command:export_pecas');
+        $this->call('command:export_regioes');
+        $this->call('command:export_segmentos');
+        $this->call('command:export_segmentos_fornecedores');
+        $this->call('command:export_servicos');
     }
 }

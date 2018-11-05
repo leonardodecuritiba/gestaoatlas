@@ -1,20 +1,44 @@
 <?php
 
-use Illuminate\Database\Seeder;
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Servico;
 
-class V2ExportServicos extends Seeder
+class ExportServicos extends Command
 {
     /**
-     * Run the database seeds.
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'command:export_servicos';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
+
+    /**
+     * Create a new command instance.
      *
      * @return void
      */
-    public function run()
+    public function __construct()
     {
+        parent::__construct();
+    }
 
-//	    php artisan db:seed --class=V2ExportServicos
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
         $Data = Servico::all();
         return Excel::create('servicos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
