@@ -48,5 +48,7 @@ class MakeExport extends Command
         $this->call('command:export_segmentos');
         $this->call('command:export_segmentos_fornecedores');
         $this->call('command:export_servicos');
+	    $path = storage_path('exports');
+	    exec('zip -r ' . $path . '.zip ' . $path);
     }
 }
