@@ -87,13 +87,13 @@ class Cliente extends Model
     {
 	    $limit = $this->attributes['limite_credito_' . $type];
 	    if($type == 'tecnica'){
-            $sum = $this->ordem_servicos->whereIn('idsituacao_ordem_servico',
-                [
+            $os = $this->ordem_servicos->whereIn('idsituacao_ordem_servico',                [
                     OrdemServico::_STATUS_FINALIZADA_,
                     OrdemServico::_STATUS_AGUARDANDO_PECA_,
                     OrdemServico::_STATUS_EQUIPAMENTO_NA_OFICINA_,
                     OrdemServico::_STATUS_FATURAMENTO_PENDENTE_,
-                ])->sum('valor_final');
+                ]);
+            $sum = $os->sum('valor_final');
         } else {
 	        $sum = 0;
         }
