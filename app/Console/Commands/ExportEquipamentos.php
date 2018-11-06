@@ -64,18 +64,19 @@ class ExportEquipamentos extends Command
 
 //                    verificar se foto existe
                     $new_path = storage_path('exports/equipamentos/');
-                    if($equipamento->foto != NULL){
-                        $path = public_path('uploads/equipamentos/' . $equipamento->foto);
-                        if(File::exists($path)){
-                            if(!File::exists($new_path)) {
-                                // path does not exist
-                                File::makeDirectory($new_path, $mode = 0777, true, true);
-                            }
-                            $move = File::move($path, $new_path . $equipamento->foto);
-                        } else {
-                            $equipamento->foto = NULL;
-                        }
-                    }
+	                if($equipamento->foto != NULL){
+		                $path = public_path('uploads/equipamentos/' . $equipamento->foto);
+		                if(File::exists($path)){
+			                if(!File::exists($new_path)) {
+				                // path does not exist
+				                File::makeDirectory($new_path, $mode = 0777, true, true);
+			                }
+			                $copy = File::copy($path, $new_path . $equipamento->foto);
+		                } else {
+			                echo('NÃO EXISTE : ' . $equipamento->foto . ', idequipamento: ' . $equipamento->idequipamento);
+			                $equipamento->foto = NULL;
+		                }
+	                }
 
 
                     $data_export = [

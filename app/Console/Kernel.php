@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
         Commands\ExportSegmentos::class,
         Commands\ExportSegmentosFornecedores::class,
         Commands\ExportServicos::class,
+        Commands\ExportTabelaPreco::class,
+        Commands\ExportTabelaPrecoPeca::class,
+        Commands\ExportTabelaPrecoServico::class,
         Commands\MakeExport::class,
         // Commands\Inspire::class,
     ];

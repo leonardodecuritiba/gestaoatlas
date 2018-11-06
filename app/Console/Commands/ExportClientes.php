@@ -154,8 +154,9 @@ class ExportClientes extends Command
                                 // path does not exist
                                 File::makeDirectory($new_path, $mode = 0777, true, true);
                             }
-                            $move = File::move($path, $new_path . $cliente->foto);
+                            $copy = File::copy($path, $new_path . $cliente->foto);
                         } else {
+	                        echo('NÃO EXISTE : ' . $cliente->foto . ', idcliente: ' . $cliente->idcliente);
                             $cliente->foto = NULL;
                         }
                     }

@@ -43,6 +43,7 @@ class ExportServicos extends Command
         return Excel::create('servicos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+                    'idservico',
                     'idgrupo',
                     'idunidade',
                     'name',
@@ -55,6 +56,7 @@ class ExportServicos extends Command
                 foreach ($Data as $data) {
                     $data_export = [
 
+                        'idservico'     => $data->idservico,
                         'idgrupo'       => $data->idgrupo,
                         'idunidade'     => $data->idunidade,
                         'name'          => $data->nome,
