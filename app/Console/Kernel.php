@@ -29,6 +29,15 @@ class Kernel extends ConsoleKernel
         Commands\ExportTabelaPreco::class,
         Commands\ExportTabelaPrecoPeca::class,
         Commands\ExportTabelaPrecoServico::class,
+
+
+	    Commands\ExportInstrumentBrands::class,
+	    Commands\ExportInstrumentModels::class,
+	    Commands\ExportInstrumentBases::class,
+	    Commands\ExportInstrumentSetors::class,
+	    Commands\ExportInstrumentos::class,
+
+
         Commands\MakeExport::class,
         // Commands\Inspire::class,
     ];
