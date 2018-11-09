@@ -47,7 +47,7 @@ class ExportInstrumentModels extends Command
 				$sheet->row(1, array(
 					'idinstrumento_modelo',
 					'idinstrumento_marca',
-					'descricao'
+					'description'
 				));
 				$i = 2;
 				foreach ($Data as $data) {
