@@ -48,8 +48,8 @@ class ExportInstrumentos extends Command
 				$sheet->row(1, array(
 					'idinstrumento',
 					'idcliente',
-					'idinstrmento_base',
-					'idinstrmento_setor',
+					'idinstrumento_base',
+					'idinstrumento_setor',
 
 					'serial_number',
 					'inventory',
@@ -96,8 +96,8 @@ class ExportInstrumentos extends Command
 					$data_export = [
 						'idinstrumento'             => $data->idinstrumento,
 						'idcliente'                 => $data->idcliente,
-						'idinstrmento_base'         => $data->idbase,
-						'idinstrmento_setor'        => $data->idsetor,
+						'idinstrumento_base'        => $data->idbase,
+						'idinstrumento_setor'       => $data->idsetor,
 
 						'serial_number'             => $data->numero_serie,
 						'inventory'                 => $data->inventario,
