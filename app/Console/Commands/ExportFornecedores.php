@@ -113,7 +113,7 @@ class ExportFornecedores extends Command
                                 // path does not exist
                                 File::makeDirectory($new_path, $mode = 0777, true, true);
                             }
-                            $move = File::move($path, $new_path . $fornecedor->foto);
+                            $move = File::copy($path, $new_path . $fornecedor->foto);
                         } else {
                             $fornecedor->foto = NULL;
                         }

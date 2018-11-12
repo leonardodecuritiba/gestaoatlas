@@ -112,7 +112,7 @@ class ExportPecas extends Command
                                 // path does not exist
                                 File::makeDirectory($new_path, $mode = 0777, true, true);
                             }
-                            $move = File::move($path, $new_path . $peca->foto);
+                            $copy = File::copy($path, $new_path . $peca->foto);
                         } else {
                             $peca->foto = NULL;
                         }

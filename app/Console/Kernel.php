@@ -37,6 +37,10 @@ class Kernel extends ConsoleKernel
 	    Commands\ExportInstrumentSetors::class,
 	    Commands\ExportInstrumentos::class,
 
+	    Commands\ExportUsers::class,
+	    Commands\ExportLacres::class,
+	    Commands\ExportSelos::class,
+
 
         Commands\MakeExport::class,
         // Commands\Inspire::class,
