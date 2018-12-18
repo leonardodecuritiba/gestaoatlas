@@ -43,23 +43,35 @@ class MakeExport extends Command
         $this->call('command:export_grupos');
         $this->call('command:export_marcas');
         $this->call('command:export_ncm');
+
         $this->call('command:export_pecas');
         $this->call('command:export_regioes');
         $this->call('command:export_segmentos');
         $this->call('command:export_segmentos_fornecedores');
         $this->call('command:export_servicos');
+
         $this->call('command:export_tabela_precos');
         $this->call('command:export_tabela_preco_pecas');
         $this->call('command:export_tabela_preco_servicos');
-        $this->call('command:export_users');
-        $this->call('command:export_lacres');
-        $this->call('command:export_selos');
-        $this->call('command:export_users');
+
         $this->call('command:export_instrument_brands');
         $this->call('command:export_instrument_models');
         $this->call('command:export_instrument_setors');
         $this->call('command:export_instrument_bases');
         $this->call('command:export_instruments');
+
+        $this->call('command:export_users');
+        $this->call('command:export_lacres');
+        $this->call('command:export_selos');
+
+        $this->call('command:export_pagamentos');
+        $this->call('command:export_faturamentos');
+        $this->call('command:export_ordem_servicos');
+        $this->call('command:export_aparelho_manutencao');
+
+//        $this->call('command:export_ordem_servicos');
+//        $this->call('command:export_aparelho_manutencao');
+
 	    $path = storage_path('exports');
 	    exec('zip -r ' . $path . '.zip ' . $path);
     }

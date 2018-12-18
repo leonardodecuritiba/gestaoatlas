@@ -38,8 +38,15 @@ class Kernel extends ConsoleKernel
 	    Commands\ExportInstrumentos::class,
 
 	    Commands\ExportUsers::class,
-	    Commands\ExportLacres::class,
-	    Commands\ExportSelos::class,
+        Commands\ExportLacres::class,
+        Commands\ExportSelos::class,
+
+        Commands\ExportPagamentos::class,
+        Commands\ExportFaturamentos::class,
+	    Commands\ExportOrdemServicos::class,
+	    Commands\ExportAparelhoManutencao::class,
+	    Commands\ExportSeloInstrumento::class,
+	    Commands\ExportLacreInstrumento::class,
 
 
         Commands\MakeExport::class,

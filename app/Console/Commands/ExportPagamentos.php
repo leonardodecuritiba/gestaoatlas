@@ -2,18 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\Selo;
+use App\Models\Pagamento;
 use Illuminate\Console\Command;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ExportSelos extends Command
+class ExportPagamentos extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'command:export_selos';
+    protected $signature = 'command:export_pagamentos';
 
     /**
      * The console command description.
@@ -39,30 +39,22 @@ class ExportSelos extends Command
      */
     public function handle()
     {
-        $Data = Selo::all();
-        return Excel::create('selos', function ($excel) use ($Data) {
+        $Data = Pagamento::all();
+        return Excel::create('pagamentos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
-                    'idselo',
-                    'idtecnico',
-                    'numeracao',
-                    'numeracao_externa',
-                    'externo',
-                    'used',
-                    'declared',
+                    'idpagamento',
+                    'data_baixa',
+                    'status',
                 ));
 
                 $i = 2;
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'idselo'            => $data->idselo,
-                        'idtecnico'         => $data->idtecnico,
-                        'numeracao'         => $data->numeracao,
-                        'numeracao_externa' => $data->numeracao_externa,
-                        'externo'           => $data->externo,
-                        'used'              => $data->used,
-                        'declared'          => $data->declared,
+                        'idpagamento'   => $data->id,
+                        'data_baixa'    => $data->data_baixa,
+                        'status'        => $data->status,
                     ];
 
                     $sheet->row($i, $data_export);
@@ -71,6 +63,5 @@ class ExportSelos extends Command
             });
 
         })->store('xls');
-
     }
 }
