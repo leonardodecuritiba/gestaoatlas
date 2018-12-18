@@ -54,6 +54,11 @@ class MakeExport extends Command
         $this->call('command:export_users');
         $this->call('command:export_lacres');
         $this->call('command:export_selos');
+        $this->call('command:export_users');
+        $this->call('command:export_instrument_brands');
+        $this->call('command:export_instrument_models');
+        $this->call('command:export_instrument_setors');
+        $this->call('command:export_instruments');
 	    $path = storage_path('exports');
 	    exec('zip -r ' . $path . '.zip ' . $path);
     }
