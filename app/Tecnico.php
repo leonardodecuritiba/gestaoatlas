@@ -42,6 +42,7 @@ class Tecnico extends Model
     {
 	    return $this->requisicoes('selo_lacres');
     }
+
     public function requisicoes($type)
     {
 	    switch($type){

@@ -314,6 +314,7 @@ class Faturamento extends Model
             '))
             ->get();
     }
+
     public function getAparelhoManutencaos()
     {
         return AparelhoManutencao::whereIn('idordem_servico', $this->ordem_servicos->pluck('idordem_servico'))->get();
