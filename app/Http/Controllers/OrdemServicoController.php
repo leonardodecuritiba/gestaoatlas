@@ -173,6 +173,10 @@ class OrdemServicoController extends Controller
             ->with('Buscas', $Buscas);
     }
 
+
+
+
+
     public function abrir($clienteid)
     {
         $Cliente = Cliente::findOrFail($clienteid);
@@ -194,6 +198,15 @@ class OrdemServicoController extends Controller
 
         }
     }
+
+	public function resumo($idordem_servico)
+	{
+		return view('pages.' . $this->Page->link . '.resumo')
+			->with('Page', $this->Page)
+			->with('OrdemServico', OrdemServico::find($idordem_servico));
+	}
+
+
 
     public function adicionaInstrumento(Request $request, $idordem_servico, $idinstrumento)
     {
@@ -235,15 +248,8 @@ class OrdemServicoController extends Controller
         return Redirect::route('ordem_servicos.show', $idordem_servico);
     }
 
-    public function destroy($id)
-    {
-        $OrdemServico = OrdemServico::find($id);
-        $OrdemServico->remover();
 
-        session()->forget('mensagem');
-        session(['mensagem' => $this->Page->msg_rem]);
-        return Redirect::route('ordem_servicos.index', ['1']);
-    }
+
 
     public function removeInstrumento($idaparelho_manutencao)
     {
@@ -267,6 +273,10 @@ class OrdemServicoController extends Controller
         return Redirect::route('ordem_servicos.show', $idordem_servico);
     }
 
+
+
+
+
     public function updateAparelhoManutencao(Request $request, $idaparelho_manutencao)
     {
 	    //Atualizando os dados do aparelho
@@ -286,6 +296,10 @@ class OrdemServicoController extends Controller
         session(['mensagem' => $this->Page->msg_upd]);
         return Redirect::route('ordem_servicos.show', $AparelhoManutencao->idordem_servico);
     }
+
+
+
+
 
     public function add_insumos(Request $request, $idordem_servico)
     {
@@ -389,6 +403,8 @@ class OrdemServicoController extends Controller
         //
     }
 
+
+
     public function finalizar(Request $request, $idordem_servico)
     {
 	    $OrdemServico = OrdemServico::find($idordem_servico);
@@ -408,6 +424,19 @@ class OrdemServicoController extends Controller
         return Redirect::route('ordem_servicos.resumo', $OrdemServico->idordem_servico);
     }
 
+	public function destroy($id)
+	{
+		$OrdemServico = OrdemServico::find($id);
+		$OrdemServico->remover();
+
+		session()->forget('mensagem');
+		session(['mensagem' => $this->Page->msg_rem]);
+		return Redirect::route('ordem_servicos.index', ['1']);
+	}
+
+
+
+
     public function imprimir($idordem_servico)
     {
         $OrdemServico = OrdemServico::find($idordem_servico);
@@ -422,12 +451,9 @@ class OrdemServicoController extends Controller
         return $PrintHelper->exportOS($OrdemServico);
     }
 
-    public function resumo($idordem_servico)
-    {
-        return view('pages.' . $this->Page->link . '.resumo')
-            ->with('Page', $this->Page)
-            ->with('OrdemServico', OrdemServico::find($idordem_servico));
-    }
+
+
+
 
     public function get_ordem_servicos_cliente(Request $request, $idcliente)
     {
@@ -441,6 +467,9 @@ class OrdemServicoController extends Controller
             ->with('Page', $this->Page)
             ->with('Buscas', $Buscas);
     }
+
+
+
 
 
     public function encaminhar(Request $request, $idordem_servico)
