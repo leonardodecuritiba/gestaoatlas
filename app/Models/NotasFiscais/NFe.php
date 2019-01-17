@@ -91,8 +91,8 @@ class NFe extends NF
 	        // Valores permitidos:
 	        // 0: Nota de entrada.
 	        // 1: Nota de saída.
-//            "finalidade_emissao" => 1, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
-            "finalidade_emissao" => 4, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
+            "finalidade_emissao" => 1, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
+//            "finalidade_emissao" => 4, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
 	        // Valores permitidos
 	        // 1: Nota normal.
 	        // 2: Nota complementar.
