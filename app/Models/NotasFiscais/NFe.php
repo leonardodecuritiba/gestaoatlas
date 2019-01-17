@@ -119,13 +119,13 @@ class NFe extends NF
             // 3: Operação não presencial, Teleatendimento
             // 4: NFC-e em operação com entrega em domicílio
             // 9: Operação não presencial, outros
-	        "notas_referenciadas" => [
-	        	[
-	        		'chave_nfe' => '35180903391625000110550010001239241008050008', //Chave de acesso da nota referenciada.
-					// chave_cte Integer[44] Tag XML refCTe
-						//Chave de acesso da CTe referenciada.
-		        ]
-	        ]//notas_referenciadas Coleção[0-500] [coleção: NotaReferenciadaXML]
+//	        "notas_referenciadas" => [
+//	        	[
+//	        		'chave_nfe' => '35180903391625000110550010001239241008050008', //Chave de acesso da nota referenciada.
+//					// chave_cte Integer[44] Tag XML refCTe
+//						//Chave de acesso da CTe referenciada.
+//		        ]
+//	        ]//notas_referenciadas Coleção[0-500] [coleção: NotaReferenciadaXML]
             //Notas referenciadas.
         ];
     }
