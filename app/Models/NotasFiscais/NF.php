@@ -96,7 +96,7 @@ class NF
 	        if ( $body['status'] == "erro_autorizacao" ) {
 		        $body['mensagem'] = $body['mensagem_sefaz'];
 	        } else if ( ( $body['status'] != 'processando_autorizacao' ) && ( ! isset( $body['uri'] ) ) ) {
-                $body['uri'] = $_SERVER_ . $body['caminho_danfe'];
+		        $body['uri'] = $_SERVER_ . (isset($body['caminho_danfe']) ? $body['caminho_danfe'] : "");
             }
         }
 
