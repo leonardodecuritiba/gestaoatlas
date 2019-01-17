@@ -121,7 +121,7 @@ class NFe extends NF
             // 9: Operação não presencial, outros
 	        "notas_referenciadas" => [
 	        	[
-	        		'chave_nfe' => '35190110555180000121550010000002001191848127', //Chave de acesso da nota referenciada.
+	        		'chave_nfe' => '35180903391625000110550010001239241008050008', //Chave de acesso da nota referenciada.
 					// chave_cte Integer[44] Tag XML refCTe
 						//Chave de acesso da CTe referenciada.
 		        ]
