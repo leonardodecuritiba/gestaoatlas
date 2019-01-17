@@ -267,7 +267,8 @@ class NFe extends NF
             // 6355, 6356, 6357, 6359, 6360, 6931, 6932, 7358)
             "transporte_icms_codigo_municipio" => $this->_EMPRESA_->icms_codigo_municipio, //Código do município de ocorrência do fato gerador. Integer[7] Tag XML cMunFG
 
-            // "informacoes_adicionais_contribuinte" => 'Não Incidência ICMS conforme Decisão...', //Informações adicionais de interesse do contribuinte. String[1-5000] Tag XML infCpl
+             "informacoes_adicionais_contribuinte" => 'REF. NFE Nº 123.924
+             NFE CHAVE DE ACESSO: 3518 0903 3916 2500 0110 5500 1000 1239 2410 0805 0008', //Informações adicionais de interesse do contribuinte. String[1-5000] Tag XML infCpl
 
         ];
     }
