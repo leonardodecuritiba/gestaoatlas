@@ -142,8 +142,8 @@ class NF
 
         curl_setopt($ch, CURLOPT_URL, $URL);
 
-        $body = curl_exec($ch);
-        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//        $body = curl_exec($ch);
+//        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         $retorno = [
             'type' => $type,

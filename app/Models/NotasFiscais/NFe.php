@@ -85,7 +85,20 @@ class NFe extends NF
     public function setCabecalho()
     {
         $this->cabecalho = [
-            "natureza_operacao" => 'Venda c/ ST VENDA', //Descrição da natureza de operação. (obrigatório) String[1-60] Tag XML natOp
+//            "natureza_operacao" => 'Venda c/ ST VENDA', //Descrição da natureza de operação. (obrigatório) String[1-60] Tag XML natOp
+            "natureza_operacao" => 'DEVOLUÇÃO', //Descrição da natureza de operação. (obrigatório) String[1-60] Tag XML natOp
+//	        "tipo_documento" => 1, // Tipo da nota fiscal. (obrigatório) Tag XML tpNF
+	        "tipo_documento" => 0, // Tipo da nota fiscal. (obrigatório) Tag XML tpNF
+	        // Valores permitidos:
+	        // 0: Nota de entrada.
+	        // 1: Nota de saída.
+//            "finalidade_emissao" => 1, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
+            "finalidade_emissao" => 4, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
+	        // Valores permitidos
+	        // 1: Nota normal.
+	        // 2: Nota complementar.
+	        // 3: Nota de ajuste.
+	        // 4: Devolução de mercadoria.
             "forma_pagamento" => 1, //Forma de pagamento. Valores permitidos 0: a vista. 1: a prazo. 2: outros. (obrigatório) Tag XML indPag
             "local_destino" => 1, //Identificador de local de destino da operação. (obrigatório) Tag XML idDest
             // Valores permitidos:
@@ -94,16 +107,7 @@ class NFe extends NF
             // 3: Operação com exterior
             "data_emissao" => $this->now->toW3cString(),//Data e hora de emissão. (obrigatório) Tag XML dhEmi
             "data_entrada_saida" => $this->now->toW3cString(),//Data e hora de entrada (em notas de entrada) ou saída (em notas de saída). Tag XML dhSaiEnt
-            "tipo_documento" => 1, //Tipo da nota fiscal. (obrigatório) Tag XML tpNF
-            // Valores permitidos:
-            // 0: Nota de entrada.
-            // 1: Nota de saída.
-            "finalidade_emissao" => 1, // Finalidade da nota fiscal. (obrigatório) Tag XML finNFe
-            // Valores permitidos 1:
-            // Nota normal. 2:
-            // Nota complementar. 3:
-            // Nota de ajuste. 4:
-            // Devolução de mercadoria.
+
             "consumidor_final" => 1, //Indica operação com consumidor (obrigatório) Tag XML indFinal  final
             // Valores permitidos:
             // 0: Normal
