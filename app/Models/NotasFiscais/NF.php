@@ -126,31 +126,59 @@ class NF
 
         $ch = curl_init();
         if (!strcmp($type, 'nfe')) {
+        	//
+	        $_SERVER_ = "https://api.focusnfe.com.br";
+//	        dd($URL);
+	        $login = $_TOKEN_;
+	        $password = "";
+	        $justificativa = array ("justificativa" => $params['justificativa']);
+
+
+//	        dd($params);
+
+	        curl_setopt($ch, CURLOPT_URL, $_SERVER_ . "/v2/nfe/" . $ref);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+	        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($justificativa));
+	        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+	        curl_setopt($ch, CURLOPT_USERPWD, "$login:$password");
+	        /*
             //https://api.focusnfe.com.br/nfe2/cancelar?token=TOKEN&amp;ref=REFERENCIA&amp;justificativa=Justificativa%20para%20o%20cancelamento
             $URL = $_SERVER_ . "/" . self::_URL_NFe_ . "/cancelar?token=" . $_TOKEN_ . "&ref=" . $ref;
+//	        dd($URL);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, Yaml::dump($params));
             curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
+
+            */
+	        $retorno = [
+		        'type' => $type,
+		        'url' => $_SERVER_,
+		        'body' => curl_exec($ch),
+		        'status' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+	        ];
         } else {
-            //curl_setopt($ch, CURLOPT_URL, "http://homologacao.acrasnfe.acras.com.br/nfse/" . $ref . "?token=" . $token);
-            $URL = $_SERVER_ . "/" . self::_URL_NFSe_ . "/" . $ref . "?token=" . $_TOKEN_;
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	        //curl_setopt($ch, CURLOPT_URL, "http://homologacao.acrasnfe.acras.com.br/nfse/" . $ref . "?token=" . $token);
+	        $URL = $_SERVER_ . "/" . self::_URL_NFSe_ . "/" . $ref . "?token=" . $_TOKEN_;
+//	        dd($URL);
+	        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HTTPHEADER, array());
 //            curl_setopt($ch, CURLOPT_POSTFIELDS, Yaml::dump($params));
             curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+	        curl_setopt($ch, CURLOPT_URL, $URL);
+
+	        $retorno = [
+		        'type' => $type,
+		        'url' => $_SERVER_,
+		        'body' => Yaml::parse(curl_exec($ch)),
+		        'status' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
+	        ];
         }
 
-        curl_setopt($ch, CURLOPT_URL, $URL);
 
 //        $body = curl_exec($ch);
 //        $result = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
-        $retorno = [
-            'type' => $type,
-            'url' => $_SERVER_,
-            'body' => Yaml::parse(curl_exec($ch)),
-            'status' => curl_getinfo($ch, CURLINFO_HTTP_CODE),
-        ];
         curl_close($ch);
         return ($retorno);
     }

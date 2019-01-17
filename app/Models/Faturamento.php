@@ -204,8 +204,8 @@ class Faturamento extends Model
 
     public function cancelNF($debug, $type, $data)
     {
-        $debug = ($debug) ? 'homologacao' : 'producao';
-        $ref_key = 'id' . $type . '_' . $debug;
+        $option = ($debug) ? 'homologacao' : 'producao';
+        $ref_key = 'id' . $type . '_' . $option;
         return NF::cancelar($this->{$ref_key}, $debug, $type, $data);
     }
 
