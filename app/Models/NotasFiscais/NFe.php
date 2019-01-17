@@ -87,8 +87,7 @@ class NFe extends NF
         $this->cabecalho = [
 //            "natureza_operacao" => 'Venda c/ ST VENDA', //Descrição da natureza de operação. (obrigatório) String[1-60] Tag XML natOp
             "natureza_operacao" => 'DEVOLUÇÃO', //Descrição da natureza de operação. (obrigatório) String[1-60] Tag XML natOp
-//	        "tipo_documento" => 1, // Tipo da nota fiscal. (obrigatório) Tag XML tpNF
-	        "tipo_documento" => 0, // Tipo da nota fiscal. (obrigatório) Tag XML tpNF
+	        "tipo_documento" => 1, // Tipo da nota fiscal. (obrigatório) Tag XML tpNF
 	        // Valores permitidos:
 	        // 0: Nota de entrada.
 	        // 1: Nota de saída.
