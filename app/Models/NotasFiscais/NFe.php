@@ -227,7 +227,7 @@ class NFe extends NF
 
             "valor_seguro" => "0.00", //Valor total do seguro. (obrigatório) Decimal[13.2] Tag XML vSeg
             "valor_total_ii" => "0.00", //Valor total do imposto de importação. (obrigatório) Decimal[13.2] Tag XML vII
-//            "valor_ipi" => "990.00", //Valor total do IPI. (obrigatório) Decimal[13.2] Tag XML vIPI
+            "valor_ipi" => "990.00", //Valor total do IPI. (obrigatório) Decimal[13.2] Tag XML vIPI
             "valor_pis" => "0.00", //Valor do PIS. (obrigatório) Decimal[13.2] Tag XML vPIS
             "valor_cofins" => "0.00", //Valor do COFINS. (obrigatório) Decimal[13.2] Tag XML vCOFINS
             "valor_outras_despesas" => "0.00", //Valor das despesas acessórias. (obrigatório) Decimal[13.2] Tag XML vOutro
