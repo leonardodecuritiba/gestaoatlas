@@ -140,6 +140,11 @@ class PecaTributacao extends Model
         $this->attributes['valor_ipi'] = DataHelper::getReal2Float($value);
     }
 
+    public function valor_ipi_float()
+    {
+        return $this->attributes['valor_ipi'];
+    }
+
     public function getValorIpiAttribute($value)
     {
         return DataHelper::getFloat2Real($value);

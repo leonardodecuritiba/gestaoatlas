@@ -419,7 +419,7 @@ class NFe extends NF
                 "valor_seguro" => $item->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
                 "valor_desconto" => $item->desconto_total, //Valor do desconto. Decimal[13.2] Tag XML vSeg
 //                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
-                "valor_ipi" => $item->peca->peca_tributacao->valor_ipi,
+                "valor_ipi" => $item->peca->peca_tributacao->valor_ipi_float(),
 
             ];
             $item_n++;
