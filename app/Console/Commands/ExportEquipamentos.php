@@ -45,6 +45,7 @@ class ExportEquipamentos extends Command
             $excel->sheet('Sheet 1', function($sheet) use($Equipamentos) {
 
                 $data_equipamento = array(
+	                'created_at',
                     'idequipamento',
                     'idcliente',
                     'idmarca',
@@ -81,6 +82,7 @@ class ExportEquipamentos extends Command
 
                     $data_export = [
 
+	                    'created_at'                => $equipamento->created_at,
                         'idequipamento' => $equipamento->idequipamento,
                         'idcliente'     => $equipamento->idcliente,
                         'idmarca'       => $equipamento->idmarca,

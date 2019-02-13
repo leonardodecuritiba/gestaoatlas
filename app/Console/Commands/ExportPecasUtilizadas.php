@@ -43,6 +43,7 @@ class ExportPecasUtilizadas extends Command
         return Excel::create('pecas_utilizadas', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idpeca_utilizada',
 	                'idaparelho_manutencao',
 	                'idpeca',
@@ -55,6 +56,7 @@ class ExportPecasUtilizadas extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'      => $data->created_at,
                         'idpeca_utilizada'      => $data->id,
                         'idaparelho_manutencao' => $data->idaparelho_manutencao,
                         'idpeca'                => $data->idpeca,

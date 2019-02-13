@@ -43,6 +43,7 @@ class ExportSegmentos extends Command
         return Excel::create('segments', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idsegmento',
                     'description',
                 ));
@@ -51,6 +52,7 @@ class ExportSegmentos extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'    => $data->created_at,
                         'idsegmento'    => $data->idsegmento,
                         'description'   => $data->descricao,
                     ];

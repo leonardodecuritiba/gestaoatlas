@@ -43,6 +43,7 @@ class ExportMarcas extends Command
         return Excel::create('marcas', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idmarca',
                     'description',
                 ));
@@ -52,6 +53,7 @@ class ExportMarcas extends Command
                 foreach ($Data as $data) {
                     $data_export = [
 
+                        'created_at'       => $data->created_at,
                         'idmarca'       => $data->idmarca,
                         'description'   => $data->descricao,
                     ];

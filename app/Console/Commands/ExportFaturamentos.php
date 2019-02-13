@@ -43,6 +43,7 @@ class ExportFaturamentos extends Command
         return Excel::create('faturamentos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idfaturamento',
                     'idcliente',
                     'idstatus_faturamento',
@@ -62,6 +63,7 @@ class ExportFaturamentos extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'         => $data->created_at,
                         'idfaturamento'         => $data->id,
                         'idcliente'             => $data->idcliente,
                         'idstatus_faturamento'  => $data->idstatus_faturamento,

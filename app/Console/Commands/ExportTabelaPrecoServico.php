@@ -43,6 +43,7 @@ class ExportTabelaPrecoServico extends Command
 		return Excel::create('tabela_preco_servicos', function ($excel) use ($Data) {
 			$excel->sheet('Sheet 1', function($sheet) use($Data) {
 				$sheet->row(1, array(
+					'created_at',
 					'idtabela_preco',
 					'idservico',
 					'range',
@@ -56,6 +57,7 @@ class ExportTabelaPrecoServico extends Command
 				foreach ($Data as $data) {
 					$data_export = [
 
+						'created_at'    => $data->created_at,
 						'idtabela_preco'    => $data->idtabela_preco,
 						'idservico'         => $data->idservico,
 						'range'             => $data->margem,

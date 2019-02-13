@@ -44,6 +44,7 @@ class ExportUsers extends Command
         return Excel::create('users', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'iduser',
                     'email',
                     'password',
@@ -82,6 +83,7 @@ class ExportUsers extends Command
                 foreach ($Data as $data) {
 
                     $data_export = [
+	                    'created_at'        => $data->created_at,
                         'iduser'            => $data->iduser,
                         'email'             => $data->email,
                         'password'          => $data->password,

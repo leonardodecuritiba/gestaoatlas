@@ -46,6 +46,7 @@ class ExportClientes extends Command
 
 
                 $data_cliente = array(
+                    'created_at',
                     'idcliente',
 //				'cost_center_id',
                     'idcliente_centro_custo',
@@ -164,6 +165,7 @@ class ExportClientes extends Command
 
                     $data_export = [
 
+                        'created_at'                => $cliente->created_at,
                         'idcliente'                 => $cliente->idcliente,
                         'idcliente_centro_custo'    => $cliente->idcliente_centro_custo,
                         'foto'                      => $cliente->foto,

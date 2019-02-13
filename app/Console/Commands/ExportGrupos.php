@@ -43,6 +43,7 @@ class ExportGrupos extends Command
         return Excel::create('grupos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idgrupo',
                     'description',
                 ));
@@ -52,6 +53,7 @@ class ExportGrupos extends Command
                 foreach ($Data as $data) {
                     $data_export = [
 
+                        'created_at'       => $data->created_at,
                         'idgrupo'       => $data->idgrupo,
                         'description'   => $data->descricao,
                     ];

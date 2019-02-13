@@ -46,6 +46,7 @@ class ExportInstrumentBases extends Command
 			$excel->sheet('Sheet 1', function($sheet) use($Data) {
 
 				$sheet->row(1, array(
+					'created_at',
 					'idinstrumento_base',
 					'idinstrumento_modelo',
 					'descricao',
@@ -74,6 +75,7 @@ class ExportInstrumentBases extends Command
 					}
 
 					$data_export = [
+						'created_at'    => $data->created_at,
 						'idinstrumento_base'    => $data->id,
 						'idinstrumento_modelo'  => $data->idmodelo,
 						'description'           => $data->descricao,

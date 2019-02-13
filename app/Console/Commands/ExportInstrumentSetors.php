@@ -45,6 +45,7 @@ class ExportInstrumentSetors extends Command
 			$excel->sheet('Sheet 1', function($sheet) use($Data) {
 
 				$sheet->row(1, array(
+					'created_at',
 					'idinstrumento_setor',
 					'description',
 				));
@@ -52,6 +53,7 @@ class ExportInstrumentSetors extends Command
 				foreach ($Data as $data) {
 					$data_export = [
 
+						'created_at'   => $data->created_at,
 						'idinstrumento_setor'   => $data->id,
 						'description'           => $data->descricao,
 					];

@@ -43,6 +43,7 @@ class ExportLacreInstrumento extends Command
         return Excel::create('lacre_instrumentos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idlacre_instrumento',
                     'idaparelho_set',
                     'idaparelho_unset',
@@ -57,6 +58,7 @@ class ExportLacreInstrumento extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'   => $data->created_at,
                         'idlacre_instrumento'   => $data->idlacre_instrumento,
                         'idaparelho_set'        => $data->idaparelho_set,
                         'idaparelho_unset'      => $data->idaparelho_unset,

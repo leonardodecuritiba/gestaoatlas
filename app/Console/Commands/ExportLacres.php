@@ -43,6 +43,7 @@ class ExportLacres extends Command
         return Excel::create('lacres', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idlacre',
                     'idtecnico',
                     'numeracao',
@@ -55,6 +56,7 @@ class ExportLacres extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'           => $data->created_at,
                         'idlacre'           => $data->idlacre,
                         'idtecnico'         => $data->idtecnico,
                         'numeracao'         => $data->numeracao,

@@ -44,6 +44,7 @@ class ExportPecas extends Command
         return Excel::create('pecas', function ($excel) use ($Pecas) {
             $excel->sheet('Sheet 1', function($sheet) use($Pecas) {
                 $data_peca = array(
+	                'created_at',
 
                     'idpeca',
 
@@ -121,6 +122,7 @@ class ExportPecas extends Command
 
                     $data_export = [
 
+                        'created_at'                => $peca->created_at,
                         'idpeca'                => $peca->idpeca,
                         'idfornecedor'          => $peca->idfornecedor,
                         'brand_id'              => $peca->idmarca,

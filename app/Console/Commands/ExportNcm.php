@@ -43,6 +43,7 @@ class ExportNcm extends Command
         return Excel::create('ncms', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idncm',
                     'codigo',
                     'descricao',
@@ -57,6 +58,7 @@ class ExportNcm extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'                 => $data->created_at,
                         'idncm'                 => $data->idncm,
                         'codigo'                => $data->codigo,
                         'descricao'             => $data->descricao,

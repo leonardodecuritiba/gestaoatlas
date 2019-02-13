@@ -45,6 +45,7 @@ class ExportInstrumentModels extends Command
 			$excel->sheet('Sheet 1', function($sheet) use($Data) {
 
 				$sheet->row(1, array(
+					'created_at',
 					'idinstrumento_modelo',
 					'idinstrumento_marca',
 					'description'
@@ -53,6 +54,7 @@ class ExportInstrumentModels extends Command
 				foreach ($Data as $data) {
 					$data_export = [
 
+						'created_at'  => $data->created_at,
 						'idinstrumento_modelo'  => $data->id,
 						'idinstrumento_marca'   => $data->idinstrumento_marca,
 						'description'           => $data->descricao,

@@ -43,6 +43,7 @@ class ExportPagamentos extends Command
         return Excel::create('pagamentos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idpagamento',
                     'data_baixa',
                     'status',
@@ -52,6 +53,7 @@ class ExportPagamentos extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'   => $data->created_at,
                         'idpagamento'   => $data->id,
                         'data_baixa'    => $data->data_baixa,
                         'status'        => $data->status,

@@ -43,6 +43,7 @@ class ExportSelos extends Command
         return Excel::create('selos', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+	                'created_at',
                     'idselo',
                     'idtecnico',
                     'numeracao',
@@ -56,6 +57,7 @@ class ExportSelos extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'            => $data->created_at,
                         'idselo'            => $data->idselo,
                         'idtecnico'         => $data->idtecnico,
                         'numeracao'         => $data->numeracao,

@@ -45,6 +45,7 @@ class ExportFornecedores extends Command
             $excel->sheet('Sheet 1', function($sheet) use($Fornecedores) {
 
                 $data_fornecedor = array(
+	                'created_at',
                     'idfornecedor',
                     'idcontato',
                     'idpjuridica',
@@ -121,6 +122,7 @@ class ExportFornecedores extends Command
 
                     $data_export = [
 
+                        'created_at'          => $fornecedor->created_at,
                         'idfornecedor'          => $fornecedor->idfornecedor,
                         'idcontato'             => $fornecedor->idcontato,
                         'idpjuridica'           => $fornecedor->idpjuridica,
