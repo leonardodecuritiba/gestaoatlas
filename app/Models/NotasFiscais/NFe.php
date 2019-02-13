@@ -227,7 +227,7 @@ class NFe extends NF
 
             "valor_seguro" => "0.00", //Valor total do seguro. (obrigatório) Decimal[13.2] Tag XML vSeg
             "valor_total_ii" => "0.00", //Valor total do imposto de importação. (obrigatório) Decimal[13.2] Tag XML vII
-            "valor_ipi" => "990.00", //Valor total do IPI. (obrigatório) Decimal[13.2] Tag XML vIPI
+//            "valor_ipi" => "990.00", //Valor total do IPI. (obrigatório) Decimal[13.2] Tag XML vIPI
             "valor_pis" => "0.00", //Valor do PIS. (obrigatório) Decimal[13.2] Tag XML vPIS
             "valor_cofins" => "0.00", //Valor do COFINS. (obrigatório) Decimal[13.2] Tag XML vCOFINS
             "valor_outras_despesas" => "0.00", //Valor das despesas acessórias. (obrigatório) Decimal[13.2] Tag XML vOutro
@@ -419,6 +419,7 @@ class NFe extends NF
                 "valor_seguro" => $item->peca->peca_tributacao->valor_seguro_float(), //Valor do seguro. Decimal[13.2] Tag XML vSeg
                 "valor_desconto" => $item->desconto_total, //Valor do desconto. Decimal[13.2] Tag XML vSeg
 //                    "valor_outras_despesas" =>  ***, //Valor de outras despesas acessórias. Decimal[13.2] Tag XML vOutro
+                "valor_ipi" => $item->peca->peca_tributacao->valor_ipi,
 
             ];
             $item_n++;
