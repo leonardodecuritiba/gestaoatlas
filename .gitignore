@@ -1,4 +1,6 @@
 /vendor
 /public/uploads
+/public/results_nfe2.json
+/public/results_nfse.json
 .env
 .idea
