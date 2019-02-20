@@ -57,7 +57,7 @@ class MakeExport extends Command
         $this->call('command:export_instrument_brands');
         $this->call('command:export_instrument_models');
         $this->call('command:export_instrument_setors');
-        $this->call('command:export_instrument_bases');
+        $this->call('command:export_pams');
         $this->call('command:export_instruments');
 
         $this->call('command:export_users');

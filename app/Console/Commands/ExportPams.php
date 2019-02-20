@@ -7,14 +7,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
 
-class ExportInstrumentBases extends Command
+class ExportPams extends Command
 {
 	/**
 	 * The name and signature of the console command.
 	 *
 	 * @var string
 	 */
-	protected $signature = 'command:export_instrument_bases';
+	protected $signature = 'command:pams';
 	protected $name = 'instrument_bases';
 
 	/**
@@ -59,7 +59,7 @@ class ExportInstrumentBases extends Command
 				foreach ($Data as $data) {
 
 //                    verificar se foto existe
-					$new_path = storage_path('exports/instrument_bases/');
+					$new_path = storage_path('exports/pams/');
 					if($data->foto != NULL){
 						$path = public_path('uploads/instrumento_bases/' . $data->foto);
 						if(File::exists($path)){
