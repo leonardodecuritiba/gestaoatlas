@@ -51,6 +51,9 @@ class Kernel extends ConsoleKernel
 	    Commands\ExportServicosPrestados::class,
 	    Commands\ExportPecasUtilizadas::class,
 
+	    Commands\ExportRequests::class,
+	    Commands\ExportParcelas::class,
+
 
         Commands\MakeExport::class,
         // Commands\Inspire::class,

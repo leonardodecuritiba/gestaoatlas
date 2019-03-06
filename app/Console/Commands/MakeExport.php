@@ -75,6 +75,9 @@ class MakeExport extends Command
 	    $this->call('command:export_servicos_prestados');
 	    $this->call('command:export_pecas_utilizadas');
 
+	    $this->call('command:export_requests');
+	    $this->call('command:export_parcelas');
+
 	    $path = storage_path('exports');
 	    exec('zip -r ' . $path . '.zip ' . $path);
     }
