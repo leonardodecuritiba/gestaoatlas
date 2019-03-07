@@ -29,7 +29,7 @@ class Empresa
     public $razao_social = 'MACEDO AUTOMACAO COMERCIAL LTDA ME';
     public $nome_fantasia = 'MACEDO AUTOMACAO COMERCIAL LTDA ME';
     public $cnae_fiscal = '0000465';
-    public $regime_tributario = '3';
+    public $regime_tributario = '1';
 
     public $logradouro = 'R. Antonio Leite Penteado';
     public $numero = '38';
