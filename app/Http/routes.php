@@ -10,6 +10,11 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::get('billing/{id}', function ($id) {
+    $Billing = \App\Models\Faturamento::find($id);
+    return $Billing->getAllPecas();
+});
+
 
 Route::get('export-equipamentos', 'EquipamentosController@exportarFile'); //EXPORTAR FORNECEDORES
 Route::get('export-clientes', 'ClientesController@exportarFile'); //EXPORTAR FORNECEDORES

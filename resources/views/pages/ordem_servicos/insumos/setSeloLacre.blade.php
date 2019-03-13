@@ -14,6 +14,7 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                 rompido?
             </label>
         </div>
+
         @if($selos_retirados['id']!=null)
             <div class="checkbox col-md-2 col-sm-2 col-xs-12">
                 <label>
