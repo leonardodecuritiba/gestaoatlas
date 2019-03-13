@@ -33,7 +33,7 @@ class Kernel extends ConsoleKernel
 
 	    Commands\ExportInstrumentBrands::class,
 	    Commands\ExportInstrumentModels::class,
-	    Commands\ExportInstrumentBases::class,
+	    Commands\ExportPams::class,
 	    Commands\ExportInstrumentSetors::class,
 	    Commands\ExportInstrumentos::class,
 
@@ -50,6 +50,9 @@ class Kernel extends ConsoleKernel
 
 	    Commands\ExportServicosPrestados::class,
 	    Commands\ExportPecasUtilizadas::class,
+
+	    Commands\ExportRequests::class,
+	    Commands\ExportParcelas::class,
 
 
         Commands\MakeExport::class,
