@@ -82,7 +82,7 @@ class ExportEquipamentos extends Command
 
                     $data_export = [
 
-	                    'created_at'                => $equipamento->created_at,
+	                    'created_at'                => $equipamento->getAttribute('created_at'),
                         'idequipamento' => $equipamento->idequipamento,
                         'idcliente'     => $equipamento->idcliente,
                         'idmarca'       => $equipamento->idmarca,

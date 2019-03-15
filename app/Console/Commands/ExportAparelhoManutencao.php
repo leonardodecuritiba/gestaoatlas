@@ -43,6 +43,7 @@ class ExportAparelhoManutencao extends Command
         return Excel::create('aparelho_manutencao', function ($excel) use ($Data) {
             $excel->sheet('Sheet 1', function($sheet) use($Data) {
                 $sheet->row(1, array(
+                    'created_at',
                     'idaparelho_manutencao',
                     'idordem_servico',
                     'idinstrumento',
@@ -56,6 +57,7 @@ class ExportAparelhoManutencao extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
+                        'created_at'            => $data->getAttribute('created_at'),
                         'idaparelho_manutencao' => $data->idaparelho_manutencao,
                         'idordem_servico'       => $data->idordem_servico,
                         'idinstrumento'         => $data->idinstrumento,

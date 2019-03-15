@@ -122,7 +122,7 @@ class ExportPecas extends Command
 
                     $data_export = [
 
-                        'created_at'                => $peca->created_at,
+	                    'created_at'                => $peca->getAttribute('created_at'),
                         'idpeca'                => $peca->idpeca,
                         'idfornecedor'          => $peca->idfornecedor,
                         'brand_id'              => $peca->idmarca,
