@@ -62,11 +62,11 @@ class ExportNcm extends Command
                         'idncm'                 => $data->idncm,
                         'codigo'                => $data->codigo,
                         'descricao'             => $data->descricao,
-                        'aliquota_ipi'          => $data->aliquota_ipi,
-                        'aliquota_pis'          => $data->aliquota_pis,
-                        'aliquota_cofins'       => $data->aliquota_cofins,
-                        'aliquota_nacional'     => $data->aliquota_nacional,
-                        'aliquota_importacao'   => $data->aliquota_importacao,
+                        'aliquota_ipi'          => $data->getOriginal('aliquota_ipi'),
+                        'aliquota_pis'          => $data->getOriginal('aliquota_pis'),
+                        'aliquota_cofins'       => $data->getOriginal('aliquota_cofins'),
+                        'aliquota_nacional'     => $data->getOriginal('aliquota_nacional'),
+                        'aliquota_importacao'   => $data->getOriginal('aliquota_importacao'),
                     ];
 
                     $sheet->row($i, $data_export);
