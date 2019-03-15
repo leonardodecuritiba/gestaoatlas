@@ -57,7 +57,7 @@ class ExportAparelhoManutencao extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'            => $data->getAttribute('created_at'),
+                        'created_at'            => $data->getOriginal('created_at'),
                         'idaparelho_manutencao' => $data->idaparelho_manutencao,
                         'idordem_servico'       => $data->idordem_servico,
                         'idinstrumento'         => $data->idinstrumento,
