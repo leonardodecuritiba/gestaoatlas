@@ -66,7 +66,7 @@ class ExportParcelas extends Command
                         'data_pagamento'    => $data->getOriginal('data_pagamento'),
                         'data_baixa'        => $data->getOriginal('data_baixa'),
                         'numero_parcela'    => $data->numero_parcela,
-                        'valor_parcela'     => $data->valor_parcela,
+                        'valor_parcela'     => $data->getOriginal('valor_parcela'),
                     ];
 
                     $sheet->row($i, $data_export);
