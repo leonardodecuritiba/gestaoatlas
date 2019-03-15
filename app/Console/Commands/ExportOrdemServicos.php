@@ -72,7 +72,7 @@ class ExportOrdemServicos extends Command
                 foreach ($Data as $data) {
                     $data_export = [
 
-                        'created_at'           => $data->created_at,
+                        'created_at'           => $data->getOriginal('created_at'),
                         'idordem_servico'           => $data->idordem_servico,
                         'idcliente'                 => $data->idcliente,
                         'idfaturamento'             => $data->idfaturamento,

@@ -53,7 +53,7 @@ class ExportMarcas extends Command
                 foreach ($Data as $data) {
                     $data_export = [
 
-                        'created_at'       => $data->created_at,
+                        'created_at'       => $data->getOriginal('created_at'),
                         'idmarca'       => $data->idmarca,
                         'description'   => $data->descricao,
                     ];

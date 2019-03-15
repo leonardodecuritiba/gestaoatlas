@@ -52,7 +52,7 @@ class ExportSegmentosFornecedores extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'     => $data->created_at,
+                        'created_at'     => $data->getOriginal('created_at'),
                         'idsegmento_fornecedor'     => $data->idsegmento_fornecedor,
                         'description'               => $data->descricao,
                     ];

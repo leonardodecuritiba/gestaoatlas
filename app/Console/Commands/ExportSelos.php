@@ -57,7 +57,7 @@ class ExportSelos extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'            => $data->created_at,
+                        'created_at'            => $data->getOriginal('created_at'),
                         'idselo'            => $data->idselo,
                         'idtecnico'         => $data->idtecnico,
                         'numeracao'         => $data->numeracao,

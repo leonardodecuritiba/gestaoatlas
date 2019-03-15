@@ -54,7 +54,7 @@ class ExportInstrumentModels extends Command
 				foreach ($Data as $data) {
 					$data_export = [
 
-						'created_at'  => $data->created_at,
+						'created_at'  => $data->getOriginal('created_at'),
 						'idinstrumento_modelo'  => $data->id,
 						'idinstrumento_marca'   => $data->idinstrumento_marca,
 						'description'           => $data->descricao,

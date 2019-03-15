@@ -58,7 +58,7 @@ class ExportNcm extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'                 => $data->created_at,
+                        'created_at'                 => $data->getOriginal('created_at'),
                         'idncm'                 => $data->idncm,
                         'codigo'                => $data->codigo,
                         'descricao'             => $data->descricao,

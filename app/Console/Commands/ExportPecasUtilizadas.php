@@ -56,7 +56,7 @@ class ExportPecasUtilizadas extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'      => $data->created_at,
+                        'created_at'      => $data->getOriginal('created_at'),
                         'idpeca_utilizada'      => $data->id,
                         'idaparelho_manutencao' => $data->idaparelho_manutencao,
                         'idpeca'                => $data->idpeca,

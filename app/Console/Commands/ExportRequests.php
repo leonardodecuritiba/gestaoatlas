@@ -62,7 +62,7 @@ class ExportRequests extends Command
                 	$manager = Colaborador::find($data->idmanager);
                     $data_export = [
 
-                        'created_at'    => $data->created_at,
+                        'created_at'    => $data->getOriginal('created_at'),
                         'type'          => $data->idtype,
                         'status'        => $data->idstatus,
 

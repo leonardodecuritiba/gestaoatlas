@@ -56,7 +56,7 @@ class ExportLacres extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'           => $data->created_at,
+                        'created_at'           => $data->getOriginal('created_at'),
                         'idlacre'           => $data->idlacre,
                         'idtecnico'         => $data->idtecnico,
                         'numeracao'         => $data->numeracao,

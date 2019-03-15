@@ -58,7 +58,7 @@ class ExportLacreInstrumento extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'   => $data->created_at,
+                        'created_at'   => $data->getOriginal('created_at'),
                         'idlacre_instrumento'   => $data->idlacre_instrumento,
                         'idaparelho_set'        => $data->idaparelho_set,
                         'idaparelho_unset'      => $data->idaparelho_unset,

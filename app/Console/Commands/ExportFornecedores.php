@@ -122,7 +122,7 @@ class ExportFornecedores extends Command
 
                     $data_export = [
 
-                        'created_at'          => $fornecedor->created_at,
+                        'created_at'          => $fornecedor->getOriginal('created_at'),
                         'idfornecedor'          => $fornecedor->idfornecedor,
                         'idcontato'             => $fornecedor->idcontato,
                         'idpjuridica'           => $fornecedor->idpjuridica,

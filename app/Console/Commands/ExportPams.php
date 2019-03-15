@@ -75,7 +75,7 @@ class ExportPams extends Command
 					}
 
 					$data_export = [
-						'created_at'    => $data->created_at,
+						'created_at'    => $data->getOriginal('created_at'),
 						'idinstrumento_base'    => $data->id,
 						'idinstrumento_modelo'  => $data->idmodelo,
 						'description'           => $data->descricao,

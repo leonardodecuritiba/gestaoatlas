@@ -95,7 +95,7 @@ class ExportInstrumentos extends Command
 
 
 					$data_export = [
-						'created_at'             => $data->created_at,
+						'created_at'             => $data->getOriginal('created_at'),
 						'idinstrumento'             => $data->idinstrumento,
 						'idcliente'                 => $data->idcliente,
 						'idinstrumento_base'        => $data->idbase,

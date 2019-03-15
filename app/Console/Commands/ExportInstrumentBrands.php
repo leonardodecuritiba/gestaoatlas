@@ -52,7 +52,7 @@ class ExportInstrumentBrands extends Command
 				$i = 2;
 				foreach ($Data as $data) {
 					$data_export = [
-						'created_at'   => $data->created_at,
+						'created_at'   => $data->getOriginal('created_at'),
 						'idinstrumento_marca'   => $data->id,
 						'description'           => $data->descricao,
 					];

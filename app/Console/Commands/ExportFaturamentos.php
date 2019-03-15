@@ -63,7 +63,7 @@ class ExportFaturamentos extends Command
 
                 foreach ($Data as $data) {
                     $data_export = [
-                        'created_at'         => $data->created_at,
+                        'created_at'         => $data->getOriginal('created_at'),
                         'idfaturamento'         => $data->id,
                         'idcliente'             => $data->idcliente,
                         'idstatus_faturamento'  => $data->idstatus_faturamento,
