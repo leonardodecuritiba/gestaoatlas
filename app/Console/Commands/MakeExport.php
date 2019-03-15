@@ -79,6 +79,17 @@ class MakeExport extends Command
 	    $this->call('command:export_parcelas');
 
 	    $path = storage_path('exports');
+
+	    $host = env('DB_HOST');
+	    $username = env('DB_USERNAME');
+	    $password = env('DB_PASSWORD');
+	    $database = env('DB_DATABASE');
+
+	    $filename = $path . DIRECTORY_SEPARATOR . 'dump.sql';
+	    $command = sprintf('mysqldump -h %s -u %s -p\'%s\' %s > %s', $host, $username, $password, $database, $filename);
+	    exec($command);
 	    exec('zip -r ' . $path . '.zip ' . $path);
+
+
     }
 }
