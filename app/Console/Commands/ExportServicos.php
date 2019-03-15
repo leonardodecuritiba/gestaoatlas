@@ -57,7 +57,7 @@ class ExportServicos extends Command
                 foreach ($Data as $data) {
                     $data_export = [
 
-                        'created_at'     => $data->created_at,
+                        'created_at'    => $data->getOriginal('created_at'),
                         'idservico'     => $data->idservico,
                         'idgrupo'       => $data->idgrupo,
                         'idunidade'     => $data->idunidade,
