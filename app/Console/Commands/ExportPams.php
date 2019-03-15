@@ -14,7 +14,7 @@ class ExportPams extends Command
 	 *
 	 * @var string
 	 */
-	protected $signature = 'command:pams';
+	protected $signature = 'command:export_pams';
 	protected $name = 'instrument_bases';
 
 	/**
