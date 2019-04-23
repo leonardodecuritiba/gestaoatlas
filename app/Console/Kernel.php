@@ -67,8 +67,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')
-        //          ->hourly();
 
         $schedule->command('command:check_parcelas')->daily();
         $schedule->command('backup:clean')->daily()->at('01:00');
@@ -77,17 +75,5 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:run')->daily()->at('18:00');
         $schedule->command('backup:run')->daily()->at('02:00');
 
-//        $schedule->call(function () {
-//
-//            $user = array(
-//                'email' => "silva.zanin@gmail.com",
-//                'name' => "TESTE SCHEDULE",
-//                'mensagem' => "olá",
-//            );
-//            Mail::raw($user['mensagem'], function ($message) use ($user) {
-//                $message->to($user['email'], $user['name'])->subject('Welcome!');
-//                $message->from('xxx@gmail.com', 'Atendimento');
-//            });
-//        })->everyMinute();
     }
 }
