@@ -392,8 +392,13 @@
 
             $('input[name=selo_outro]').on('ifChecked', function(){
                 var $parent = $(this).parents('div.form-group').next();
-                $($parent).find('input[name=selo_retirado]').attr('required',true);
-                $($parent).find('input[name=selo_retirado]').attr('disabled',false);
+                var $input_selo = $($parent).find('input[name=selo_retirado]');
+
+                $($input_selo).attr('required',true);
+                $($input_selo).attr('disabled',false);
+
+
+                console.log($($input_selo));
             });
             $('input[name=selo_outro]').on('ifUnchecked', function(){
                 var $parent = $(this).parents('div.form-group').next();

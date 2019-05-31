@@ -26,6 +26,8 @@
         $('.show-telefone').inputmask({'mask': '(99) 9999-9999', 'removeMaskOnSubmit': true});
         $('.show-placa').inputmask({'mask': "aaa-9999", 'removeMaskOnSubmit': true});
         $('.show-cest').inputmask({'mask': "99.999.99", 'removeMaskOnSubmit': true});
+        $('.show-selo').inputmask({'mask': "99.999.999-9", 'removeMaskOnSubmit': true});
+        $('.show-lacre').inputmask({'mask': "9999999-9", 'removeMaskOnSubmit': true});
     });
 </script>
 
