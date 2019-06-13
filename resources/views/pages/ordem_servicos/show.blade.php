@@ -398,6 +398,10 @@
                     "required" : true,
                     "min" : 12
                 });
+
+                //show label-alert
+                $($parent).find('div.alert-label').toggleClass('esconda');
+
             });
 
             $('input[name=selo_outro]').on('ifUnchecked', function(){
@@ -409,6 +413,9 @@
                     "required" : false,
                     "min" : 0
                 });
+
+                //hide label-alert
+                $($parent).find('div.alert-label').toggleClass('esconda');
             });
 
             $('input[name=lacre_outro]').on('ifChecked', function(){
@@ -427,6 +434,7 @@
                 });
 
                 $($parent).find('input[name=lacre_retirado_livre]').show();
+                $($parent).find('div.alert-seal').toggleClass('esconda');
             });
 
             $('input[name=lacre_outro]').on('ifUnchecked', function(){
@@ -443,6 +451,7 @@
                     "required" : false,
                     "min" : 0
                 });
+                $($parent).find('div.alert-seal').toggleClass('esconda');
             });
 
             $('input[name=lacre_rompido]').on('ifChanged', function(){
