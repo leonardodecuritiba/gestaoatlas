@@ -396,12 +396,9 @@
                 $($input_selo).attr({
                     "disabled" : false,
                     "required" : true,
-                    "min" : 12
+                    "minlength" : 9
                 });
-
-                //show label-alert
                 $($parent).find('div.alert-label').toggleClass('esconda');
-
             });
 
             $('input[name=selo_outro]').on('ifUnchecked', function(){
@@ -411,10 +408,8 @@
                 $($input_selo).attr({
                     "disabled" : true,
                     "required" : false,
-                    "min" : 0
+                    "minlength" : 0
                 });
-
-                //hide label-alert
                 $($parent).find('div.alert-label').toggleClass('esconda');
             });
 
@@ -424,13 +419,12 @@
                 $($parent).find('select[name="lacre_retirado[]"]').attr({
                     "disabled" : true,
                     "required" : false,
-                    "min" : 0
                 });
 
                 $($parent).find('input[name="lacre_retirado_livre"]').attr({
                     "disabled" : false,
                     "required" : true,
-                    "min" : 9
+                    "minlength" : 8
                 });
 
                 $($parent).find('input[name=lacre_retirado_livre]').show();
@@ -449,8 +443,9 @@
                 $($parent).find('input[name="lacre_retirado_livre"]').attr({
                     "disabled" : true,
                     "required" : false,
-                    "min" : 0
+                    "minlength" : 8
                 });
+                $($parent).find('input[name=lacre_retirado_livre]').hide();
                 $($parent).find('div.alert-seal').toggleClass('esconda');
             });
 
