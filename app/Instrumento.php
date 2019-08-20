@@ -71,14 +71,12 @@ class Instrumento extends Model
 
 	public function numeracao_selo_retirado($idaparelho_unset = NULL)
 	{
-		$query = $this->selo_instrumentos_retirado($idaparelho_unset);
-		if($query->where('external',1)->count() > 0){
+		$query = $this->selo_instrumentos_retirado($idaparelho_unset)->get();
+        if($query->where('external',1)->count() > 0){
 			$selos = $query->where('external',1)
-			               ->where('idaparelho_set',$idaparelho_unset)
-			               ->get();
+			               ->where('idaparelho_set',$idaparelho_unset);
 		} else {
-			$selos = $query->where('external',0)
-			               ->get();
+			$selos = $query->where('external',0);
 		}
 		$num_selos = count($selos);
 		if($num_selos == 0){
@@ -151,14 +149,12 @@ class Instrumento extends Model
 
 	public function numeracao_lacres_retirados($idaparelho_unset = NULL)
 	{
-		$query = $this->lacres_instrumentos_retirados($idaparelho_unset);
+		$query = $this->lacres_instrumentos_retirados($idaparelho_unset)->get();
 		if($query->where('external',1)->count() > 0){
 			$lacres = $query->where('external',1)
-			                ->where('idaparelho_set',$idaparelho_unset)
-			                ->get();
+			                ->where('idaparelho_set',$idaparelho_unset);
 		} else {
-			$lacres = $query->where('external',0)
-			                ->get();
+			$lacres = $query->where('external',0);
 		}
 		$num_lacres = count($lacres);
 		if($num_lacres == 0){
@@ -256,6 +252,7 @@ class Instrumento extends Model
 		if($idaparelho_unset != NULL){
 			$o->where('idaparelho_unset', $idaparelho_unset);
 		}
+
 		return $o->orderBy( 'retirado_em' , 'DESC');
 	}
 

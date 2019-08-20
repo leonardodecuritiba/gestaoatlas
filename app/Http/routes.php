@@ -10,6 +10,13 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+Route::get('testt/{id}', function($id){
+    $a = \App\AparelhoManutencao::find($id);
+
+//    $numeracao_selo_retirado = $a->numeracao_selo_retirado();
+    return $a->instrumento->numeracao_selo_retirado($a->getAttribute('idaparelho_manutencao'));
+
+});
 
 Route::get('export-equipamentos', 'EquipamentosController@exportarFile'); //EXPORTAR FORNECEDORES
 Route::get('export-clientes', 'ClientesController@exportarFile'); //EXPORTAR FORNECEDORES
