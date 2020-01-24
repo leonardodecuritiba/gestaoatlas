@@ -41,10 +41,6 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                 <label class="control-label col-md-2 col-sm-2 col-xs-12">Selo retirado: <span
                             class="required">*</span></label>
                 <div class="col-md-10 col-sm-10 col-xs-12">
-                    <div class="alert-label alert alert-danger fade in esconda"
-                         role="alert">
-                        <strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong> Este campo de preenchimento obrigatório. A inclusão de numerações fictícias, fará com que o técnico ou técnico franquiado este sujeito a multas severas. Caso o selo não se faça presente entrar com 8 dígitos sequencias “12345678”, o mesmo será verificado posteriormente no portal PSI.
-                    </div>
                     <input type="text" name="selo_retirado" class="form-control show-selo" placeholder="Selo retirado"
                         @if($selos_retirados['id']!=null)
                            data-selo_id="{{json_encode($selos_retirados['id'])}}"
@@ -89,10 +85,6 @@ $lacres_retirados = $Instrumento->numeracao_lacres_afixados();
                             <input type="hidden" name="lacres_retirado_hidden"
                                    value="{{json_encode($lacres_retirados['id'])}}"/>
                         @endif
-                    </div>
-                    <div class="alert-seal alert alert-danger fade in esconda"
-                         role="alert">
-                        <strong><i class="fa fa-exclamation-triangle"></i> Atenção!</strong> Este campo de preenchimento obrigatório. A inclusão de numerações fictícias, fará com que o técnico ou técnico franquiado este sujeito a multas severas. Caso o Lacre não se faça presente entrar com 8 dígitos sequencias “12345678”, o mesmo será verificado posteriormente no portal PSI. Para Lacre de outra permissionária entrar com Nº da autorização presente no lacre e não Nº do lacre. Exemplo autorização Atlas 10002180.
                     </div>
                     <input type="text" name="lacre_retirado_livre" class="form-control show-lacre"
                            placeholder="Outros Lacres separados por ';' Ex: 1001; 1002; 1003"
